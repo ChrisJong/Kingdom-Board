@@ -5,9 +5,9 @@ public class assetPool : MonoBehaviour {
 
     public static assetPool instance;
 
-    public GameObject castle;
-
-    public GameObject swordsman;
+    public GameObject mainManager;
+    public GameObject gameManager;
+    public GameObject PlayerObj;
 
     void Awake() {
         if (instance == null)

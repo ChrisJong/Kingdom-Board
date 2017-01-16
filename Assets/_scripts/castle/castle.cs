@@ -9,14 +9,14 @@
         // change to private
         public int _playerID = 0;
 
-        public List<GameObject> unitQueue;
+        public List<GameObject> _unitQueue;
 
         public void init(int playerID) {
             this._playerID = playerID;
         }
 
         private void Awake() {
-            this.unitQueue = new List<GameObject>();
+            this._unitQueue = new List<GameObject>();
         }
 
         public int PlayerID {
