@@ -1,13 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class assetPool : MonoBehaviour {
+public class AssetPool : MonoBehaviour {
 
-    public static assetPool instance;
+    public static AssetPool instance;
 
     public GameObject mainManager;
     public GameObject gameManager;
-    public GameObject PlayerObj;
+    public GameObject PlayerBJ;
+
+    #region UNITS
+    public GameObject warriorOBJ;
+    public GameObject archerOBH;
+    public GameObject magicianOBJ;
+    #endregion
 
     void Awake() {
         if (instance == null)

@@ -4,7 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
 
-    public class castle : MonoBehaviour {
+    public class Castle : MonoBehaviour {
 
         // change to private
         public int _playerID = 0;

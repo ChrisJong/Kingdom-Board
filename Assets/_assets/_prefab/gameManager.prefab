@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114338480766040890}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: gameManager
+  m_TagString: GameManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51,8 +51,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60b19ce68e64e444b955210dfd2dd77e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainManager: {fileID: 0}
+  _mainManager: {fileID: 0}
   _numberOfPlayers: 0
   _turnCount: 0
   _curPlayerTurnID: 0
   _turnOrderID: 
+  _spawnPoints: []

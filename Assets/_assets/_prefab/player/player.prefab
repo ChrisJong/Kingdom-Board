@@ -5,12 +5,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 440516}
-  - 114: {fileID: 11443510}
+  - component: {fileID: 440516}
+  - component: {fileID: 11443510}
   m_Layer: 0
-  m_Name: player
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,10 +25,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7.3694077, y: 11.463211, z: 8.231591}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11443510
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -40,10 +40,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51beb0a4d8a39f849adeb9fa5e6809a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 0
-  units: []
+  _playerData:
+    id: 0
+    turnEnded: 0
+    turnState: 0
+    goldResource: 0
+    resourceLImit: 0
+    masteryPoints: 0
+    masteryLimit: 0
+    unitCount: 0
+    unitLimit: 0
+  _units: []
   _castleSpawn: {fileID: 0}
   _castle: {fileID: 0}
+  _camera: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

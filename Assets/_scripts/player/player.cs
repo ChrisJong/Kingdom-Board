@@ -6,21 +6,6 @@
 
     using Castle;
 
-    [System.Serializable]
-    public struct PlayerInfo {
-        public int id;
-        public bool turnEnded;
-
-        public float goldResource;
-        public float resourceLImit;
-
-        public float masteryPoints;
-        public float masteryLimit;
-
-        public int unitCount;
-        public int unitLimit;
-    }
-
     public class Player : MonoBehaviour {
 
         public PlayerInfo _playerData = new PlayerInfo();
@@ -29,6 +14,8 @@
 
         public GameObject _castleSpawn;
         public GameObject _castle;
+
+        public GameObject _camera;
 
         #region UNITY_METHODS
         void Awake() {
@@ -41,7 +28,19 @@
             this._playerData.id = id;
             this._castleSpawn = castleSpawn;
 
+            this._camera = PlayerCamera.CreateCamera(this._playerData.id);
+            this._camera.transform.parent = this.transform;
+
             this.SpawnCastle();
+        }
+
+        public int Roll() {
+
+            int temp = 0;
+
+            temp = Random.Range(1, 10);
+
+            return temp;
         }
 
         public void EndTurn() {
@@ -52,6 +51,12 @@
         }
 
         private void SpawnCastle() {
+        }
+        #endregion
+
+        #region DEBIG
+        public void SwitchPlayers() {
+
         }
         #endregion
     }

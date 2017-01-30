@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class mainManager : MonoBehaviour {
+public class MainManager : MonoBehaviour {
 
-    public static mainManager instance = null;
-
-    public gameManager _gameManager = null;
+    public static MainManager instance = null;
 
     public enum MainState {
         MENU = 0,
         LOBBY,
+        START,
         GAME,
         END
     };
@@ -28,7 +27,7 @@ public class mainManager : MonoBehaviour {
 
         this.SetPlayerCount(2);
 
-        this._currentState = MainState.GAME;
+        this._currentState = MainState.START;
         
     }
 
@@ -49,16 +48,27 @@ public class mainManager : MonoBehaviour {
 
     #region MAIN_MANAGER_METHODS
     public void SetupGameState() {
-        if(this._currentState == MainState.GAME) {
-            GameObject tempGameManager = GameObject.Instantiate(assetPool.instance.gameManager) as GameObject;
-            tempGameManager.name = "GameManager";
-            this._gameManager = tempGameManager.GetComponent<gameManager>() as gameManager;
-            this._gameManager.Init(this);
+        if(this._currentState == MainState.START) {
+            GameManager.FindOrCreate();
+            GameManager.instance.Init();
+
+            this._currentState = MainState.GAME;
         }
     }
 
     public void SetPlayerCount(int n) {
         this._numberOfPlayers = n;
+    }
+    #endregion
+
+    #region MAIN_MANAGER_STATIC
+    public static void FindOrCreate() {
+        GameObject tempManager = GameObject.FindGameObjectWithTag("MainManager");
+
+        if(tempManager == null) {
+            tempManager = GameObject.Instantiate(AssetPool.instance.mainManager) as GameObject;
+            tempManager.name = "MainManager";
+        }
     }
     #endregion
 }

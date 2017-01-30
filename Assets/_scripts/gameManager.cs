@@ -4,17 +4,19 @@ using System.Collections.Generic;
 
 using Player;
 
-public class gameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour {
 
-    public static gameManager instance = null;
+    public static GameManager instance = null;
 
-    public mainManager _mainManager;
+    public MainManager _mainManager;
 
     public int _numberOfPlayers = 0;
 
     public int _turnCount;
-    public int _curPlayerTurnID;
+    public int _currentPlayerID;
     public int[] _turnOrderID;
+
+    public Player.Player[] _playerList;
 
     public GameObject[] _spawnPoints;
 
@@ -25,13 +27,17 @@ public class gameManager : MonoBehaviour {
         else if(instance != null)
             Destroy(this.gameObject);
     }
+
+    private void Update() {
+        this.DebugSwitch();
+    }
     #endregion
 
     #region GAME_MANAGER_METHODS
-    public void Init(mainManager MainManager) {
-        this._mainManager = MainManager;
+    public void Init() {
+        this._numberOfPlayers = MainManager.instance.NumberOfPlayers;
+        this._playerList = new Player.Player[this._numberOfPlayers];
 
-        this._numberOfPlayers = this._mainManager.NumberOfPlayers;
         this.FindCastleSpawn();
         this.SetPlayers();
     }
@@ -47,14 +53,36 @@ public class gameManager : MonoBehaviour {
             temp.AddComponent<Player.Player>();
 
             temp.GetComponent<Player.Player>().init(this._spawnPoints[i], i);
-            
+            this._playerList[i] = temp.GetComponent<Player.Player>() as Player.Player;
+        }
+    }
+    #endregion
+
+    #region MAIN_MANAGER_STATIC
+    public static void FindOrCreate() {
+        GameObject tempManager = GameObject.FindGameObjectWithTag("GameManager");
+
+        if(tempManager == null) {
+            tempManager = GameObject.Instantiate(AssetPool.instance.gameManager) as GameObject;
+            tempManager.name = "GameManager";
         }
     }
     #endregion
 
     #region DEBUG
-    public void SwitchPlayers(int id) {
+    public int debugID = 0;
 
+    public void DebugSwitch() {
+        if(Input.GetKey(KeyCode.F1)) {
+            if(this.debugID < this._numberOfPlayers - 1) {
+                this._playerList[this.debugID]._camera.GetComponent<Camera>().enabled = false;
+                this._playerList[this.debugID+1]._camera.GetComponent<Camera>().enabled = true;
+                this.debugID += 1;
+            } else {
+                this._playerList[this.debugID]._camera.GetComponent<Camera>().enabled = false;
+                this._playerList[0]._camera.GetComponent<Camera>().enabled = true;
+            }
+        }
     }
     #endregion
 }
