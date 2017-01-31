@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MainManager : MonoBehaviour {
-
-    public static MainManager instance = null;
+public class MainManager : Extension.SingletonMono<MainManager> {
 
     public enum MainState {
         MENU = 0,
@@ -19,11 +17,8 @@ public class MainManager : MonoBehaviour {
     public int _numberOfPlayers = 0;
 
     #region UNITY_METHODS
-    private void Awake() {
-        if(instance == null)
-            instance = this;
-        else if(instance != null)
-            Destroy(this.gameObject);
+    protected override void Awake() {
+        base.Awake();
 
         this.SetPlayerCount(2);
 

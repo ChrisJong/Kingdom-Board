@@ -8,11 +8,11 @@
 
     public class Player : MonoBehaviour {
 
-        public PlayerInfo _playerData = new PlayerInfo();
+        public PlayerInfo _playerData;
 
         public List<GameObject> _units;
 
-        public GameObject _castleSpawn;
+        public Vector3 _castleSpawnPoint;
         public GameObject _castle;
 
         public GameObject _camera;
@@ -23,10 +23,11 @@
         }
         #endregion
 
-        #region PLAYER_METHODS
+        #region CLASS_METHODS
         public void init(GameObject castleSpawn, int id) {
+            this._castleSpawnPoint = castleSpawn.transform.position;
+
             this._playerData.id = id;
-            this._castleSpawn = castleSpawn;
 
             this._camera = PlayerCamera.CreateCamera(this._playerData.id);
             this._camera.transform.parent = this.transform;
@@ -34,29 +35,8 @@
             this.SpawnCastle();
         }
 
-        public int Roll() {
-
-            int temp = 0;
-
-            temp = Random.Range(1, 10);
-
-            return temp;
-        }
-
-        public void EndTurn() {
-            if(this._playerData.turnEnded == false)
-                this._playerData.turnEnded = true;
-            else
-                return;
-        }
-
         private void SpawnCastle() {
-        }
-        #endregion
-
-        #region DEBIG
-        public void SwitchPlayers() {
-
+            Instantiate(AssetPool.instance.castle, new Vector3(this._castleSpawnPoint.x, AssetPool.instance.castle.transform.position.y, this._castleSpawnPoint.z), Quaternion.identity, this.transform);
         }
         #endregion
     }

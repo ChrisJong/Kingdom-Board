@@ -8,6 +8,8 @@ TagManager:
   - AssetPool
   - CastleSpawn
   - GameManager
+  - Castle
+  - Unit
   layers:
   - Default
   - TransparentFX
@@ -17,9 +19,9 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
+  - Selectable
+  - Unit
+  - Structure
   - 
   - 
   - 

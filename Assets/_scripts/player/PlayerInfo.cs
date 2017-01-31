@@ -6,17 +6,10 @@
 
     [System.Serializable]
     public struct PlayerInfo {
-        public enum PlayerState {
-            ATTACKING = 0,
-            DEFENDING = 1,
-            WIN,
-            LOSE,
-            DRAW
-        }
+
 
         public int id;
         public bool turnEnded;
-        public PlayerState turnState;
 
         public float goldResource;
         public float resourceLImit;

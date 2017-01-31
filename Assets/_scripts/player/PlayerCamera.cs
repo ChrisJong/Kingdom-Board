@@ -21,7 +21,7 @@
         private float _keyboardMoveSpeed = 5.0f;
         private float _screenEdgeSpeed = 10.0f;
         private float _followSpeed = 5.0f;
-        private float _rotationCameraSpeed = 5.0f;
+        private float _rotationCameraSpeed = 120.0f;
         private float _rotateAtPointSpeed = 5.0f;
         private float _panningSpeed = 10.0f;
         private float _mouseRotationSpeed = 10.0f;

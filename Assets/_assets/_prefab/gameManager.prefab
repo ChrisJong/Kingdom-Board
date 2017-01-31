@@ -54,6 +54,8 @@ MonoBehaviour:
   _mainManager: {fileID: 0}
   _numberOfPlayers: 0
   _turnCount: 0
-  _curPlayerTurnID: 0
+  _currentPlayerID: 0
   _turnOrderID: 
+  _playerList: []
   _spawnPoints: []
+  debugID: 0

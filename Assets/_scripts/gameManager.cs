@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 using Player;
 
-public class GameManager : MonoBehaviour {
-
-    public static GameManager instance = null;
+public class GameManager : Extension.SingletonMono<GameManager> {
 
     public MainManager _mainManager;
 
@@ -21,11 +19,8 @@ public class GameManager : MonoBehaviour {
     public GameObject[] _spawnPoints;
 
     #region UNITY_METHOD
-    private void Awake() {
-        if(instance == null)
-            instance = this;
-        else if(instance != null)
-            Destroy(this.gameObject);
+    protected override void Awake() {
+        base.Awake();
     }
 
     private void Update() {
@@ -33,7 +28,7 @@ public class GameManager : MonoBehaviour {
     }
     #endregion
 
-    #region GAME_MANAGER_METHODS
+    #region CLASS_METHODS
     public void Init() {
         this._numberOfPlayers = MainManager.instance.NumberOfPlayers;
         this._playerList = new Player.Player[this._numberOfPlayers];
@@ -58,7 +53,7 @@ public class GameManager : MonoBehaviour {
     }
     #endregion
 
-    #region MAIN_MANAGER_STATIC
+    #region GAME_MANAGER_STATIC
     public static void FindOrCreate() {
         GameObject tempManager = GameObject.FindGameObjectWithTag("GameManager");
 
