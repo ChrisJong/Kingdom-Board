@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4795679743675548}
   - component: {fileID: 33988757543357080}
   - component: {fileID: 23668463501733922}
+  - component: {fileID: 65036137261247826}
   m_Layer: 0
   m_Name: Warrior
   m_TagString: Unit
@@ -82,3 +83,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1901207879790952}
   m_Mesh: {fileID: 4300000, guid: 16d1cd14deab037489e1bc8d3f1bf733, type: 3}
+--- !u!65 &65036137261247826
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1901207879790952}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.2, y: 1.9551463, z: 1.2}
+  m_Center: {x: 0, y: 0.97757316, z: 0}

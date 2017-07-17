@@ -1,15 +1,30 @@
 fileFormatVersion: 2
-guid: b2726857347f1914b858598926005b15
-timeCreated: 1485687500
+guid: 603c0721556c3ee4f8ae9061f73da546
+timeCreated: 1500259015
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: ground_GEO
+    100000: cliff_walls
+    100002: cliff_walls_MeshPart0
+    100004: cliff_walls_MeshPart1
+    100006: floor_layout
+    100008: //RootNode
+    400000: cliff_walls
+    400002: cliff_walls_MeshPart0
+    400004: cliff_walls_MeshPart1
+    400006: floor_layout
+    400008: //RootNode
+    2300000: cliff_walls_MeshPart0
+    2300002: cliff_walls_MeshPart1
+    2300004: floor_layout
+    3300000: cliff_walls_MeshPart0
+    3300002: cliff_walls_MeshPart1
+    3300004: floor_layout
+    4300000: cliff_walls_MeshPart0
+    4300002: cliff_walls_MeshPart1
+    4300004: floor_layout
+    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -53,7 +68,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2
@@ -72,7 +87,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

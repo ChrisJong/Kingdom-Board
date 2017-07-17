@@ -18,11 +18,11 @@
         private bool _fixedUpdate = false;
 
         #region Movement
-        private float _keyboardMoveSpeed = 5.0f;
+        private float _keyboardMoveSpeed = 10.0f;
         private float _screenEdgeSpeed = 10.0f;
-        private float _followSpeed = 5.0f;
+        private float _followSpeed = 10.0f;
         private float _rotationCameraSpeed = 120.0f;
-        private float _rotateAtPointSpeed = 5.0f;
+        private float _rotateAtPointSpeed = 10.0f;
         private float _panningSpeed = 10.0f;
         private float _mouseRotationSpeed = 10.0f;
         #endregion
@@ -189,7 +189,7 @@
                 Rect downSide = new Rect(0.0f, 0.0f, Screen.width, this._screenEdgeBoarder);
 
                 desiredMove.x = leftSide.Contains(this.MouseInput) ? -1 : rightSide.Contains(this.MouseInput) ? 1 : 0;
-                desiredMove.z = topSide.Contains(this.MouseInput) ? 1 : downSide.Contains(this.MouseInput) ? -1 : 0;
+                desiredMove.z = topSide.Contains(this.MouseInput) ? -1 : downSide.Contains(this.MouseInput) ? 1 : 0;
 
                 desiredMove *= this._screenEdgeSpeed;
                 desiredMove *= Time.deltaTime;
@@ -270,12 +270,11 @@
 
         #endregion
 
-
         #region PLAYER_CAMERA_STATIC
-        public static GameObject CreateCamera(int id) {
+        public static GameObject CreateCamera(int id, string Name) {
             GameObject tempCamera;
 
-            tempCamera = new GameObject("PlayerCamera " + id.ToString());
+            tempCamera = new GameObject(Name + (id+1).ToString());
             tempCamera.tag = "MainCamera";
 
             tempCamera.AddComponent<Camera>();

@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4692859442782998}
   - component: {fileID: 33368596341923646}
   - component: {fileID: 23978194200572592}
+  - component: {fileID: 65511238805094850}
   m_Layer: 0
   m_Name: Magician
   m_TagString: Unit
@@ -81,3 +82,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1665922659383230}
   m_Mesh: {fileID: 4300000, guid: d21fc88ea52504841bdd3b3862700560, type: 3}
+--- !u!65 &65511238805094850
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1665922659383230}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.2, y: 1.9132862, z: 1.2}
+  m_Center: {x: 0, y: 0.9566431, z: 0}

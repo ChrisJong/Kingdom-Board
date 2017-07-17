@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4402018406660198}
   - component: {fileID: 33525735784313624}
   - component: {fileID: 23672897369591690}
+  - component: {fileID: 65101347883905852}
   m_Layer: 0
   m_Name: Archer
   m_TagString: Unit
@@ -82,3 +83,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1097448159785974}
   m_Mesh: {fileID: 4300000, guid: 77b132379e64c9d4089ed832f6e02d8e, type: 3}
+--- !u!65 &65101347883905852
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1097448159785974}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.1999999, y: 1.9327407, z: 1.2}
+  m_Center: {x: 0, y: 0.96637034, z: 0}
