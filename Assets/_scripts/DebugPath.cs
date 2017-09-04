@@ -36,7 +36,7 @@
 
             NavMeshPath path = this.agent.path;
 
-            this.lineRenderer.numPositions = path.corners.Length;
+            this.lineRenderer.positionCount = path.corners.Length;
 
             for(int i = 0; i < path.corners.Length; i++) {
                 this.lineRenderer.SetPosition(i, path.corners[i]);

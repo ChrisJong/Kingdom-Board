@@ -1,5 +1,5 @@
 ﻿namespace Helper {
-
+    using System;
     using UnityEngine;
 
     public class TimeScaleManager : Extension.SingletonMono<TimeScaleManager> {
@@ -45,6 +45,12 @@
 
         private void OnDisable() {
             Time.timeScale = 1.0f;
+        }
+        #endregion
+
+        #region METHODS
+        public override void Init() {
+            throw new NotImplementedException();
         }
         #endregion
     }

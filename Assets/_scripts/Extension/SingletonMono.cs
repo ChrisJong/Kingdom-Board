@@ -14,6 +14,10 @@
             }
 
             instance = this as T;
+
+            this.Init();
         }
+
+        public abstract void Init();
     }
 }
