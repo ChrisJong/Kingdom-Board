@@ -1,5 +1,7 @@
 ﻿namespace Helper {
+
     using System;
+
     using UnityEngine;
 
     public class TimeScaleManager : Extension.SingletonMono<TimeScaleManager> {

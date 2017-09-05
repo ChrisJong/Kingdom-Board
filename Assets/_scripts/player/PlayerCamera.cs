@@ -1,13 +1,11 @@
-﻿namespace Player
-{
+﻿namespace Player {
     using System.Collections;
     using System.Collections.Generic;
 
     using UnityEngine;
     
     [RequireComponent(typeof(Camera))]
-    public class PlayerCamera : MonoBehaviour
-    {
+    public class PlayerCamera : MonoBehaviour {
         #region VARIABLES
 
         private int _playerID = 0;
@@ -166,7 +164,7 @@
             
             if(Physics.Raycast(ray, out hit, 20.0f, this._groundMask.value)) {
                 Debug.DrawRay(this._transform.position, Vector3.down * 20.0f, Color.blue);
-                Debug.Log(((hit.point - this._transform.position).magnitude).ToString());
+                //Debug.Log(((hit.point - this._transform.position).magnitude).ToString());
                 return (hit.point - this._transform.position).magnitude;
             }
             return 0.0f;
