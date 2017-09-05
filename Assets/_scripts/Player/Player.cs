@@ -19,6 +19,7 @@
 
         public GameObject _castle; // Change to Structure Class
         public GameObject _currentSelection; // Change to Unit Class
+        public GameObject _previousSelection;
 
         public bool _turnEnded = false;
         public bool _isAttacking = false;
@@ -31,6 +32,20 @@
         }
         #endregion
 
+        #region METHODS
+        public void SetSelection(GameObject current) {
+            GameObject go;
 
+            if (current == null)
+                return;
+
+            if (current == this._previousSelection)
+                return;
+
+            go = this._currentSelection;
+            this._currentSelection = current;
+            this._previousSelection = go;
+        }
+        #endregion
     }
 }
