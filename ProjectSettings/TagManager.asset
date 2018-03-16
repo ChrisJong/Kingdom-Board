@@ -4,12 +4,14 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - MainManager
-  - AssetPool
-  - CastleSpawn
+  - Manager
+  - MenuManager
   - GameManager
-  - Castle
+  - Selectable
   - Unit
+  - Structure
+  - Environment
+  - Spawn
   layers:
   - Default
   - TransparentFX
@@ -19,10 +21,10 @@ TagManager:
   - UI
   - 
   - 
+  - Encironment
   - Selectable
   - Unit
   - Structure
-  - Enviroment
   - 
   - 
   - 

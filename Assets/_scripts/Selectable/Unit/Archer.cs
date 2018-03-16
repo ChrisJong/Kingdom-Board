@@ -1,16 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace Selectable.Unit {
 
-public class Archer : MonoBehaviour {
+    using System.Collections;
+    using System.Collections.Generic;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    using UnityEngine;
+
+    public class Archer : Unit {
+
+    }
 }

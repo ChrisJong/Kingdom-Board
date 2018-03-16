@@ -4,48 +4,59 @@
     using System.Collections.Generic;
 
     using UnityEngine;
+    using UnityEngine.UI;
 
-    public class Player : MonoBehaviour {
-        #region VARIABLES
+    using Manager;
+    using Selectable;
+    using Selectable.Structure;
+    using Selectable.Unit;
 
-        private int _playerID;
-        public int PlayerID { get { return this._playerID; } }
+    public abstract class Player : MonoBehaviour {
 
-        public List<GameObject> _unitList; // Change to Unit Class
-        public List<GameObject> _unitSpawnList; // Change to Unit Class
+        #region VARIABLE
+        public int id { private set; get; }
+        public string name;
 
-        public int _maxUnitCap = 25;
-        public int _currentUnitCap = 0;
+        public bool IsAttacking { get; private set; }
+        public bool TurnEnded { get; private set; }
 
-        public GameObject _castle; // Change to Structure Class
-        public GameObject _currentSelection; // Change to Unit Class
-        public GameObject _previousSelection;
+        public GameObject PlayerObject { get; private set; }
+        private GameObject _castle;
+        private Transform _spawnLocation;
 
-        public bool _turnEnded = false;
-        public bool _isAttacking = false;
+        // CAMERA
+        private Camera _playerCamnera;
+        private GameObject _cameraObject;
 
+        // UI
+        private Canvas ui;
         #endregion
 
-        #region UNITY_METHODS
-        private void Update() {
-            
+        #region METHOD
+        public virtual void Init(GameObject playerGO, Transform spawnLocation, int id = 0, bool onAttack = false) {
+            this.id = id;
+            this.name = "Player " + (id + 1).ToString().PadLeft(2, '0');
+
+            this.PlayerObject = playerGO;
+            this.PlayerObject.transform.SetPositionAndRotation(spawnLocation.position, spawnLocation.rotation);
+
+            this._spawnLocation = spawnLocation;
+
+            this._castle = GameObject.Instantiate(AssetManager.instance.castle, this.PlayerObject.transform.position, this.PlayerObject.transform.rotation, this.PlayerObject.transform);
+            this._castle.GetComponent<Castle>().Init(this);
+
+            PlayerCamera.CreateCamera(this, spawnLocation, onAttack);
         }
-        #endregion
 
-        #region METHODS
-        public void SetSelection(GameObject current) {
-            GameObject go;
-
-            if (current == null)
+        public abstract void UpdatePlayer();
+        
+        public void EndTurn() {
+            if(this.TurnEnded)
                 return;
-
-            if (current == this._previousSelection)
-                return;
-
-            go = this._currentSelection;
-            this._currentSelection = current;
-            this._previousSelection = go;
+            else
+                this.TurnEnded = true;
         }
+
         #endregion
     }
 }
