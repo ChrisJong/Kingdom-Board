@@ -23,7 +23,6 @@
         public List<Transform> _spawnPoints;
 
         public Player PlayerOnAttack { get; private set; }
-
         #endregion
 
         #region UNITY
@@ -44,10 +43,6 @@
 
             this.CreatePlayers();
         }
-
-        private void FixedUpdate() {
-
-        }
         #endregion
 
         #region CLASS
@@ -65,7 +60,7 @@
 
         private void FindSpawnPoints() {
             Transform[] spawnGroup = GameObject.FindGameObjectWithTag("Spawn").GetComponentsInParent<Transform>();
-            Debug.Log("Spawn Point: " + spawnGroup.Length);
+
             if(spawnGroup.Length == 0)
                 Debug.LogError("No Spawn Points, Please Create Some And Tag It With Spawn - Spawns: " + spawnGroup.Length);
 

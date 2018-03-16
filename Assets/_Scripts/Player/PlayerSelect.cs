@@ -45,7 +45,14 @@
         }
         #endregion
 
-        #region CLASS_METHOD
+        #region CLASS
+        public void Init(Player player) {
+            if(player == null)
+                Debug.LogError("Player Missing!");
+
+            this._player = player;
+        }
+
         private void UpdateSelect() {
             this.CastRayToWorld();
             this.MouseSelect();
@@ -65,20 +72,11 @@
 
                 if(this.CastRayToWorld()) {
                     //Selectable tempSelect = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
-                    this.SelectObject();
+                    if(!this._player.TurnEnded)
+                        this.SelectObject();
                 } else {
-                    if(!EventSystem.current.IsPointerOverGameObject()) {
-                        if(this.currentSelected != null) {
-                            this.previousSelected = this.currentSelected;
-
-                            // Hide UI;
-                            this.currentSelected.HideUI();
-
-                            this.currentSelected = null;
-                        }
-
-                        this.selected = false;
-                    }
+                    if(!this._player.TurnEnded)
+                        this.DeSelectObject();
                 }
             }
         }
@@ -109,6 +107,21 @@
                 this.currentSelected.DisplayUI();
 
                 this.selected = true;
+            }
+        }
+
+        private void DeSelectObject() {
+            if(!EventSystem.current.IsPointerOverGameObject()) {
+                if(this.currentSelected != null) {
+                    this.previousSelected = this.currentSelected;
+
+                    // Hide UI;
+                    this.currentSelected.HideUI();
+
+                    this.currentSelected = null;
+                }
+
+                this.selected = false;
             }
         }
         #endregion

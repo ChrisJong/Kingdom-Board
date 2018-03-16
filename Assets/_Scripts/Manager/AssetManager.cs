@@ -25,6 +25,7 @@
         //////////
         /// UI ///
         //////////
+        public GameObject gameUI;
         public GameObject playerUI;
     }
 }

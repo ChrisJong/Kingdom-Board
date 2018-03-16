@@ -10,6 +10,7 @@
     using Selectable;
     using Selectable.Structure;
     using Selectable.Unit;
+    using UI;
 
     public abstract class Player : MonoBehaviour {
 
@@ -29,13 +30,14 @@
         private GameObject _cameraObject;
 
         // UI
-        private Canvas ui;
+        private PlayerUI _playerUi;
         #endregion
 
-        #region METHOD
+        #region CLASS
         public virtual void Init(GameObject playerGO, Transform spawnLocation, int id = 0, bool onAttack = false) {
             this.id = id;
             this.name = "Player " + (id + 1).ToString().PadLeft(2, '0');
+            this.TurnEnded = false;
 
             this.PlayerObject = playerGO;
             this.PlayerObject.transform.SetPositionAndRotation(spawnLocation.position, spawnLocation.rotation);
@@ -44,6 +46,13 @@
 
             this._castle = GameObject.Instantiate(AssetManager.instance.castle, this.PlayerObject.transform.position, this.PlayerObject.transform.rotation, this.PlayerObject.transform);
             this._castle.GetComponent<Castle>().Init(this);
+
+            GameObject tempUI = GameObject.Instantiate(AssetManager.instance.playerUI, this.transform);
+            this._playerUi = tempUI.AddComponent<PlayerUI>();
+            this._playerUi.Init(this);
+
+            if(!onAttack)
+                this._playerUi.HideUI();
 
             PlayerCamera.CreateCamera(this, spawnLocation, onAttack);
         }

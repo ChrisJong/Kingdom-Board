@@ -6,7 +6,6 @@
     using UnityEngine;
 
     [RequireComponent(typeof(Camera))]
-    [RequireComponent(typeof(PlayerSelect))]
     public class PlayerCamera : MonoBehaviour {
 
         #region VARIABLE
@@ -212,8 +211,7 @@
             tempCamera.AddComponent<AudioListener>();
 
             tempCamera.AddComponent<PlayerCamera>().playerID = p.id;
-
-            Debug.Log(startPoint.eulerAngles.ToString());
+            tempCamera.AddComponent<PlayerSelect>().Init(p);
 
             tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z);
             tempCamera.transform.rotation = Quaternion.Euler(0.0f, (startPoint.eulerAngles.y + 180.0f), 0.0f);
