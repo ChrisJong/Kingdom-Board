@@ -29,13 +29,13 @@
         private float _heightDamp = 7.0f;
 
         // ZOOM
-        private float _cameraAngle = 35.0f;
+        private float _cameraAngle = 55.0f;
         private float _scrollWheelZoomSens = 25.0f;
 
         // MAP LIMITS
         private bool _enableMapLimit = true;
-        private float _limitX = 50.0f;
-        private float _limitY = 50.0f;
+        private float _limitX = 10.0f;
+        private float _limitY = 22.5f;
 
         // INPUT CONTROLS
         #region INPUT CONTROLS
@@ -131,7 +131,7 @@
         private void CameraUpdate() {
             this.MoveCamera();
             this.HeightCalculation();
-            //this.ZoomCamera();
+            this.ZoomCamera();
             this.RotateCamera();
             this.LimitPosition();
         }
@@ -187,7 +187,7 @@
 
             this._transform.position = new Vector3(Mathf.Clamp(this._transform.position.x, -this._limitX,
                                                    this._limitX), this._transform.position.y,
-                                                   Mathf.Clamp(this._transform.position.z, -this._limitY, this._limitY));
+                                                   Mathf.Clamp(this._transform.position.z, -this._limitY, 0.0f));
         }
 
         private float DistanceGround() {
@@ -213,8 +213,8 @@
             tempCamera.AddComponent<PlayerCamera>().playerID = p.id;
             tempCamera.AddComponent<PlayerSelect>().Init(p);
 
-            tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z);
-            tempCamera.transform.rotation = Quaternion.Euler(0.0f, (startPoint.eulerAngles.y + 180.0f), 0.0f);
+            tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z - 7.5f);
+            tempCamera.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
             tempCamera.transform.parent = p.PlayerObject.transform;
 
