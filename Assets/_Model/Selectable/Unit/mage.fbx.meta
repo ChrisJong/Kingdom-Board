@@ -161,9 +161,9 @@ ModelImporter:
     4300000: mage_base
     4300002: mage_accessories
     4300004: pedestal
-    7400000: A-Pose
-    7400002: Idle
-    7400004: Attack
+    7400000: mage_A-Pose
+    7400002: mage_Idle
+    7400004: mage_Attack
     9500000: //RootNode
     13700000: mage_accessories
     13700002: mage_base
@@ -195,7 +195,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: A-Pose
+      name: mage_A-Pose
       takeName: Take 001
       firstFrame: 1
       lastFrame: 2
@@ -223,7 +223,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Idle
+      name: mage_Idle
       takeName: Take 001
       firstFrame: 3
       lastFrame: 4
@@ -251,7 +251,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Attack
+      name: mage_Attack
       takeName: Take 001
       firstFrame: 5
       lastFrame: 29

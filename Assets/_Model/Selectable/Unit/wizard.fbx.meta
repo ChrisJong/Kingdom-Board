@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 439032a68c64e714188d0ec6dead1087
-timeCreated: 1521254066
+guid: 41a7a57069b17f64fae7c85e5a58ed85
+timeCreated: 1521543863
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -8,131 +8,129 @@ ModelImporter:
     100000: head_jnt
     100002: l_clavicle_jnt
     100004: l_elbow_jnt
-    100006: l_forearm_jnt
-    100008: l_index1_jnt
-    100010: l_index2_jnt
-    100012: l_index3_jnt
-    100014: l_index4_jnt
-    100016: l_middle1_jnt
-    100018: l_middle2_jnt
-    100020: l_middle3_jnt
-    100022: l_middle4_jnt
-    100024: l_pinky1_jnt
-    100026: l_pinky2_jnt
-    100028: l_pinky3_jnt
-    100030: l_pinky4_jnt
-    100032: l_ring1_jnt
-    100034: l_ring2_jnt
-    100036: l_ring3_jnt
-    100038: l_ring4_jnt
-    100040: l_shoulder_jnt
-    100042: l_thumb1_jnt
-    100044: l_thumb2_jnt
-    100046: l_thumb3_jnt
-    100048: l_wrist_jnt
-    100050: neck_jnt
-    100052: pedestal
-    100054: r_clavicle_jnt
-    100056: r_elbow_jnt
-    100058: r_forearm_jnt
-    100060: r_index1_jnt
-    100062: r_index2_jnt
-    100064: r_index3_jnt
-    100066: r_index4_jnt
-    100068: r_middle1_jnt
-    100070: r_middle2_jnt
-    100072: r_middle3_jnt
-    100074: r_middle4_jnt
-    100076: r_pinky1_jnt
-    100078: r_pinky2_jnt
-    100080: r_pinky3_jnt
-    100082: r_pinky4_jnt
-    100084: r_ring1_jnt
-    100086: r_ring2_jnt
-    100088: r_ring3_jnt
-    100090: r_ring4_jnt
-    100092: r_shoulder_jnt
-    100094: r_thumb1_jnt
-    100096: r_thumb2_jnt
-    100098: r_thumb3_jnt
-    100100: r_wrist_jnt
-    100102: skeleton_root
-    100104: spine1_jnt
-    100106: spine2_jnt
-    100108: spine3_jnt
-    100110: //RootNode
-    100112: warrior_accessories
-    100114: warrior_base
+    100006: l_index1_jnt
+    100008: l_index2_jnt
+    100010: l_index3_jnt
+    100012: l_index4_jnt
+    100014: l_middle1_jnt
+    100016: l_middle2_jnt
+    100018: l_middle3_jnt
+    100020: l_middle4_jnt
+    100022: l_pinky1_jnt
+    100024: l_pinky2_jnt
+    100026: l_pinky3_jnt
+    100028: l_pinky4_jnt
+    100030: l_ring1_jnt
+    100032: l_ring2_jnt
+    100034: l_ring3_jnt
+    100036: l_ring4_jnt
+    100038: l_shoulder_jnt
+    100040: l_thumb1_jnt
+    100042: l_thumb2_jnt
+    100044: l_thumb3_jnt
+    100046: l_wrist_jnt
+    100048: neck_jnt
+    100050: pedestal
+    100052: r_clavicle_jnt
+    100054: r_elbow_jnt
+    100056: r_index1_jnt
+    100058: r_index2_jnt
+    100060: r_index3_jnt
+    100062: r_index4_jnt
+    100064: r_middle1_jnt
+    100066: r_middle2_jnt
+    100068: r_middle3_jnt
+    100070: r_middle4_jnt
+    100072: r_pinky1_jnt
+    100074: r_pinky2_jnt
+    100076: r_pinky3_jnt
+    100078: r_pinky4_jnt
+    100080: r_ring1_jnt
+    100082: r_ring2_jnt
+    100084: r_ring3_jnt
+    100086: r_ring4_jnt
+    100088: r_shoulder_jnt
+    100090: r_thumb1_jnt
+    100092: r_thumb2_jnt
+    100094: r_thumb3_jnt
+    100096: r_wrist_jnt
+    100098: skeleton_root_jnt
+    100100: spine1_jnt
+    100102: spine2_jnt
+    100104: spine3_jnt
+    100106: //RootNode
+    100108: wizard_accessories
+    100110: wizard_base
     400000: head_jnt
     400002: l_clavicle_jnt
     400004: l_elbow_jnt
-    400006: l_forearm_jnt
-    400008: l_index1_jnt
-    400010: l_index2_jnt
-    400012: l_index3_jnt
-    400014: l_index4_jnt
-    400016: l_middle1_jnt
-    400018: l_middle2_jnt
-    400020: l_middle3_jnt
-    400022: l_middle4_jnt
-    400024: l_pinky1_jnt
-    400026: l_pinky2_jnt
-    400028: l_pinky3_jnt
-    400030: l_pinky4_jnt
-    400032: l_ring1_jnt
-    400034: l_ring2_jnt
-    400036: l_ring3_jnt
-    400038: l_ring4_jnt
-    400040: l_shoulder_jnt
-    400042: l_thumb1_jnt
-    400044: l_thumb2_jnt
-    400046: l_thumb3_jnt
-    400048: l_wrist_jnt
-    400050: neck_jnt
-    400052: pedestal
-    400054: r_clavicle_jnt
-    400056: r_elbow_jnt
-    400058: r_forearm_jnt
-    400060: r_index1_jnt
-    400062: r_index2_jnt
-    400064: r_index3_jnt
-    400066: r_index4_jnt
-    400068: r_middle1_jnt
-    400070: r_middle2_jnt
-    400072: r_middle3_jnt
-    400074: r_middle4_jnt
-    400076: r_pinky1_jnt
-    400078: r_pinky2_jnt
-    400080: r_pinky3_jnt
-    400082: r_pinky4_jnt
-    400084: r_ring1_jnt
-    400086: r_ring2_jnt
-    400088: r_ring3_jnt
-    400090: r_ring4_jnt
-    400092: r_shoulder_jnt
-    400094: r_thumb1_jnt
-    400096: r_thumb2_jnt
-    400098: r_thumb3_jnt
-    400100: r_wrist_jnt
-    400102: skeleton_root
-    400104: spine1_jnt
-    400106: spine2_jnt
-    400108: spine3_jnt
-    400110: //RootNode
-    400112: warrior_accessories
-    400114: warrior_base
-    2100000: lambert1
+    400006: l_index1_jnt
+    400008: l_index2_jnt
+    400010: l_index3_jnt
+    400012: l_index4_jnt
+    400014: l_middle1_jnt
+    400016: l_middle2_jnt
+    400018: l_middle3_jnt
+    400020: l_middle4_jnt
+    400022: l_pinky1_jnt
+    400024: l_pinky2_jnt
+    400026: l_pinky3_jnt
+    400028: l_pinky4_jnt
+    400030: l_ring1_jnt
+    400032: l_ring2_jnt
+    400034: l_ring3_jnt
+    400036: l_ring4_jnt
+    400038: l_shoulder_jnt
+    400040: l_thumb1_jnt
+    400042: l_thumb2_jnt
+    400044: l_thumb3_jnt
+    400046: l_wrist_jnt
+    400048: neck_jnt
+    400050: pedestal
+    400052: r_clavicle_jnt
+    400054: r_elbow_jnt
+    400056: r_index1_jnt
+    400058: r_index2_jnt
+    400060: r_index3_jnt
+    400062: r_index4_jnt
+    400064: r_middle1_jnt
+    400066: r_middle2_jnt
+    400068: r_middle3_jnt
+    400070: r_middle4_jnt
+    400072: r_pinky1_jnt
+    400074: r_pinky2_jnt
+    400076: r_pinky3_jnt
+    400078: r_pinky4_jnt
+    400080: r_ring1_jnt
+    400082: r_ring2_jnt
+    400084: r_ring3_jnt
+    400086: r_ring4_jnt
+    400088: r_shoulder_jnt
+    400090: r_thumb1_jnt
+    400092: r_thumb2_jnt
+    400094: r_thumb3_jnt
+    400096: r_wrist_jnt
+    400098: skeleton_root_jnt
+    400100: spine1_jnt
+    400102: spine2_jnt
+    400104: spine3_jnt
+    400106: //RootNode
+    400108: wizard_accessories
+    400110: wizard_base
+    2100000: wizard_base_material
+    2100002: wizard_accessories_material
+    2100004: pedestal_material
     2300000: pedestal
     3300000: pedestal
-    4300000: warrior_base
-    4300002: warrior_accessories
+    4300000: wizard_base
+    4300002: wizard_accessories
     4300004: pedestal
-    7400000: warrior_A-Pose
-    7400002: warrior_Idle
-    7400004: warrior_Attack
+    7400000: wizard_A-Pose
+    7400002: wizard_Idle
+    7400004: wizard_Attack
     9500000: //RootNode
-    13700000: warrior_accessories
-    13700002: warrior_base
+    13700000: wizard_accessories
+    13700002: wizard_base
   externalObjects: {}
   materials:
     importMaterials: 0
@@ -161,7 +159,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: warrior_A-Pose
+      name: wizard_A-Pose
       takeName: Take 001
       firstFrame: 0
       lastFrame: 1
@@ -189,7 +187,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: warrior_Idle
+      name: wizard_Idle
       takeName: Take 001
       firstFrame: 2
       lastFrame: 3
@@ -217,10 +215,10 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: warrior_Attack
+      name: wizard_Attack
       takeName: Take 001
       firstFrame: 4
-      lastFrame: 41
+      lastFrame: 32
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

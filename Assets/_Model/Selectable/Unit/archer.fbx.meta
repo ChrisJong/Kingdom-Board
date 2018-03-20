@@ -172,9 +172,9 @@ ModelImporter:
     4300000: archer_base
     4300002: archer_accessories
     4300004: pedestal
-    7400000: A-Pose
-    7400002: Idle
-    7400004: Attack
+    7400000: archer_A-Pose
+    7400002: archer_Idle
+    7400004: archer_Attack
     9500000: //RootNode
     13700000: archer_accessories
     13700002: archer_base
@@ -206,7 +206,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: A-Pose
+      name: archer_A-Pose
       takeName: Take 001
       firstFrame: 0
       lastFrame: 1
@@ -234,7 +234,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Idle
+      name: archer_Idle
       takeName: Take 001
       firstFrame: 2
       lastFrame: 3
@@ -262,7 +262,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Attack
+      name: archer_Attack
       takeName: Take 001
       firstFrame: 3
       lastFrame: 34
