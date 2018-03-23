@@ -2,27 +2,29 @@
 
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
 
     using UnityEngine;
 
     using Extension;
     using Player;
+    using Utility;
 
     public class GameManager : SingletonMono<GameManager> {
 
         #region VARIABLE
         public int RoundCount { private set; get; }
-        private int _idOnAttack = 0;
-        private int _indexOrder = 0;
-        private int[] _playerOrder;
+        private int _indexOnAttack = 0;
+        private int _indexInView = 0;
         private int _numberOfPlayers = 2;
 
         public AssetManager _assetManager;
 
-        public List<Player> _players;
-        public List<Transform> _spawnPoints;
-
+        public Player PlayerInView { get; private set; }
         public Player PlayerOnAttack { get; private set; }
+
+        public List<Player> _players;
+        private List<Transform> _spawnPoints;
         #endregion
 
         #region UNITY
@@ -30,7 +32,6 @@
             base.Awake();
 
             this._players = new List<Player>();
-            this._playerOrder = new int[this._numberOfPlayers];
             this._spawnPoints = new List<Transform>();
 
             this.FindSpawnPoints();
@@ -47,15 +48,34 @@
 
         #region CLASS
         private void NewRound() {
+            Debug.Log("Round: " + RoundCount.ToString());
 
+            foreach(Player p in this._players) {
+                if(p == this.PlayerOnAttack)
+                    p.NewTurn(true);
+                else
+                    p.NewTurn(false);
+            }
         }
 
-        private void CheckRound() {
-
+        public void CheckRound() {
+            if(!this.PlayerOnAttack.TurnEnded)
+                return;
+            else
+                EndRound();
         }
 
         private void EndRound() {
+            this.RoundCount++;
 
+            this._indexOnAttack += 1;
+            if(this._indexOnAttack > this._numberOfPlayers-1)
+                this._indexOnAttack = 0;
+
+            this.PlayerOnAttack = this._players[this._indexOnAttack];
+            this.PlayerInView = this.PlayerOnAttack;
+
+            this.NewRound();
         }
 
         private void FindSpawnPoints() {
@@ -73,24 +93,25 @@
         }
 
         private void CreatePlayers() {
-            bool attacking;
-            this._idOnAttack = Random.Range(0, this._numberOfPlayers);
-
             for(int i = 0; i < this._numberOfPlayers; i++) {
-                if(i == this._idOnAttack) {
-                    attacking = true;
-                }else {
-                    attacking = false;
-                }
 
                 GameObject temp = new GameObject("Player" + (i + 1).ToString());
-
                 var player = temp.AddComponent<Human>() as Human;
-                player.Init(temp, this._spawnPoints[i], i, attacking);
+                player.Create(temp, this._spawnPoints[i], i);
+                player.roll = (uint)Random.Range(0, 100);
+                Debug.Log("Player0" + player.id.ToString() + "Rolled: " + player.roll.ToString());
                 this._players.Add(player);
+            }
 
-                if(attacking)
-                    this.PlayerOnAttack = player;
+            this._players.Sort((x1, x2) => x2.roll.CompareTo(x1.roll));
+            this._indexOnAttack = 0;
+            this._indexInView = 0;
+
+            this.PlayerOnAttack = this._players[0];
+            this.PlayerInView = this._players[0];
+
+            for(int i = 0; i < this._numberOfPlayers; i++) {
+                this._players[i].Init((i == this._indexOnAttack) ? true : false);
             }
         }
         #endregion

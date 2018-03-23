@@ -127,7 +127,7 @@
         }
         #endregion
 
-        #region CLASS_METHODS
+        #region CLASS
         private void CameraUpdate() {
             this.MoveCamera();
             this.HeightCalculation();
@@ -216,7 +216,7 @@
             tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z - 7.5f);
             tempCamera.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
-            tempCamera.transform.parent = p.PlayerObject.transform;
+            tempCamera.transform.parent = p.PlayerGO.transform;
 
             if(!OnAttack)
                 tempCamera.SetActive(false);

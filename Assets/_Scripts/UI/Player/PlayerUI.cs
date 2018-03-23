@@ -9,7 +9,7 @@
     using Player;
 
     public class PlayerUI : MonoBehaviour {
-        private Player _p;
+        private Player _controller;
 
         private GameObject _ui;
         private Canvas _uiCanvas;
@@ -31,11 +31,11 @@
         public void Init(Player player) {
             if(player == null)
                 Debug.LogError("Player is missing");
-            this._p = player;
+            this._controller = player;
         }
 
         public void UpdateUI() {
-            if(this._p.TurnEnded) {
+            if(this._controller.TurnEnded) {
                 this._endBtn.gameObject.SetActive(false);
             } else {
                 this._endBtn.gameObject.SetActive(true);
@@ -51,7 +51,7 @@
         }
 
         private void EndTurnOnClick() {
-            this._p.EndTurn();
+            this._controller.EndTurn();
 
             this.UpdateUI();
         }
