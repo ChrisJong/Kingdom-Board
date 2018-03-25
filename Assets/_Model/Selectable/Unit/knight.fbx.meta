@@ -1,0 +1,305 @@
+fileFormatVersion: 2
+guid: 139159a8829ca4241b4f9e69e9b4855a
+timeCreated: 1521976567
+licenseType: Free
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: head_jnt
+    100002: //RootNode
+    100004: knight_accessories
+    100006: knight_base
+    100008: l_clavicle_jnt
+    100010: l_elbow_jnt
+    100012: l_forearm
+    100014: l_index1_jnt
+    100016: l_index2_jnt
+    100018: l_index3_jnt
+    100020: l_index4_jnt
+    100022: l_middle1_jnt
+    100024: l_middle2_jnt
+    100026: l_middle3_jnt
+    100028: l_middle4_jnt
+    100030: l_pinky1_jnt
+    100032: l_pinky2_jnt
+    100034: l_pinky3_jnt
+    100036: l_pinky4_jnt
+    100038: l_ring1_jnt
+    100040: l_ring2_jnt
+    100042: l_ring3_jnt
+    100044: l_ring4_jnt
+    100046: l_shoulder_jnt
+    100048: l_thumb1_jnt
+    100050: l_thumb2_jnt
+    100052: l_thumb3_jnt
+    100054: l_wrist_jnt
+    100056: neck_jnt
+    100058: pedestal
+    100060: r_clavicle_jnt
+    100062: r_elbow_jnt
+    100064: r_forearm
+    100066: r_index1_jnt
+    100068: r_index2_jnt
+    100070: r_index3_jnt
+    100072: r_index4_jnt
+    100074: r_middle1_jnt
+    100076: r_middle2_jnt
+    100078: r_middle3_jnt
+    100080: r_middle4_jnt
+    100082: r_pinky1_jnt
+    100084: r_pinky2_jnt
+    100086: r_pinky3_jnt
+    100088: r_pinky4_jnt
+    100090: r_ring1_jnt
+    100092: r_ring2_jnt
+    100094: r_ring3_jnt
+    100096: r_ring4_jnt
+    100098: r_shoulder_jnt
+    100100: r_thumb1_jnt
+    100102: r_thumb2_jnt
+    100104: r_thumb3_jnt
+    100106: r_wrist_jnt
+    100108: skeleton_root_jnt
+    100110: spine1_jnt
+    100112: spine2_jnt
+    100114: spine3_jnt
+    100116: sword_jnt
+    100118: swordTip_jnt
+    400000: head_jnt
+    400002: //RootNode
+    400004: knight_accessories
+    400006: knight_base
+    400008: l_clavicle_jnt
+    400010: l_elbow_jnt
+    400012: l_forearm
+    400014: l_index1_jnt
+    400016: l_index2_jnt
+    400018: l_index3_jnt
+    400020: l_index4_jnt
+    400022: l_middle1_jnt
+    400024: l_middle2_jnt
+    400026: l_middle3_jnt
+    400028: l_middle4_jnt
+    400030: l_pinky1_jnt
+    400032: l_pinky2_jnt
+    400034: l_pinky3_jnt
+    400036: l_pinky4_jnt
+    400038: l_ring1_jnt
+    400040: l_ring2_jnt
+    400042: l_ring3_jnt
+    400044: l_ring4_jnt
+    400046: l_shoulder_jnt
+    400048: l_thumb1_jnt
+    400050: l_thumb2_jnt
+    400052: l_thumb3_jnt
+    400054: l_wrist_jnt
+    400056: neck_jnt
+    400058: pedestal
+    400060: r_clavicle_jnt
+    400062: r_elbow_jnt
+    400064: r_forearm
+    400066: r_index1_jnt
+    400068: r_index2_jnt
+    400070: r_index3_jnt
+    400072: r_index4_jnt
+    400074: r_middle1_jnt
+    400076: r_middle2_jnt
+    400078: r_middle3_jnt
+    400080: r_middle4_jnt
+    400082: r_pinky1_jnt
+    400084: r_pinky2_jnt
+    400086: r_pinky3_jnt
+    400088: r_pinky4_jnt
+    400090: r_ring1_jnt
+    400092: r_ring2_jnt
+    400094: r_ring3_jnt
+    400096: r_ring4_jnt
+    400098: r_shoulder_jnt
+    400100: r_thumb1_jnt
+    400102: r_thumb2_jnt
+    400104: r_thumb3_jnt
+    400106: r_wrist_jnt
+    400108: skeleton_root_jnt
+    400110: spine1_jnt
+    400112: spine2_jnt
+    400114: spine3_jnt
+    400116: sword_jnt
+    400118: swordTip_jnt
+    2100000: knight_base_material
+    2100002: knight_accessories_material
+    2100004: pedestal_material
+    2300000: pedestal
+    3300000: pedestal
+    4300000: knight_base
+    4300002: knight_accessories
+    4300004: pedestal
+    7400000: knight_A-Pose
+    7400002: knight_Idle
+    7400004: knight_Attack
+    9500000: //RootNode
+    13700000: knight_accessories
+    13700002: knight_base
+  externalObjects: {}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: knight_A-Pose
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: knight_Idle
+      takeName: Take 001
+      firstFrame: 2
+      lastFrame: 3
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: knight_Attack
+      takeName: Take 001
+      firstFrame: 4
+      lastFrame: 53
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
