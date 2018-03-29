@@ -6,15 +6,24 @@
     using UnityEngine;
 
     using Unit;
+    using UI;
 
     public class Castle : Structure {
         private float _spawnDistannce = 6.0f;
         private float _anglePerSpawn = 35f;
-
-        public List<Unit> _spawnQueue = new List<Unit>();
+        
+        [SerializeField]
+        private CastleUI _ui;
+        [SerializeField]
+        private List<Unit> _spawnQueue = new List<Unit>();
 
         #region UNITY
         private void Awake() {
+            this._ui = gameObject.GetComponentInChildren<CastleUI>() as CastleUI;
+        }
+
+        private void Start() {
+            this._ui.controller = this._player;
             this.UI.gameObject.SetActive(false);
         }
 

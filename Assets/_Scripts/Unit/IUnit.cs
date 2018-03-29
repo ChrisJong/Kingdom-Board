@@ -1,16 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace Unit {
 
-public class IUnit : MonoBehaviour {
+    using Enum;
+    using Helpers;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    using UnityEngine;
+    
+    public interface IUnit : IHasHealth, ICanMove, ICanAttack {
+        UnitType unitType { get; }
+        LayerMask areaMask { get; }
+    }
 }

@@ -24,6 +24,7 @@
 
         public GameObject PlayerGO { get; private set; }
         private GameObject _castle;
+        public GameObject Castle { get { return this._castle; } }
         private Transform _spawnLocation;
 
         // CAMERA
