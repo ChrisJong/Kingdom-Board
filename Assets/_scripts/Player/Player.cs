@@ -7,6 +7,7 @@
     using UnityEngine.UI;
 
     using Manager;
+    using Structure;
     using Selectable;
     using Selectable.Structure;
     using Selectable.Unit;
@@ -24,8 +25,9 @@
 
         public GameObject PlayerGO { get; private set; }
         private GameObject _castle;
-        public GameObject Castle { get { return this._castle; } }
+        public Castle_v2 Castle { get { return this._castle.GetComponent<Castle_v2>() as Castle_v2; } }
         private Transform _spawnLocation;
+        public Transform SpawnLocation { get { return this._spawnLocation; } }
 
         // CAMERA
         private Camera _cameraScript;

@@ -1,16 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace Structure {
 
-public class StructurePool : MonoBehaviour {
+    using UnityEngine;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    using Helpers;
+
+    public sealed class STructurePool : PoolBase<IStructure> {
+
+        public STructurePool(GameObject prefab, GameObject host, int initialInstanceCount) : base(prefab, host, initialInstanceCount) { }
+    }
 }

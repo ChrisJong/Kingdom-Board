@@ -1,16 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace Structure {
 
-public class StructureTypeComparer : MonoBehaviour {
+    using System.Collections.Generic;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    using Enum;
+
+    public sealed class StructureTypeComparer : IEqualityComparer<StructureType> {
+
+        public bool Equals(StructureType x, StructureType y) {
+            return x == y;
+        }
+
+        public int GetHashCode(StructureType obj) {
+            return (int)obj;
+        }
+    }
 }

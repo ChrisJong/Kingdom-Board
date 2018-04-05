@@ -1,16 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace Structure {
 
-public class StructurePoolSetup : MonoBehaviour {
+    using System;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    using UnityEngine;
+
+    using Enum;
+
+    [SerializeField]
+    public sealed class StructurePoolSetup {
+        public StructureType type;
+        public GameObject prefab;
+
+        [Range(1, 100)]
+        public int initialInstanceCount = 5;
+    }
 }
