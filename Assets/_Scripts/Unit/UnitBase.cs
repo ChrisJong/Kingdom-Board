@@ -21,12 +21,8 @@
         private UnityEngine.AI.NavMeshAgent _agent;
 
         public abstract UnitType unitType { get; }
-        public override EntityType entityType {
-            get { return EntityType.UNIT; }
-        }
-        public LayerMask areaMask {
-            get { return this._agent.areaMask; }
-        }
+        public override EntityType entityType { get { return EntityType.UNIT; } }
+        public LayerMask areaMask { get { return this._agent.areaMask; } }
 
         ////////////////
         /// MOVEMENT ///
@@ -37,18 +33,11 @@
         private Vector3 _velocity;
         private Vector3 _lastPosition;
 
-        public bool isMoving {
-            get { return this._velocity.sqrMagnitude > (this._minMoveThreashold * this._minMoveThreashold); }
-        }
-        public virtual bool isIdle {
-            get { return !this.isMoving && !this.isDead; }
-        }
-        public float moveSpeed {
-            get { return this._moveSpeed; }
-        }
-        public float moveRadius {
-            get { return this._moveRadius; }
-        }
+        public abstract MovementType movementType { get; }
+        public bool isMoving { get { return this._velocity.sqrMagnitude > (this._minMoveThreashold * this._minMoveThreashold); } }
+        public virtual bool isIdle { get { return !this.isMoving && !this.isDead; } }
+        public float moveSpeed { get { return this._moveSpeed; } }
+        public float moveRadius { get { return this._moveRadius; } }
 
         //////////////
         /// ATTACK ///
@@ -57,20 +46,19 @@
         protected float _maxDamage = 20.0f;
         protected float _attackRadius = 7.5f;
         protected float _aoeAttackRadius = 3.0f;
-        protected float _lastAttack;
+        protected float _lastAttacked;
+        protected float _resistancePercentage = 50.0f;
+        protected float _weaknessPercentage = 50.0f;
 
-        public float minDamage {
-            get { return this._minDamage; }
-        }
-        public float maxDamage {
-            get { return this._maxDamage; }
-        }
-        public float attackRadius {
-            get { return this._attackRadius; }
-        }
-        public float aoeAttackRadius {
-            get { return this._aoeAttackRadius; }
-        }
+        public float minDamage { get { return this._minDamage; } }
+        public float maxDamage { get { return this._maxDamage; } }
+        public float attackRadius { get { return this._attackRadius; } }
+        public float aoeAttackRadius { get { return this._aoeAttackRadius; } }
+        public float resistancePercentage { get { return this._resistancePercentage; } }
+        public float weaknessPercentage { get { return this._weaknessPercentage; } }
+        public abstract AttackType resistance { get; }
+        public abstract AttackType weakness { get; }
+        public abstract AttackType attackType { get; }
         #endregion
 
         #region UNITY
@@ -108,7 +96,7 @@
         }
 
         public void Attack(IHasHealth target) {
-            this._lastAttack = Time.timeSinceLevelLoad;
+            this._lastAttacked = Time.timeSinceLevelLoad;
             this.LookAt(target.position);
 
             // NOTE: Play attack animation using _animator.
@@ -117,7 +105,7 @@
         }
 
         public void AttackAOE(IHasHealth target) {
-            this._lastAttack = Time.timeSinceLevelLoad;
+            this._lastAttacked = Time.timeSinceLevelLoad;
             this.LookAt(target.position);
 
             this.InternalAttack(GetDamage(), true);
@@ -131,7 +119,6 @@
 
             if(this.currentHealth <= 0.0f) {
                 if(this.controller != null) {
-                    Debug.Log("remove this unit: " + this.name);
                     // NOTE: Remove this unity from the player controller list.
                 }
 

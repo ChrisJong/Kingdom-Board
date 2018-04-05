@@ -2,6 +2,7 @@
 
     using UnityEngine;
 
+    using Enum;
     using Player;
     using Utility;
 
@@ -16,38 +17,25 @@
         protected IHasHealth _lastAttacker;
         private float _lastAttacked;
 
-        public float maxHealth {
-            get { return this._maxHealth; }
-        }
+        public float maxHealth { get { return this._maxHealth; } }
 
-        public float maxEnergy {
-            get { return this._maxEnergy; }
-        }
+        public float maxEnergy { get { return this._maxEnergy; } }
 
         public float currentHealth { get; set; }
-
         public float currentEnergy { get; set; }
 
-        public bool isDead {
-            get { return this.currentHealth <= 0.0f || (this.gameObject != null && !this.isActive); }
-        }
+        public bool isDead { get { return this.currentHealth <= 0.0f || (this.gameObject != null && !this.isActive); } }
 
-        public float lastAttacked {
-            get { return this._lastAttacked; }
-        }
+        public float lastAttacked { get { return this._lastAttacked; } }
 
         public IHasHealth lastAttacker {
             get { return this._lastAttacker; }
-            set {
-                this._lastAttacker = value;
-                this._lastAttacked = Time.timeSinceLevelLoad;
-            }
-        }
+            set { this._lastAttacker = value;
+                  this._lastAttacked = Time.timeSinceLevelLoad; } }
 
         public Player controller {
             get { return this._controller; }
-            set { this._controller = value; }
-        }
+            set { this._controller = value; } }
         #endregion
 
         #region UNITY
@@ -65,7 +53,9 @@
         #region CLASS
         public abstract bool ReceiveDamage(float damage);
 
-        public abstract bool UseEnergy(float amount);
+        public virtual bool UseEnergy(float amount) {
+            return true;
+        }
 
         public virtual bool IsAlly(IHasHealth other) {
             return ReferenceEquals(this.controller, other.controller);

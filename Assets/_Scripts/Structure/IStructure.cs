@@ -1,16 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace Structure {
 
-public class IStructure : MonoBehaviour {
+    using Enum;
+    using Helpers;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public interface IStructure : IHasHealth {
+
+        StructureType structureType { get; }
+
+        bool isReady { get; set; } 
+    } 
 }

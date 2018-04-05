@@ -9,7 +9,6 @@
     public abstract class EntityBase : ObjectPoolBase, IEntity {
 
         #region VARIABLE
-        public abstract string name { get; }
         public abstract EntityType entityType { get; }
 
         public Vector3 position {

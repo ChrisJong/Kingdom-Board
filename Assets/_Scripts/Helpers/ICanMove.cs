@@ -8,6 +8,8 @@
         bool isMoving { get; }
         bool isIdle { get; }
 
+        Enum.MovementType movementType { get; }
+
         void MoveTo(Vector3 dest);
         void StopMoving();
         void LookAt(Vector3 pos);
