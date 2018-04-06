@@ -9,6 +9,6 @@
         ANY = ~0,
         ARCHER = 1,
         MAGE,
-        WARRIOR,
+        WARRIOR
     }
 }

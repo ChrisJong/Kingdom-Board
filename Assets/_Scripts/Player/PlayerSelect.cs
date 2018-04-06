@@ -72,10 +72,10 @@
 
                 if(this.CastRayToWorld()) {
                     //Selectable tempSelect = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
-                    if(!this._player.TurnEnded)
+                    if(!this._player.turnEnded)
                         this.SelectObject();
                 } else {
-                    if(!this._player.TurnEnded)
+                    if(!this._player.turnEnded)
                         this.DeSelectObject();
                 }
             }

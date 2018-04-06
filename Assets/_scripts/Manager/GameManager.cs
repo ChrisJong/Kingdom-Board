@@ -25,9 +25,22 @@
 
         public List<Player> _players;
         private List<Transform> _spawnPoints;
+
+        public List<Player> players { get { return this._players; } }
         #endregion
 
         #region UNITY
+        public void OnEnable() {
+            Debug.Log("GameManager Enabled!");
+        }
+
+        public void OnDisable() {
+            this.PlayerInView = null;
+            this.PlayerOnAttack = null;
+            this._players = null;
+            this._spawnPoints = null;
+        }
+
         protected override void Awake() {
             base.Awake();
 
@@ -59,7 +72,7 @@
         }
 
         public void CheckRound() {
-            if(!this.PlayerOnAttack.TurnEnded)
+            if(!this.PlayerOnAttack.turnEnded)
                 return;
             else
                 EndRound();
@@ -97,7 +110,7 @@
 
                 GameObject temp = new GameObject("Player" + (i + 1).ToString());
                 var player = temp.AddComponent<Human>() as Human;
-                player.Create(temp, this._spawnPoints[i], i);
+                player.Create(this._spawnPoints[i], (uint)i);
                 player.roll = (uint)Random.Range(0, 100);
                 Debug.Log("Player0" + player.id.ToString() + "Rolled: " + player.roll.ToString());
                 this._players.Add(player);

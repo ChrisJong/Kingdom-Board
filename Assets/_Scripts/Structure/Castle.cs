@@ -4,7 +4,7 @@
 
     using Enum;
 
-    public sealed class Castle_v2 : SpawnStructureBase {
+    public sealed class Castle : SpawnStructureBase {
         public override StructureType structureType { get { return StructureType.CASTLE; }}
 
         public override bool ReceiveDamage(float damage) {

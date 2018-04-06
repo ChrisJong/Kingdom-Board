@@ -6,7 +6,7 @@
 
     using Enum;
 
-    [SerializeField]
+    [Serializable]
     public sealed class StructurePoolSetup {
         public StructureType type;
         public GameObject prefab;

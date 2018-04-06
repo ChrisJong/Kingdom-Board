@@ -35,7 +35,7 @@
         }
 
         public void UpdateUI() {
-            if(this._controller.TurnEnded) {
+            if(this._controller.turnEnded) {
                 this._endBtn.gameObject.SetActive(false);
             } else {
                 this._endBtn.gameObject.SetActive(true);

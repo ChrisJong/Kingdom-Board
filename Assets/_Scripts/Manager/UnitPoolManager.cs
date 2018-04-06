@@ -58,5 +58,9 @@
 
             return unit;
         }
+
+        public void Return(IUnit unit) {
+            this._pools[unit.unitType].Return(unit);
+        }
     }
 }

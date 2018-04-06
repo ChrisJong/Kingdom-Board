@@ -14,11 +14,11 @@
     using Utility;
 
     public sealed class StructurePoolManager : SingletonMono<StructurePoolManager> {
+
         private static readonly int structureTypeLength = Enum.GetNames(typeof(StructureType)).Length - 2;
 
         [SerializeField]
         private StructurePoolSetup[] _poolSetup = new StructurePoolSetup[structureTypeLength];
-
         private readonly Dictionary<StructureType, STructurePool> _pools = new Dictionary<StructureType, STructurePool>(structureTypeLength, new StructureTypeComparer());
 
         protected override void Awake() {
@@ -44,8 +44,8 @@
             }
         }*/
 
-        public Castle_v2 GetStartCastle(Player player) {
-            return player.Castle ?? (Castle_v2)InternalBuild(StructureType.CASTLE, player, player.SpawnLocation.position);
+        public Castle GetStartCastle(Player player) {
+            return player.castle ?? (Castle)InternalBuild(StructureType.CASTLE, player, player.spawnLocation.position);
         }
 
         private IStructure InternalBuild(StructureType type, Player player, Vector3 position) {
