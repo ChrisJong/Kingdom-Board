@@ -1,10 +1,12 @@
 ﻿namespace Structure {
 
+    using System;
+
     using UnityEngine;
 
     using Enum;
     using Helpers;
-    using System;
+    using Manager;
 
     [RequireComponent(typeof(UnityEngine.AI.NavMeshObstacle))]
     public abstract class StructureBase : HasHealthBase, IStructure {
@@ -27,7 +29,9 @@
 
             this.currentHealth -= damage;
             if(this.currentHealth <= 0.0f) {
-                // NOTE: remove this structure from the player list, if it isnt a castle
+
+                if(this.controller != null && this.controller.structures != null)
+                    this.controller.structures.Remove(this);
 
                 // NOTE: spawn in particle effects.
                 this.ReturnStructure();
@@ -37,7 +41,7 @@
         }
 
         private void ReturnStructure() {
-            // NOTE: return this structure into the structurepoolmanager
+            StructurePoolManager.instance.Return(this);
         }
     }
 }

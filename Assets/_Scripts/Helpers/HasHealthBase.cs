@@ -4,6 +4,7 @@
 
     using Enum;
     using Player;
+    using UI;
     using Utility;
 
     public abstract class HasHealthBase : EntityBase, IHasHealth {
@@ -14,6 +15,7 @@
         protected float _maxHealth = 100.0f;
         [SerializeField, Range(0.0f, 1000.0f), ReadOnly]
         protected float _maxEnergy = 0.0f;
+        public UIComponent _uiComponent;
         protected IHasHealth _lastAttacker;
         private float _lastAttacked;
 
@@ -33,6 +35,10 @@
             set { this._lastAttacker = value;
                   this._lastAttacked = Time.timeSinceLevelLoad; } }
 
+        public UIComponent uiComponent {
+            get { return this._uiComponent; }
+            set { this._uiComponent = value; } }
+
         public Player controller {
             get { return this._controller; }
             set { this._controller = value; } }
@@ -45,7 +51,7 @@
             this.currentHealth = this._maxHealth;
 
             // NOTE: UI INSTANCES HERE e.g health bar and ui buttons
-
+            
             // NOTE: Color renders, change the color of the unit to match the controller color. also check if controller is set.
         }
         #endregion

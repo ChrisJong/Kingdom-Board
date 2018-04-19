@@ -11,6 +11,7 @@
     using Helpers;
     using Player;
     using Structure;
+    using UI;
     using Utility;
 
     public sealed class StructurePoolManager : SingletonMono<StructurePoolManager> {
@@ -19,7 +20,7 @@
 
         [SerializeField]
         private StructurePoolSetup[] _poolSetup = new StructurePoolSetup[structureTypeLength];
-        private readonly Dictionary<StructureType, STructurePool> _pools = new Dictionary<StructureType, STructurePool>(structureTypeLength, new StructureTypeComparer());
+        private readonly Dictionary<StructureType, StructurePool> _pools = new Dictionary<StructureType, StructurePool>(structureTypeLength, new StructureTypeComparer());
 
         protected override void Awake() {
             base.Awake();
@@ -33,7 +34,7 @@
                 var host = new GameObject(setup.type.ToString());
                 host.transform.SetParent(this.transform);
 
-                this._pools.Add(setup.type, new STructurePool(setup.prefab, host, setup.initialInstanceCount));
+                this._pools.Add(setup.type, new StructurePool(setup.prefab, host, setup.initialInstanceCount));
             }
         }
 
@@ -52,12 +53,16 @@
             var pool = this._pools[type];
 
             var pos = Utils.GetGroundedPosition(position);
-            var structure = pool.Get(pos, Quaternion.identity);
+            var structure = pool.Get(pos, player.spawnLocation.rotation);
             structure.controller = player;
+
+            structure.uiComponent = structure.transform.GetComponentInChildren<CastleUI>() as UIComponent;
+            structure.uiComponent.controller = player;
+            ((CastleUI)structure.uiComponent).HideUI();
             //structure.isReady = costs.time == 0.0f;
 
             // NOTE: change the color render to tteam color.
-            // NOTE: add this to the structure list in the controller.
+            player.structures.Add(structure);
 
             return structure;
         }

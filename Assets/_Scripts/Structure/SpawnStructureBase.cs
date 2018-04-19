@@ -16,20 +16,6 @@
 
         public bool inCooldown { get { return Time.timeSinceLevelLoad < this._lastSpawn; } }
 
-        protected void CheckSpawnQueue() {
-            // NOTE: Decrease spawn queue timer.
-            // NOTE: check if any spawns hit 0.
-            // NOTE: call HandleSpawnUnit to spawn any units that have a 0 queue timer.
-            // NOTE: dequeue the spawnqueue from the list.
-            // NOTE: sort the queue from lowerest to highest in terms of timer.
-        }
-
-        protected bool AddUnitToQueue(UnitType type) {
-            // NOTE: check player unit cap.
-            // NOTE: add new unit to queue if unit cap isnt maxed.
-            return false;
-        }
-
         protected bool HandleSpawnUnit(UnitType type) {
             if(type == UnitType.NONE || type == UnitType.ANY) {
                 Debug.LogError(this.ToString() + " cannot spawn unit of type (not supported): " + type);

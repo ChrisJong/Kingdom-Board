@@ -8,24 +8,9 @@
     using Extension;
 
     public class AssetManager : SingletonMono<AssetManager> {
-        /////////////
-        /// UNITS ///
-        /////////////
-
-        public GameObject archer;
-        public GameObject magician;
-        public GameObject warrior;
-
-        /////////////////
-        /// Structure ///
-        /////////////////
-
-        public GameObject castle;
-
         //////////
         /// UI ///
         //////////
-        public GameObject gameUI;
         public GameObject playerUI;
     }
 }

@@ -53,8 +53,8 @@
 
             // NOTE: grab the color render of the unit and change it using the controller.
 
-            // NOTE: Add to the controllers unit list.
             unit.controller = controller;
+            controller.units.Add(unit);
 
             return unit;
         }

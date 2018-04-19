@@ -6,6 +6,7 @@
     using UnityEngine;
     using UnityEngine.UI;
 
+    using Constants;
     using Helpers;
     using Manager;
     using Structure;
@@ -20,11 +21,16 @@
         /////////////////////
         public uint id;
         public uint roll;
-        public string name;
+        private string _name;
         private bool _isAttacking;
         private bool _turnEnded;
         private Transform _spawnLocation;
         private Color _color;
+        private int _currentGold;
+        private int _currentUnitCap;
+        private int _maxUnitCap;
+
+        public int CurrentGold { get { return this._currentGold; } }
 
         //////////////////
         //// Entities ////
@@ -42,6 +48,11 @@
         ////////////
         //// UI ////
         ////////////
+        private UIComponent _uiComponent;
+
+        public UIComponent uiComponent {
+            get { return this._uiComponent; }
+            set { this._uiComponent = value; } }
 
         ///////////////////////
         //// Getter/Setter ////
@@ -57,9 +68,6 @@
 
         public PlayerCamera playerCamera { get { return this._playerCamera; } }
         public PlayerSelect playerSelection { get { return this._playerSelection; } }
-
-        // UI
-        private PlayerUI _playerUi;
         #endregion
 
         #region UNITY
@@ -67,10 +75,11 @@
             this._units = new List<IUnit>();
             this._structures = new List<IStructure>(5);
 
-            this._castle = StructurePoolManager.instance.GetStartCastle(this);
+            this._currentGold = PlayerValues.STARTGOLD;
         }
 
         private void OnDisable() {
+            this._castle = null;
             this._units = null;
             this._structures = null;
         }
@@ -79,28 +88,28 @@
         #region CLASS
         public virtual void Create(Transform spawnLocation, uint id = 0) {
             this.id = id;
-            this.name = "Player " + (id + 1).ToString().PadLeft(2, '0');
+            this._name = "Player" + (id + 1).ToString().PadLeft(2, '0');
+            this.gameObject.name = this._name;
             this._turnEnded = false;
 
-            this.transform.SetPositionAndRotation(spawnLocation.position, spawnLocation.rotation);
+            this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
             this._spawnLocation = spawnLocation;
 
-            //this._castle = GameObject.Instantiate(AssetManager.instance.castle, this.PlayerGO.transform.position, this.PlayerGO.transform.rotation, this.PlayerGO.transform);
-            //this._castle.GetComponent<Castle>().Init(this);
+            this._castle = StructurePoolManager.instance.GetStartCastle(this);
 
-            GameObject tempUI = GameObject.Instantiate(AssetManager.instance.playerUI, this.transform);
-            this._playerUi = tempUI.AddComponent<PlayerUI>();
-            this._playerUi.Init(this);
+            GameObject ui = GameObject.Instantiate(AssetManager.instance.playerUI, this.transform);
+            this._uiComponent = ui.GetComponent<PlayerUI>() as UIComponent;
+            ((PlayerUI)this._uiComponent).Init(this);
         }
 
         public virtual void Init(bool attacking) {
             this._isAttacking = attacking;
 
             if(attacking)
-                this._playerUi.DisplayUI();
+                this._uiComponent.DisplayUI();
             else
-                this._playerUi.HideUI();
+                this._uiComponent.HideUI();
 
             this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation, attacking);
         }
@@ -111,7 +120,7 @@
             this._isAttacking = attacking;
             this._turnEnded = false;
             this._playerCamera.gameObject.SetActive(attacking);
-            this._playerUi.gameObject.SetActive(attacking);
+            this.uiComponent.isActive = attacking;
         }
 
         public virtual void EndTurn() {
@@ -139,6 +148,21 @@
 
         public bool IsEnemy(IHasHealth other) {
             return !this.IsAlly(other);
+        }
+
+        public void AddResource(int quantity) {
+            this._currentGold += quantity;
+        }
+
+        public void SpendResource(int quantity) {
+            if(this.HasResource(quantity))
+                this._currentGold -= quantity;
+        }
+
+        public bool HasResource(int quantity) {
+            if(this._currentGold < quantity)
+                return false;
+            return true;
         }
 
         #endregion

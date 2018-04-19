@@ -6,9 +6,10 @@
     using UnityEngine;
     using UnityEngine.EventSystems;
 
-    using Selectable;
-    using Selectable.Unit;
-    using Selectable.Structure;
+    using Constants;
+    using Helpers;
+    using Unit;
+    using Structure;
 
     public class PlayerSelect : MonoBehaviour {
         #region VARIABLE
@@ -18,8 +19,8 @@
         private Player _player;
 
         // SELECTION
-        public Selectable currentSelected;
-        public Selectable previousSelected;
+        public IHasHealth currentSelected;
+        public IHasHealth previousSelected;
 
         //public Selectable currentHover;
         //public Selectable previousHover;
@@ -64,7 +65,7 @@
 
             Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
 
-            return Physics.Raycast(this._ray, out this._hitInfo, this._distance);
+            return Physics.Raycast(this._ray, out this._hitInfo, this._distance, ~(GlobalSettings.LayerValues.groundLayer));
         }
 
         private void MouseSelect() {
@@ -100,11 +101,11 @@
         }*/
 
         private void SelectObject() {
-            if(this._hitInfo.transform.GetComponent<Selectable>() != null) {
-                this.currentSelected = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
+            if(this._hitInfo.transform.GetComponent<IHasHealth>() != null) {
+                this.currentSelected = this._hitInfo.transform.GetComponent<IHasHealth>();
 
-                // show UI;
-                this.currentSelected.DisplayUI();
+                // Show UI;
+                this.currentSelected.uiComponent.DisplayUI();
 
                 this.selected = true;
             }
@@ -116,7 +117,7 @@
                     this.previousSelected = this.currentSelected;
 
                     // Hide UI;
-                    this.currentSelected.HideUI();
+                    this.currentSelected.uiComponent.HideUI();
 
                     this.currentSelected = null;
                 }

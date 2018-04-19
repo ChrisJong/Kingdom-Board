@@ -27,6 +27,8 @@
         public T Get(Vector3 position, Quaternion rotation) {
             T entity;
 
+            Debug.Log(this._pool.Count);
+
             if(this._pool.Count > 0)
                 entity = this._pool.Dequeue();
             else

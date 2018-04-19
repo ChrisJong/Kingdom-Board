@@ -1,6 +1,6 @@
 ﻿namespace Unit {
 
-    //using System;
+    using System;
     using System.Collections;
     using System.Collections.Generic;
 
@@ -8,8 +8,9 @@
 
     using Enum;
     using Helpers;
-    using System;
+    using Manager;
 
+    [RequireComponent(typeof(Rigidbody), typeof(UnityEngine.AI.NavMeshAgent))]
     public abstract class UnitBase : HasHealthBase, IUnit {
 
         #region VARIABLE
@@ -17,7 +18,7 @@
         /// UNIT ///
         ////////////
         protected Animator _animator;
-        protected float _unitRadius;
+        public float _unitRadius;
         private UnityEngine.AI.NavMeshAgent _agent;
 
         public abstract UnitType unitType { get; }
@@ -28,8 +29,8 @@
         /// MOVEMENT ///
         ////////////////
         protected float _minMoveThreashold = 0.01f;
-        private float _moveSpeed = 5.0f;
-        private float _moveRadius = 10.0f;
+        protected float _moveSpeed = 5.0f;
+        protected float _moveRadius = 10.0f;
         private Vector3 _velocity;
         private Vector3 _lastPosition;
 
@@ -45,15 +46,13 @@
         protected float _minDamage = 10.0f;
         protected float _maxDamage = 20.0f;
         protected float _attackRadius = 7.5f;
-        protected float _aoeAttackRadius = 3.0f;
-        protected float _lastAttacked;
+        protected float _lastAttack;
         protected float _resistancePercentage = 50.0f;
         protected float _weaknessPercentage = 50.0f;
 
         public float minDamage { get { return this._minDamage; } }
         public float maxDamage { get { return this._maxDamage; } }
         public float attackRadius { get { return this._attackRadius; } }
-        public float aoeAttackRadius { get { return this._aoeAttackRadius; } }
         public float resistancePercentage { get { return this._resistancePercentage; } }
         public float weaknessPercentage { get { return this._weaknessPercentage; } }
         public abstract AttackType resistance { get; }
@@ -69,6 +68,9 @@
 
             this._agent = this.GetComponent<UnityEngine.AI.NavMeshAgent>();
             this._agent.avoidancePriority = UnityEngine.Random.Range(0, 99);
+
+            var collider = this.GetComponent<CapsuleCollider>();
+            this._unitRadius = collider != null ? collider.radius : this.GetComponent<SphereCollider>().radius;
         }
         #endregion
 
@@ -96,19 +98,12 @@
         }
 
         public void Attack(IHasHealth target) {
-            this._lastAttacked = Time.timeSinceLevelLoad;
+            this._lastAttack = Time.timeSinceLevelLoad;
             this.LookAt(target.position);
 
             // NOTE: Play attack animation using _animator.
 
             this.InternalAttack(GetDamage());
-        }
-
-        public void AttackAOE(IHasHealth target) {
-            this._lastAttacked = Time.timeSinceLevelLoad;
-            this.LookAt(target.position);
-
-            this.InternalAttack(GetDamage(), true);
         }
 
         public override bool ReceiveDamage(float damage) {
@@ -118,11 +113,11 @@
             this.currentHealth -= damage;
 
             if(this.currentHealth <= 0.0f) {
-                if(this.controller != null) {
-                    // NOTE: Remove this unity from the player controller list.
-                }
+                if(this.controller != null)
+                    this.controller.units.Remove(this);
 
-                // NOTE: return this to the unitpoolmanager for later use.
+                UnitPoolManager.instance.Return(this);
+                // NOTE: play any death animations, or add in any death effects onto the scene. 
 
                 return true;
             } else {
@@ -131,7 +126,7 @@
             return false;
         }
 
-        protected virtual void InternalAttack(float damage, bool aoe = false) {
+        protected virtual void InternalAttack(float damage) {
 
         }
         #endregion

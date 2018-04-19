@@ -4,8 +4,8 @@
 
     using Helpers;
 
-    public sealed class STructurePool : PoolBase<IStructure> {
+    public sealed class StructurePool : PoolBase<IStructure> {
 
-        public STructurePool(GameObject prefab, GameObject host, int initialInstanceCount) : base(prefab, host, initialInstanceCount) { }
+        public StructurePool(GameObject prefab, GameObject host, int initialInstanceCount) : base(prefab, host, initialInstanceCount) { }
     }
 }

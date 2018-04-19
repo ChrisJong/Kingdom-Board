@@ -34,8 +34,8 @@
 
         // MAP LIMITS
         private bool _enableMapLimit = true;
-        private float _limitX = 10.0f;
-        private float _limitY = 22.5f;
+        private float _limitX = 14.0f;
+        private float _limitY = 20.0f;
 
         // INPUT CONTROLS
         #region INPUT CONTROLS
@@ -187,7 +187,7 @@
 
             this._transform.position = new Vector3(Mathf.Clamp(this._transform.position.x, -this._limitX,
                                                    this._limitX), this._transform.position.y,
-                                                   Mathf.Clamp(this._transform.position.z, -this._limitY, 0.0f));
+                                                   Mathf.Clamp(this._transform.position.z, -this._limitY, this._limitY));
         }
 
         private float DistanceGround() {
@@ -213,10 +213,15 @@
             tempCamera.AddComponent<PlayerCamera>().playerID = p.id;
             tempCamera.AddComponent<PlayerSelect>().Init(p);
 
-            tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z - 7.5f);
-            tempCamera.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-
             tempCamera.transform.parent = p.transform;
+
+            if(startPoint.eulerAngles.y >= 180.0f)
+                tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z - 7.5f);
+            else
+                tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z + 7.5f);
+
+            //tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z + 7.5f);
+            tempCamera.transform.localRotation = Quaternion.Euler(0.0f, startPoint.eulerAngles.y + 180.0f, 0.0f);
 
             if(!OnAttack)
                 tempCamera.SetActive(false);
