@@ -10,6 +10,7 @@
 
     public sealed class Castle : SpawnStructureBase {
 
+        [SerializeField]
         private List<SpawnQueueType> _spawnQueue = new List<SpawnQueueType>();
 
         public override StructureType structureType { get { return StructureType.CASTLE; } }
@@ -22,29 +23,47 @@
         }
 
         public void CheckSpawnQueue() {
-            // NOTE: Decrease spawn queue timer.
-            // NOTE: check if any spawns hit 0.
-            // NOTE: call HandleSpawnUnit to spawn any units that have a 0 queue timer.
             // NOTE: dequeue the spawnqueue from the list.
             // NOTE: sort the queue from lowerest to highest in terms of timer.
+            List<SpawnQueueType> spawns = new List<SpawnQueueType>();
 
-            foreach(SpawnQueueType unit in this._spawnQueue) {
-                unit.Countdown();
+            if(this._spawnQueue == null)
+                return;
 
-                if(unit.ready) {
-                    this.SpawnUnit(unit.type);
-                    this._spawnQueue.Remove(unit);
-                } 
+            // NOTE: need to find a cleaner way to remove units that are marked spawn from the list.
+            // NOTE: throws an InvalidOperationException since i can't edit the last while its being used/referecned in the forloop.
+            foreach(SpawnQueueType spawn in this._spawnQueue) {
+                spawn.Countdown();
+
+                if(spawn.ready) {
+                    UnitType type = spawn.type;
+                    if(this.SpawnUnit(type)) {
+                        spawns.Add(spawn);
+                    }
+                }
+            }
+
+            foreach(SpawnQueueType removeal in spawns) {
+                if(this._spawnQueue.Contains(removeal))
+                    this._spawnQueue.Remove(removeal);
+                else
+                    Debug.LogError("COULDN'T FIND THE UNIT " + removeal.type.ToString() + " TO REMOVE");
             }
         }
 
         public bool AddUnitToQueue(UnitType type) {
             // NOTE: check player unit cap.
-            // NOTE: add new unit to queue if unit cap isnt maxed.
-            int count = this.GetUnitCount(type);
+            // NOTE: check player resource.
+            // NOTE: add new unit to queue if unit cap isnt maxed & there are resources avaliable.
+            int unitCapCost = this.GetUnitCapCost(type);
+            int unitCost = this.GetUnitResourceCost(type);
 
-            this._spawnQueue.Add(new SpawnQueueType(type, count));
-
+            if(this.controller.HasResource(unitCost) && this.controller.CheckUnitCap(unitCapCost)) {
+                this.controller.SpendResource(unitCost);
+                this.controller.AddResource(unitCapCost);
+                this._spawnQueue.Add(new SpawnQueueType(type, unitCapCost));
+                return true;
+            }
             return false;
         }
 
@@ -52,29 +71,54 @@
             return this.HandleSpawnUnit(type);
         }
 
-        private int GetUnitCount(UnitType type) {
-            int count;
+        private int GetUnitCapCost(UnitType type) {
+            int cost;
 
             switch(type) {
                 case UnitType.ARCHER:
-                count = UnitValues.ArcherValues.SPAWNCOUNT;
+                cost = UnitValues.ArcherValues.SPAWNCOUNT;
                 break;
 
                 case UnitType.MAGE:
-                count = UnitValues.MageValues.SPAWNCOUNT;
+                cost = UnitValues.MageValues.SPAWNCOUNT;
                 break;
 
                 case UnitType.WARRIOR:
-                count = UnitValues.WarriorValues.SPAWNCOUNT;
+                cost = UnitValues.WarriorValues.SPAWNCOUNT;
                 break;
 
                 default:
-                Debug.LogError("Unit of type(" + type.ToString() + ") not found, defaulting to a value of 5");
-                count = 5;
+                Debug.LogError("Unit of type(" + type.ToString() + ") not found");
+                cost = -1;
                 break;
             }
 
-            return count;
+            return cost;
+        }
+
+        private int GetUnitResourceCost(UnitType type) {
+            int cost;
+
+            switch(type) {
+                case UnitType.ARCHER:
+                cost = UnitValues.ArcherValues.SPAWNCOST;
+                break;
+
+                case UnitType.MAGE:
+                cost = UnitValues.MageValues.SPAWNCOST;
+                break;
+
+                case UnitType.WARRIOR:
+                cost = UnitValues.WarriorValues.SPAWNCOST;
+                break;
+
+                default:
+                Debug.LogError("Unit of type(" + type.ToString() + ") not found");
+                cost = -1;
+                break;
+            }
+
+            return cost;
         }
     }
 }

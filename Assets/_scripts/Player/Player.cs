@@ -76,6 +76,8 @@
             this._structures = new List<IStructure>(5);
 
             this._currentGold = PlayerValues.STARTGOLD;
+            this._currentUnitCap = 0;
+            this._maxUnitCap = PlayerValues.STARTUNITCAP;
         }
 
         private void OnDisable() {
@@ -121,6 +123,9 @@
             this._turnEnded = false;
             this._playerCamera.gameObject.SetActive(attacking);
             this.uiComponent.isActive = attacking;
+
+            if(attacking)
+                this._castle.CheckSpawnQueue();
         }
 
         public virtual void EndTurn() {
@@ -165,6 +170,22 @@
             return true;
         }
 
+        public bool CheckUnitCap(int cost) {
+            int newCap = this._currentUnitCap + cost;
+
+            if(newCap > this._maxUnitCap)
+                return false;
+
+            return true;
+        }
+
+        public void AddToUnitCap(int cost) {
+            this._currentUnitCap += cost;
+        }
+
+        public void RemoveFromUnitCap(int cost) {
+            this._currentUnitCap -= cost;
+        }
         #endregion
     }
 }

@@ -22,10 +22,6 @@
                 return false;
             }
 
-            // NOTE: Add unit to spawn queue.
-
-            // NOTE: charge resouce amount for unit onto the player.
-
             return UnitPoolManager.instance.SpawnUnit(type, this.controller, this.position, this._spawnDistance, this._anglePerSpawn, this._lastSpawnIndex);
         }
     }
