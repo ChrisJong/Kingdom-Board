@@ -8,7 +8,7 @@
     using Structure;
     using System;
 
-    public class CastleUI : UIComponent {
+    public class CastleUI : ScreenSpaceUI {
 
         #region VARIABLE
         public Castle castle;
@@ -27,6 +27,11 @@
 
         #region UNITY
         private void Awake() {
+            if(this.castle == null && this.transform.parent != null)
+                this.transform.parent.gameObject.GetComponent<Castle>();
+
+            this.controller = this.castle.controller;
+
             this.btnSpawn.onClick.AddListener(this.ShowSpawn);
             this.btnBack.onClick.AddListener(this.GoBack);
 
@@ -35,22 +40,24 @@
             this.btnSpawnMagic.onClick.AddListener(delegate { this.AddToQueue(UnitType.MAGE); });
             this.btnSpawnPhysical.onClick.AddListener(delegate { this.AddToQueue(UnitType.WARRIOR); });
 
-            this.ResetUI();
+            this.Reset();
             //this.isActive = false;
         }
         #endregion
 
         #region CLASS
-        public override void DisplayUI() {
-            this.isActive = true;
+        public override void Display() {
+            //this.isActive = true;
+            this.goSelected.SetActive(true);
         }
 
-        public override void HideUI() {
-            this.ResetUI();
-            this.isActive = false;
+        public override void Hide() {
+            this.Reset();
+            this.goSelected.SetActive(false);
+            //this.isActive = false;
         }
 
-        protected override void ResetUI() {
+        protected override void Reset() {
             this._spawnParent.SetActive(false);
 
             this.btnSpawn.gameObject.SetActive(true);

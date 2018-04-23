@@ -56,9 +56,9 @@
             var structure = pool.Get(pos, player.spawnLocation.rotation);
             structure.controller = player;
 
-            structure.uiComponent = structure.transform.GetComponentInChildren<CastleUI>() as UIComponent;
+            structure.uiComponent = structure.transform.GetComponentInChildren<CastleUI>() as ScreenSpaceUI;
             structure.uiComponent.controller = player;
-            ((CastleUI)structure.uiComponent).HideUI();
+            ((CastleUI)structure.uiComponent).Hide();
             //structure.isReady = costs.time == 0.0f;
 
             // NOTE: change the color render to tteam color.

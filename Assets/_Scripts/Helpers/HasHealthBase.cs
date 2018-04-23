@@ -15,7 +15,7 @@
         protected float _maxHealth = 100.0f;
         [SerializeField, Range(0.0f, 1000.0f), ReadOnly]
         protected float _maxEnergy = 0.0f;
-        public UIComponent _uiComponent;
+        public ScreenSpaceUI _uiComponent;
         protected IHasHealth _lastAttacker;
         private float _lastAttacked;
 
@@ -35,7 +35,7 @@
             set { this._lastAttacker = value;
                   this._lastAttacked = Time.timeSinceLevelLoad; } }
 
-        public UIComponent uiComponent {
+        public ScreenSpaceUI uiComponent {
             get { return this._uiComponent; }
             set { this._uiComponent = value; } }
 

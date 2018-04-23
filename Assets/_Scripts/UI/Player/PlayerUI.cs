@@ -7,7 +7,7 @@
     using UI;
     using System;
 
-    public class PlayerUI : UIComponent {
+    public class PlayerUI : ScreenSpaceUI {
 
         #region VARIABLE
         public Text text;
@@ -28,21 +28,21 @@
             
         }
 
-        public override void DisplayUI() {
+        public override void Display() {
             this.isActive = true;
         }
 
-        public override void HideUI() {
+        public override void Hide() {
             this.isActive = false;
         }
 
-        protected override void ResetUI() {
+        protected override void Reset() {
             throw new NotImplementedException();
         }
 
         public override void UpdateUI() {
             if(this.controller.turnEnded) {
-                this.HideUI();
+                this.Hide();
             } else {
                 
             }

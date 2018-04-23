@@ -31,12 +31,14 @@
         protected float _minMoveThreashold = 0.01f;
         protected float _moveSpeed = 5.0f;
         protected float _moveRadius = 10.0f;
+        protected bool _canMpve = true;
         private Vector3 _velocity;
         private Vector3 _lastPosition;
 
         public abstract MovementType movementType { get; }
         public bool isMoving { get { return this._velocity.sqrMagnitude > (this._minMoveThreashold * this._minMoveThreashold); } }
         public virtual bool isIdle { get { return !this.isMoving && !this.isDead; } }
+        public bool canMove { get { return this._canMpve; } }
         public float moveSpeed { get { return this._moveSpeed; } }
         public float moveRadius { get { return this._moveRadius; } }
 
@@ -49,6 +51,7 @@
         protected float _lastAttack;
         protected float _resistancePercentage = 50.0f;
         protected float _weaknessPercentage = 50.0f;
+        protected bool _canAttack = true;
 
         public float minDamage { get { return this._minDamage; } }
         public float maxDamage { get { return this._maxDamage; } }
@@ -58,6 +61,7 @@
         public abstract AttackType resistance { get; }
         public abstract AttackType weakness { get; }
         public abstract AttackType attackType { get; }
+        public bool canAttack { get { return this._canAttack; } }
         #endregion
 
         #region UNITY

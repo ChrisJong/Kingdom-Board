@@ -1,33 +1,44 @@
-﻿namespace UI.Selectable.Unit {
-    // NOTE: Use delegates and events to change the worldspace canvus camera of the player when the camera switches to differernt states/players.
-    using System.Collections;
-    using System.Collections.Generic;
+﻿namespace UI {
+
+    using System;
 
     using UnityEngine;
     using UnityEngine.UI;
 
-    public class UnitUI : MonoBehaviour {
+    using Unit;
 
-        public Button attackBTN;
-        public Button moveBTN;
-        public Button endBTN;
+    public class UnitUI : ScreenSpaceUI {
 
-        private void Start() {
-            this.attackBTN.onClick.AddListener(this.OnAttackClick);
-            this.moveBTN.onClick.AddListener(this.OnMoveClick);
-            this.endBTN.onClick.AddListener(this.OnEndClick);
+        #region VARIABLE
+        public UnitBase unit;
+
+        public Button btnEnd;
+        public Button btnAttack;
+        public Button btnMove;
+
+        #endregion
+        
+        #region UNITY
+        private void Awake() {
+            if(this.unit == null)
+                this.unit = this.transform.parent.gameObject.GetComponent<UnitBase>();
+
+            this.controller = this.unit.controller;
+        }
+        #endregion
+
+        #region CLASS
+        public override void Display() {
+            throw new NotImplementedException();
         }
 
-        private void OnAttackClick() {
-            Debug.Log("Attack Button Clicked!");
+        public override void Hide() {
+            throw new NotImplementedException();
         }
 
-        private void OnMoveClick() {
-            Debug.Log("Move Button Clicked!");
+        protected override void Reset() {
+            throw new NotImplementedException();
         }
-
-        private void OnEndClick() {
-            Debug.Log("End Button Clicked!");
-        }
+        #endregion
     }
 }

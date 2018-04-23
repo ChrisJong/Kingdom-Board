@@ -48,9 +48,9 @@
         ////////////
         //// UI ////
         ////////////
-        private UIComponent _uiComponent;
+        private ScreenSpaceUI _uiComponent;
 
-        public UIComponent uiComponent {
+        public ScreenSpaceUI uiComponent {
             get { return this._uiComponent; }
             set { this._uiComponent = value; } }
 
@@ -101,7 +101,7 @@
             this._castle = StructurePoolManager.instance.GetStartCastle(this);
 
             GameObject ui = GameObject.Instantiate(AssetManager.instance.playerUI, this.transform);
-            this._uiComponent = ui.GetComponent<PlayerUI>() as UIComponent;
+            this._uiComponent = ui.GetComponent<PlayerUI>() as ScreenSpaceUI;
             ((PlayerUI)this._uiComponent).Init(this);
         }
 
@@ -109,9 +109,9 @@
             this._isAttacking = attacking;
 
             if(attacking)
-                this._uiComponent.DisplayUI();
+                this._uiComponent.Display();
             else
-                this._uiComponent.HideUI();
+                this._uiComponent.Hide();
 
             this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation, attacking);
         }

@@ -7,6 +7,7 @@
         float moveRadius { get; }
         bool isMoving { get; }
         bool isIdle { get; }
+        bool canMove { get; }
 
         Enum.MovementType movementType { get; }
 

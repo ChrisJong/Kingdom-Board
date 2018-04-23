@@ -17,7 +17,7 @@
 
         bool isActive { get; set; }
 
-        void DisplayUI();
-        void HideUI();
+        void Display();
+        void Hide();
     }
 }

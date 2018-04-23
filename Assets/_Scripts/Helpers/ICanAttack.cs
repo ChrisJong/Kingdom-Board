@@ -5,6 +5,7 @@
         float attackRadius { get; }
         float resistancePercentage { get; }
         float weaknessPercentage { get; }
+        bool canAttack { get; }
 
         Enum.AttackType resistance { get; }
         Enum.AttackType weakness { get; }

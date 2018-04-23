@@ -16,7 +16,7 @@
         private int _playerID;
 
         private Camera _camera;
-        private Player _player;
+        private Player _controller;
 
         // SELECTION
         public IHasHealth currentSelected;
@@ -27,13 +27,15 @@
 
         public bool selected = false;
         public bool selectedLock = false;
+        public bool attacking = false;
+        public bool moving = false;
+        public bool research = false;
 
         // PHYSICS (RAY)
         private float _distance = 50.0f;
 
         private Ray _ray;
         private RaycastHit _hitInfo;
-
         #endregion
 
         #region UNITY
@@ -48,10 +50,7 @@
 
         #region CLASS
         public void Init(Player player) {
-            if(player == null)
-                Debug.LogError("Player Missing!");
-
-            this._player = player;
+            this._controller = player;
         }
 
         private void UpdateSelect() {
@@ -73,10 +72,10 @@
 
                 if(this.CastRayToWorld()) {
                     //Selectable tempSelect = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
-                    if(!this._player.turnEnded)
+                    if(!this._controller.turnEnded)
                         this.SelectObject();
                 } else {
-                    if(!this._player.turnEnded)
+                    if(!this._controller.turnEnded)
                         this.DeSelectObject();
                 }
             }
@@ -105,7 +104,7 @@
                 this.currentSelected = this._hitInfo.transform.GetComponent<IHasHealth>();
 
                 // Show UI;
-                this.currentSelected.uiComponent.DisplayUI();
+                this.currentSelected.uiComponent.Display();
 
                 this.selected = true;
             }
@@ -117,7 +116,7 @@
                     this.previousSelected = this.currentSelected;
 
                     // Hide UI;
-                    this.currentSelected.uiComponent.HideUI();
+                    this.currentSelected.uiComponent.Hide();
 
                     this.currentSelected = null;
                 }
