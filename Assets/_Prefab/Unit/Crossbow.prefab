@@ -321,6 +321,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4298452780528522}
   - component: {fileID: 95217060397041144}
+  - component: {fileID: 54767966712456584}
+  - component: {fileID: 136013636351837988}
+  - component: {fileID: 195192440429747556}
   m_Layer: 9
   m_Name: Crossbow
   m_TagString: Unit
@@ -1708,7 +1711,7 @@ Transform:
   m_Children:
   - {fileID: 4997293325010876}
   m_Father: {fileID: 4298452780528522}
-  m_RootOrder: 0
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4033075834865308
 Transform:
@@ -1760,7 +1763,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4298452780528522}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4059059308791612
 Transform:
@@ -2204,14 +2207,14 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1182963847238342}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.5, y: 1.5, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4023294227670952}
-  - {fileID: 4261420078179348}
   - {fileID: 4879989125122174}
+  - {fileID: 4261420078179348}
   - {fileID: 4058482369667994}
   - {fileID: 4621953929559118}
+  - {fileID: 4023294227670952}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2711,7 +2714,7 @@ Transform:
   m_Children:
   - {fileID: 4307797831413374}
   m_Father: {fileID: 4298452780528522}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4625678298770020
 Transform:
@@ -3087,7 +3090,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4298452780528522}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4881838865995332
 Transform:
@@ -3277,7 +3280,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 14b24d83e57107143b61a5d821873ee8, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3304,6 +3307,21 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1206613836919948}
   m_Mesh: {fileID: 4300004, guid: ae33afd64c58aa94eb1967f321422866, type: 3}
+--- !u!54 &54767966712456584
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1182963847238342}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!95 &95217060397041144
 Animator:
   serializedVersion: 3
@@ -3321,6 +3339,19 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!136 &136013636351837988
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1182963847238342}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.55
+  m_Height: 1.6
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!137 &137473364085390888
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -3335,7 +3366,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 0989ddc3edb0973498d07b7e5150f62d, type: 2}
+  - {fileID: 2100000, guid: 8676df77b7b81ff47bc7fcb21f902453, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3485,7 +3516,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 71a0cb47427e766429f8eb79802ab24a, type: 2}
+  - {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3530,3 +3561,24 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.35084012, y: 0.21085553, z: -0.48219365}
     m_Extent: {x: 0.56183034, y: 0.5722821, z: 0.9375966}
   m_DirtyAABB: 0
+--- !u!195 &195192440429747556
+NavMeshAgent:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1182963847238342}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.55
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.6
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

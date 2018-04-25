@@ -1367,7 +1367,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4676544598577096}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4270034455501426
 Transform:
@@ -1829,8 +1829,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4983136661206440}
   - {fileID: 4267200809085934}
+  - {fileID: 4983136661206440}
   - {fileID: 4088113865838172}
   - {fileID: 4600474263402732}
   m_Father: {fileID: 0}
@@ -2192,7 +2192,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4676544598577096}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &23835104959133934
 MeshRenderer:
@@ -2208,7 +2208,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 14b24d83e57107143b61a5d821873ee8, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2282,6 +2282,7 @@ MonoBehaviour:
   _controller: {fileID: 0}
   _maxHealth: 100
   _maxEnergy: 0
+  _uiComponent: {fileID: 0}
   _unitRadius: 0
 --- !u!136 &136017930714516500
 CapsuleCollider:
@@ -2310,7 +2311,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 35f65d90a3178414c857c600598586e2, type: 2}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2427,7 +2428,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: e306e099f6cc9e341a40a9d109b06584, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class animationTest_dan : MonoBehaviour {
 
-    public Animator anim;
+    private Animator anim;
 
     private void Start() {
         anim = GetComponent<Animator>();
