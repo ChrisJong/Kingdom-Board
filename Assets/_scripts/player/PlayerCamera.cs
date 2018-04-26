@@ -29,8 +29,11 @@
         private float _heightDamp = 7.0f;
 
         // ZOOM
+        private float _zoomDistance = 1.0f;
+        private float _maxZoom = 2.25f;
+        private float _minZoom = 0.5f;
         private float _cameraAngle = 55.0f;
-        private float _scrollWheelZoomSens = 25.0f;
+        private float _scrollWheelZoomSens = 10.0f;
 
         // MAP LIMITS
         private bool _enableMapLimit = true;
@@ -130,7 +133,7 @@
         #region CLASS
         private void CameraUpdate() {
             this.MoveCamera();
-            this.HeightCalculation();
+            //this.HeightCalculation();
             this.ZoomCamera();
             this.RotateCamera();
             this.LimitPosition();
@@ -173,7 +176,19 @@
         }
 
         private void ZoomCamera() {
-
+            if(this.ScrollWheel > 0) {
+                this._zoomDistance += this.ScrollWheel;
+                if(this._zoomDistance > this._maxZoom)
+                    this._zoomDistance = this._maxZoom;
+                else
+                    this.transform.Translate(0,0, this.ScrollWheel * _scrollWheelZoomSens);
+            } else {
+                this._zoomDistance += this.ScrollWheel;
+                if(this._zoomDistance < this._minZoom)
+                    this._zoomDistance = this._minZoom;
+                else
+                    this.transform.Translate(0, 0, this.ScrollWheel * _scrollWheelZoomSens);
+            }
         }
 
         private void RotateCamera() {

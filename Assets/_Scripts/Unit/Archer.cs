@@ -1,8 +1,12 @@
 ﻿namespace Unit {
 
+    using UnityEngine;
+
     using Constants;
     using Enum;
+    using UI;
 
+    [RequireComponent(typeof(ArcherUI))]
     public sealed class Archer : UnitBase {
 
         public override UnitType unitType { get { return UnitType.ARCHER; } }

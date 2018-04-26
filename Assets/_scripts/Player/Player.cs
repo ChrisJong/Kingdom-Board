@@ -22,20 +22,21 @@
         public uint id;
         public uint roll;
         private string _name;
-        private bool _isAttacking;
-        private bool _turnEnded;
-        private Transform _spawnLocation;
-        private Color _color;
         private int _currentGold;
         private int _currentUnitCap;
         private int _maxUnitCap;
+        private bool _isAttacking;
+        private bool _turnEnded;
+        private Transform _spawnLocation;
+        [SerializeField]
+        private Color _color;
 
         public int CurrentGold { get { return this._currentGold; } }
 
         //////////////////
         //// Entities ////
         //////////////////
-        private Castle _castle;
+        public Castle _castle;
         private IList<IUnit> _units;
         private IList<IStructure> _structures;
 
@@ -72,6 +73,10 @@
 
         #region UNITY
         private void OnEnable() {
+            // Random Color for the player and its assocaited entities.
+            // NOTE: needs to be changed as a parameter passed on from the game manager.
+            this._color = new Color(Random.Range(0.2f, 0.8f), Random.Range(0.2f, 0.8f), Random.Range(0.2f, 0.8f));
+
             this._units = new List<IUnit>();
             this._structures = new List<IStructure>(5);
 
@@ -101,8 +106,9 @@
             this._castle = StructurePoolManager.instance.GetStartCastle(this);
 
             GameObject ui = GameObject.Instantiate(AssetManager.instance.playerUI, this.transform);
-            this._uiComponent = ui.GetComponent<PlayerUI>() as ScreenSpaceUI;
-            ((PlayerUI)this._uiComponent).Init(this);
+            ui.name = UIValues.Player.PLAYERUI;
+            this._uiComponent = this.gameObject.AddComponent<PlayerUI>() as ScreenSpaceUI;
+            this._uiComponent.controller = this;
         }
 
         public virtual void Init(bool attacking) {
@@ -114,6 +120,7 @@
                 this._uiComponent.Hide();
 
             this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation, attacking);
+            this._playerSelection = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
         }
 
         public abstract void UpdatePlayer();
@@ -122,7 +129,7 @@
             this._isAttacking = attacking;
             this._turnEnded = false;
             this._playerCamera.gameObject.SetActive(attacking);
-            this.uiComponent.isActive = attacking;
+            this.uiComponent.Display();
 
             if(attacking)
                 this._castle.CheckSpawnQueue();
@@ -132,6 +139,7 @@
             if(this._turnEnded)
                 return;
 
+            this._playerSelection.EndTurn();
             this._turnEnded = true;
             GameManager.instance.CheckRound();
         }
@@ -144,7 +152,7 @@
             for(int i = count - 1; i >= 0; i--)
                 StructurePoolManager.instance.Return(this._structures[i]);
 
-                this.gameObject.SetActive(false);
+            this.gameObject.SetActive(false);
         }
 
         public bool IsAlly(IHasHealth other) {

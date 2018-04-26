@@ -72,7 +72,6 @@ GameObject:
   - component: {fileID: 223071359009079012}
   - component: {fileID: 114336189960507148}
   - component: {fileID: 114657415637638876}
-  - component: {fileID: 114907884114240110}
   m_Layer: 5
   m_Name: Unit_UI
   m_TagString: Untagged
@@ -557,23 +556,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114907884114240110
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1403498820192072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d0b91c261c1c9847923599ae8585702, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  goHover: {fileID: 1794588158488308}
-  goSelected: {fileID: 1386062982107422}
-  unit: {fileID: 0}
-  btnEnd: {fileID: 114375744348087216}
-  btnAttack: {fileID: 114411385563954512}
-  btnMove: {fileID: 114040913444873772}
 --- !u!222 &222124857890355294
 CanvasRenderer:
   m_ObjectHideFlags: 1

@@ -1,5 +1,6 @@
 ﻿namespace Utility {
 
+    using System;
     using System.Collections.Generic;
 
     using UnityEngine;
@@ -9,8 +10,14 @@
     public static class Utils {
         #region VARIABLE
         private static uint _nextPoolID = 0;
+        private static readonly RaycastHit[] _hitsBuffer = new RaycastHit[100];
 
         public static uint nextPoolID { get { return _nextPoolID++; } }
+        public static RaycastHit[] hitsBuffers {
+            get {
+                Array.Clear(_hitsBuffer, 0, _hitsBuffer.Length); // must clear the buffer every time it is requested.
+                return _hitsBuffer;
+            } }
         #endregion
 
         #region CLASS

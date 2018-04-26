@@ -107,7 +107,6 @@
 
         private void CreatePlayers() {
             for(int i = 0; i < this._numberOfPlayers; i++) {
-
                 GameObject temp = new GameObject("Player" + (i + 1).ToString());
                 var player = temp.AddComponent<Human>() as Human;
                 player.Create(this._spawnPoints[i], (uint)i);

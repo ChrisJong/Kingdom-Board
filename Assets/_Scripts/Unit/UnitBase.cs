@@ -5,12 +5,15 @@
     using System.Collections.Generic;
 
     using UnityEngine;
+    using UnityEngine.AI;
 
+    using Constants;
     using Enum;
     using Helpers;
     using Manager;
 
-    [RequireComponent(typeof(Rigidbody), typeof(UnityEngine.AI.NavMeshAgent))]
+    //[RequireComponent(typeof(Rigidbody), typeof(UnityEngine.AI.NavMeshAgent))]
+    [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
     public abstract class UnitBase : HasHealthBase, IUnit {
 
         #region VARIABLE
@@ -18,12 +21,14 @@
         /// UNIT ///
         ////////////
         protected Animator _animator;
-        public float _unitRadius;
-        private UnityEngine.AI.NavMeshAgent _agent;
+        protected float _unitRadius;
+        protected bool _hasFinished;
+        private NavMeshAgent _agent;
 
         public abstract UnitType unitType { get; }
         public override EntityType entityType { get { return EntityType.UNIT; } }
         public LayerMask areaMask { get { return this._agent.areaMask; } }
+        public bool hasFinished { get { return this._hasFinished; } }
 
         ////////////////
         /// MOVEMENT ///
@@ -31,7 +36,9 @@
         protected float _minMoveThreashold = 0.01f;
         protected float _moveSpeed = 5.0f;
         protected float _moveRadius = 10.0f;
-        protected bool _canMpve = true;
+        protected bool _canMpve;
+        [SerializeField, Range(0.1f, 10.0f)]
+        private float _allowedMovementImprecision = 1.0f;
         private Vector3 _velocity;
         private Vector3 _lastPosition;
 
@@ -51,7 +58,9 @@
         protected float _lastAttack;
         protected float _resistancePercentage = 50.0f;
         protected float _weaknessPercentage = 50.0f;
-        protected bool _canAttack = true;
+        protected bool _canAttack;
+        protected bool _isAttacking;
+        private RaycastHitDistanceSortComparer _hitComparer = new RaycastHitDistanceSortComparer(true);
 
         public float minDamage { get { return this._minDamage; } }
         public float maxDamage { get { return this._maxDamage; } }
@@ -62,6 +71,7 @@
         public abstract AttackType weakness { get; }
         public abstract AttackType attackType { get; }
         public bool canAttack { get { return this._canAttack; } }
+        public bool isAttacking { get { return this._isAttacking; } set { this._isAttacking = value; } }
         #endregion
 
         #region UNITY
@@ -76,6 +86,21 @@
             var collider = this.GetComponent<CapsuleCollider>();
             this._unitRadius = collider != null ? collider.radius : this.GetComponent<SphereCollider>().radius;
         }
+
+        protected override void OnEnable() {
+            base.OnEnable();
+
+            this._hasFinished = false;
+            this._canAttack = true;
+            this._canMpve = true;
+            this._isAttacking = false;
+            this._lastPosition = this.transform.position;
+        }
+
+        /*protected virtual void Update() {
+            this._velocity = (this.position - this._lastPosition);
+            this._lastPosition = this.position;
+        }*/
         #endregion
 
         #region CLASS
@@ -83,11 +108,19 @@
         /// MOVEMENT ///
         ////////////////
         public void MoveTo(Vector3 dest) {
+            NavMeshHit hit;
+            if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
+                if((hit.position - this.position).sqrMagnitude > (this._agent.stoppingDistance * this._agent.stoppingDistance))
+                    return; // destination not far enough away.
+            }
 
+            this._agent.isStopped = false;
+            this._agent.SetDestination(hit.position);
         }
 
         public void StopMoving() {
-            
+            this._agent.isStopped = true;
+            this._agent.ResetPath();
         }
 
         public void LookAt(Vector3 pos) {
@@ -104,6 +137,7 @@
         public void Attack(IHasHealth target) {
             this._lastAttack = Time.timeSinceLevelLoad;
             this.LookAt(target.position);
+            this.StopMoving();
 
             // NOTE: Play attack animation using _animator.
 
@@ -131,7 +165,33 @@
         }
 
         protected virtual void InternalAttack(float damage) {
+            var hits = Utility.Utils.hitsBuffers;
+            var pos = this.position + this.transform.forward * this._unitRadius;
+            Physics.SphereCastNonAlloc(pos, this._unitRadius * 2.0f, this.transform.forward, hits, this._attackRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
 
+            this._hitComparer.position = this.position;
+            Array.Sort(hits, this._hitComparer);
+
+            for(int i = 0; i < hits.Length; i++) {
+                var hit = hits[i];
+
+                if(hit.transform == null)
+                    continue;
+
+                if(hit.transform == this.transform)
+                    continue; // jgnore hits with itself;
+
+                var hasHealth = hit.collider.GetEntity<IHasHealth>();
+                if(hasHealth == null || hasHealth.isDead)
+                    continue; // ignore anything that doesn't contain health or is dead.
+
+                if(this.IsAlly(hasHealth))
+                    continue; // ignore allies.
+
+                hasHealth.lastAttacker = this;
+                hasHealth.ReceiveDamage(damage);
+                break;
+            }
         }
         #endregion
     }

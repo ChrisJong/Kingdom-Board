@@ -7,9 +7,9 @@
         ///////////////////
         //// RIGIDBODY ////
         ///////////////////
-        public const float mass = 100.0f;
-        public const float drag = 0.0f;
-        public const float angularDrag = 0.05f;
+        public const float MASS = 100.0f;
+        public const float DRAG = 0.0f;
+        public const float ANGULARDRAG = 0.05f;
 
         public static class ArcherValues {
             public const float HEALTH = 100.0f;

@@ -24,8 +24,7 @@
             if(this.isDead)
                 return true;
 
-            var lookUp = Quaternion.LookRotation(Vector3.up);
-
+            //var lookUp = Quaternion.LookRotation(Vector3.up);
 
             this.currentHealth -= damage;
             if(this.currentHealth <= 0.0f) {

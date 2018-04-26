@@ -1,8 +1,14 @@
 ﻿namespace Unit {
+
     using System;
+
+    using UnityEngine;
+
     using Constants;
     using Enum;
+    using UI;
 
+    [RequireComponent(typeof(WarriorUI))]
     public sealed class Warrior : UnitBase {
 
         public override UnitType unitType { get { return UnitType.WARRIOR; } }

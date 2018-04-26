@@ -7,7 +7,9 @@
 
     using Constants;
     using Enum;
+    using UI;
 
+    [RequireComponent(typeof(CastleUI))]
     public sealed class Castle : SpawnStructureBase {
 
         [SerializeField]
@@ -17,18 +19,18 @@
 
         public override bool ReceiveDamage(float damage) {
             bool isDead = base.ReceiveDamage(damage);
-            //if(isDead)
-                // NOTE: call player Death & End Game.
+            if(isDead)
+                this.controller.OnDeath();
             return isDead;
         }
 
         public void CheckSpawnQueue() {
+            if(this._spawnQueue.Count <= 0 || this._spawnQueue == null)
+                return;
+
             // NOTE: dequeue the spawnqueue from the list.
             // NOTE: sort the queue from lowerest to highest in terms of timer.
             List<SpawnQueueType> spawns = new List<SpawnQueueType>();
-
-            if(this._spawnQueue == null)
-                return;
 
             // NOTE: need to find a cleaner way to remove units that are marked spawn from the list.
             // NOTE: throws an InvalidOperationException since i can't edit the last while its being used/referecned in the forloop.

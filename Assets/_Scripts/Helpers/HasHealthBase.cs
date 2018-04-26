@@ -15,7 +15,7 @@
         protected float _maxHealth = 100.0f;
         [SerializeField, Range(0.0f, 1000.0f), ReadOnly]
         protected float _maxEnergy = 0.0f;
-        public ScreenSpaceUI _uiComponent;
+        public UIBase _uiComponent;
         protected IHasHealth _lastAttacker;
         private float _lastAttacked;
 
@@ -35,7 +35,7 @@
             set { this._lastAttacker = value;
                   this._lastAttacked = Time.timeSinceLevelLoad; } }
 
-        public ScreenSpaceUI uiComponent {
+        public UIBase uiComponent {
             get { return this._uiComponent; }
             set { this._uiComponent = value; } }
 
@@ -50,6 +50,7 @@
 
             this.currentHealth = this._maxHealth;
 
+            this.uiComponent = this.transform.GetComponent<UIBase>();
             // NOTE: UI INSTANCES HERE e.g health bar and ui buttons
             
             // NOTE: Color renders, change the color of the unit to match the controller color. also check if controller is set.

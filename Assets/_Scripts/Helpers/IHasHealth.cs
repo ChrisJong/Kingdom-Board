@@ -13,7 +13,7 @@
         float lastAttacked { get; }
         IHasHealth lastAttacker { get; set; }
         Player controller { get; set; }
-        ScreenSpaceUI uiComponent { get; set; }
+        UIBase uiComponent { get; set; }
 
         bool ReceiveDamage(float damage);
         bool UseEnergy(float amount);

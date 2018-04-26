@@ -1,8 +1,12 @@
 ﻿namespace Unit {
 
+    using UnityEngine;
+
     using Constants;
     using Enum;
+    using UI;
 
+    [RequireComponent(typeof(MageUI))]
     public sealed class Mage : UnitBase {
 
         private float _splashRadius;

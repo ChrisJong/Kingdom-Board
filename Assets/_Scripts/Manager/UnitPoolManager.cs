@@ -9,6 +9,7 @@
     using Extension;
     using Helpers;
     using Player;
+    using UI;
     using Unit;
 
     public sealed class UnitPoolManager : SingletonMono<UnitPoolManager> {
@@ -51,9 +52,10 @@
             pos = Utility.Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
             var unit = pool.Get(pos, Quaternion.identity);
 
-            // NOTE: grab the color render of the unit and change it using the controller.
-
             unit.controller = controller;
+            unit.uiComponent.controller = controller;
+            // NOTE: grab the color render of the unit and change it using the controller.
+            ((UnitUI)unit.uiComponent).Init();
             controller.units.Add(unit);
 
             return unit;

@@ -92,7 +92,6 @@ GameObject:
   - component: {fileID: 223000658906578398}
   - component: {fileID: 114164906059256954}
   - component: {fileID: 114790779609679658}
-  - component: {fileID: 114705090397667042}
   m_Layer: 5
   m_Name: Castle_UI
   m_TagString: Untagged
@@ -785,25 +784,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114705090397667042
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1499755791650714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc5f6c6095fd66744a5b2bcc37f5e888, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  goHover: {fileID: 1812408040139364}
-  goSelected: {fileID: 1907170067872904}
-  castle: {fileID: 0}
-  btnSpawn: {fileID: 114031053393803426}
-  btnBack: {fileID: 114657941504042774}
-  btnSpawnProjectile: {fileID: 114498742427353224}
-  btnSpawnMagic: {fileID: 114539250480619172}
-  btnSpawnPhysical: {fileID: 114158305501216060}
 --- !u!114 &114761883262869052
 MonoBehaviour:
   m_ObjectHideFlags: 1
