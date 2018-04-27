@@ -17,12 +17,13 @@
         public Text _textInfo;
 
         public Button _btnEnd;
+        public Button _btnCancel;
         public Button _btnAttack;
         public Button _btnMove;
         public SpriteRenderer _spCircle;
 
-        private bool _showAttack = false;
-        private bool _showMove = false;
+        private bool _attacking = false;
+        private bool _moving = false;
         #endregion
         
         #region UNITY
@@ -42,14 +43,15 @@
             if(this._btnEnd == null)
                 this._btnEnd = this.FindButton(this._tSelected, UIValues.Unit.ENDBUTTON);
 
+            if(this._btnCancel == null)
+                this._btnCancel = this.FindButton(this._tSelected, UIValues.Unit.CANCELBUTTON);
+            this._btnCancel.gameObject.SetActive(false);
 
             if(this._btnAttack == null)
                 this._btnAttack = this.FindButton(this._tSelected, UIValues.Unit.ATTACKBUTTON);
 
-
             if(this._btnMove == null)
                 this._btnMove = this.FindButton(this._tSelected, UIValues.Unit.MOVEBUTTON);
-
 
             if(this._textInfo == null)
                 this._textInfo = this._tHover.Find(UIValues.Unit.INFOTEXT).GetComponent<Text>();
@@ -59,13 +61,15 @@
             if(this.controller == null)
                 this.controller = this.unit.controller;
 
-            this._btnEnd.onClick.AddListener(this.Back);
+            this._btnEnd.onClick.AddListener(this.End);
+            this._btnCancel.onClick.AddListener(this.Cancel);
             this._btnAttack.onClick.AddListener(this.InitiateAttack);
             this._btnMove.onClick.AddListener(this.InitiateMove);
         }
 
         protected virtual void OnDisable() {
-            this._btnEnd.onClick.RemoveListener(this.Back);
+            this._btnEnd.onClick.RemoveListener(this.End);
+            this._btnCancel.onClick.RemoveListener(this.Cancel);
             this._btnAttack.onClick.RemoveListener(this.InitiateAttack);
             this._btnMove.onClick.RemoveListener(this.InitiateMove);
         }
@@ -117,17 +121,75 @@
         }
 
         protected override void ResetUI() {
-            this._showAttack = false;
-            this._showMove = false;
+            this._btnCancel.gameObject.SetActive(false);
+            this._btnAttack.gameObject.SetActive(true);
+            this._btnMove.gameObject.SetActive(true);
+            this._btnEnd.gameObject.SetActive(true);
+            this._attacking = false;
+            this._moving = false;
+        }
+
+        protected void InitiateAttack() {
+            Debug.Log("BEGIN ATTACK");
+            this._attacking = true;
+            this.controller.selectionState = SelectionState.UNIT_ATTACK;
+
+            this.unit.radiusDrawer.TurnOn();
+            this.unit.radiusDrawer.DrawAttackRadius(this.unit.attackRadius);
+
+            this._btnCancel.gameObject.SetActive(true);
+            this._btnAttack.gameObject.SetActive(false);
+            this._btnMove.gameObject.SetActive(false);
+            this._btnEnd.gameObject.SetActive(false);
+        }
+
+        protected void InitiateMove() {
+            Debug.Log("BEGIN MOVE");
+            this._moving = true;
+            this.controller.selectionState = SelectionState.UNIT_MOVE;
+
+            this.unit.radiusDrawer.TurnOn();
+            this.unit.radiusDrawer.DrawMoveRadius(this.unit.moveRadius);
+
+            this._btnCancel.gameObject.SetActive(true);
+            this._btnAttack.gameObject.SetActive(false);
+            this._btnMove.gameObject.SetActive(false);
+            this._btnEnd.gameObject.SetActive(false);
+        }
+
+        protected void Cancel() {
+            if(this._btnCancel == null)
+                throw new ArgumentNullException("Missing Cancel Button");
+
+            if(this._attacking) {
+                this.ResetUI();
+                this._attacking = false;
+                this.controller.selectionState = SelectionState.FREE;
+                this.unit.radiusDrawer.TurnOff();
+            } else if(this._moving) {
+                this.ResetUI();
+                this._moving = false;
+                this.controller.selectionState = SelectionState.FREE;
+                this.unit.radiusDrawer.TurnOff();
+            } else {
+                Debug.LogError("Cancel Button Shouldn't be shown, something went wrong");
+            }
+        }
+
+        protected void End() {
+            this.unit.Finished();
+            this.ResetUI();
+            this.UpdateInfo();
+            this.Hide();
         }
 
         private void UpdateInfo() {
             string text;
             string state;
 
-            if(this._showAttack)
+            if(this._attacking)
                 state = "ATTACKING - SELECT A UNIT TO ATTACK";
-            else if(this._showMove)
+            else if(this._moving)
                 state = "MOVE - SELECT A POSITION TO MOVE TO";
             else if(this.unit.hasFinished)
                 state = "FINISHED";
@@ -141,19 +203,6 @@
                    "Current State: " + state;
 
             this._textInfo.text = text;
-        }
-
-        private void InitiateAttack() {
-            Debug.Log("BEGIN ATTACK");
-            this._showAttack = true;
-        }
-
-        private void InitiateMove() {
-            Debug.Log("BEGIN MOVE");
-            this._showMove = true;
-        }
-
-        private void Back() {
         }
         #endregion
     }

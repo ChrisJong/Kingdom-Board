@@ -23,6 +23,7 @@
             public const string UNITUI = "Unit" + UISUFFIX;
             public const string SELECTIONCIRCLE = "SelectionCircle" + SPRITESUFFIX;
             public const string ENDBUTTON = "End" + BUTTONSUFFIX;
+            public const string CANCELBUTTON = "Cancel" + BUTTONSUFFIX;
             public const string ATTACKBUTTON = "Attack" + BUTTONSUFFIX;
             public const string MOVEBUTTON = "Move" + BUTTONSUFFIX;
             public const string INFOTEXT = "Info" + TEXTSUFFIX;

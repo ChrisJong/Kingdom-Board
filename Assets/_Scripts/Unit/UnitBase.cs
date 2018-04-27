@@ -11,15 +11,17 @@
     using Enum;
     using Helpers;
     using Manager;
+    using Utility;
 
     //[RequireComponent(typeof(Rigidbody), typeof(UnityEngine.AI.NavMeshAgent))]
     [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
     public abstract class UnitBase : HasHealthBase, IUnit {
 
         #region VARIABLE
-        ////////////
-        /// UNIT ///
-        ////////////
+        //////////////
+        //// UNIT ////
+        //////////////
+        public LineRenderDrawCircle radiusDrawer;
         protected Animator _animator;
         protected float _unitRadius;
         protected bool _hasFinished;
@@ -28,11 +30,12 @@
         public abstract UnitType unitType { get; }
         public override EntityType entityType { get { return EntityType.UNIT; } }
         public LayerMask areaMask { get { return this._agent.areaMask; } }
+        public float unitRadius { get { return this._unitRadius; } }
         public bool hasFinished { get { return this._hasFinished; } }
 
-        ////////////////
-        /// MOVEMENT ///
-        ////////////////
+        //////////////////
+        //// MOVEMENT ////
+        //////////////////
         protected float _minMoveThreashold = 0.01f;
         protected float _moveSpeed = 5.0f;
         protected float _moveRadius = 10.0f;
@@ -49,9 +52,9 @@
         public float moveSpeed { get { return this._moveSpeed; } }
         public float moveRadius { get { return this._moveRadius; } }
 
-        //////////////
-        /// ATTACK ///
-        //////////////
+        ////////////////
+        //// ATTACK ////
+        ////////////////
         protected float _minDamage = 10.0f;
         protected float _maxDamage = 20.0f;
         protected float _attackRadius = 7.5f;
@@ -76,6 +79,8 @@
 
         #region UNITY
         protected virtual void Awake() {
+            this.radiusDrawer.TurnOff();
+
             this._animator = this.GetComponent<Animator>();
             if(this._animator == null)
                 throw new ArgumentNullException("Unit Animator Is Missing");
@@ -104,14 +109,25 @@
         #endregion
 
         #region CLASS
-        ////////////////
-        /// MOVEMENT ///
-        ////////////////
+        //////////////
+        //// UNIT ////
+        //////////////
+        public virtual void NewTurn() {
+            this._hasFinished = false;
+        }
+
+        public virtual void Finished() {
+            this._hasFinished = true;
+        }
+
+        //////////////////
+        //// MOVEMENT ////
+        //////////////////
         public void MoveTo(Vector3 dest) {
             NavMeshHit hit;
             if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
-                if((hit.position - this.position).sqrMagnitude > (this._agent.stoppingDistance * this._agent.stoppingDistance))
-                    return; // destination not far enough away.
+                //if((hit.position - this.position).sqrMagnitude > (this._agent.stoppingDistance * this._agent.stoppingDistance))
+                    //return; // destination not far enough away.
             }
 
             this._agent.isStopped = false;
@@ -127,9 +143,9 @@
             this.transform.LookAt(new Vector3(pos.x, this.transform.position.y, pos.z), Vector3.up);
         }
 
-        //////////////
-        /// ATTACK ///
-        //////////////
+        ////////////////
+        //// ATTACK ////
+        ////////////////
         public float GetDamage() {
             return UnityEngine.Random.Range(this._minDamage, this._maxDamage);
         }

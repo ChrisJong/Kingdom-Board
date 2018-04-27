@@ -176,18 +176,20 @@
         }
 
         private void ZoomCamera() {
-            if(this.ScrollWheel > 0) {
-                this._zoomDistance += this.ScrollWheel;
-                if(this._zoomDistance > this._maxZoom)
-                    this._zoomDistance = this._maxZoom;
-                else
-                    this.transform.Translate(0,0, this.ScrollWheel * _scrollWheelZoomSens);
-            } else {
-                this._zoomDistance += this.ScrollWheel;
-                if(this._zoomDistance < this._minZoom)
-                    this._zoomDistance = this._minZoom;
-                else
-                    this.transform.Translate(0, 0, this.ScrollWheel * _scrollWheelZoomSens);
+            if(this._enableScrollWheelZoom) {
+                if(this.ScrollWheel > 0) {
+                    this._zoomDistance += this.ScrollWheel;
+                    if(this._zoomDistance > this._maxZoom)
+                        this._zoomDistance = this._maxZoom;
+                    else
+                        this.transform.Translate(0, 0, this.ScrollWheel * _scrollWheelZoomSens);
+                } else {
+                    this._zoomDistance += this.ScrollWheel;
+                    if(this._zoomDistance < this._minZoom)
+                        this._zoomDistance = this._minZoom;
+                    else
+                        this.transform.Translate(0, 0, this.ScrollWheel * _scrollWheelZoomSens);
+                }
             }
         }
 

@@ -14,7 +14,7 @@
         public static class ArcherValues {
             public const float HEALTH = 100.0f;
             public const float ENERGY = 100.0f;
-            public const int SPAWNCOUNT = 2;
+            public const int SPAWNCOUNT = 1;
             public const int SPAWNCOST = 500;
             public const int UNITCAPCOST = 2;
 
@@ -36,7 +36,7 @@
         public static class MageValues {
             public const float HEALTH = 100.0f;
             public const float ENERGY = 100.0F;
-            public const int SPAWNCOUNT = 3;
+            public const int SPAWNCOUNT = 1;
             public const int SPAWNCOST = 500;
             public const int UNITCAPCOST = 2;
 
@@ -59,7 +59,7 @@
         public static class WarriorValues {
             public const float HEALTH = 100.0f;
             public const float ENERGY = 100.0f;
-            public const int SPAWNCOUNT = 2;
+            public const int SPAWNCOUNT = 1;
             public const int SPAWNCOST = 500;
             public const int UNITCAPCOST = 2;
 

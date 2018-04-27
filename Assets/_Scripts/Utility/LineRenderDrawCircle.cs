@@ -1,16 +1,14 @@
 ﻿namespace Utility {
 
-    using System.Collections;
-
     using UnityEngine;
 
     [RequireComponent(typeof(LineRenderer))]
     public class LineRenderDrawCircle : MonoBehaviour {
         [Range(0, 256)]
         public int segments = 128;
-        [Range(0, 5)]
+        [Range(0, 10)]
         public float xRadius = 10.0f;
-        [Range(0, 5)]
+        [Range(0, 10)]
         public float yRadius = 10.0f;
         [Range(0, 5)]
         public float width = 0.1f;
@@ -18,14 +16,14 @@
         
         public LineRenderer LineRender { get; private set; }
 
-        private void Start() {
+        private void Awake() {
             this.Init();
 
-            this.Draw();
+            //this.Draw();
         }
 
         private void Init() {
-            this.LineRender = gameObject.GetComponent<LineRenderer>() as LineRenderer;
+            this.LineRender = this.gameObject.GetComponent<LineRenderer>() as LineRenderer;
             this.LineRender.material = new Material(Shader.Find("Particles/Standard Unlit"));
 
             this.LineRender.startColor = this.lineColour;
@@ -57,6 +55,42 @@
 
                 angle += (360f / segments);
             }
+        }
+
+        public void TurnOn() {
+            this.gameObject.SetActive(true);
+        }
+
+        public void TurnOff() {
+            this.gameObject.SetActive(false);
+        }
+
+        public void DrawAttackRadius(float radius, float width = 0.1f, int segments = 128) {
+
+            this.xRadius = radius;
+            this.yRadius = radius;
+            this.width = width;
+            this.segments = segments;
+
+            this.lineColour = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            this.LineRender.startColor = this.lineColour;
+            this.LineRender.endColor = this.lineColour;
+
+            this.Draw();
+        }
+
+        public void DrawMoveRadius(float radius, float width = 0.1f, int segments = 128) {
+
+            this.xRadius = radius;
+            this.yRadius = radius;
+            this.width = width;
+            this.segments = segments;
+
+            this.lineColour = new Color(0.0f, 0.0f, 1.0f, 1.0f);
+            this.LineRender.startColor = this.lineColour;
+            this.LineRender.endColor = this.lineColour;
+
+            this.Draw();
         }
     }
 }

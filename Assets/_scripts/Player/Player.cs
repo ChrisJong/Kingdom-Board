@@ -7,6 +7,7 @@
     using UnityEngine.UI;
 
     using Constants;
+    using Enum;
     using Helpers;
     using Manager;
     using Structure;
@@ -16,9 +17,9 @@
     public abstract class Player : MonoBehaviour {
 
         #region VARIABLE
-        /////////////////////
-        //// PLAYER DATA ////
-        /////////////////////
+        ////////////////
+        //// PLAYER ////
+        ////////////////
         public uint id;
         public uint roll;
         private string _name;
@@ -28,10 +29,11 @@
         private bool _isAttacking;
         private bool _turnEnded;
         private Transform _spawnLocation;
-        [SerializeField]
         private Color _color;
+        private PlayerState _state = PlayerState.NONE;
 
         public int CurrentGold { get { return this._currentGold; } }
+        public PlayerState state { get { return this._state; } set { this._state = value; } }
 
         //////////////////
         //// Entities ////
@@ -45,6 +47,10 @@
         ////////////////
         private PlayerCamera _playerCamera;
         private PlayerSelect _playerSelection;
+        [SerializeField]
+        private SelectionState _selectionState = SelectionState.NONE;
+        
+        public SelectionState selectionState { get { return this._selectionState; } set { this._selectionState = value; } }
 
         ////////////
         //// UI ////
@@ -114,11 +120,15 @@
         public virtual void Init(bool attacking) {
             this._isAttacking = attacking;
 
-            if(attacking)
+            if(attacking) {
                 this._uiComponent.Display();
-            else
+                this._state = PlayerState.ATTACKING;
+            } else {
                 this._uiComponent.Hide();
+                this._state = PlayerState.DEFENDING;
+            }
 
+            this._selectionState = SelectionState.FREE;
             this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation, attacking);
             this._playerSelection = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
         }
@@ -133,6 +143,9 @@
 
             if(attacking)
                 this._castle.CheckSpawnQueue();
+
+            foreach(IUnit unit in this._units)
+                unit.NewTurn();
         }
 
         public virtual void EndTurn() {

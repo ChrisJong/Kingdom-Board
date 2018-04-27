@@ -1,19 +1,20 @@
 ﻿namespace Enum {
 
-    public enum PlayerMode {
+    public enum SelectionState {
         NONE = 0,
-        RESEARCH = 1,
+        FREE = 1,
+        RESEARCH,
         UNIT_ATTACK,
         UNIT_MOVE,
         STRUCTURE_ATTACK,
-        STRUCTURE_MOVE,
-        STRUCTURE_SPAWN,
+        STRUCTURE_MOVE
     };
 
     public enum PlayerState {
         NONE = 0,
         START = 1,
-        PLAYING,
+        ATTACKING, // Playing State.
+        DEFENDING, // Playing State.
         WAITING,
         END,
         DEAD
