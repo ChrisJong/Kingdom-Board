@@ -7,6 +7,7 @@
 
     using Constants;
     using Enum;
+    using Helpers;
     using UI;
 
     [RequireComponent(typeof(CastleUI))]
@@ -17,8 +18,8 @@
 
         public override StructureType structureType { get { return StructureType.CASTLE; } }
 
-        public override bool ReceiveDamage(float damage) {
-            bool isDead = base.ReceiveDamage(damage);
+        public override bool ReceiveDamage(float damage, IHasHealth target) {
+            bool isDead = base.ReceiveDamage(damage, target);
             if(isDead)
                 this.controller.OnDeath();
             return isDead;

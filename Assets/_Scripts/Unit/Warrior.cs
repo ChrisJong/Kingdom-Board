@@ -20,7 +20,6 @@
         public override AttackType weakness { get { return UnitValues.WarriorValues.WEAKNESS; } }
 
         protected override void OnEnable() {
-            base.OnEnable();
 
             this.currentHealth = UnitValues.WarriorValues.HEALTH;
             this._maxHealth = UnitValues.WarriorValues.HEALTH;
@@ -36,6 +35,8 @@
 
             this._resistancePercentage = UnitValues.WarriorValues.RESISTANCEPERCENTAGE;
             this._weaknessPercentage = UnitValues.WarriorValues.WEAKNESSPERCENTAGE;
-        }
+
+            base.OnEnable();
+    }
     }
 }

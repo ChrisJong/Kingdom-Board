@@ -4,6 +4,7 @@
 
     using Constants;
     using Enum;
+    using Helpers;
     using UI;
 
     [RequireComponent(typeof(MageUI))]
@@ -22,7 +23,6 @@
         public override AttackType weakness { get { return AttackType.PHYSICAL; } }
 
         protected override void OnEnable() {
-            base.OnEnable();
 
             this._splashRadius = UnitValues.MageValues.SPLASHRADIUS;
 
@@ -40,10 +40,12 @@
 
             this._resistancePercentage = UnitValues.ArcherValues.RESISTANCEPERCENTAGE;
             this._weaknessPercentage = UnitValues.ArcherValues.WEAKNESSPERCENTAGE;
+
+            base.OnEnable();
         }
 
-        protected override void InternalAttack(float damage) {
-            base.InternalAttack(damage);
+        protected override void InternalAttack(float damage, IHasHealth target) {
+            base.InternalAttack(damage, target);
 
             // NOTE: Find units within the splashRadius and calculate damage on the distance from the main attack source.
         }

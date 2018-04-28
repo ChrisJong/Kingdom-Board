@@ -25,7 +25,7 @@
         protected Animator _animator;
         protected float _unitRadius;
         protected bool _hasFinished;
-        private NavMeshAgent _agent;
+        protected NavMeshAgent _agent;
 
         public abstract UnitType unitType { get; }
         public override EntityType entityType { get { return EntityType.UNIT; } }
@@ -39,7 +39,7 @@
         protected float _minMoveThreashold = 0.01f;
         protected float _moveSpeed = 5.0f;
         protected float _moveRadius = 10.0f;
-        protected bool _canMpve;
+        protected bool _canMove;
         [SerializeField, Range(0.1f, 10.0f)]
         private float _allowedMovementImprecision = 1.0f;
         private Vector3 _velocity;
@@ -48,9 +48,10 @@
         public abstract MovementType movementType { get; }
         public bool isMoving { get { return this._velocity.sqrMagnitude > (this._minMoveThreashold * this._minMoveThreashold); } }
         public virtual bool isIdle { get { return !this.isMoving && !this.isDead; } }
-        public bool canMove { get { return this._canMpve; } }
+        public bool canMove { get { return this._canMove; } }
         public float moveSpeed { get { return this._moveSpeed; } }
         public float moveRadius { get { return this._moveRadius; } }
+        public Vector3 lastPosition { get { return this._lastPosition; } set { this._lastPosition = value; } }
 
         ////////////////
         //// ATTACK ////
@@ -98,15 +99,19 @@
 
             this._hasFinished = false;
             this._canAttack = true;
-            this._canMpve = true;
+            this._canMove = true;
             this._isAttacking = false;
             this._lastPosition = this.transform.position;
+
+            this._agent.speed = this._moveSpeed;
         }
 
-        /*protected virtual void Update() {
-            this._velocity = (this.position - this._lastPosition);
-            this._lastPosition = this.position;
-        }*/
+        protected virtual void Update() {
+            //this._velocity = (this.position - this._lastPosition);
+            //if(isMoving)
+                //Debug.Log("Unit is moving");
+            //this._lastPosition = this.position;
+        }
         #endregion
 
         #region CLASS
@@ -115,6 +120,8 @@
         //////////////
         public virtual void NewTurn() {
             this._hasFinished = false;
+            this._canMove = true;
+            this._canAttack = true;
         }
 
         public virtual void Finished() {
@@ -127,17 +134,35 @@
         public void MoveTo(Vector3 dest) {
             NavMeshHit hit;
             if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
-                //if((hit.position - this.position).sqrMagnitude > (this._agent.stoppingDistance * this._agent.stoppingDistance))
-                    //return; // destination not far enough away.
+                if((hit.position - this.position).sqrMagnitude < (this._agent.stoppingDistance * this._agent.stoppingDistance))
+                    return; // destination not far enough away.
             }
 
             this._agent.isStopped = false;
             this._agent.SetDestination(hit.position);
         }
 
+        public void CancelMove() {
+            if(this._lastPosition.Equals(this.position)) {
+                this.StopMoving();
+                return;
+            }
+
+            this._agent.enabled = false;
+            this.position = this._lastPosition;
+            this._agent.enabled = true;
+            this.StopMoving();
+        }
+
+        public void FinishMove() {
+            this._canMove = false;
+            this.StopMoving();
+        }
+
         public void StopMoving() {
             this._agent.isStopped = true;
             this._agent.ResetPath();
+            this._lastPosition = this.position;
         }
 
         public void LookAt(Vector3 pos) {
@@ -148,7 +173,8 @@
         //// ATTACK ////
         ////////////////
         public float GetDamage() {
-            return UnityEngine.Random.Range(this._minDamage, this._maxDamage);
+            //return UnityEngine.Random.Range(this._minDamage, this._maxDamage);
+            return this._maxDamage;
         }
 
         public void Attack(IHasHealth target) {
@@ -158,14 +184,27 @@
 
             // NOTE: Play attack animation using _animator.
 
-            this.InternalAttack(GetDamage());
+            this.InternalAttack(GetDamage(), target);
+
+            var uibase = this._uiComponent as UI.UnitUI;
+            uibase.FinishAttack();
+            this._canAttack = false;
         }
 
-        public override bool ReceiveDamage(float damage) {
+        public override bool ReceiveDamage(float damage, IHasHealth target) {
             if(this.isDead)
                 return true;
 
-            this.currentHealth -= damage;
+            ICanAttack unit = target as ICanAttack;
+            float finalDamage = damage;
+
+            if(unit.attackType == this.resistance)
+                finalDamage *= (this.resistancePercentage / 100.0f);
+            else if(unit.attackType == this.weakness)
+                finalDamage += (damage * (this.weaknessPercentage / 100.0f));
+
+            this.currentHealth -= finalDamage;
+            ((UI.UnitUI)this.uiComponent).UpdateUI();
 
             if(this.currentHealth <= 0.0f) {
                 if(this.controller != null)
@@ -181,8 +220,8 @@
             return false;
         }
 
-        protected virtual void InternalAttack(float damage) {
-            var hits = Utility.Utils.hitsBuffers;
+        protected virtual void InternalAttack(float damage, IHasHealth target) {
+            var hits = Utils.hitsBuffers;
             var pos = this.position + this.transform.forward * this._unitRadius;
             Physics.SphereCastNonAlloc(pos, this._unitRadius * 2.0f, this.transform.forward, hits, this._attackRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
 
@@ -206,7 +245,7 @@
                     continue; // ignore allies.
 
                 hasHealth.lastAttacker = this;
-                hasHealth.ReceiveDamage(damage);
+                hasHealth.ReceiveDamage(damage, this as IHasHealth);
                 break;
             }
         }

@@ -4,6 +4,7 @@
 
     using Constants;
     using Enum;
+    using Helpers;
     using UI;
 
     [RequireComponent(typeof(ArcherUI))]
@@ -18,7 +19,6 @@
         public override AttackType weakness { get { return AttackType.MAGIC; } }
 
         protected override void OnEnable() {
-            base.OnEnable();
 
             this.currentHealth = UnitValues.ArcherValues.HEALTH;
             this._maxHealth = UnitValues.ArcherValues.HEALTH;
@@ -34,10 +34,12 @@
 
             this._resistancePercentage = UnitValues.ArcherValues.RESISTANCEPERCENTAGE;
             this._weaknessPercentage = UnitValues.ArcherValues.WEAKNESSPERCENTAGE;
+
+            base.OnEnable();
         }
 
-        protected override void InternalAttack(float damage) {
-            base.InternalAttack(damage);
+        protected override void InternalAttack(float damage, IHasHealth target) {
+            base.InternalAttack(damage, target);
 
             //NOTE: emit a particle at the end of the attack.
         }

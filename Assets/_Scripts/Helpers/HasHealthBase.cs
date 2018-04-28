@@ -58,7 +58,7 @@
         #endregion
 
         #region CLASS
-        public abstract bool ReceiveDamage(float damage);
+        public abstract bool ReceiveDamage(float damage, IHasHealth target);
 
         public virtual bool UseEnergy(float amount) {
             return true;

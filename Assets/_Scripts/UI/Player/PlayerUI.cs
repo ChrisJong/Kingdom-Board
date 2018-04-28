@@ -6,13 +6,13 @@
     using UnityEngine.UI;
 
     using Constants;
-    using Player;
-    using UI;
+    using Enum;
 
     public class PlayerUI : ScreenSpaceUI {
 
         #region VARIABLE
         public Text textInfo;
+        public Text debugInfo;
         public Button btnEnd;
 
         protected Transform _tPersistance;
@@ -26,6 +26,9 @@
             if(this.tUI.Find(UIValues.PERSISTANCEGROUP) != null) {
                 this._tPersistance = this.tUI.Find(UIValues.PERSISTANCEGROUP);
                 this._goPersistance = this._tPersistance.gameObject;
+
+                this.debugInfo = this.tUI.Find("Debug_TEXT").GetComponent<Text>();
+                this.debugInfo.text = "";
             }
 
             if(this._tPersistance.Find(UIValues.Player.ENDBUTTON) != null)
@@ -38,6 +41,13 @@
 
         private void OnDisable() {
             this.btnEnd.onClick.RemoveListener(this.EndTurn);
+        }
+
+        public void Update() {
+            if(controller.selectionState != SelectionState.FREE)
+                this.btnEnd.gameObject.SetActive(false);
+            else
+                this.btnEnd.gameObject.SetActive(true);
         }
         #endregion
 
@@ -62,10 +72,15 @@
             }
         }
 
+        public void ChangeDebugText(string text) {
+            string temp = "Debug: " + text;
+
+            this.debugInfo.text = temp;
+        }
+
         private void EndTurn() {
             this.controller.EndTurn();
             this.Hide();
-            this.UpdateUI();
         }
         #endregion
     }

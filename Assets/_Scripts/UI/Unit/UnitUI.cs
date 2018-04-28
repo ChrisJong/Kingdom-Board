@@ -20,6 +20,7 @@
         public Button _btnCancel;
         public Button _btnAttack;
         public Button _btnMove;
+        public Button _btnFinishMove;
         public SpriteRenderer _spCircle;
 
         private bool _attacking = false;
@@ -53,6 +54,9 @@
             if(this._btnMove == null)
                 this._btnMove = this.FindButton(this._tSelected, UIValues.Unit.MOVEBUTTON);
 
+            if(this._btnFinishMove == null)
+                this._btnFinishMove = this.FindButton(this._tSelected, "Finish_BTN");
+
             if(this._textInfo == null)
                 this._textInfo = this._tHover.Find(UIValues.Unit.INFOTEXT).GetComponent<Text>();
         }
@@ -65,6 +69,7 @@
             this._btnCancel.onClick.AddListener(this.Cancel);
             this._btnAttack.onClick.AddListener(this.InitiateAttack);
             this._btnMove.onClick.AddListener(this.InitiateMove);
+            this._btnFinishMove.onClick.AddListener(this.FinishMove);
         }
 
         protected virtual void OnDisable() {
@@ -72,6 +77,7 @@
             this._btnCancel.onClick.RemoveListener(this.Cancel);
             this._btnAttack.onClick.RemoveListener(this.InitiateAttack);
             this._btnMove.onClick.RemoveListener(this.InitiateMove);
+            this._btnFinishMove.onClick.RemoveListener(this.FinishMove);
         }
 
         protected override void OnMouseEnter() {
@@ -97,6 +103,8 @@
 
         public override void UpdateUI() {
             base.UpdateUI();
+
+            this.UpdateInfo();
         }
         public override void Display() {
             base.Display();
@@ -120,8 +128,16 @@
                 this._goHover.SetActive(false);
         }
 
+        public virtual void FinishAttack() {
+            Debug.Log("Finish Attack");
+            this.controller.selectionState = SelectionState.FREE;
+            this.unit.radiusDrawer.TurnOff();
+            this.ResetUI();
+        }
+
         protected override void ResetUI() {
             this._btnCancel.gameObject.SetActive(false);
+            this._btnFinishMove.gameObject.SetActive(false);
             this._btnAttack.gameObject.SetActive(true);
             this._btnMove.gameObject.SetActive(true);
             this._btnEnd.gameObject.SetActive(true);
@@ -130,6 +146,11 @@
         }
 
         protected void InitiateAttack() {
+            if(!this.unit.canAttack) {
+                Debug.Log("Unit - " + unit.name + " Can NOT Attack Anymore");
+                return;
+            }
+
             Debug.Log("BEGIN ATTACK");
             this._attacking = true;
             this.controller.selectionState = SelectionState.UNIT_ATTACK;
@@ -144,17 +165,35 @@
         }
 
         protected void InitiateMove() {
+            if(!this.unit.canMove) {
+                Debug.Log("Unit - " + unit.name + " Can NOT Move Anymore");
+                return;
+            }
+
             Debug.Log("BEGIN MOVE");
             this._moving = true;
             this.controller.selectionState = SelectionState.UNIT_MOVE;
 
             this.unit.radiusDrawer.TurnOn();
             this.unit.radiusDrawer.DrawMoveRadius(this.unit.moveRadius);
+            this.unit.lastPosition = this.unit.position;
 
             this._btnCancel.gameObject.SetActive(true);
+            this._btnFinishMove.gameObject.SetActive(true);
             this._btnAttack.gameObject.SetActive(false);
             this._btnMove.gameObject.SetActive(false);
             this._btnEnd.gameObject.SetActive(false);
+        }
+
+        protected void FinishMove() {
+            Debug.Log("Finish Movement");
+
+            this.controller.selectionState = SelectionState.FREE;
+
+            this.unit.FinishMove();
+            this.unit.radiusDrawer.TurnOff();
+
+            ResetUI();
         }
 
         protected void Cancel() {
@@ -171,6 +210,7 @@
                 this._moving = false;
                 this.controller.selectionState = SelectionState.FREE;
                 this.unit.radiusDrawer.TurnOff();
+                this.unit.CancelMove();
             } else {
                 Debug.LogError("Cancel Button Shouldn't be shown, something went wrong");
             }

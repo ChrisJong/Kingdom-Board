@@ -84,12 +84,12 @@
             }
         }
 
-        private bool CastRayToWorld(LayerMask ignoreMask) {
+        private bool CastRayToWorld(LayerMask mask) {
             this._ray = this._camera.ScreenPointToRay(Input.mousePosition);
 
             Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
 
-            return Physics.Raycast(this._ray, out this._hitInfo, this._distance, ~(ignoreMask));
+            return Physics.Raycast(this._ray, out this._hitInfo, this._distance, ~(mask)); // ignores everything other than the mask
         }
 
         private void MouseSelect() {
@@ -162,33 +162,73 @@
         private void AttackSelection() {
             if(Input.GetMouseButtonUp(0)) {
                 if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
-                    Debug.Log("Selection Distance: " + Vector3.Distance(this.currentSelected.position, this._hitInfo.point));
-                    Debug.Log("Unit Radius: " + ((UnitBase)this.currentSelected).unitRadius);
-                    if(Vector3.Distance(this.currentSelected.position, this._hitInfo.point) + ((UnitBase)this.currentSelected).unitRadius > ((UnitBase)this.currentSelected).attackRadius) {
+                    UnitBase unit = this.currentSelected as UnitBase;
+                    UnitBase toAttack = this._hitInfo.transform.GetComponent<UnitBase>();
+                    float distance = Vector3.Distance(toAttack.position, unit.position) - (unit.unitRadius - unit.radiusDrawer.width);
 
+                    Debug.DrawLine(unit.position, toAttack.position, Color.blue, 20.0f);
+                    Debug.Log("Selection Distance: " + distance);
+                    Debug.Log("Unit Attack Radius: " + unit.attackRadius);
+                    Debug.Log("Unit Radius: " + unit.unitRadius);
+
+                    if(distance > unit.attackRadius) {
                         Debug.Log("Out Of Unit Attack Radius");
                         return;
                     } else {
-
+                        if(toAttack.IsAlly(unit as IHasHealth)) {
+                            Debug.Log("CAN NOT ATTACK ALLY");
+                            return;
+                        } else {
+                            Debug.Log("Can Attack " + (toAttack != null ? toAttack.name : "doesn't exist"));
+                            unit.Attack(toAttack as IHasHealth);
+                            this.DebugAttackText(unit, toAttack);
+                        }
                     }
                 }
             }
         }
 
         private void MoveToSelection() {
+            Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
             if(Input.GetMouseButtonUp(0)) {
                 if(this.CastRayToWorld(GlobalSettings.LayerValues.unitLayer)) {
-                    Debug.Log("Selection Distance: " + Vector3.Distance(this.currentSelected.position, this._hitInfo.point));
+                    UnitBase unit = this.currentSelected as UnitBase;
+                    float distance = Vector3.Distance(this._hitInfo.point, unit.position) - (unit.unitRadius - unit.radiusDrawer.width);
+                    
+
+                    Debug.DrawLine(unit.position, this._hitInfo.point, Color.blue, 20.0f);
+                    Debug.Log("Selection Distance: " + distance.ToString());
+                    Debug.Log("Unit Move Radius: " + (((UnitBase)this.currentSelected).moveRadius + ((UnitBase)this.currentSelected).unitRadius).ToString());
                     Debug.Log("Unit Radius: " + ((UnitBase)this.currentSelected).unitRadius);
-                    if(Vector3.Distance(this.currentSelected.position, this._hitInfo.point) + ((UnitBase)this.currentSelected).unitRadius > ((UnitBase)this.currentSelected).moveRadius) {
-                        
+
+                    if(distance > unit.moveRadius) {
                         Debug.Log("Out Of Unit Move Radius");
                         return;
                     }else {
-                        ((UnitBase)this.currentSelected).MoveTo(this._hitInfo.point);
+                        Debug.Log("Can Move To");
+                        unit.MoveTo(this._hitInfo.point);
                     }
                 }
             }
+        }
+
+        private void DebugAttackText(UnitBase unit, UnitBase toAttack) {
+            float damage = unit.GetDamage();
+            float extraDamage = 0.0f;
+            string damagetext = damage.ToString() + "(" + "+" +extraDamage.ToString() + ")";
+
+            if(unit.attackType == toAttack.weakness) {
+                extraDamage = (damage * (toAttack.weaknessPercentage / 100.0f));
+                damagetext = damage.ToString() + "(" + "+" + extraDamage.ToString() + ")";
+            }
+            if(unit.attackType == toAttack.resistance) {
+                extraDamage = damage * (toAttack.resistancePercentage / 100.0f);
+                damagetext = damage.ToString() + "(" + "-" + extraDamage.ToString() + ")";
+            }
+
+            string temp = "\r\n" + unit.name + " Attacking: " + toAttack.name + " For " + damagetext + " DAMAGe";
+
+            this._controller.uiComponent.ChangeDebugText(temp);
         }
         #endregion
     }

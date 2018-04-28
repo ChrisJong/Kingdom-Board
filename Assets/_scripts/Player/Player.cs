@@ -55,9 +55,9 @@
         ////////////
         //// UI ////
         ////////////
-        private ScreenSpaceUI _uiComponent;
+        private PlayerUI _uiComponent;
 
-        public ScreenSpaceUI uiComponent {
+        public PlayerUI uiComponent {
             get { return this._uiComponent; }
             set { this._uiComponent = value; } }
 
@@ -113,7 +113,7 @@
 
             GameObject ui = GameObject.Instantiate(AssetManager.instance.playerUI, this.transform);
             ui.name = UIValues.Player.PLAYERUI;
-            this._uiComponent = this.gameObject.AddComponent<PlayerUI>() as ScreenSpaceUI;
+            this._uiComponent = this.gameObject.AddComponent<PlayerUI>();
             this._uiComponent.controller = this;
         }
 

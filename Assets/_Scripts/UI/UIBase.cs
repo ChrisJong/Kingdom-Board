@@ -100,7 +100,7 @@
         protected abstract void ResetUI();
 
         public virtual void UpdateUI() {
-            Debug.LogWarning("UI update not implemented");
+            //Debug.LogWarning("UI update not implemented");
         }
 
         protected virtual void FindUI(Transform parent, string name) {

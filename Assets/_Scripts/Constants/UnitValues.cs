@@ -10,6 +10,7 @@
         public const float MASS = 100.0f;
         public const float DRAG = 0.0f;
         public const float ANGULARDRAG = 0.05f;
+        public const float MOVEMENTCOST = 0.25F;
 
         public static class ArcherValues {
             public const float HEALTH = 100.0f;

@@ -15,7 +15,7 @@
         #region VARIABLE
         public int RoundCount { private set; get; }
         private int _indexOnAttack = 0;
-        private int _indexInView = 0;
+        //private int _indexInView = 0;
         private int _numberOfPlayers = 2;
 
         public AssetManager _assetManager;
@@ -117,7 +117,7 @@
 
             this._players.Sort((x1, x2) => x2.roll.CompareTo(x1.roll));
             this._indexOnAttack = 0;
-            this._indexInView = 0;
+            //this._indexInView = 0;
 
             this.PlayerOnAttack = this._players[0];
             this.PlayerInView = this._players[0];

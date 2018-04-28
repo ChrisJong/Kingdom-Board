@@ -20,7 +20,7 @@
             this.currentHealth = this._maxHealth;
         }
 
-        public override bool ReceiveDamage(float damage) {
+        public override bool ReceiveDamage(float damage, IHasHealth target) {
             if(this.isDead)
                 return true;
 
