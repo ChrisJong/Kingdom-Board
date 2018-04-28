@@ -81,6 +81,7 @@
         protected virtual void Awake() {
             this.radiusDrawer.TurnOff();
 
+
             this._animator = this.GetComponent<Animator>();
             if(this._animator == null)
                 throw new ArgumentNullException("Unit Animator Is Missing");

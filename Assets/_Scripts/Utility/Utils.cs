@@ -54,6 +54,21 @@
             dict.TryGetValue(key, out val);
             return val;
         }
+
+        // Gets the direction the entity is facing.
+        public static Vector3 GetPlayerFacingDirection(Transform entity) {
+            return new Vector3(Mathf.Sin(entity.rotation.eulerAngles.y * Mathf.Deg2Rad),
+                               0,
+                               Mathf.Cos(entity.rotation.eulerAngles.y * Mathf.Deg2Rad));
+        }
+
+        public static float FindDegree(int x, int y) {
+            float value = (float)((Math.Atan2(x, y) / Math.PI) * 180.0f);
+            if(value > 0)
+                value += 360.0f;
+
+            return value;
+        }
         #endregion
     }
 }
