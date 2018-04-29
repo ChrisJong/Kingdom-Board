@@ -6,5 +6,6 @@
         //bool unlock { get; }
 
         //void Unlock();
+        //void Lock();
     }
 }

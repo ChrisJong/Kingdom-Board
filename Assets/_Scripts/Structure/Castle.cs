@@ -18,6 +18,8 @@
 
         public override StructureType structureType { get { return StructureType.CASTLE; } }
 
+        public List<SpawnQueueType> spawnQueue { get { return this._spawnQueue; } }
+
         public override bool ReceiveDamage(float damage, IHasHealth target) {
             bool isDead = base.ReceiveDamage(damage, target);
             if(isDead)
@@ -59,12 +61,13 @@
             // NOTE: check player resource.
             // NOTE: add new unit to queue if unit cap isnt maxed & there are resources avaliable.
             int unitCapCost = this.GetUnitCapCost(type);
+            int unitSpawnCounter = this.GetUnitSpawnCounter(type);
             int unitCost = this.GetUnitResourceCost(type);
 
             if(this.controller.HasResource(unitCost) && this.controller.CheckUnitCap(unitCapCost)) {
                 this.controller.SpendResource(unitCost);
-                this.controller.AddResource(unitCapCost);
-                this._spawnQueue.Add(new SpawnQueueType(type, unitCapCost));
+                this.controller.AddToUnitCap(unitCapCost);
+                this._spawnQueue.Add(new SpawnQueueType(type, unitSpawnCounter));
                 return true;
             }
             return false;
@@ -75,6 +78,31 @@
         }
 
         private int GetUnitCapCost(UnitType type) {
+            int cost;
+
+            switch(type) {
+                case UnitType.ARCHER:
+                cost = UnitValues.ArcherValues.UNITCAPCOST;
+                break;
+
+                case UnitType.MAGE:
+                cost = UnitValues.MageValues.UNITCAPCOST;
+                break;
+
+                case UnitType.WARRIOR:
+                cost = UnitValues.WarriorValues.UNITCAPCOST;
+                break;
+
+                default:
+                Debug.LogError("Unit of type(" + type.ToString() + ") not found");
+                cost = -1;
+                break;
+            }
+
+            return cost;
+        }
+
+        private int GetUnitSpawnCounter(UnitType type) {
             int cost;
 
             switch(type) {

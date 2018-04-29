@@ -686,7 +686,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -707,7 +707,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Castle Health:
 
-    Spawn List:'
+    Spawn List: aaaaaaaaaaaaaa'
 --- !u!114 &114734006707829286
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1016,8 +1016,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 224824187387546826}
   - {fileID: 224441185062915292}
+  - {fileID: 224824187387546826}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1038,7 +1038,7 @@ RectTransform:
   m_Children:
   - {fileID: 224979401159010298}
   m_Father: {fileID: 224383903632333458}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -1097,7 +1097,7 @@ RectTransform:
   - {fileID: 224121756190535080}
   - {fileID: 224885903288953514}
   m_Father: {fileID: 224383903632333458}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -1177,5 +1177,5 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 100}
+  m_SizeDelta: {x: 300, y: 150}
   m_Pivot: {x: 1, y: 1}

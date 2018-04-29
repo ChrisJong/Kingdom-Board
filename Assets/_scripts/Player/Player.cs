@@ -33,6 +33,8 @@
         private PlayerState _state = PlayerState.NONE;
 
         public int CurrentGold { get { return this._currentGold; } }
+        public int CurrentUnitCap { get { return this._currentUnitCap; } }
+        public int MaxUnitCap { get { return this._maxUnitCap; } }
         public PlayerState state { get { return this._state; } set { this._state = value; } }
 
         //////////////////
@@ -156,6 +158,7 @@
             this._turnEnded = true;
             GameManager.instance.CheckRound();
         }
+
         public virtual void OnDeath() {
             int count = this._units.Count;
             for(int i = count - 1; i >= 0; i--)
@@ -182,7 +185,7 @@
 
         public void SpendResource(int quantity) {
             if(this.HasResource(quantity))
-                this._currentGold -= quantity;
+                this._currentGold = this._currentGold - quantity;
         }
 
         public bool HasResource(int quantity) {

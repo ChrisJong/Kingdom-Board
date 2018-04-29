@@ -89,6 +89,9 @@
 
             Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
 
+            if(EventSystem.current.IsPointerOverGameObject()) // check to see if our point iver on a UI object.
+                return false;
+
             return Physics.Raycast(this._ray, out this._hitInfo, this._distance, ~(mask)); // ignores everything other than the mask
         }
 
@@ -137,10 +140,7 @@
                         this.previousSelected.uiComponent.Hide();
                     }
 
-                    // get current selected
                     this.currentSelected = temp;
-
-                    // display ui
                     this.currentSelected.uiComponent.Display();
 
                     this.selected = true;
@@ -195,7 +195,6 @@
                     UnitBase unit = this.currentSelected as UnitBase;
                     float distance = Vector3.Distance(this._hitInfo.point, unit.position) - (unit.unitRadius - unit.radiusDrawer.width);
                     
-
                     Debug.DrawLine(unit.position, this._hitInfo.point, Color.blue, 20.0f);
                     Debug.Log("Selection Distance: " + distance.ToString());
                     Debug.Log("Unit Move Radius: " + (((UnitBase)this.currentSelected).moveRadius + ((UnitBase)this.currentSelected).unitRadius).ToString());

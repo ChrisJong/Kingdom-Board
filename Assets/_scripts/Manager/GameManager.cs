@@ -13,9 +13,9 @@
     public class GameManager : SingletonMono<GameManager> {
 
         #region VARIABLE
-        public int RoundCount { private set; get; }
+        public int RoundCount { get; private set; }
         private int _indexOnAttack = 0;
-        //private int _indexInView = 0;
+        private int _indexInView = 0;
         private int _numberOfPlayers = 2;
 
         public AssetManager _assetManager;
@@ -30,10 +30,6 @@
         #endregion
 
         #region UNITY
-        public void OnEnable() {
-            Debug.Log("GameManager Enabled!");
-        }
-
         public void OnDisable() {
             this.PlayerInView = null;
             this.PlayerOnAttack = null;
@@ -61,6 +57,7 @@
 
         #region CLASS
         private void NewRound() {
+            this.RoundCount++;
             Debug.Log("Round: " + RoundCount.ToString());
 
             foreach(Player p in this._players) {
@@ -72,19 +69,42 @@
         }
 
         public void CheckRound() {
-            if(!this.PlayerOnAttack.turnEnded)
+            if(!this.PlayerOnAttack.turnEnded) {
                 return;
-            else
-                EndRound();
+            } else {
+                if(!CheckPlayerOrder()) {
+                    this.EndRound();
+                } else {
+                    this.NextPlayer();
+                }
+            }
+        }
+
+        private bool CheckPlayerOrder() {
+            var count = this._indexOnAttack + 1;
+            if(count > this._numberOfPlayers - 1)
+                return false; // start a new round.
+            else 
+                return true; // next player in the lists turn.
+        }
+
+        private void NextPlayer() {
+            this._indexOnAttack += 1;
+            this._indexInView = this._indexOnAttack;
+            this.PlayerOnAttack = this._players[this._indexOnAttack];
+            this.PlayerInView = this.PlayerOnAttack;
+
+            foreach(Player p in this._players) {
+                if(p == this.PlayerOnAttack)
+                    p.NewTurn(true);
+                else
+                    p.NewTurn(false);
+            }
         }
 
         private void EndRound() {
-            this.RoundCount++;
-
-            this._indexOnAttack += 1;
-            if(this._indexOnAttack > this._numberOfPlayers-1)
-                this._indexOnAttack = 0;
-
+            this._indexOnAttack = 0;
+            this._indexInView = 0;
             this.PlayerOnAttack = this._players[this._indexOnAttack];
             this.PlayerInView = this.PlayerOnAttack;
 
@@ -111,20 +131,23 @@
                 var player = temp.AddComponent<Human>() as Human;
                 player.Create(this._spawnPoints[i], (uint)i);
                 player.roll = (uint)Random.Range(0, 100);
-                Debug.Log("Player0" + player.id.ToString() + "Rolled: " + player.roll.ToString());
+                Debug.Log(player.name + " Rolled: " + player.roll.ToString());
                 this._players.Add(player);
             }
 
             this._players.Sort((x1, x2) => x2.roll.CompareTo(x1.roll));
-            this._indexOnAttack = 0;
-            //this._indexInView = 0;
 
+            this._indexOnAttack = 0;
+            this._indexInView = 0;
             this.PlayerOnAttack = this._players[0];
             this.PlayerInView = this._players[0];
 
             for(int i = 0; i < this._numberOfPlayers; i++) {
                 this._players[i].Init((i == this._indexOnAttack) ? true : false);
             }
+
+            this.RoundCount++;
+            Debug.Log("Round: " + RoundCount.ToString());
         }
         #endregion
     }

@@ -32,7 +32,9 @@
             }
 
             if(this._tPersistance.Find(UIValues.Player.ENDBUTTON) != null)
-                this.btnEnd = this._tPersistance.Find(UIValues.Player.ENDBUTTON).GetComponent<Button>() as Button;
+                this.btnEnd = this._tPersistance.Find(UIValues.Player.ENDBUTTON).GetComponent<Button>();
+
+            this.textInfo = this._tPersistance.Find("Info_TEXT").GetComponent<Text>();
         }
 
         private void OnEnable() {
@@ -48,6 +50,8 @@
                 this.btnEnd.gameObject.SetActive(false);
             else
                 this.btnEnd.gameObject.SetActive(true);
+
+            this.UpdateInfo();
         }
         #endregion
 
@@ -68,7 +72,7 @@
             if(this.controller.turnEnded) {
                 this.Hide();
             } else {
-                
+                this.UpdateInfo();
             }
         }
 
@@ -81,6 +85,15 @@
         private void EndTurn() {
             this.controller.EndTurn();
             this.Hide();
+        }
+
+        private void UpdateInfo() {
+            string text = string.Empty;
+
+            text = "GOLD: " + this.controller.CurrentGold.ToString() + "\r\n" +
+                   "UNIT CAP: " + this.controller.CurrentUnitCap.ToString() + " / " + this.controller.MaxUnitCap;
+
+            this.textInfo.text = text;
         }
         #endregion
     }

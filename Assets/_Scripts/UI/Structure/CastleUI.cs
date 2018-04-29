@@ -1,8 +1,5 @@
 ﻿namespace UI {
 
-    using System.Collections;
-    using System.Collections.Generic;
-
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -74,6 +71,15 @@
             this.btnSpawnProjectile.onClick.AddListener(delegate { this.AddToQueue(UnitType.ARCHER); });
             this.btnSpawnMagic.onClick.AddListener(delegate { this.AddToQueue(UnitType.MAGE); });
             this.btnSpawnPhysical.onClick.AddListener(delegate { this.AddToQueue(UnitType.WARRIOR); });
+
+            if(this.textInfo == null)
+                this.textInfo = this._tHover.Find("Info_TEXT").GetComponent<Text>();
+        }
+
+        public override void UpdateUI() {
+            base.UpdateUI();
+
+            this.UpdateInfo();
         }
 
         public override void Display() {
@@ -127,10 +133,28 @@
         }
 
         private void AddToQueue(UnitType type) {
-            Debug.Log("ADDING " + type.ToString() + " TO " + this.controller.name + " QUEUE");
+            Debug.Log("TRYING TO ADD " + type.ToString() + " TO " + this.controller.name + " QUEUE");
             if(!this.castle.AddUnitToQueue(type))
                 Debug.Log("UNABLE TO ADD " + type.ToString() + " TO QUEUE");
             // NOTE: Add to castle queue let the castle handle the spawning of the objects.
+            this.UpdateInfo();
+        }
+
+        private void UpdateInfo() {
+            string text = string.Empty;
+            string spawnlist = string.Empty;
+
+            text = "HEALTH: " + this.castle.currentHealth + " / " + this.castle.maxHealth + "\r\n" +
+                   "SPAWN LIST: " + "\r\n";
+
+            if(this.castle.spawnQueue.Count != 0) {
+                foreach(SpawnQueueType spawn in castle.spawnQueue) {
+                    spawnlist += spawn.type.ToString() + " - " + spawn.counter + " Round Until Spawn" + "\r\n";
+                }
+                text += spawnlist;
+            }
+
+            this.textInfo.text = text;
         }
         #endregion
     }

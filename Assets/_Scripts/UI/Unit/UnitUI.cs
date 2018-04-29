@@ -56,6 +56,7 @@
 
             if(this._btnFinishMove == null)
                 this._btnFinishMove = this.FindButton(this._tSelected, "Finish_BTN");
+            this._btnFinishMove.gameObject.SetActive(false);
 
             if(this._textInfo == null)
                 this._textInfo = this._tHover.Find(UIValues.Unit.INFOTEXT).GetComponent<Text>();
@@ -236,8 +237,8 @@
             else
                 state = "IDLE";
 
-            text = "Health: " + this.unit.currentHealth.ToString() + "\r\n" +
-                   "Attack: " + this.unit.GetDamage().ToString() + "\r\n" +
+            text = "Health: " + this.unit.currentHealth + " / " + this.unit.maxHealth + "\r\n" +
+                   "Attack: " + this.unit.GetDamage() + "\r\n" +
                    "Resistance: " + this.unit.resistance.ToString() + " - " + this.unit.resistancePercentage.ToString() + "%" + "\r\n" +
                    "Weakness: " + this.unit.weakness.ToString() + " - " + this.unit.weaknessPercentage.ToString() + "%" + "\r\n" +
                    "Current State: " + state;

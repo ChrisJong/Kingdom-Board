@@ -68,6 +68,8 @@
         }
 
         protected virtual void OnMouseEnter() {
+            this.UpdateUI();
+
             if(this._tHover == null)
                 return;
 
@@ -79,6 +81,8 @@
         }
 
         protected virtual void OnMouseExit() {
+            this.UpdateUI();
+
             if(this._tHover == null)
                 return;
 
@@ -93,9 +97,11 @@
         #region CLASS
         public virtual void Display() {
             this.showSelected = true;
+            this.showHover = true;
         }
         public virtual void Hide() {
             this.showSelected = false;
+            this.showHover = false;
         }
         protected abstract void ResetUI();
 
