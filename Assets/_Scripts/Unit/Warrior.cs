@@ -13,30 +13,30 @@
 
         public override UnitType unitType { get { return UnitType.WARRIOR; } }
 
-        public override MovementType movementType { get { return UnitValues.WarriorValues.MOVETYPE; } }
+        public override MovementType movementType { get { return UnitValues.Warrior.MOVETYPE; } }
 
-        public override AttackType attackType { get { return UnitValues.WarriorValues.ATTACKTYPE; } }
-        public override AttackType resistance { get { return UnitValues.WarriorValues.RESISTANCE; } }
-        public override AttackType weakness { get { return UnitValues.WarriorValues.WEAKNESS; } }
+        public override AttackType attackType { get { return UnitValues.Warrior.ATTACKTYPE; } }
+        public override AttackType resistanceType { get { return UnitValues.Warrior.RESISTANCETYPE; } }
+        public override AttackType weaknessType { get { return UnitValues.Warrior.WEAKNESSTYPE; } }
 
         protected override void OnEnable() {
 
-            this.currentHealth = UnitValues.WarriorValues.HEALTH;
-            this._maxHealth = UnitValues.WarriorValues.HEALTH;
-            this.currentEnergy = UnitValues.WarriorValues.ENERGY;
-            this._maxEnergy = UnitValues.WarriorValues.ENERGY;
+            this.currentHealth = UnitValues.Warrior.HEALTH;
+            this._maxHealth = UnitValues.Warrior.HEALTH;
+            this.currentEnergy = UnitValues.Warrior.ENERGY;
+            this._maxEnergy = UnitValues.Warrior.ENERGY;
 
-            this._moveSpeed = UnitValues.WarriorValues.MOVESPEED;
-            this._moveRadius = UnitValues.WarriorValues.MOVERADIUS;
+            this._moveSpeed = UnitValues.Warrior.MOVESPEED;
+            this._moveRadius = UnitValues.Warrior.MOVERADIUS;
 
-            this._minDamage = UnitValues.WarriorValues.MINDAMAGE;
-            this._maxDamage = UnitValues.WarriorValues.MAXDAMAGE;
-            this._attackRadius = UnitValues.WarriorValues.ATTACKRADIUS;
+            this._minDamage = UnitValues.Warrior.MINDAMAGE;
+            this._maxDamage = UnitValues.Warrior.MAXDAMAGE;
+            this._attackRadius = UnitValues.Warrior.ATTACKRADIUS;
 
-            this._resistancePercentage = UnitValues.WarriorValues.RESISTANCEPERCENTAGE;
-            this._weaknessPercentage = UnitValues.WarriorValues.WEAKNESSPERCENTAGE;
+            this._resistancePercentage = UnitValues.Warrior.RESISTANCEPERCENTAGE;
+            this._weaknessPercentage = UnitValues.Warrior.WEAKNESSPERCENTAGE;
 
             base.OnEnable();
-    }
+        }
     }
 }

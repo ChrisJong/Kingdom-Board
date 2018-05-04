@@ -82,15 +82,15 @@
 
             switch(type) {
                 case UnitType.ARCHER:
-                cost = UnitValues.ArcherValues.UNITCAPCOST;
+                cost = UnitValues.Archer.UNITCAPCOST;
                 break;
 
                 case UnitType.MAGE:
-                cost = UnitValues.MageValues.UNITCAPCOST;
+                cost = UnitValues.Mage.UNITCAPCOST;
                 break;
 
                 case UnitType.WARRIOR:
-                cost = UnitValues.WarriorValues.UNITCAPCOST;
+                cost = UnitValues.Warrior.UNITCAPCOST;
                 break;
 
                 default:
@@ -107,15 +107,15 @@
 
             switch(type) {
                 case UnitType.ARCHER:
-                cost = UnitValues.ArcherValues.SPAWNCOUNT;
+                cost = UnitValues.Archer.SPAWNCOUNT;
                 break;
 
                 case UnitType.MAGE:
-                cost = UnitValues.MageValues.SPAWNCOUNT;
+                cost = UnitValues.Mage.SPAWNCOUNT;
                 break;
 
                 case UnitType.WARRIOR:
-                cost = UnitValues.WarriorValues.SPAWNCOUNT;
+                cost = UnitValues.Warrior.SPAWNCOUNT;
                 break;
 
                 default:
@@ -132,15 +132,15 @@
 
             switch(type) {
                 case UnitType.ARCHER:
-                cost = UnitValues.ArcherValues.SPAWNCOST;
+                cost = UnitValues.Archer.SPAWNCOST;
                 break;
 
                 case UnitType.MAGE:
-                cost = UnitValues.MageValues.SPAWNCOST;
+                cost = UnitValues.Mage.SPAWNCOST;
                 break;
 
                 case UnitType.WARRIOR:
-                cost = UnitValues.WarriorValues.SPAWNCOST;
+                cost = UnitValues.Warrior.SPAWNCOST;
                 break;
 
                 default:

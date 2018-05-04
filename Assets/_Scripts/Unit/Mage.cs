@@ -16,30 +16,30 @@
 
         public override UnitType unitType { get { return UnitType.MAGE; } }
 
-        public override MovementType movementType { get { return MovementType.GROUND; } }
+        public override MovementType movementType { get { return UnitValues.Mage.MOVETYPE; } }
 
-        public override AttackType attackType { get { return AttackType.MAGIC; } }
-        public override AttackType resistance { get { return AttackType.PROJECTFILE; } }
-        public override AttackType weakness { get { return AttackType.PHYSICAL; } }
+        public override AttackType attackType { get { return UnitValues.Mage.ATTACKTYPE; } }
+        public override AttackType resistanceType { get { return UnitValues.Mage.RESISTANCETYPE; } }
+        public override AttackType weaknessType { get { return UnitValues.Mage.WEAKNESSTYPE; } }
 
         protected override void OnEnable() {
 
-            this._splashRadius = UnitValues.MageValues.SPLASHRADIUS;
+            this._splashRadius = UnitValues.Mage.SPLASHRADIUS;
 
-            this.currentHealth = UnitValues.ArcherValues.HEALTH;
-            this._maxHealth = UnitValues.ArcherValues.HEALTH;
-            this.currentEnergy = UnitValues.ArcherValues.ENERGY;
-            this._maxEnergy = UnitValues.ArcherValues.ENERGY;
+            this.currentHealth = UnitValues.Mage.HEALTH;
+            this._maxHealth = UnitValues.Mage.HEALTH;
+            this.currentEnergy = UnitValues.Mage.ENERGY;
+            this._maxEnergy = UnitValues.Mage.ENERGY;
 
-            this._moveSpeed = UnitValues.ArcherValues.MOVESPEED;
-            this._moveRadius = UnitValues.ArcherValues.MOVERADIUS;
+            this._moveSpeed = UnitValues.Mage.MOVESPEED;
+            this._moveRadius = UnitValues.Mage.MOVERADIUS;
 
-            this._minDamage = UnitValues.ArcherValues.MINDAMAGE;
-            this._maxDamage = UnitValues.ArcherValues.MAXDAMAGE;
-            this._attackRadius = UnitValues.ArcherValues.ATTACKRADIUS;
+            this._minDamage = UnitValues.Mage.MINDAMAGE;
+            this._maxDamage = UnitValues.Mage.MAXDAMAGE;
+            this._attackRadius = UnitValues.Mage.ATTACKRADIUS;
 
-            this._resistancePercentage = UnitValues.ArcherValues.RESISTANCEPERCENTAGE;
-            this._weaknessPercentage = UnitValues.ArcherValues.WEAKNESSPERCENTAGE;
+            this._resistancePercentage = UnitValues.Mage.RESISTANCEPERCENTAGE;
+            this._weaknessPercentage = UnitValues.Mage.WEAKNESSPERCENTAGE;
 
             base.OnEnable();
         }
@@ -49,6 +49,5 @@
 
             // NOTE: Find units within the splashRadius and calculate damage on the distance from the main attack source.
         }
-
     }
 }

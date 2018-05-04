@@ -71,8 +71,8 @@
         public float attackRadius { get { return this._attackRadius; } }
         public float resistancePercentage { get { return this._resistancePercentage; } }
         public float weaknessPercentage { get { return this._weaknessPercentage; } }
-        public abstract AttackType resistance { get; }
-        public abstract AttackType weakness { get; }
+        public abstract AttackType resistanceType { get; }
+        public abstract AttackType weaknessType { get; }
         public abstract AttackType attackType { get; }
         public bool canAttack { get { return this._canAttack; } }
         public bool isAttacking { get { return this._isAttacking; } set { this._isAttacking = value; } }
@@ -81,7 +81,6 @@
         #region UNITY
         protected virtual void Awake() {
             this.radiusDrawer.TurnOff();
-
 
             this._animator = this.GetComponent<Animator>();
             if(this._animator == null)
@@ -182,7 +181,8 @@
             this.LookAt(target.position);
             this.StopMoving();
 
-            // NOTE: Play attack animation using _animator.
+            // NOTE: Need to do a blocking check to see when the animation is finished playing then continue to do the attack logic.
+            this._animator.Play("Attack");
 
             this.InternalAttack(GetDamage(), target);
 
@@ -198,9 +198,9 @@
             ICanAttack unit = target as ICanAttack;
             float finalDamage = damage;
 
-            if(unit.attackType == this.resistance)
+            if(unit.attackType == this.resistanceType)
                 finalDamage *= (this.resistancePercentage / 100.0f);
-            else if(unit.attackType == this.weakness)
+            else if(unit.attackType == this.weaknessType)
                 finalDamage += (damage * (this.weaknessPercentage / 100.0f));
 
             this.currentHealth -= finalDamage;

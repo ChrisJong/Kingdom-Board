@@ -239,8 +239,8 @@
 
             text = "Health: " + this.unit.currentHealth + " / " + this.unit.maxHealth + "\r\n" +
                    "Attack: " + this.unit.GetDamage() + "\r\n" +
-                   "Resistance: " + this.unit.resistance.ToString() + " - " + this.unit.resistancePercentage.ToString() + "%" + "\r\n" +
-                   "Weakness: " + this.unit.weakness.ToString() + " - " + this.unit.weaknessPercentage.ToString() + "%" + "\r\n" +
+                   "Resistance: " + this.unit.resistanceType.ToString() + " - " + this.unit.resistancePercentage.ToString() + "%" + "\r\n" +
+                   "Weakness: " + this.unit.weaknessType.ToString() + " - " + this.unit.weaknessPercentage.ToString() + "%" + "\r\n" +
                    "Current State: " + state;
 
             this._textInfo.text = text;

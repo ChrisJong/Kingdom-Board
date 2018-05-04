@@ -216,11 +216,11 @@
             float extraDamage = 0.0f;
             string damagetext = damage.ToString() + "(" + "+" +extraDamage.ToString() + ")";
 
-            if(unit.attackType == toAttack.weakness) {
+            if(unit.attackType == toAttack.weaknessType) {
                 extraDamage = (damage * (toAttack.weaknessPercentage / 100.0f));
                 damagetext = damage.ToString() + "(" + "+" + extraDamage.ToString() + ")";
             }
-            if(unit.attackType == toAttack.resistance) {
+            if(unit.attackType == toAttack.resistanceType) {
                 extraDamage = damage * (toAttack.resistancePercentage / 100.0f);
                 damagetext = damage.ToString() + "(" + "-" + extraDamage.ToString() + ")";
             }

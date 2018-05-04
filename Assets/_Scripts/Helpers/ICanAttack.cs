@@ -8,8 +8,8 @@
         bool canAttack { get; }
         bool isAttacking { get; set; }
 
-        Enum.AttackType resistance { get; }
-        Enum.AttackType weakness { get; }
+        Enum.AttackType resistanceType { get; }
+        Enum.AttackType weaknessType { get; }
         Enum.AttackType attackType { get; }
 
         float GetDamage();
