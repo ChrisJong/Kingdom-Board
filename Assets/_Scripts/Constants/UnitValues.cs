@@ -11,6 +11,7 @@
         public const float DRAG = 0.0f;
         public const float ANGULARDRAG = 0.05f;
         public const float MOVEMENTCOST = 0.25F;
+        public const float MELEERANGE = 1.5f;
 
         public static class Archer {
             public const float HEALTH = 100.0f;
@@ -114,9 +115,10 @@
 
             public const float MINDAMAGE = 10.0f;
             public const float MAXDAMAGE = 20.0f;
-            public const float ATTACKRADIUS = 10.0f;
-            public const float SPLASHRADIUS = 5.0f;
-            public const AttackType ATTACKTYPE = AttackType.MAGIC;
+            public const float HEALINGAMOUNT = 10.0f;
+            public const float ATTACKRADIUS = MELEERANGE;
+            public const float HEALINGRADIUS = 5.0f;
+            public const AttackType ATTACKTYPE = AttackType.PHYSICAL;
 
             public const float RESISTANCEPERCENTAGE = 50.0f;
             public const float WEAKNESSPERCENTAGE = 50.0f;
@@ -160,7 +162,7 @@
 
             public const float MINDAMAGE = 10.0f;
             public const float MAXDAMAGE = 20.0f;
-            public const float ATTACKRADIUS = 1.5f;
+            public const float ATTACKRADIUS = MELEERANGE;
             public const AttackType ATTACKTYPE = AttackType.PHYSICAL;
 
             public const float RESISTANCEPERCENTAGE = 50.0f;
@@ -182,7 +184,7 @@
 
             public const float MINDAMAGE = 10.0f;
             public const float MAXDAMAGE = 20.0f;
-            public const float ATTACKRADIUS = 1.5f;
+            public const float ATTACKRADIUS = MELEERANGE;
             public const AttackType ATTACKTYPE = AttackType.PHYSICAL;
 
             public const float RESISTANCEPERCENTAGE = 50.0f;

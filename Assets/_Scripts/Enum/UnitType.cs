@@ -12,8 +12,8 @@
         LONGBOW, // Done
         MAGE, // Done
         CLERIC, // Incomplete (Done, but doesn't have the healing spell)
-        WIZARD, // Doing
+        WIZARD, // Done
         WARRIOR, // Done
-        KNIGHT
+        KNIGHT // Doing
     }
 }

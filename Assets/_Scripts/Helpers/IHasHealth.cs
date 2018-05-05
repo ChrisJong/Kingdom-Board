@@ -15,6 +15,7 @@
         Player controller { get; set; }
         UIBase uiComponent { get; set; }
 
+        bool AddHealth(float amount);
         bool ReceiveDamage(float damage, IHasHealth target);
         bool UseEnergy(float amount);
         bool IsAlly(IHasHealth other);

@@ -1,18 +1,26 @@
 ﻿namespace Unit {
 
+    using System;
+
     using UnityEngine;
 
     using Constants;
     using Enum;
     using Helpers;
+    using Manager;
     using UI;
+    using Utility;
 
     [RequireComponent(typeof(ClericUI))]
     public sealed class Cleric : UnitBase {
 
-        private float _splashRadius;
+        private float _healingRadius;
+        private float _healingAmount;
+        private bool _canHeal = true;
 
-        public float splashRadius { get { return this._splashRadius; } }
+        public float healingRadius { get { return this._healingRadius; } }
+        public float healingAoumt { get { return this._healingAmount; } }
+        public bool canHeal { get { return this._canHeal; } }
 
         public override UnitType unitType { get { return UnitType.CLERIC; } }
 
@@ -24,7 +32,9 @@
 
         protected override void OnEnable() {
 
-            this._splashRadius = UnitValues.Cleric.SPLASHRADIUS;
+            this._healingRadius = UnitValues.Cleric.HEALINGRADIUS;
+            this._healingAmount = UnitValues.Cleric.HEALINGAMOUNT;
+            this._canHeal = true;
 
             this.currentHealth = UnitValues.Cleric.HEALTH;
             this._maxHealth = UnitValues.Cleric.HEALTH;
@@ -44,18 +54,48 @@
             base.OnEnable();
         }
 
+        public override void NewTurn() {
+            base.NewTurn();
+            this._canHeal = true;
+        }
+
         public void Heal(IHasHealth target) {
+            this.LookAt(target.position);
+            
+            this._animator.Play("Cast");
 
+            this.InternalHeal(target);
+            this._canHeal = false;
         }
 
-        public void InternalHeal(float amount, IHasHealth target) {
+        public void InternalHeal(IHasHealth target) {
+            var hits = Utils.hitsBuffers;
+            var pos = this.position + this.transform.forward * this._unitRadius;
+            Physics.SphereCastNonAlloc(pos, this._unitRadius * 2.0f, this.transform.forward, hits, this._healingRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
 
-        }
+            this._hitComparer.position = this.position;
+            Array.Sort(hits, this._hitComparer);
 
-        protected override void InternalAttack(float damage, IHasHealth target) {
-            base.InternalAttack(damage, target);
+            for(int i = 0; i < hits.Length; i++) {
+                var hit = hits[i];
 
-            // NOTE: Find units within the splashRadius and calculate damage on the distance from the main attack source.
+                if(hit.transform == null)
+                    continue;
+
+                if(hit.transform == this.transform)
+                    continue; // jgnore hits with itself;
+
+                var hasHealth = hit.collider.GetEntity<IHasHealth>();
+                if(hasHealth == null || hasHealth.isDead)
+                    continue; // ignore anything that doesn't contain health or is dead.
+
+                if(this.IsEnemy(hasHealth))
+                    continue; // ignore enemies.
+
+                // only attack the original target chosen.
+                hasHealth.AddHealth(this._healingAmount);
+                break;
+            }
         }
     }
 }

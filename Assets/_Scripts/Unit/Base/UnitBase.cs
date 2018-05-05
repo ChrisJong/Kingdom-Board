@@ -64,7 +64,7 @@
         protected float _weaknessPercentage = 50.0f;
         protected bool _canAttack;
         protected bool _isAttacking;
-        private RaycastHitDistanceSortComparer _hitComparer = new RaycastHitDistanceSortComparer(true);
+        protected RaycastHitDistanceSortComparer _hitComparer = new RaycastHitDistanceSortComparer(true);
 
         public float minDamage { get { return this._minDamage; } }
         public float maxDamage { get { return this._maxDamage; } }
@@ -186,8 +186,7 @@
 
             this.InternalAttack(GetDamage(), target);
 
-            var uibase = this._uiComponent as UI.UnitUI;
-            uibase.FinishAttack();
+            ((UI.UnitUI)this._uiComponent).FinishAttack();
             this._canAttack = false;
         }
 
@@ -204,7 +203,7 @@
                 finalDamage += (damage * (this.weaknessPercentage / 100.0f));
 
             this.currentHealth -= finalDamage;
-            ((UI.UnitUI)this.uiComponent).UpdateUI();
+            this.uiComponent.UpdateUI();
 
             if(this.currentHealth <= 0.0f) {
                 if(this.controller != null)
@@ -228,6 +227,10 @@
             this._hitComparer.position = this.position;
             Array.Sort(hits, this._hitComparer);
 
+            foreach(var hit in hits) {
+                Debug.Log(hit.transform.name);
+            }
+
             for(int i = 0; i < hits.Length; i++) {
                 var hit = hits[i];
 
@@ -245,7 +248,7 @@
                     continue; // ignore allies.
 
                 hasHealth.lastAttacker = this;
-                hasHealth.ReceiveDamage(damage, this as IHasHealth);
+                hasHealth.ReceiveDamage(damage, this as IHasHealth); // only attack the original target chosen.
                 break;
             }
         }

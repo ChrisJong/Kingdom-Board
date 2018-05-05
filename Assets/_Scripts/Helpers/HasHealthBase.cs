@@ -60,6 +60,20 @@
         #region CLASS
         public abstract bool ReceiveDamage(float damage, IHasHealth target);
 
+        public virtual bool AddHealth(float amount) {
+            if(this.isDead)
+                return false;
+
+            // Make sure that the amount doesn't exceed the totally maxhealth of the unit.
+            if(amount > this.maxHealth)
+                this.currentHealth += amount;
+            else
+                this.currentHealth = this.maxHealth;
+
+            this.uiComponent.UpdateUI();
+            return true;
+        }
+
         public virtual bool UseEnergy(float amount) {
             return true;
         }
