@@ -65,32 +65,42 @@
             this.gameObject.SetActive(false);
         }
 
-        public void DrawAttackRadius(float radius, float width = 0.1f, int segments = 128) {
-
+        public void DrawRadius(float radius, float width = 0.1f, int segments = 128) {
             this.xRadius = radius;
             this.yRadius = radius;
             this.width = width;
             this.segments = segments;
 
-            this.lineColour = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            this.lineColour = Color.white;
             this.LineRender.startColor = this.lineColour;
             this.LineRender.endColor = this.lineColour;
 
             this.Draw();
         }
 
-        public void DrawMoveRadius(float radius, float width = 0.1f, int segments = 128) {
-
+        public void DrawRadius(Color color, float radius, float width = 0.1f, int segments = 128) {
             this.xRadius = radius;
             this.yRadius = radius;
             this.width = width;
             this.segments = segments;
 
-            this.lineColour = new Color(0.0f, 0.0f, 1.0f, 1.0f);
+            this.lineColour = color;
             this.LineRender.startColor = this.lineColour;
             this.LineRender.endColor = this.lineColour;
 
             this.Draw();
+        }
+
+        public void DrawAttackRadius(float radius, float width = 0.1f, int segments = 128) {
+            this.DrawRadius(Color.red, radius, width, segments);
+        }
+
+        public void DrawMoveRadius(float radius, float width = 0.1f, int segments = 128) {
+            this.DrawRadius(Color.blue, radius, width, segments);
+        }
+
+        public void DrawSpecialRadius(float radius, float width = 0.1f, int segments = 128) {
+            this.DrawRadius(Color.white, radius, width, segments);
         }
     }
 }

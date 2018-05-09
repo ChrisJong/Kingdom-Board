@@ -31,8 +31,6 @@
             if(this._spawnQueue.Count <= 0 || this._spawnQueue == null)
                 return;
 
-            // NOTE: dequeue the spawnqueue from the list.
-            // NOTE: sort the queue from lowerest to highest in terms of timer.
             List<SpawnQueueType> spawns = new List<SpawnQueueType>();
 
             // NOTE: need to find a cleaner way to remove units that are marked spawn from the list.
@@ -57,9 +55,6 @@
         }
 
         public bool AddUnitToQueue(UnitType type) {
-            // NOTE: check player unit cap.
-            // NOTE: check player resource.
-            // NOTE: add new unit to queue if unit cap isnt maxed & there are resources avaliable.
             int unitCapCost = this.GetUnitCapCost(type);
             int unitSpawnCounter = this.GetUnitSpawnCounter(type);
             int unitCost = this.GetUnitResourceCost(type);
@@ -84,13 +79,31 @@
                 case UnitType.ARCHER:
                 cost = UnitValues.Archer.UNITCAPCOST;
                 break;
+                case UnitType.CROSSBOW:
+                cost = UnitValues.Crossbow.UNITCAPCOST;
+                break;
+                case UnitType.LONGBOW:
+                cost = UnitValues.Longbow.UNITCAPCOST;
+                break;
 
                 case UnitType.MAGE:
                 cost = UnitValues.Mage.UNITCAPCOST;
                 break;
+                case UnitType.CLERIC:
+                cost = UnitValues.Cleric.UNITCAPCOST;
+                break;
+                case UnitType.WIZARD:
+                cost = UnitValues.Wizard.UNITCAPCOST;
+                break;
 
                 case UnitType.WARRIOR:
                 cost = UnitValues.Warrior.UNITCAPCOST;
+                break;
+                case UnitType.KNIGHT:
+                cost = UnitValues.Knight.UNITCAPCOST;
+                break;
+                case UnitType.GUARDIAN:
+                cost = UnitValues.Guardian.UNITCAPCOST;
                 break;
 
                 default:
@@ -109,13 +122,31 @@
                 case UnitType.ARCHER:
                 cost = UnitValues.Archer.SPAWNCOUNT;
                 break;
+                case UnitType.CROSSBOW:
+                cost = UnitValues.Crossbow.SPAWNCOUNT;
+                break;
+                case UnitType.LONGBOW:
+                cost = UnitValues.Longbow.SPAWNCOUNT;
+                break;
 
                 case UnitType.MAGE:
                 cost = UnitValues.Mage.SPAWNCOUNT;
                 break;
+                case UnitType.CLERIC:
+                cost = UnitValues.Cleric.SPAWNCOUNT;
+                break;
+                case UnitType.WIZARD:
+                cost = UnitValues.Wizard.SPAWNCOUNT;
+                break;
 
                 case UnitType.WARRIOR:
                 cost = UnitValues.Warrior.SPAWNCOUNT;
+                break;
+                case UnitType.KNIGHT:
+                cost = UnitValues.Knight.SPAWNCOUNT;
+                break;
+                case UnitType.GUARDIAN:
+                cost = UnitValues.Guardian.SPAWNCOUNT;
                 break;
 
                 default:
@@ -134,13 +165,31 @@
                 case UnitType.ARCHER:
                 cost = UnitValues.Archer.SPAWNCOST;
                 break;
+                case UnitType.CROSSBOW:
+                cost = UnitValues.Crossbow.SPAWNCOST;
+                break;
+                case UnitType.LONGBOW:
+                cost = UnitValues.Longbow.SPAWNCOST;
+                break;
 
                 case UnitType.MAGE:
                 cost = UnitValues.Mage.SPAWNCOST;
                 break;
+                case UnitType.CLERIC:
+                cost = UnitValues.Cleric.SPAWNCOST;
+                break;
+                case UnitType.WIZARD:
+                cost = UnitValues.Wizard.SPAWNCOST;
+                break;
 
                 case UnitType.WARRIOR:
                 cost = UnitValues.Warrior.SPAWNCOST;
+                break;
+                case UnitType.KNIGHT:
+                cost = UnitValues.Knight.SPAWNCOST;
+                break;
+                case UnitType.GUARDIAN:
+                cost = UnitValues.Guardian.SPAWNCOST;
                 break;
 
                 default:

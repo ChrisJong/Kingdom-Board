@@ -129,13 +129,6 @@
                 this._goHover.SetActive(false);
         }
 
-        public virtual void FinishAttack() {
-            Debug.Log("Finish Attack");
-            this.controller.selectionState = SelectionState.FREE;
-            this.unit.radiusDrawer.TurnOff();
-            this.ResetUI();
-        }
-
         protected override void ResetUI() {
             this._btnCancel.gameObject.SetActive(false);
             this._btnFinishMove.gameObject.SetActive(false);
@@ -194,10 +187,16 @@
             this.unit.FinishMove();
             this.unit.radiusDrawer.TurnOff();
 
-            ResetUI();
+            this.ResetUI();
+        }
+        public virtual void FinishAttack() {
+            Debug.Log("Finish Attack");
+            this.controller.selectionState = SelectionState.FREE;
+            this.unit.radiusDrawer.TurnOff();
+            this.ResetUI();
         }
 
-        protected void Cancel() {
+        protected virtual void Cancel() {
             if(this._btnCancel == null)
                 throw new ArgumentNullException("Missing Cancel Button");
 
@@ -212,8 +211,6 @@
                 this.controller.selectionState = SelectionState.FREE;
                 this.unit.radiusDrawer.TurnOff();
                 this.unit.CancelMove();
-            } else {
-                Debug.LogError("Cancel Button Shouldn't be shown, something went wrong");
             }
         }
 

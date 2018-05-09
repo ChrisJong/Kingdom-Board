@@ -17,9 +17,18 @@
         public Button btnSpawn;
         public Button btnBack;
 
-        public Button btnSpawnProjectile;
-        public Button btnSpawnMagic;
-        public Button btnSpawnPhysical;
+        public Button _btnSpawnArcher;
+        public Button _btnSpawnCrossbow;
+        public Button _btnSpawnLongbow;
+
+        public Button _btnSpawnMage;
+        public Button _btnSpawnCleric;
+        public Button _btnSpawnWizard;
+
+        public Button _btnSpawnWarrior;
+        public Button _btnSpawnKnight;
+        public Button _btnSpawnGuardian;
+
         private GameObject _spawnParent;
 
         //private List<Button> _listSpawns;
@@ -56,21 +65,47 @@
             if(this.btnBack == null)
                 this.btnBack = this.FindButton(this._spawnParent.transform, UIValues.Structure.BACKBUTTON);
 
-            if(this.btnSpawnMagic == null)
-                this.btnSpawnMagic = this.FindButton(this._spawnParent.transform, "Magic_BTN");
+            if(this._btnSpawnMage == null)
+                this._btnSpawnMage = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNMAGE);
 
-            if(this.btnSpawnProjectile == null)
-                this.btnSpawnProjectile = this.FindButton(this._spawnParent.transform, "Projectile_BTN");
+            if(this._btnSpawnCleric == null)
+                this._btnSpawnCleric = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNCLERIC);
 
-            if(this.btnSpawnPhysical == null)
-                this.btnSpawnPhysical = this.FindButton(this._spawnParent.transform, "Physical_BTN");
+            if(this._btnSpawnWizard == null)
+                this._btnSpawnWizard = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNWIZARD);
+
+            if(this._btnSpawnArcher == null)
+                this._btnSpawnArcher = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNARCHER);
+
+            if(this._btnSpawnCrossbow == null)
+                this._btnSpawnCrossbow = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNCROSSBOW);
+
+            if(this._btnSpawnLongbow == null)
+                this._btnSpawnLongbow = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNLONGBOW);
+
+            if(this._btnSpawnWarrior == null)
+                this._btnSpawnWarrior = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNWARRIOR);
+
+            if(this._btnSpawnKnight == null)
+                this._btnSpawnKnight = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNKNIGHT);
+
+            if(this._btnSpawnGuardian == null)
+                this._btnSpawnGuardian = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNGUARdIAN);
 
             this.btnSpawn.onClick.AddListener(this.ShowSpawn);
             this.btnBack.onClick.AddListener(this.GoBack);
 
-            this.btnSpawnProjectile.onClick.AddListener(delegate { this.AddToQueue(UnitType.ARCHER); });
-            this.btnSpawnMagic.onClick.AddListener(delegate { this.AddToQueue(UnitType.MAGE); });
-            this.btnSpawnPhysical.onClick.AddListener(delegate { this.AddToQueue(UnitType.WARRIOR); });
+            this._btnSpawnArcher.onClick.AddListener(delegate { this.AddToQueue(UnitType.ARCHER); });
+            this._btnSpawnCrossbow.onClick.AddListener(delegate { this.AddToQueue(UnitType.CROSSBOW); });
+            this._btnSpawnLongbow.onClick.AddListener(delegate { this.AddToQueue(UnitType.LONGBOW); });
+
+            this._btnSpawnMage.onClick.AddListener(delegate { this.AddToQueue(UnitType.MAGE); });
+            this._btnSpawnCleric.onClick.AddListener(delegate { this.AddToQueue(UnitType.CLERIC); });
+            this._btnSpawnWizard.onClick.AddListener(delegate { this.AddToQueue(UnitType.WIZARD); });
+
+            this._btnSpawnWarrior.onClick.AddListener(delegate { this.AddToQueue(UnitType.WARRIOR); });
+            this._btnSpawnKnight.onClick.AddListener(delegate { this.AddToQueue(UnitType.KNIGHT); });
+            this._btnSpawnGuardian.onClick.AddListener(delegate { this.AddToQueue(UnitType.GUARDIAN); });
 
             if(this.textInfo == null)
                 this.textInfo = this._tHover.Find("Info_TEXT").GetComponent<Text>();
@@ -136,7 +171,7 @@
             Debug.Log("TRYING TO ADD " + type.ToString() + " TO " + this.controller.name + " QUEUE");
             if(!this.castle.AddUnitToQueue(type))
                 Debug.Log("UNABLE TO ADD " + type.ToString() + " TO QUEUE");
-            // NOTE: Add to castle queue let the castle handle the spawning of the objects.
+
             this.UpdateInfo();
         }
 

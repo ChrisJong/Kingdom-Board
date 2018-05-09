@@ -72,6 +72,10 @@
                     this.AttackSelection();
                 break;
 
+                case SelectionState.UNIT_SPECIAL:
+                    this.SpecialSelection();
+                break;
+
                 case SelectionState.UNIT_MOVE:
                     this.MoveToSelection();
                 break;
@@ -106,24 +110,6 @@
                 }
             }
         }
-
-        // NOTE: instead of using this i've used the unity OnMouseEnter/Exit to simulate hovering over an object.
-        /*private void HoverSelect() {
-            if(this.CastRayToWorld()) {
-                if(this._hitInfo.transform.GetComponent<Selectable>() != null) {
-                    if(this.currentHover != null) {
-                        this.previousHover = this.currentHover;
-                        this.currentHover = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
-                    } else {
-                        this.currentHover = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
-                    }
-                }
-            }else {
-                if(this.currentHover != null)
-                    this.previousHover = this.currentHover;
-                this.currentHover = null;
-            }
-        }*/
 
         private void SelectObject() {
             if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
@@ -181,7 +167,40 @@
                         } else {
                             Debug.Log("Can Attack " + (toAttack != null ? toAttack.name : "doesn't exist"));
                             unit.Attack(toAttack as IHasHealth);
-                            this.DebugAttackText(unit, toAttack);
+                            this.DebugText(unit, toAttack);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SpecialSelection() {
+            if(this.currentSelected.entityType == EntityType.UNIT && this.currentSelected.GetType() == typeof(Cleric)) {
+                Debug.Log("CLERIC HEAL SELECTED");
+            }
+
+            if(Input.GetMouseButtonUp(0)) {
+                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
+                    Cleric unit = this.currentSelected as Cleric;
+                    UnitBase selection = this._hitInfo.transform.GetComponent<UnitBase>();
+                    float distance = Vector3.Distance(selection.position, unit.position) - (unit.unitRadius - unit.radiusDrawer.width);
+
+                    Debug.DrawLine(unit.position, selection.position, Color.blue, 20.0f);
+                    Debug.Log("Selection Distance: " + distance);
+                    Debug.Log("Unit Heal Radius: " + unit.healingRadius);
+                    Debug.Log("Unit Radius: " + unit.unitRadius);
+
+                    if(distance > unit.healingRadius) {
+                        Debug.Log("Out Of Unit Heal Radius");
+                        return;
+                    } else {
+                        if(selection.IsEnemy(unit as IHasHealth)) {
+                            Debug.Log("CAN NOT HEAL ENEMY");
+                            return;
+                        } else {
+                            Debug.Log("Can Heal " + (selection != null ? selection.name : "doesn't exist"));
+                            unit.Heal(selection as IHasHealth);
+                            this.DebugText(unit, selection);
                         }
                     }
                 }
@@ -211,24 +230,42 @@
             }
         }
 
-        private void DebugAttackText(UnitBase unit, UnitBase toAttack) {
+        private void DebugText(UnitBase unit, UnitBase selection) {
             float damage = unit.GetDamage();
             float extraDamage = 0.0f;
             string damagetext = damage.ToString() + "(" + "+" +extraDamage.ToString() + ")";
 
-            if(unit.attackType == toAttack.weaknessType) {
-                extraDamage = (damage * (toAttack.weaknessPercentage / 100.0f));
+            if(unit.attackType == selection.weaknessType) {
+                extraDamage = (damage * (selection.weaknessPercentage / 100.0f));
                 damagetext = damage.ToString() + "(" + "+" + extraDamage.ToString() + ")";
             }
-            if(unit.attackType == toAttack.resistanceType) {
-                extraDamage = damage * (toAttack.resistancePercentage / 100.0f);
+            if(unit.attackType == selection.resistanceType) {
+                extraDamage = damage * (selection.resistancePercentage / 100.0f);
                 damagetext = damage.ToString() + "(" + "-" + extraDamage.ToString() + ")";
             }
 
-            string temp = "\r\n" + unit.name + " Attacking: " + toAttack.name + " For " + damagetext + " DAMAGe";
+            string temp = "\r\n" + unit.name + " Attacking: " + selection.name + " For " + damagetext + " DAMAGe";
 
             this._controller.uiComponent.ChangeDebugText(temp);
         }
+
+        // NOTE: instead of using this i've used the unity OnMouseEnter/Exit to simulate hovering over an object.
+        /*private void HoverSelect() {
+            if(this.CastRayToWorld()) {
+                if(this._hitInfo.transform.GetComponent<Selectable>() != null) {
+                    if(this.currentHover != null) {
+                        this.previousHover = this.currentHover;
+                        this.currentHover = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
+                    } else {
+                        this.currentHover = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
+                    }
+                }
+            }else {
+                if(this.currentHover != null)
+                    this.previousHover = this.currentHover;
+                this.currentHover = null;
+            }
+        }*/
         #endregion
     }
 }

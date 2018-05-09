@@ -130,7 +130,7 @@
         //////////////////
         //// MOVEMENT ////
         //////////////////
-        public void MoveTo(Vector3 dest) {
+        public virtual void MoveTo(Vector3 dest) {
             NavMeshHit hit;
             if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
                 if((hit.position - this.position).sqrMagnitude < (this._agent.stoppingDistance * this._agent.stoppingDistance))
@@ -141,7 +141,7 @@
             this._agent.SetDestination(hit.position);
         }
 
-        public void CancelMove() {
+        public virtual void CancelMove() {
             if(this._lastPosition.Equals(this.position)) {
                 this.StopMoving();
                 return;
@@ -153,12 +153,12 @@
             this.StopMoving();
         }
 
-        public void FinishMove() {
+        public virtual void FinishMove() {
             this._canMove = false;
             this.StopMoving();
         }
 
-        public void StopMoving() {
+        public virtual void StopMoving() {
             this._agent.isStopped = true;
             this._agent.ResetPath();
             this._lastPosition = this.position;
@@ -176,7 +176,7 @@
             return this._maxDamage;
         }
 
-        public void Attack(IHasHealth target) {
+        public virtual void Attack(IHasHealth target) {
             this._lastAttack = Time.timeSinceLevelLoad;
             this.LookAt(target.position);
             this.StopMoving();
@@ -221,15 +221,12 @@
 
         protected virtual void InternalAttack(float damage, IHasHealth target) {
             var hits = Utils.hitsBuffers;
-            var pos = this.position + this.transform.forward * this._unitRadius;
+            //var pos = this.position + this.transform.forward * this._unitRadius;
+            var pos = target.position;
             Physics.SphereCastNonAlloc(pos, this._unitRadius * 2.0f, this.transform.forward, hits, this._attackRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
 
             this._hitComparer.position = this.position;
             Array.Sort(hits, this._hitComparer);
-
-            foreach(var hit in hits) {
-                Debug.Log(hit.transform.name);
-            }
 
             for(int i = 0; i < hits.Length; i++) {
                 var hit = hits[i];

@@ -1,7 +1,5 @@
 ﻿namespace Unit {
 
-    using System;
-
     using UnityEngine;
 
     using Constants;

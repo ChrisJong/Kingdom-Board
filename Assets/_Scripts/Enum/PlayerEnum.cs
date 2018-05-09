@@ -5,6 +5,7 @@
         FREE = 1,
         RESEARCH,
         UNIT_ATTACK,
+        UNIT_SPECIAL,
         UNIT_MOVE,
         STRUCTURE_ATTACK,
         STRUCTURE_MOVE
