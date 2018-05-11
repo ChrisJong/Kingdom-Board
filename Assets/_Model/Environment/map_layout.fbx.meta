@@ -1,17 +1,14 @@
 fileFormatVersion: 2
 guid: 409dc48338b21164f855d6cc083e7943
-timeCreated: 1524201448
-licenseType: Free
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: lambert4
+    2100000: lambert2
     2300000: //RootNode
     3300000: //RootNode
-    4300000: game_board
-    9500000: //RootNode
+    4300000: layout
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -31,6 +28,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -67,7 +65,7 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2

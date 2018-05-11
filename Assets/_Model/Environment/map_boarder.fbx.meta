@@ -1,17 +1,14 @@
 fileFormatVersion: 2
-guid: 3c8d8b9dba1207240bb1caaa860b9c44
-timeCreated: 1521250767
-licenseType: Free
+guid: a2211ccc39a299b4691fde26dd121284
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: lambert4
+    2100000: lambert3
     2300000: //RootNode
     3300000: //RootNode
-    4300000: game_board
-    9500000: //RootNode
+    4300000: game_board_outer
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -31,6 +28,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -86,7 +84,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
