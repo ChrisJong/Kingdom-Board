@@ -32,7 +32,7 @@
                 return;
 
             List<SpawnQueueType> spawns = new List<SpawnQueueType>();
-
+            this._lastSpawnIndex = 0;
             // NOTE: need to find a cleaner way to remove units that are marked spawn from the list.
             // NOTE: throws an InvalidOperationException since i can't edit the last while its being used/referecned in the forloop.
             foreach(SpawnQueueType spawn in this._spawnQueue) {

@@ -36,19 +36,20 @@
             }
         }
 
-        public bool SpawnUnit(UnitType type, Player controller, Vector3 position , float spawnDistance, float anglePerSpawm, int spawnIndex) {
+        public bool SpawnUnit(UnitType type, Player controller, Vector3 position , float spawnDistance, float anglePerSpawm, ref int spawnIndex) {
             if(type == UnitType.NONE || type == UnitType.ANY || !this._pools.ContainsKey(type)) {
                 Debug.LogError(this.ToString() + " cannot spawn unit of type (not supported): " + type);
                 return false;
             }
             this.InternalSpawnUnit(type, controller, position, spawnDistance, anglePerSpawm, spawnIndex);
+            spawnIndex++;
             return true;
         }
 
         private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, int spawnIndex) {
             var pool = this._pools[type];
             var pos = CircleHelpers.GetPointOnCircle(position, spawnDistance, anglePerSpawm, spawnIndex);
-
+            Debug.Log("spawn position: " + pos);
             pos = Utility.Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
             var unit = pool.Get(pos, Quaternion.identity);
 
