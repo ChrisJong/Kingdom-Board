@@ -8,9 +8,11 @@ public class cam_dan : MonoBehaviour {
     private float panLimitX;
     private Vector2 panLimitY;
 
-    private float currentZoom = 1f;
+    private float currentZoom = 2f;
     public float maxZoom;
     public float minZoom;
+
+    private float yDir;
 
     public GameObject mainCamera;
 
@@ -37,6 +39,14 @@ public class cam_dan : MonoBehaviour {
         if (Input.GetKey("d") || (Input.mousePosition.x >= Screen.width - panBorderThickness))
         {
             pos.x += panSpeed * Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown("e")) {
+            yDir = yDir + 180f;
+            if (yDir == 360f) {
+                yDir = 0f;                
+            }
+            RotateCamera(yDir);
         }
 
         //Clamps camera to game region
@@ -71,12 +81,11 @@ public class cam_dan : MonoBehaviour {
                 ZoomCamera(scroll);
             }
         }
-        Debug.Log(currentZoom);
 
         //Update camera pan limit to suit zoom level
-        panLimitX = 8f + (currentZoom * 7f);
-        panLimitY.x = -2.5f - (currentZoom * 5f);
-        panLimitY.y = 10f + (currentZoom * 10f);
+        panLimitX = currentZoom * 7.5f;
+        panLimitY.x = currentZoom * -4f;
+        panLimitY.y = currentZoom * 10f;
     }
 
     void MoveCamera (Vector3 moveDirection) {
@@ -85,5 +94,9 @@ public class cam_dan : MonoBehaviour {
 
     void ZoomCamera (float zoomDirection) {
         mainCamera.transform.Translate(0, 0, zoomDirection * scrollSpeed);
+    }
+
+    void RotateCamera(float y) {
+        transform.Rotate(0f, y, 0f);
     }
 }
