@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 114451835067987194}
   - component: {fileID: 114537085594372350}
   m_Layer: 10
-  m_Name: castle
+  m_Name: Castle
   m_TagString: Structure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -524,7 +524,6 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 884775cb7148eba469c4285f8cd56511, type: 3}
   m_StaticBatchInfo:
