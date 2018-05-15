@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class cam_dan : MonoBehaviour {
+public class Cam_dan : MonoBehaviour {
 
     public float panSpeed = 20f;
     public float panBorderThickness = 5f;
@@ -15,7 +15,6 @@ public class cam_dan : MonoBehaviour {
     private float yDir;
 
     public GameObject mainCamera;
-
 	
 	// Update is called once per frame
 	void Update () {              
