@@ -56,7 +56,7 @@
         }
 
         // Gets the direction the entity is facing.
-        public static Vector3 GetPlayerFacingDirection(Transform entity) {
+        public static Vector3 GetObjectFacingDirection(Transform entity) {
             return new Vector3(Mathf.Sin(entity.rotation.eulerAngles.y * Mathf.Deg2Rad),
                                0,
                                Mathf.Cos(entity.rotation.eulerAngles.y * Mathf.Deg2Rad));
