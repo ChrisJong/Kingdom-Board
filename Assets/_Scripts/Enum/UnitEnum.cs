@@ -3,7 +3,8 @@
     public enum UnitState {
         NONE = 0,
         ANY = ~0,
-        IDLE = 1,
+        SPAWN = 1,
+        IDLE,
         ATTACKING,
         SPECIAL, // Anything to do with casting spells or a secondary attack.
         MOVING,

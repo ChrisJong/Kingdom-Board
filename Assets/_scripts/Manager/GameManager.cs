@@ -144,6 +144,11 @@
 
             for(int i = 0; i < this._numberOfPlayers; i++) {
                 this._players[i].Init((i == this._indexOnAttack) ? true : false);
+
+                if(this.players[i] == this.PlayerOnAttack)
+                    this.players[i].color = new Color(0.8823529f, 0.8823529f, 0.8823529f, 1.0f);
+                else
+                    this.players[i].color = new Color(0.2352941f, 0.2352941f, 0.2352941f, 1.0f);
             }
 
             this.RoundCount++;

@@ -69,7 +69,7 @@
         public bool isAttacking { get { return this._isAttacking; } }
         public bool turnEnded { get { return this._turnEnded; } }
         public Transform spawnLocation { get { return this._spawnLocation; } }
-        public Color color { get { return this._color; } }
+        public Color color { get { return this._color; } set { this._color = value; } }
 
         public Castle castle { get { return this._castle; } }
         public IList<IUnit> units { get { return this._units; } }
@@ -81,9 +81,7 @@
 
         #region UNITY
         private void OnEnable() {
-            // Random Color for the player and its assocaited entities.
-            // NOTE: needs to be changed as a parameter passed on from the game manager.
-            this._color = new Color(Random.Range(0.2f, 0.8f), Random.Range(0.2f, 0.8f), Random.Range(0.2f, 0.8f));
+            // this._color = new Color(Random.Range(0.2f, 0.8f), Random.Range(0.2f, 0.8f), Random.Range(0.2f, 0.8f));
 
             this._units = new List<IUnit>();
             this._structures = new List<IStructure>(5);

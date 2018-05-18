@@ -11,6 +11,7 @@
     using Player;
     using UI;
     using Unit;
+    using Utility;
 
     public sealed class UnitPoolManager : SingletonMono<UnitPoolManager> {
 
@@ -55,7 +56,8 @@
 
             unit.controller = controller;
             unit.uiComponent.controller = controller;
-            // NOTE: grab the color render of the unit and change it using the controller.
+            unit.gameObject.ColorRenderers(controller.color);
+
             ((UnitUI)unit.uiComponent).Init();
             controller.units.Add(unit);
 
