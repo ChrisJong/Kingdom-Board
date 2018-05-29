@@ -8,7 +8,7 @@ public class Cam_dan : MonoBehaviour {
     private float panLimitX;
     private Vector2 panLimitY;
 
-    private float currentZoom = 2f;
+    public float currentZoom = 2f;
     public float maxZoom;
     public float minZoom;
 
@@ -21,22 +21,19 @@ public class Cam_dan : MonoBehaviour {
         //Detect input to move camera
         Vector3 pos = transform.position;        
 
-        if (Input.GetKey("w") || (Input.mousePosition.y >= Screen.height - panBorderThickness)) {
+        if (Input.GetKey("w")/* || (Input.mousePosition.y >= Screen.height - panBorderThickness)*/) {
             pos.z += panSpeed * Time.deltaTime;
         }
 
-        if (Input.GetKey("s") || (Input.mousePosition.y <= panBorderThickness))
-        {
+        if (Input.GetKey("s")/* || (Input.mousePosition.y <= panBorderThickness)*/) {
             pos.z -= panSpeed * Time.deltaTime;
         }
 
-        if (Input.GetKey("a") || (Input.mousePosition.x <= panBorderThickness))
-        {
+        if (Input.GetKey("a")/* || (Input.mousePosition.x <= panBorderThickness)*/) {
             pos.x -= panSpeed * Time.deltaTime;
         }
 
-        if (Input.GetKey("d") || (Input.mousePosition.x >= Screen.width - panBorderThickness))
-        {
+        if (Input.GetKey("d")/* || (Input.mousePosition.x >= Screen.width - panBorderThickness)*/) {
             pos.x += panSpeed * Time.deltaTime;
         }
 

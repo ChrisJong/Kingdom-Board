@@ -21,7 +21,6 @@ public class UIQueueButton_dan : MonoBehaviour {
     private bool needsToMove; //determines if this queue button needs to move
     private bool finished; //determines if this queue button has finished training its unit
     private bool cancelled; //determines if this queue button should cancel training its unit
-    private bool readyToDestroy; //determines if this queue button is ready to be destroyed
 
     private float destroyTime = 0.2f; //determines how long this takes to be destroyed
 
@@ -34,7 +33,6 @@ public class UIQueueButton_dan : MonoBehaviour {
 
         finished = false;
         cancelled = false;
-        readyToDestroy = false;
     }
     
     void Update() {
@@ -48,7 +46,7 @@ public class UIQueueButton_dan : MonoBehaviour {
     {
         //if the queueID of this button has changed due to cancellations
         //or units finishing training then update position of this button
-        positionToBe = -4f - (queueID * 36);
+        positionToBe = -4f - (queueID * 72);
         needsToMove = true;
     }
 
