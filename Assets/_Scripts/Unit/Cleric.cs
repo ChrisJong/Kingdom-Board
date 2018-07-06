@@ -14,47 +14,23 @@
     [RequireComponent(typeof(ClericUI))]
     public sealed class Cleric : UnitBase {
 
-        #region VARIABLE
-        private float _healingRadius;
-        private float _healingAmount;
+        #region 
+        [Header("SPECIAL - HEALING")]
+        [SerializeField]
         private bool _canHeal = true;
-        private UnitState _state = UnitState.NONE;
-
-        public float healingRadius { get { return this._healingRadius; } }
-        public float healingAoumt { get { return this._healingAmount; } }
         public bool canHeal { get { return this._canHeal; } }
-        public UnitState state { get { return this._state; } }
 
-        public override UnitType unitType { get { return UnitType.CLERIC; } }
-
-        public override MovementType movementType { get { return UnitValues.Cleric.MOVETYPE; } }
-
-        public override AttackType attackType { get { return UnitValues.Cleric.ATTACKTYPE; } }
-        public override AttackType resistanceType { get { return UnitValues.Cleric.RESISTANCETYPE; } }
-        public override AttackType weaknessType { get { return UnitValues.Cleric.WEAKNESSTYPE; } }
+        [SerializeField, Range(1.0f, 50.0f)]
+        private float _healingRadius = 10.0f;
+        public float healingRadius { get { return this._healingRadius; } }
+        [SerializeField, Range(1.0f, 100.0f)]
+        private float _healingAmount;
+        public float healingAoumt { get { return this._healingAmount; } }
         #endregion
 
         #region UNITY
         protected override void OnEnable() {
-
-            this._healingRadius = UnitValues.Cleric.HEALINGRADIUS;
-            this._healingAmount = UnitValues.Cleric.HEALINGAMOUNT;
             this._canHeal = true;
-
-            this.currentHealth = UnitValues.Cleric.HEALTH;
-            this._maxHealth = UnitValues.Cleric.HEALTH;
-            this.currentEnergy = UnitValues.Cleric.ENERGY;
-            this._maxEnergy = UnitValues.Cleric.ENERGY;
-
-            this._moveSpeed = UnitValues.Cleric.MOVESPEED;
-            this._moveRadius = UnitValues.Cleric.MOVERADIUS;
-
-            this._minDamage = UnitValues.Cleric.MINDAMAGE;
-            this._maxDamage = UnitValues.Cleric.MAXDAMAGE;
-            this._attackRadius = UnitValues.Cleric.ATTACKRADIUS;
-
-            this._resistancePercentage = UnitValues.Cleric.RESISTANCEPERCENTAGE;
-            this._weaknessPercentage = UnitValues.Cleric.WEAKNESSPERCENTAGE;
 
             base.OnEnable();
         }
@@ -65,10 +41,6 @@
             base.NewTurn();
             this._canHeal = true;
         }
-
-        //////////////////
-        //// MOVEMENT ////
-        //////////////////
 
         /////////////////
         //// HEALING ////

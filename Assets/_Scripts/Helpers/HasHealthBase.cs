@@ -9,18 +9,18 @@
 
     public abstract class HasHealthBase : EntityBase, IHasHealth {
         #region VARIABLE
+        [Header("HEALTH")]
         [SerializeField, ReadOnly]
         private Player _controller;
-        [SerializeField, Range(1.0f, 1000.0f), ReadOnly]
+        [SerializeField, ReadOnly, Range(0.0f, 500.0f)]
         protected float _maxHealth = 100.0f;
-        [SerializeField, Range(0.0f, 1000.0f), ReadOnly]
+        [SerializeField, ReadOnly, Range(0.0f, 500.0f)]
         protected float _maxEnergy = 0.0f;
-        public UIBase _uiComponent;
+        protected UIBase _uiComponent;
         protected IHasHealth _lastAttacker;
         private float _lastAttacked;
 
         public float maxHealth { get { return this._maxHealth; } }
-
         public float maxEnergy { get { return this._maxEnergy; } }
 
         public float currentHealth { get; set; }
@@ -69,6 +69,19 @@
                 this.currentHealth += amount;
             else
                 this.currentHealth = this.maxHealth;
+
+            this.uiComponent.UpdateUI();
+            return true;
+        }
+
+        public virtual bool RemoveHealth(float amount) {
+            if(this.isDead)
+                return false;
+
+            this.currentHealth -= amount;
+
+            if(this.currentHealth <= 0.0f)
+                this.currentHealth = 0.0f;
 
             this.uiComponent.UpdateUI();
             return true;

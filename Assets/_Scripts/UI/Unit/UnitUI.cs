@@ -147,7 +147,9 @@
 
             Debug.Log("BEGIN ATTACK");
             this._attacking = true;
-            this.controller.selectionState = SelectionState.UNIT_ATTACK;
+            this.controller.playerSelection.lockSelection = true;
+            this.controller.selectionState = SelectionState.SELECT_ENTITY;
+            //this.controller.selectionState = SelectionState.UNIT_ATTACK;
 
             this.unit.radiusDrawer.TurnOn();
             this.unit.radiusDrawer.DrawAttackRadius(this.unit.attackRadius);
@@ -166,10 +168,13 @@
 
             Debug.Log("BEGIN MOVE");
             this._moving = true;
-            this.controller.selectionState = SelectionState.UNIT_MOVE;
+            this.controller.playerSelection.lockSelection = true;
+            this.controller.selectionState = SelectionState.SELECT_POINT;
+            //this.controller.selectionState = SelectionState.UNIT_MOVE;
 
-            this.unit.radiusDrawer.TurnOn();
-            this.unit.radiusDrawer.DrawMoveRadius(this.unit.moveRadius);
+            //this.unit.radiusDrawer.TurnOn();
+            //this.unit.radiusDrawer.DrawMoveRadius(this.unit.curStamina);
+            this.unit.unitState = UnitState.MOVING_STANDBY;
             this.unit.lastPosition = this.unit.position;
 
             this._btnCancel.gameObject.SetActive(true);
@@ -229,7 +234,7 @@
                 state = "ATTACKING - SELECT A UNIT TO ATTACK";
             else if(this._moving)
                 state = "MOVE - SELECT A POSITION TO MOVE TO";
-            else if(this.unit.hasFinished)
+            else if(this.unit.unitState == UnitState.FINISH)
                 state = "FINISHED";
             else
                 state = "IDLE";

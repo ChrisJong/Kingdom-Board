@@ -75,7 +75,8 @@
 
             Debug.Log("BEGIN HEALING");
             this._healing = true;
-            this.controller.selectionState = SelectionState.UNIT_SPECIAL;
+            this.controller.playerSelection.lockSelection = true;
+            //this.controller.selectionState = SelectionState.UNIT_SPECIAL;
 
             this.unit.radiusDrawer.TurnOn();
             this.unit.radiusDrawer.DrawSpecialRadius(unitScript.healingRadius);

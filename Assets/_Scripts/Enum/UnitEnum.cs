@@ -1,14 +1,20 @@
-﻿namespace Enum {
+﻿ namespace Enum {
 
     public enum UnitState {
         NONE = 0,
         ANY = ~0,
         SPAWN = 1,
         IDLE,
-        ATTACKING,
+        ATTACK_STANDBY,
+        ATTACK_ANIMATION,
+        ATTACK,
+        SPECIAL_STANDBY,
+        SPECIAL_ANIMATION,
         SPECIAL, // Anything to do with casting spells or a secondary attack.
+        MOVING_STANDBY,
         MOVING,
-        FINISHED,
+        FINISH,
+        DEAD
     }
 
     /// <summary>

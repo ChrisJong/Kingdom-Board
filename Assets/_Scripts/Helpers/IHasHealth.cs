@@ -16,6 +16,7 @@
         UIBase uiComponent { get; set; }
 
         bool AddHealth(float amount);
+        bool RemoveHealth(float amount);
         bool ReceiveDamage(float damage, IHasHealth target);
         bool UseEnergy(float amount);
         bool IsAlly(IHasHealth other);

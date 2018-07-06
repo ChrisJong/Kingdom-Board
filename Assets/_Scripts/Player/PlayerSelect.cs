@@ -6,6 +6,7 @@
     using Constants;
     using Enum;
     using Helpers;
+    using Structure;
     using Unit;
 
     public class PlayerSelect : MonoBehaviour {
@@ -24,7 +25,7 @@
         //public Selectable previousHover;
 
         public bool selected = false;
-        public bool selectedLock = false;
+        public bool lockSelection = false;
 
         // PHYSICS (RAY)
         private float _distance = 50.0f;
@@ -39,7 +40,7 @@
         }
 
         private void Update() {
-            this.UpdateSelect();
+            this.UpdatePlayerSelect();
         }
         #endregion
 
@@ -56,67 +57,54 @@
             this.previousSelected = null;
         }
 
-        private void UpdateSelect() {
-            switch(this._controller.selectionState) {
-                case SelectionState.FREE:
-                    this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer);
-                    this.MouseSelect();
-                    //this.HoverSelect();
-                break;
-
-                case SelectionState.RESEARCH:
-                    Debug.Log("IN Research Mode");
-                break;
-
-                case SelectionState.UNIT_ATTACK:
-                    this.AttackSelection();
-                break;
-
-                case SelectionState.UNIT_SPECIAL:
-                    this.SpecialSelection();
-                break;
-
-                case SelectionState.UNIT_MOVE:
-                    this.MoveToSelection();
-                break;
-
-                default:
-                    this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer);
-                    this.MouseSelect();
-                    //this.HoverSelect();
-                break;
-            }
+        private void UpdatePlayerSelect() {
+            Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
+            this.MouseSelection();
         }
 
         private bool CastRayToWorld(LayerMask mask) {
             this._ray = this._camera.ScreenPointToRay(Input.mousePosition);
 
-            Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
+            //Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
 
-            if(EventSystem.current.IsPointerOverGameObject()) // check to see if our point iver on a UI object.
+            if(EventSystem.current.IsPointerOverGameObject())
                 return false;
 
-            return Physics.Raycast(this._ray, out this._hitInfo, this._distance, ~(mask)); // ignores everything other than the mask
+            return Physics.Raycast(this._ray, out this._hitInfo, this._distance, ~(mask));
         }
 
-        private void MouseSelect() {
-            if(Input.GetMouseButtonUp(0)) {
-
-                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
-                    //Selectable tempSelect = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
-                        this.SelectObject();
-                } else {
-                        this.DeSelectObject();
+        private void MouseSelection() {
+            switch(this._controller.selectionState) {
+                case SelectionState.FREE:
+                if(Input.GetMouseButtonUp(0)) {
+                    if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
+                        this.FreeSelection();
+                    } else {
+                        this.FreeDeselection();
+                    }
                 }
+                break;
+
+                case SelectionState.SELECT_ENTITY:
+                this.SelectEntity();
+                break;
+
+                case SelectionState.SELECT_POINT:
+                this.SelectPoint();
+                break;
+
+                case SelectionState.SELECT_SPAWNPOINT:
+                this.SelectSpawnPoint();
+                break;
             }
         }
 
-        private void SelectObject() {
+        private void FreeSelection() {
             if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
                 var temp = this._hitInfo.transform.GetComponent<HasHealthBase>();
 
                 if(temp.entityType == Enum.EntityType.UNIT) {
-                    if(((UnitBase)temp).hasFinished)
+                    if(((UnitBase)temp).unitState == UnitState.FINISH)
                         return;
                 }
 
@@ -134,7 +122,7 @@
             }
         }
 
-        private void DeSelectObject() {
+        private void FreeDeselection() {
             if(!EventSystem.current.IsPointerOverGameObject()) {
                 if(this.currentSelected != null) {
                     this.previousSelected = this.currentSelected;
@@ -143,6 +131,36 @@
                 }
                 this.selected = false;
             }
+        }
+
+        private void SelectPoint() {
+            if(Input.GetMouseButtonUp(0)) {
+                if(this.CastRayToWorld(GlobalSettings.LayerValues.unitLayer)) {
+
+                    // Figure out the type of class has currentselected belongs to. (e.g. unit or a structure)
+                    Debug.Log("Current Selection Type: " + this.currentSelected.GetType().ToString());
+
+                    if(this.currentSelected is UnitBase){
+                        Debug.Log("UNITbbASE");
+
+                    }
+
+                    if(this.currentSelected.GetType().BaseType == typeof(UnitBase)) {
+                        Debug.Log("Current Selection Type: " + this.currentSelected.GetType().BaseType.ToString());
+
+                    } else if(this.currentSelected.GetType().BaseType == typeof(StructureBase)) {
+                        Debug.Log("Current Selection Type: " + this.currentSelected.GetType().BaseType.ToString());
+                    }
+                }
+            }
+        }
+
+        private void SelectEntity() {
+
+        }
+
+        private void SelectSpawnPoint() {
+
         }
 
         private void AttackSelection() {
@@ -166,7 +184,7 @@
                             return;
                         } else {
                             Debug.Log("Can Attack " + (toAttack != null ? toAttack.name : "doesn't exist"));
-                            unit.Attack(toAttack as IHasHealth);
+                            unit.StartAttackAnimation(toAttack);
                             this.DebugText(unit, toAttack);
                         }
                     }
@@ -216,10 +234,10 @@
                     
                     Debug.DrawLine(unit.position, this._hitInfo.point, Color.blue, 20.0f);
                     Debug.Log("Selection Distance: " + distance.ToString());
-                    Debug.Log("Unit Move Radius: " + (((UnitBase)this.currentSelected).moveRadius + ((UnitBase)this.currentSelected).unitRadius).ToString());
+                    Debug.Log("Unit Move Radius: " + (((UnitBase)this.currentSelected).curStamina + ((UnitBase)this.currentSelected).unitRadius).ToString());
                     Debug.Log("Unit Radius: " + ((UnitBase)this.currentSelected).unitRadius);
 
-                    if(distance > unit.moveRadius) {
+                    if(distance > unit.curStamina) {
                         Debug.Log("Out Of Unit Move Radius");
                         return;
                     }else {

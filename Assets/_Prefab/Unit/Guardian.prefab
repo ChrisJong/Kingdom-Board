@@ -3995,9 +3995,26 @@ MonoBehaviour:
   _controller: {fileID: 0}
   _maxHealth: 100
   _maxEnergy: 0
-  _uiComponent: {fileID: 0}
   radiusDrawer: {fileID: 114741620110894288}
+  _unitType: 9
+  _currentMoveTo: {x: 0, y: 0, z: 0}
+  _previousMoveTo: {x: 0, y: 0, z: 0}
+  _movementType: 1
+  _maxStamina: 10
+  _minMoveThreashold: 0.01
+  _moveSpeed: 5
   _allowedMovementImprecision: 1
+  _projectile: {fileID: 0}
+  _target: {fileID: 0}
+  _minDamage: 20
+  _maxDamage: 20
+  _attackRadius: 7.5
+  _resistanceMultiplier: 0.5
+  _weaknessMultiplier: 0.5
+  _resistanceType: 0
+  _weaknessType: 0
+  _attackType: 0
+  _endOfAttack: 0.8
 --- !u!114 &114245433306442484
 MonoBehaviour:
   m_ObjectHideFlags: 1
