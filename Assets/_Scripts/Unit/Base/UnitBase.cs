@@ -18,6 +18,22 @@
     public abstract class UnitBase : HasHealthBase, IUnit {
 
         #region VARIABLE
+        // Will sort later.
+        [Header("UNIT")]
+        [SerializeField]
+        protected Vector3 _currentPoint = Vector3.zero;
+        [SerializeField]
+        protected Vector3 _previousPoint = Vector3.zero;
+        public Vector3 currentPoint { get { return this._currentPoint; } }
+        public Vector3 previousPoint { get { return this._previousPoint; } }
+
+        [SerializeField]
+        protected IHasHealth _currentTarget = null;
+        [SerializeField]
+        protected IHasHealth _previousTarget = null;
+        public IHasHealth currentTarget { get { return this._currentTarget; } }
+        public IHasHealth previousTarget { get { return this._previousTarget; } }
+
         [Header("UI")]
         public LineRenderDrawCircle radiusDrawer = null;
 
@@ -179,6 +195,24 @@
         //////////////
         //// UNIT ////
         //////////////
+        public virtual bool SetPoint(Vector3 point) {
+            if(this._currentPoint != null)
+                this._previousPoint = this._currentPoint;
+
+            this._currentPoint = point;
+
+            return true;
+        }
+
+        public virtual bool SetTarget(IHasHealth target) {
+            if(this._currentTarget != null)
+                this._previousTarget = this._currentTarget;
+
+            this._currentTarget = target;
+
+            return true;
+        }
+
         protected virtual void UpdateUnit() {
             switch(this._unitState) {
 

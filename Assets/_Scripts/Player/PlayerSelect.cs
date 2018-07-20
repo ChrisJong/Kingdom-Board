@@ -85,8 +85,16 @@
                 }
                 break;
 
-                case SelectionState.SELECT_ENTITY:
-                this.SelectEntity();
+                case SelectionState.SELECT_TARGET:
+                this.SelectTarget();
+                break;
+
+                case SelectionState.SELECT_ALLYTARGET:
+                this.SelectTarget();
+                break;
+
+                case SelectionState.SELECT_ENEMYTARGET:
+                this.SelectTarget();
                 break;
 
                 case SelectionState.SELECT_POINT:
@@ -119,6 +127,8 @@
 
                     this.selected = true;
                 }
+            } else {
+                Debug.LogWarning(this._hitInfo.transform.name + " Doesn't Derive From HasHealthBase Class.");
             }
         }
 
@@ -140,112 +150,50 @@
                     // Figure out the type of class has currentselected belongs to. (e.g. unit or a structure)
                     Debug.Log("Current Selection Type: " + this.currentSelected.GetType().ToString());
 
-                    if(this.currentSelected is UnitBase){
-                        Debug.Log("UNITbbASE");
-
-                    }
-
-                    if(this.currentSelected.GetType().BaseType == typeof(UnitBase)) {
-                        Debug.Log("Current Selection Type: " + this.currentSelected.GetType().BaseType.ToString());
-
-                    } else if(this.currentSelected.GetType().BaseType == typeof(StructureBase)) {
-                        Debug.Log("Current Selection Type: " + this.currentSelected.GetType().BaseType.ToString());
+                    if(this.currentSelected is ISelection) {
+                        (this.currentSelected as ISelection).SetPoint(this._hitInfo.point);
+                    } else {
+                        Debug.Log(this.currentSelected.name + " Doesn't Inherit from ISelection Interface.");
                     }
                 }
             }
         }
 
-        private void SelectEntity() {
+        private void SelectTarget() {
+            if(Input.GetMouseButtonUp(0)) {
+                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
+                    if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
+                        toAttack = this._hitInfo.transform.GetComponent<HasHealthBase>();
 
+                        if(this.CheckTargetSelection(toAttack)) {
+                            if(this.currentSelected is ISelection) {
+                                (this.currentSelected as ISelection).SetTarget(toAttack as IHasHealth);
+                            } else {
+                                Debug.LogWarning(this.currentSelected.name + " Deson't Inherit from ISelection Interface.");
+                            }
+                        } else {
+                            Debug.LogWarning(toAttack.name + " - Entity Isn't Apart Of Any Player Group.");
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool CheckTargetSelection(HasHealthBase target) {
+            if(this._controller.selectionState == SelectionState.SELECT_ENEMYTARGET) {
+                return this.currentSelected.IsEnemy(target);
+            } else if(this._controller.selectionState == SelectionState.SELECT_ALLYTARGET) {
+                return this.currentSelected.IsAlly(target);
+            } else if(this._controller.selectionState == SelectionState.SELECT_TARGET) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         private void SelectSpawnPoint() {
 
-        }
-
-        private void AttackSelection() {
-            if(Input.GetMouseButtonUp(0)) {
-                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
-                    UnitBase unit = this.currentSelected as UnitBase;
-                    UnitBase toAttack = this._hitInfo.transform.GetComponent<UnitBase>();
-                    float distance = Vector3.Distance(toAttack.position, unit.position) - (unit.unitRadius - unit.radiusDrawer.width);
-
-                    Debug.DrawLine(unit.position, toAttack.position, Color.blue, 20.0f);
-                    Debug.Log("Selection Distance: " + distance);
-                    Debug.Log("Unit Attack Radius: " + unit.attackRadius);
-                    Debug.Log("Unit Radius: " + unit.unitRadius);
-
-                    if(distance > unit.attackRadius) {
-                        Debug.Log("Out Of Unit Attack Radius");
-                        return;
-                    } else {
-                        if(toAttack.IsAlly(unit as IHasHealth)) {
-                            Debug.Log("CAN NOT ATTACK ALLY");
-                            return;
-                        } else {
-                            Debug.Log("Can Attack " + (toAttack != null ? toAttack.name : "doesn't exist"));
-                            unit.StartAttackAnimation(toAttack);
-                            this.DebugText(unit, toAttack);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void SpecialSelection() {
-            if(this.currentSelected.entityType == EntityType.UNIT && this.currentSelected.GetType() == typeof(Cleric)) {
-                Debug.Log("CLERIC HEAL SELECTED");
-            }
-
-            if(Input.GetMouseButtonUp(0)) {
-                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
-                    Cleric unit = this.currentSelected as Cleric;
-                    UnitBase selection = this._hitInfo.transform.GetComponent<UnitBase>();
-                    float distance = Vector3.Distance(selection.position, unit.position) - (unit.unitRadius - unit.radiusDrawer.width);
-
-                    Debug.DrawLine(unit.position, selection.position, Color.blue, 20.0f);
-                    Debug.Log("Selection Distance: " + distance);
-                    Debug.Log("Unit Heal Radius: " + unit.healingRadius);
-                    Debug.Log("Unit Radius: " + unit.unitRadius);
-
-                    if(distance > unit.healingRadius) {
-                        Debug.Log("Out Of Unit Heal Radius");
-                        return;
-                    } else {
-                        if(selection.IsEnemy(unit as IHasHealth)) {
-                            Debug.Log("CAN NOT HEAL ENEMY");
-                            return;
-                        } else {
-                            Debug.Log("Can Heal " + (selection != null ? selection.name : "doesn't exist"));
-                            unit.Heal(selection as IHasHealth);
-                            this.DebugText(unit, selection);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void MoveToSelection() {
-            Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
-            if(Input.GetMouseButtonUp(0)) {
-                if(this.CastRayToWorld(GlobalSettings.LayerValues.unitLayer)) {
-                    UnitBase unit = this.currentSelected as UnitBase;
-                    float distance = Vector3.Distance(this._hitInfo.point, unit.position) - (unit.unitRadius - unit.radiusDrawer.width);
-                    
-                    Debug.DrawLine(unit.position, this._hitInfo.point, Color.blue, 20.0f);
-                    Debug.Log("Selection Distance: " + distance.ToString());
-                    Debug.Log("Unit Move Radius: " + (((UnitBase)this.currentSelected).curStamina + ((UnitBase)this.currentSelected).unitRadius).ToString());
-                    Debug.Log("Unit Radius: " + ((UnitBase)this.currentSelected).unitRadius);
-
-                    if(distance > unit.curStamina) {
-                        Debug.Log("Out Of Unit Move Radius");
-                        return;
-                    }else {
-                        Debug.Log("Can Move To");
-                        unit.MoveTo(this._hitInfo.point);
-                    }
-                }
-            }
         }
 
         private void DebugText(UnitBase unit, UnitBase selection) {

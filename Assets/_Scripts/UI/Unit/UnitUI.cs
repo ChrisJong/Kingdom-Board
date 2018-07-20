@@ -148,7 +148,7 @@
             Debug.Log("BEGIN ATTACK");
             this._attacking = true;
             this.controller.playerSelection.lockSelection = true;
-            this.controller.selectionState = SelectionState.SELECT_ENTITY;
+            this.controller.selectionState = SelectionState.SELECT_ENEMYTARGET;
             //this.controller.selectionState = SelectionState.UNIT_ATTACK;
 
             this.unit.radiusDrawer.TurnOn();
