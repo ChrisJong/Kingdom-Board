@@ -12,10 +12,14 @@
         [Header("HEALTH")]
         [SerializeField, ReadOnly]
         private Player _controller;
-        [SerializeField, ReadOnly, Range(0.0f, 500.0f)]
+        [SerializeField, Range(0.0f, 500.0f)]
         protected float _maxHealth = 100.0f;
-        [SerializeField, ReadOnly, Range(0.0f, 500.0f)]
+        [SerializeField, ReadOnly]
+        protected float _debugCurrentHealth = 0.0f;
+        [SerializeField, Range(0.0f, 500.0f)]
         protected float _maxEnergy = 0.0f;
+        [SerializeField, ReadOnly]
+        protected float _debugCurrentEnergy = 0.0f;
         protected UIBase _uiComponent;
         protected IHasHealth _lastAttacker;
         private float _lastAttacked;
@@ -49,6 +53,10 @@
             base.OnEnable();
 
             this.currentHealth = this._maxHealth;
+            this._debugCurrentHealth = this._maxHealth;
+
+            this.currentEnergy = this._maxEnergy;
+            this._debugCurrentEnergy = this._maxEnergy;
 
             this.uiComponent = this.transform.GetComponent<UIBase>();
             // NOTE: UI INSTANCES HERE e.g health bar and ui buttons
@@ -70,6 +78,7 @@
             else
                 this.currentHealth = this.maxHealth;
 
+            this._debugCurrentHealth = this.currentHealth;
             this.uiComponent.UpdateUI();
             return true;
         }
@@ -83,6 +92,7 @@
             if(this.currentHealth <= 0.0f)
                 this.currentHealth = 0.0f;
 
+            this._debugCurrentHealth = this.currentHealth;
             this.uiComponent.UpdateUI();
             return true;
         }

@@ -3,6 +3,7 @@
     using System;
 
     using UnityEngine;
+    using UnityEngine.AI;
 
     using Enum;
     using Helpers;
@@ -13,7 +14,14 @@
         public abstract StructureType structureType { get; }
         public override EntityType entityType { get { return EntityType.STRUCTURE; } }
 
+        protected NavMeshObstacle _navMeshObstacle = null;
+
         public bool isReady { get; set; }
+
+        protected virtual void Awake() {
+            this._navMeshObstacle = this.GetComponent<NavMeshObstacle>() as NavMeshObstacle;
+            this._navMeshObstacle.carving = true;
+        }
 
         protected override void OnEnable() {
             base.OnEnable();

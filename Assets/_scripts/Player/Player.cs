@@ -43,6 +43,10 @@
         public Castle _castle;
         private IList<IUnit> _units;
         private IList<IStructure> _structures;
+        private GameObject _unitGroup = null;
+        public GameObject unitGroup { get { return this._unitGroup; } }
+        private GameObject _structureGroup = null;
+        public GameObject structureGroup { get { return this._structureGroup; } }
 
         ////////////////
         //// Camera ////
@@ -115,6 +119,11 @@
             ui.name = UIValues.Player.PLAYERUI;
             this._uiComponent = this.gameObject.AddComponent<PlayerUI>();
             this._uiComponent.controller = this;
+
+            this._unitGroup = new GameObject("_units");
+            this._unitGroup.transform.SetParent(this.transform);
+            this._structureGroup = new GameObject("_structures");
+            this._structureGroup.transform.SetParent(this.transform);
         }
 
         public virtual void Init(bool attacking) {

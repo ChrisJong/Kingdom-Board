@@ -170,7 +170,7 @@
         private void AddToQueue(UnitType type) {
             Debug.Log("TRYING TO ADD " + type.ToString() + " TO " + this.controller.name + " QUEUE");
             if(!this.castle.AddUnitToQueue(type))
-                Debug.Log("UNABLE TO ADD " + type.ToString() + " TO QUEUE");
+                Debug.LogWarning("UNABLE TO ADD " + type.ToString() + " TO QUEUE");
 
             this.UpdateInfo();
         }

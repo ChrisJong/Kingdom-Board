@@ -147,13 +147,13 @@
             if(Input.GetMouseButtonUp(0)) {
                 if(this.CastRayToWorld(GlobalSettings.LayerValues.unitLayer)) {
 
-                    // Figure out the type of class has currentselected belongs to. (e.g. unit or a structure)
-                    Debug.Log("Current Selection Type: " + this.currentSelected.GetType().ToString());
-
-                    if(this.currentSelected is ISelection) {
-                        (this.currentSelected as ISelection).SetPoint(this._hitInfo.point);
+                    if(this.currentSelected is ISelected) {
+                        if(!(this.currentSelected as ISelected).SetPoint(this._hitInfo.point)) {
+                            //Debug.Log("Can't Move Here");
+                            return;
+                        }
                     } else {
-                        Debug.Log(this.currentSelected.name + " Doesn't Inherit from ISelection Interface.");
+                        Debug.LogWarning(this.currentSelected.name + " Doesn't Inherit from ISelection Interface.");
                     }
                 }
             }
@@ -166,8 +166,11 @@
                         toAttack = this._hitInfo.transform.GetComponent<HasHealthBase>();
 
                         if(this.CheckTargetSelection(toAttack)) {
-                            if(this.currentSelected is ISelection) {
-                                (this.currentSelected as ISelection).SetTarget(toAttack as IHasHealth);
+                            if(this.currentSelected is ISelected) {
+                                if(!(this.currentSelected as ISelected).SetTarget(toAttack as IHasHealth)) {
+                                    Debug.Log("Unit out of range");
+                                    return;
+                                }
                             } else {
                                 Debug.LogWarning(this.currentSelected.name + " Deson't Inherit from ISelection Interface.");
                             }

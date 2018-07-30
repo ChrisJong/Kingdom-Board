@@ -4,7 +4,7 @@
 
     public interface ICanMove : IHasHealth {
         float moveSpeed { get; }
-        float curStamina { get; }
+        float currentStamina { get; }
         bool isMoving { get; }
         bool isIdle { get; }
         bool canMove { get; }

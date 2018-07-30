@@ -34,8 +34,11 @@
                 host.transform.SetParent(managerHost.transform);
 
                 this._pools.Add(setup.type, new UnitPool(setup.prefab, host, setup.initialInstanceCount));
+
+                setup.prefab.GetComponent<UnitBase>().InitialSetupAnimation();
             }
         }
+
 
         public bool SpawnUnit(UnitType type, Player controller, Vector3 position , float spawnDistance, float anglePerSpawm, ref int spawnIndex) {
             if(type == UnitType.NONE || type == UnitType.ANY || !this._pools.ContainsKey(type)) {
@@ -50,7 +53,7 @@
         private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, int spawnIndex) {
             var pool = this._pools[type];
             var pos = CircleHelpers.GetPointOnCircle(position, spawnDistance, anglePerSpawm, spawnIndex);
-            Debug.Log("spawn position: " + pos);
+            //Debug.Log("spawn position: " + pos);
             pos = Utility.Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
             var unit = pool.Get(pos, Quaternion.identity);
 
@@ -60,6 +63,7 @@
 
             ((UnitUI)unit.uiComponent).Init();
             controller.units.Add(unit);
+            unit.transform.SetParent(controller.unitGroup.transform);
 
             return unit;
         }

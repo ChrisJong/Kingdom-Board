@@ -2,7 +2,7 @@
 
     using UnityEngine;
 
-    public interface ISelection {
+    public interface ISelected {
         Vector3 currentPoint { get; }
         Vector3 previousPoint { get; }
         IHasHealth currentTarget { get; }

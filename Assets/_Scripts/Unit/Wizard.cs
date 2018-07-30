@@ -15,8 +15,8 @@
         private float _splashRadius = 10.0f;
         public float splashRadius { get { return this._splashRadius; } }
 
-        protected override void InternalAttack(float damage, IHasHealth target) {
-            base.InternalAttack(damage, target);
+        protected override void InternalAttack(float damage) {
+            base.InternalAttack(damage);
 
             // NOTE: Find units within the splashRadius and calculate damage on the distance from the main attack source.
         }

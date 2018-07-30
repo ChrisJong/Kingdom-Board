@@ -131,7 +131,7 @@
                 var player = temp.AddComponent<Human>() as Human;
                 player.Create(this._spawnPoints[i], (uint)i);
                 player.roll = (uint)Random.Range(0, 100);
-                Debug.Log(player.name + " Rolled: " + player.roll.ToString());
+                //Debug.Log(player.name + " Rolled: " + player.roll.ToString());
                 this._players.Add(player);
             }
 

@@ -19,9 +19,9 @@
         private float _splashRadius = 10.0f;
         public float splashRadius { get { return this._splashRadius; } }
 
-        protected override void InternalAttack(float damage, IHasHealth target) {
+        protected override void InternalAttack(float damage) {
             var hits = Utils.hitsBuffers;
-            var pos = target.position;
+            var pos = this._currentTarget.position;
 
             Physics.SphereCastNonAlloc(pos, this.unitRadius * 2.0f, this.transform.forward, hits, this._splashRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
 
@@ -43,13 +43,13 @@
 
                 Debug.Log(hasHealth.gameObject.name + " - " + hasHealth.controller.name);
 
-                if(hasHealth.Equals(target)) {
+                if(hasHealth.Equals(this._currentTarget)) {
                     hasHealth.lastAttacker = this;
                     hasHealth.ReceiveDamage(damage, this as IHasHealth);
                     continue;
                 }
 
-                float distance = Vector3.Distance(target.position, hasHealth.position);
+                float distance = Vector3.Distance(this._currentTarget.position, hasHealth.position);
                 Debug.Log(distance.ToString());
                 double roundTo = Math.Round(((double)(distance / this._splashRadius)), 1);
                 float splashDamange = damage * (1.0f - (float)roundTo);

@@ -145,13 +145,13 @@
                 return;
             }
 
-            Debug.Log("BEGIN ATTACK");
+            //Debug.Log("BEGIN ATTACK");
             this._attacking = true;
             this.controller.playerSelection.lockSelection = true;
             this.controller.selectionState = SelectionState.SELECT_ENEMYTARGET;
-            //this.controller.selectionState = SelectionState.UNIT_ATTACK;
 
             this.unit.radiusDrawer.TurnOn();
+            this.unit.unitState = UnitState.ATTACK_STANDBY;
             this.unit.radiusDrawer.DrawAttackRadius(this.unit.attackRadius);
 
             this._btnCancel.gameObject.SetActive(true);
@@ -170,10 +170,7 @@
             this._moving = true;
             this.controller.playerSelection.lockSelection = true;
             this.controller.selectionState = SelectionState.SELECT_POINT;
-            //this.controller.selectionState = SelectionState.UNIT_MOVE;
 
-            //this.unit.radiusDrawer.TurnOn();
-            //this.unit.radiusDrawer.DrawMoveRadius(this.unit.curStamina);
             this.unit.unitState = UnitState.MOVING_STANDBY;
             this.unit.lastPosition = this.unit.position;
 
@@ -184,7 +181,7 @@
             this._btnEnd.gameObject.SetActive(false);
         }
 
-        protected void FinishMove() {
+        public virtual void FinishMove() {
             Debug.Log("Finish Movement");
 
             this.controller.selectionState = SelectionState.FREE;
