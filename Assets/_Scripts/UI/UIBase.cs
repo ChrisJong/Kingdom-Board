@@ -8,6 +8,9 @@
     using Constants;
     using Player;
 
+    // NOTES: https://stackoverflow.com/questions/41391708/how-to-detect-click-touch-events-on-ui-and-gameobjects
+    // UI needs input needs to changed to use EventSystems For Mouse & Touch Inputs.
+
     public abstract class UIBase : MonoBehaviour, IUIComponent {
 
         #region VARIABLE

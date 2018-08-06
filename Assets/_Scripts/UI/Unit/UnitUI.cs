@@ -1,6 +1,8 @@
 ﻿namespace UI {
 
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
 
     using UnityEngine;
     using UnityEngine.UI;
@@ -21,7 +23,9 @@
         public Button _btnAttack;
         public Button _btnMove;
         public Button _btnFinishMove;
-        public SpriteRenderer _spCircle;
+
+        [SerializeField]
+        protected List<Material> _unitMaterials;
 
         private bool _attacking = false;
         private bool _moving = false;
@@ -34,12 +38,14 @@
                 this.controller = this.unit.controller;
             }
 
+            foreach(Renderer render in this.GetComponents<Renderer>()) {
+                foreach(Material mat in render.materials) {
+                    this._unitMaterials.Add(mat);
+                }
+            }
+
             this.FindUI(this.transform, UIValues.Unit.UNITUI);
             base.Awake();
-
-            if(this._spCircle == null)
-                this._spCircle = this.transform.Find(UIValues.Unit.SELECTIONCIRCLE).GetComponent<SpriteRenderer>();
-            this._spCircle.gameObject.SetActive(false);
 
             if(this._btnEnd == null)
                 this._btnEnd = this.FindButton(this._tSelected, UIValues.Unit.ENDBUTTON);
@@ -84,21 +90,16 @@
         protected override void OnMouseEnter() {
             base.OnMouseEnter();
 
-            this._spCircle.gameObject.SetActive(true);
         }
 
         protected override void OnMouseExit() {
             base.OnMouseExit();
 
-            this._spCircle.gameObject.SetActive(false);
         }
         #endregion
 
         #region CLASS
         public void Init() {
-            if(this.controller != null)
-                this._spCircle.color = this.controller.color;
-
             this.UpdateInfo();
         }
 
@@ -107,6 +108,7 @@
 
             this.UpdateInfo();
         }
+
         public override void Display() {
             base.Display();
 
@@ -137,6 +139,20 @@
             this._btnEnd.gameObject.SetActive(true);
             this._attacking = false;
             this._moving = false;
+        }
+
+        protected virtual void ActivateOutline(Color color, float width = 0.03f) {
+            foreach(Material mat in this._unitMaterials) {
+                mat.SetFloat("_outline", 0.03f);
+                mat.SetColor("_OutlineColor", Color.blue);
+            }
+        }
+
+        protected virtual void DeactivateOutline(Color color, float width = 0.0f) {
+            foreach(Material mat in this._unitMaterials) {
+                mat.SetFloat("_outline", 0.0f);
+                mat.SetColor("_OutlineColor", Color.white);
+            }
         }
 
         protected void InitiateAttack() {
