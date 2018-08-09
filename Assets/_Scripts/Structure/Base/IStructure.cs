@@ -3,7 +3,7 @@
     using Enum;
     using Helpers;
 
-    public interface IStructure : IHasHealth {
+    public interface IStructure : IHasHealth, ISelected {
 
         StructureType structureType { get; }
 

@@ -38,7 +38,7 @@
                 this.controller = this.unit.controller;
             }
 
-            foreach(Renderer render in this.GetComponents<Renderer>()) {
+            foreach(Renderer render in this.GetComponentsInChildren<Renderer>()) {
                 foreach(Material mat in render.materials) {
                     this._unitMaterials.Add(mat);
                 }
@@ -90,11 +90,13 @@
         protected override void OnMouseEnter() {
             base.OnMouseEnter();
 
+            this.ActivateOutline(Color.green);
         }
 
         protected override void OnMouseExit() {
             base.OnMouseExit();
 
+            this.DeactivateOutline();
         }
         #endregion
 
@@ -143,15 +145,14 @@
 
         protected virtual void ActivateOutline(Color color, float width = 0.03f) {
             foreach(Material mat in this._unitMaterials) {
-                mat.SetFloat("_outline", 0.03f);
-                mat.SetColor("_OutlineColor", Color.blue);
+                mat.SetFloat("_Outline", width);
+                mat.SetColor("_OutlineColor", color);
             }
         }
 
-        protected virtual void DeactivateOutline(Color color, float width = 0.0f) {
+        protected virtual void DeactivateOutline() {
             foreach(Material mat in this._unitMaterials) {
-                mat.SetFloat("_outline", 0.0f);
-                mat.SetColor("_OutlineColor", Color.white);
+                mat.SetFloat("_Outline", 0.0f);
             }
         }
 

@@ -6,7 +6,9 @@
     using Manager;
 
     public abstract class SpawnStructureBase : StructureBase {
+        [Header("SPAWN"), SerializeField]
         protected float _spawnDistance = 6.0f;
+        public float spawnDistance { get { return this._spawnDistance; } }
         protected float _anglePerSpawn = 15.0f;
         protected float _lastSpawn;
         protected int _lastSpawnIndex = 0;

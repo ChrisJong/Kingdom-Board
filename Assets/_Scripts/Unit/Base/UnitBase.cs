@@ -65,6 +65,8 @@
         protected NavMeshPath _unitPathing;
         [Header("MOVEMENT")]
         [SerializeField]
+        protected float _initialDistance = 0.0f;
+        [SerializeField]
         protected MovementType _movementType = MovementType.NONE;
         public MovementType movementType { get { return this.movementType; } }
 
@@ -202,7 +204,7 @@
         public virtual bool SetPoint(Vector3 point) {
             Vector3 position = Vector3.zero;
 
-            if(!this.SamplePosition(point, out position)) {
+            if(!Utils.SamplePosition(point, out position)) {
                 return false;
             }
 
@@ -212,7 +214,7 @@
             }
 
             this._currentPoint = position;
-            this.debugCurrentPoint = this._currentPoint.Value;
+            this.debugCurrentPoint = position;
 
             if(this._previousPoint.HasValue && this._currentPoint.HasValue) {
                 if(this._currentPoint.Value.Equals(this._previousPoint.Value))
@@ -220,7 +222,7 @@
             }
 
             if(this._unitState == UnitState.MOVING_STANDBY || this.unitState == UnitState.MOVING) {
-                this.MoveTo(point);
+                this.MoveTo(position);
             }
 
             return true;
@@ -272,25 +274,27 @@
         //////////////////
         #region MOVEMENT
         public virtual void MoveTo(Vector3 dest) {
-            NavMeshHit hit;
+            //NavMeshHit hit;
             NavMeshPath path = new NavMeshPath();
 
             this.StopMoving();
 
-            if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
+            /*if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
                 if((hit.position - this.position).sqrMagnitude < (this._navMeshAgent.stoppingDistance * this._navMeshAgent.stoppingDistance))
                     return; // destination not far enough away.
-            }
+            }*/
 
-            this._navMeshAgent.CalculatePath(hit.position, path);
+            this._navMeshAgent.CalculatePath(dest, path);
             this._navMeshAgent.SetPath(path);
             this._unitPathing = path;
 
             if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
+                this._initialDistance = this._navMeshAgent.remainingDistance;
                 this._navMeshAgent.isStopped = false;
                 this.lastPosition = this.position;
             } else {
-                this._navMeshAgent.SetDestination(hit.position);
+                this._navMeshAgent.SetDestination(dest);
+                this._initialDistance = this._navMeshAgent.remainingDistance;
             }
 
             this._unitState = UnitState.MOVING;
@@ -358,6 +362,12 @@
                     this._unitState = UnitState.MOVING_STANDBY;
                 }
             } else {
+
+                if(this._navMeshAgent.remainingDistance == this._initialDistance)
+                    return;
+
+                // Stamina Calculations go here.
+
                 //this._currentStamina = Mathf.Clamp(this._currentStamina - (this._navMeshAgent.remainingDistance * 0.5f), 0.0f, this._maxStamina);
                 //this._debugCurrentStamina = this._currentStamina;
             }
