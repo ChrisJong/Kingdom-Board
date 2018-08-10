@@ -95,7 +95,8 @@
         [Header("ATTACK")]
         [SerializeField]
         protected GameObject _projectile = null;
-        protected GameObject _projectileSpawn = null;
+        [SerializeField]
+        protected GameObject _projectileReleasePoint = null;
         [SerializeField]
         protected float _projectileSpeed = 10.0f;
         protected float _lastAttack = 0.0f;
@@ -385,7 +386,7 @@
             } else {
                 GameObject temp = Instantiate(this._projectile);
                 // NOTE: change the spawn location of the projectile to a point where the it should spawn.
-                temp.GetComponent<Projectile>().SetupTarget(this.gameObject, this._currentTarget.gameObject, this.position, this._projectileSpeed);
+                temp.GetComponent<Projectile>().SetupTarget(this.gameObject, this._currentTarget.gameObject.GetComponent<Collider>().transform, this._projectileReleasePoint.transform, this._projectileSpeed);
             }
         }
 
@@ -506,6 +507,12 @@
             foreach(AnimationClip clip in this._animator.runtimeAnimatorController.animationClips) {
                 if(clip.name.Contains("Attack")) {
                     this._animClip = clip;
+                    
+                    // Function To Help Find Frame Event Time.
+                    /*foreach(AnimationEvent evt in clip.events) {
+                        Debug.Log("Event Attack Time: " + evt.time);
+                    }*/
+
                     break;
                 }
             }
