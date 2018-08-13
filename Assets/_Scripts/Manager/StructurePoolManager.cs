@@ -62,8 +62,8 @@
             ((CastleUI)structure.uiComponent).Hide();
             //structure.isReady = costs.time == 0.0f;
 
-            // NOTE: change the color render to tteam color.
             controller.structures.Add(structure);
+            structure.transform.SetParent(controller.structureGroup.transform);
 
             return structure;
         }

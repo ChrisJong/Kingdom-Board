@@ -119,9 +119,15 @@
             if(this.isDead)
                 return true;
 
-            //var lookUp = Quaternion.LookRotation(Vector3.up);
+            float finalDamage = 0.0f;
 
-            this.currentHealth -= damage;
+            //ICanAttack unit = target as ICanAttack;
+            // NOTE: Calculate any resistance and weakness damage here.
+            finalDamage = damage;
+
+            this.RemoveHealth(finalDamage);
+            Debug.Log(this.name + " Took: " + finalDamage.ToString() + " of Damage From - " + target.gameObject.name);
+
             if(this.currentHealth <= 0.0f) {
 
                 if(this.controller != null && this.controller.structures != null)
@@ -129,6 +135,9 @@
 
                 // NOTE: spawn in particle effects.
                 this.ReturnStructure();
+
+                // NOTE: GAME ENDS HERE, need to flag playerr death/
+                //this.controller.state = PlayerState.DEAD;
                 return true;
             }
             return false;

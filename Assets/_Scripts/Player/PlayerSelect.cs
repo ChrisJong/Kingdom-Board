@@ -1,6 +1,7 @@
 ﻿namespace Player {
 
     using UnityEngine;
+    using UnityEngine.AI;
     using UnityEngine.EventSystems;
 
     using Constants;
@@ -55,6 +56,18 @@
 
             this.currentSelected = null;
             this.previousSelected = null;
+        }
+
+        public Vector3 GetCurrentPointOnGround() {
+            Vector3 coord = Vector3.zero;
+            Ray ray = this._camera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hitInfo;
+
+            Physics.Raycast(ray, out hitInfo, this._distance, GlobalSettings.LayerValues.groundLayer);
+
+            coord = hitInfo.point;
+
+            return coord;
         }
 
         private void UpdatePlayerSelect() {

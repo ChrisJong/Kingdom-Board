@@ -208,6 +208,7 @@
 
             this.ResetUI();
         }
+
         public virtual void FinishAttack() {
             Debug.Log("Finish Attack");
             this.controller.selectionState = SelectionState.FREE;

@@ -385,7 +385,10 @@
                 this.InternalAttack(this.GetDamage());
             } else {
                 GameObject temp = Instantiate(this._projectile);
-                // NOTE: change the spawn location of the projectile to a point where the it should spawn.
+
+                if(temp.GetComponent<Projectile>() == null)
+                    temp.AddComponent<Projectile>();
+
                 temp.GetComponent<Projectile>().SetupTarget(this.gameObject, this._currentTarget.gameObject.GetComponent<Collider>().transform, this._projectileReleasePoint.transform, this._projectileSpeed);
             }
         }
@@ -418,7 +421,7 @@
             finalDamage = Mathf.Round(damage * finalmultiplier);
 
             this.RemoveHealth(finalDamage);
-            //this.currentHealth -= finalDamage;
+            Debug.Log("Current Target (" + this.name + "): Took" + finalDamage.ToString() + " of Damage from - " + target.gameObject.name);
             this.uiComponent.UpdateUI();
 
             if(this.currentHealth <= 0.0f) {
@@ -436,35 +439,6 @@
         }
 
         protected virtual void InternalAttack(float damage) {
-            /*var hits = Utils.hitsBuffers;
-            //var pos = this.position + this.transform.forward * this._unitRadius;
-            var pos = this._currentTarget.position;
-            Physics.SphereCastNonAlloc(pos, this._unitRadius * 2.0f, this.transform.forward, hits, this._attackRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
-
-            this._hitComparer.position = this.position;
-            Array.Sort(hits, this._hitComparer);
-
-            for(int i = 0; i < hits.Length; i++) {
-                var hit = hits[i];
-
-                if(hit.transform == null)
-                    continue;
-
-                if(hit.transform == this.transform)
-                    continue; // jgnore hits with itself;
-
-                var hasHealth = hit.collider.GetEntity<IHasHealth>();
-                if(hasHealth == null || hasHealth.isDead)
-                    continue; // ignore anything that doesn't contain health or is dead.
-
-                if(this.IsAlly(hasHealth))
-                    continue; // ignore allies.
-
-                hasHealth.lastAttacker = this;
-                hasHealth.ReceiveDamage(damage, this as IHasHealth); // only attack the original target chosen.
-                break;
-            }*/
-
             this._currentTarget.lastAttacker = this;
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth);
 
