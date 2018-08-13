@@ -1,9 +1,7 @@
 fileFormatVersion: 2
 guid: 343a3446f1deb624e803bd05aea56f58
-timeCreated: 1523611077
-licenseType: Free
 ModelImporter:
-  serializedVersion: 22
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: arrow_hand_solver
     100002: arrow_jnt
@@ -123,6 +121,7 @@ ModelImporter:
     100230: spine1_jnt
     100232: spine2_jnt
     100234: spine3_jnt
+    100236: releasePoint
     400000: arrow_hand_solver
     400002: arrow_jnt
     400004: arrow_quiver_solver
@@ -241,6 +240,7 @@ ModelImporter:
     400230: spine1_jnt
     400232: spine2_jnt
     400234: spine3_jnt
+    400236: releasePoint
     2100000: longbow_base_material
     2100002: longbow_accessories_material
     2100004: pedestal_material
@@ -274,6 +274,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -372,7 +373,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    importVisibility: 0
+    importVisibility: 1
     importBlendShapes: 1
     importCameras: 0
     importLights: 0
@@ -389,6 +390,8 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0

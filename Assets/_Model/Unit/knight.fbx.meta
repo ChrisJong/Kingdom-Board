@@ -1,9 +1,7 @@
 fileFormatVersion: 2
 guid: 139159a8829ca4241b4f9e69e9b4855a
-timeCreated: 1521976567
-licenseType: Free
 ModelImporter:
-  serializedVersion: 22
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: head_jnt
     100002: //RootNode
@@ -158,6 +156,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -226,7 +225,7 @@ ModelImporter:
       name: knight_Attack
       takeName: Take 001
       firstFrame: 4
-      lastFrame: 53
+      lastFrame: 84
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -273,6 +272,8 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0

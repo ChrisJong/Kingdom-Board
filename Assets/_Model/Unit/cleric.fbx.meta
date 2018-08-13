@@ -1,9 +1,7 @@
 fileFormatVersion: 2
 guid: 9a158568b6c55974cbfaf8cd40c715bb
-timeCreated: 1524670273
-licenseType: Free
 ModelImporter:
-  serializedVersion: 22
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: c_chin
     100002: c_nose
@@ -122,6 +120,7 @@ ModelImporter:
     100228: spine2_jnt
     100230: wand_jnt
     100232: wand_point_jnt
+    100234: releasePoint
     400000: c_chin
     400002: c_nose
     400004: //RootNode
@@ -239,6 +238,7 @@ ModelImporter:
     400228: spine2_jnt
     400230: wand_jnt
     400232: wand_point_jnt
+    400234: releasePoint
     2100000: cleric_base_material
     2100002: cleric_accessories_material
     2100004: pedestal_material
@@ -273,6 +273,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -416,6 +417,8 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 1
