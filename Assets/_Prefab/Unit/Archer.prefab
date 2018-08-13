@@ -248,7 +248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4295147750568050}
   m_Layer: 0
-  m_Name: locator1
+  m_Name: releasePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2890,7 +2890,7 @@ MonoBehaviour:
   _minMoveThreashold: 0.01
   _moveSpeed: 5
   _allowedMovementImprecision: 1
-  _projectile: {fileID: 1232740233635592, guid: 9d05f685b56c7eb47b0c85d73f1dc028,
+  _projectile: {fileID: 1213313291399790, guid: 5fa941dfb9b864e4d931db273bde05c4,
     type: 2}
   _projectileReleasePoint: {fileID: 1193231993252588}
   _projectileSpeed: 10
