@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 
     using UnityEngine;
+    using UnityEngine.AI;
 
     using Helpers;
 
@@ -46,6 +47,18 @@
                 if(!ignoreParticleSystem || renderers[i].GetComponent<ParticleSystem>() == null)
                     renderers[i].material.color = color;
 
+            }
+        }
+
+        public static bool SamplePosition(Vector3 dest, out Vector3 position, float distanceFromPoint = 1.0f) {
+            NavMeshHit hit;
+
+            if(NavMesh.SamplePosition(dest, out hit, distanceFromPoint, NavMesh.AllAreas)) {
+                position = hit.position;
+                return true;
+            } else {
+                position = Vector3.zero;
+                return false;
             }
         }
 

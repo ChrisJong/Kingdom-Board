@@ -65,6 +65,8 @@
         protected NavMeshPath _unitPathing;
         [Header("MOVEMENT")]
         [SerializeField]
+        protected float _initialDistance = 0.0f;
+        [SerializeField]
         protected MovementType _movementType = MovementType.NONE;
         public MovementType movementType { get { return this.movementType; } }
 
@@ -93,7 +95,8 @@
         [Header("ATTACK")]
         [SerializeField]
         protected GameObject _projectile = null;
-        protected GameObject _projectileSpawn = null;
+        [SerializeField]
+        protected GameObject _projectileReleasePoint = null;
         [SerializeField]
         protected float _projectileSpeed = 10.0f;
         protected float _lastAttack = 0.0f;
@@ -202,7 +205,7 @@
         public virtual bool SetPoint(Vector3 point) {
             Vector3 position = Vector3.zero;
 
-            if(!this.SamplePosition(point, out position)) {
+            if(!Utils.SamplePosition(point, out position)) {
                 return false;
             }
 
@@ -212,7 +215,7 @@
             }
 
             this._currentPoint = position;
-            this.debugCurrentPoint = this._currentPoint.Value;
+            this.debugCurrentPoint = position;
 
             if(this._previousPoint.HasValue && this._currentPoint.HasValue) {
                 if(this._currentPoint.Value.Equals(this._previousPoint.Value))
@@ -220,7 +223,7 @@
             }
 
             if(this._unitState == UnitState.MOVING_STANDBY || this.unitState == UnitState.MOVING) {
-                this.MoveTo(point);
+                this.MoveTo(position);
             }
 
             return true;
@@ -272,25 +275,27 @@
         //////////////////
         #region MOVEMENT
         public virtual void MoveTo(Vector3 dest) {
-            NavMeshHit hit;
+            //NavMeshHit hit;
             NavMeshPath path = new NavMeshPath();
 
             this.StopMoving();
 
-            if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
+            /*if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
                 if((hit.position - this.position).sqrMagnitude < (this._navMeshAgent.stoppingDistance * this._navMeshAgent.stoppingDistance))
                     return; // destination not far enough away.
-            }
+            }*/
 
-            this._navMeshAgent.CalculatePath(hit.position, path);
+            this._navMeshAgent.CalculatePath(dest, path);
             this._navMeshAgent.SetPath(path);
             this._unitPathing = path;
 
             if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
+                this._initialDistance = this._navMeshAgent.remainingDistance;
                 this._navMeshAgent.isStopped = false;
                 this.lastPosition = this.position;
             } else {
-                this._navMeshAgent.SetDestination(hit.position);
+                this._navMeshAgent.SetDestination(dest);
+                this._initialDistance = this._navMeshAgent.remainingDistance;
             }
 
             this._unitState = UnitState.MOVING;
@@ -358,6 +363,12 @@
                     this._unitState = UnitState.MOVING_STANDBY;
                 }
             } else {
+
+                if(this._navMeshAgent.remainingDistance == this._initialDistance)
+                    return;
+
+                // Stamina Calculations go here.
+
                 //this._currentStamina = Mathf.Clamp(this._currentStamina - (this._navMeshAgent.remainingDistance * 0.5f), 0.0f, this._maxStamina);
                 //this._debugCurrentStamina = this._currentStamina;
             }
@@ -374,8 +385,11 @@
                 this.InternalAttack(this.GetDamage());
             } else {
                 GameObject temp = Instantiate(this._projectile);
-                // NOTE: change the spawn location of the projectile to a point where the it should spawn.
-                temp.GetComponent<Projectile>().SetupTarget(this.gameObject, this._currentTarget.gameObject, this.position, this._projectileSpeed);
+
+                if(temp.GetComponent<Projectile>() == null)
+                    temp.AddComponent<Projectile>();
+
+                temp.GetComponent<Projectile>().SetupTarget(this.gameObject, this._currentTarget.gameObject.GetComponent<Collider>().transform, this._projectileReleasePoint.transform, this._projectileSpeed);
             }
         }
 
@@ -407,7 +421,7 @@
             finalDamage = Mathf.Round(damage * finalmultiplier);
 
             this.RemoveHealth(finalDamage);
-            //this.currentHealth -= finalDamage;
+            Debug.Log("Current Target (" + this.name + "): Took" + finalDamage.ToString() + " of Damage from - " + target.gameObject.name);
             this.uiComponent.UpdateUI();
 
             if(this.currentHealth <= 0.0f) {
@@ -425,35 +439,6 @@
         }
 
         protected virtual void InternalAttack(float damage) {
-            /*var hits = Utils.hitsBuffers;
-            //var pos = this.position + this.transform.forward * this._unitRadius;
-            var pos = this._currentTarget.position;
-            Physics.SphereCastNonAlloc(pos, this._unitRadius * 2.0f, this.transform.forward, hits, this._attackRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
-
-            this._hitComparer.position = this.position;
-            Array.Sort(hits, this._hitComparer);
-
-            for(int i = 0; i < hits.Length; i++) {
-                var hit = hits[i];
-
-                if(hit.transform == null)
-                    continue;
-
-                if(hit.transform == this.transform)
-                    continue; // jgnore hits with itself;
-
-                var hasHealth = hit.collider.GetEntity<IHasHealth>();
-                if(hasHealth == null || hasHealth.isDead)
-                    continue; // ignore anything that doesn't contain health or is dead.
-
-                if(this.IsAlly(hasHealth))
-                    continue; // ignore allies.
-
-                hasHealth.lastAttacker = this;
-                hasHealth.ReceiveDamage(damage, this as IHasHealth); // only attack the original target chosen.
-                break;
-            }*/
-
             this._currentTarget.lastAttacker = this;
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth);
 
@@ -496,6 +481,12 @@
             foreach(AnimationClip clip in this._animator.runtimeAnimatorController.animationClips) {
                 if(clip.name.Contains("Attack")) {
                     this._animClip = clip;
+                    
+                    // Function To Help Find Frame Event Time.
+                    /*foreach(AnimationEvent evt in clip.events) {
+                        Debug.Log("Event Attack Time: " + evt.time);
+                    }*/
+
                     break;
                 }
             }

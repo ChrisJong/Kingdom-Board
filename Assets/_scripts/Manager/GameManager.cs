@@ -129,7 +129,6 @@
             for(int i = 0; i < this._numberOfPlayers; i++) {
                 GameObject temp = new GameObject("Player" + (i + 1).ToString());
                 var player = temp.AddComponent<Human>() as Human;
-                player.Create(this._spawnPoints[i], (uint)i);
                 player.roll = (uint)Random.Range(0, 100);
                 //Debug.Log(player.name + " Rolled: " + player.roll.ToString());
                 this._players.Add(player);
@@ -143,12 +142,13 @@
             this.PlayerInView = this._players[0];
 
             for(int i = 0; i < this._numberOfPlayers; i++) {
-                this._players[i].Init((i == this._indexOnAttack) ? true : false);
-
                 if(this.players[i] == this.PlayerOnAttack)
                     this.players[i].color = new Color(0.8823529f, 0.8823529f, 0.8823529f, 1.0f);
                 else
                     this.players[i].color = new Color(0.2352941f, 0.2352941f, 0.2352941f, 1.0f);
+
+                this._players[i].Create(this._spawnPoints[i], (uint)i);
+                this._players[i].Init((i == this._indexOnAttack) ? true : false);
             }
 
             this.RoundCount++;

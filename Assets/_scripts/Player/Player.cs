@@ -104,6 +104,11 @@
 
         #region CLASS
         public virtual void Create(Transform spawnLocation, uint id = 0) {
+            this._unitGroup = new GameObject("_units");
+            this._unitGroup.transform.SetParent(this.transform);
+            this._structureGroup = new GameObject("_structures");
+            this._structureGroup.transform.SetParent(this.transform);
+
             this.id = id;
             this._name = "Player" + (id + 1).ToString().PadLeft(2, '0');
             this.gameObject.name = this._name;
@@ -119,11 +124,6 @@
             ui.name = UIValues.Player.PLAYERUI;
             this._uiComponent = this.gameObject.AddComponent<PlayerUI>();
             this._uiComponent.controller = this;
-
-            this._unitGroup = new GameObject("_units");
-            this._unitGroup.transform.SetParent(this.transform);
-            this._structureGroup = new GameObject("_structures");
-            this._structureGroup.transform.SetParent(this.transform);
         }
 
         public virtual void Init(bool attacking) {

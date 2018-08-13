@@ -60,8 +60,6 @@
 
             this.uiComponent = this.transform.GetComponent<UIBase>();
             // NOTE: UI INSTANCES HERE e.g health bar and ui buttons
-            
-            // NOTE: Color renders, change the color of the unit to match the controller color. also check if controller is set.
         }
         #endregion
 

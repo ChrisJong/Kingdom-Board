@@ -9,17 +9,26 @@
     using Enum;
     using Helpers;
     using UI;
+    using Utility;
 
     [RequireComponent(typeof(CastleUI))]
     public sealed class Castle : SpawnStructureBase {
 
+        #region VARIABLE
+        [Header("CASTLE")]
+
+        [Header("UI")]
+        public LineRenderDrawCircle radiusDrawer = null;
+
+        [Header("SPAWNS")]
         [SerializeField]
         private List<SpawnQueueType> _spawnQueue = new List<SpawnQueueType>();
-
-        public override StructureType structureType { get { return StructureType.CASTLE; } }
-
         public List<SpawnQueueType> spawnQueue { get { return this._spawnQueue; } }
 
+        public override StructureType structureType { get { return StructureType.CASTLE; } }
+        #endregion
+
+        #region CLASS
         public override bool ReceiveDamage(float damage, IHasHealth target) {
             bool isDead = base.ReceiveDamage(damage, target);
             if(isDead)
@@ -200,5 +209,6 @@
 
             return cost;
         }
+        #endregion
     }
 }

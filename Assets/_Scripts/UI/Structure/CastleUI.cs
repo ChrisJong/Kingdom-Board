@@ -145,6 +145,7 @@
             this.btnSpawn.gameObject.SetActive(true);
             this._showSpawn = false;
             this._showDefault = true;
+            this.castle.radiusDrawer.TurnOff();
         }
 
         private void ShowSpawn() {
@@ -154,6 +155,9 @@
                 this.btnSpawn.gameObject.SetActive(false);
                 this._showSpawn = true;
                 this._showDefault = false;
+
+                this.castle.radiusDrawer.TurnOn();
+                this.castle.radiusDrawer.DrawRadius(this.castle.spawnDistance);
             }
         }
 
@@ -164,6 +168,7 @@
                 this.btnSpawn.gameObject.SetActive(true);
                 this._showSpawn = false;
                 this._showDefault = true;
+                this.castle.radiusDrawer.TurnOff();
             }
         }
 

@@ -49,20 +49,21 @@
             return player.castle ?? (Castle)InternalBuild(StructureType.CASTLE, player, player.spawnLocation.position);
         }
 
-        private IStructure InternalBuild(StructureType type, Player player, Vector3 position) {
+        private IStructure InternalBuild(StructureType type, Player controller, Vector3 position) {
             var pool = this._pools[type];
 
             var pos = Utils.GetGroundedPosition(position);
-            var structure = pool.Get(pos, player.spawnLocation.rotation);
-            structure.controller = player;
+            var structure = pool.Get(pos, controller.spawnLocation.rotation);
+            structure.controller = controller;
 
             structure.uiComponent = structure.transform.GetComponentInChildren<CastleUI>() as ScreenSpaceUI;
-            structure.uiComponent.controller = player;
+            structure.uiComponent.controller = controller;
+            structure.gameObject.ColorRenderers(controller.color);
             ((CastleUI)structure.uiComponent).Hide();
             //structure.isReady = costs.time == 0.0f;
 
-            // NOTE: change the color render to tteam color.
-            player.structures.Add(structure);
+            controller.structures.Add(structure);
+            structure.transform.SetParent(controller.structureGroup.transform);
 
             return structure;
         }
