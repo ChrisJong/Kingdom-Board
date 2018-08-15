@@ -2,94 +2,84 @@
 
     using UnityEngine;
 
+    using Helpers;
+    using Manager;
+    using Utility;
+
     [RequireComponent(typeof(Rigidbody))]
     public class Projectile : MonoBehaviour {
+        #region VARIABLE
+        private IHasHealth _origin;
+        private IHasHealth _target;
 
-        public Transform projectileTarget;
-        public GameObject projectileOrigin;
+        private Collider _collider;
+        private Rigidbody _rigidbody;
+        private Transform _transform;
 
-        public Transform _temp;
-
-        public Collider projectileCollider;
-        public Rigidbody projectileRigidbody;
-
-        [SerializeField]
-        private float _projectileSpeed;
         private bool _startMoving = false;
-        //private float _distanceCovered = 0;
+        private float _speed;
+        private float _distanceCovered = 0;
+        private float _distanceOffset = 0.5f;
+        #endregion
 
         #region UNITY
         private void Awake() {
             foreach(Collider col in this.transform.GetComponents(typeof(Collider))) {
-                this.projectileCollider = col;
+                this._collider = col;
             }
 
-            this.projectileRigidbody = this.transform.GetComponent<Rigidbody>() as Rigidbody;
-            this.projectileRigidbody.isKinematic = true;
-            this.projectileCollider.isTrigger = true;
+            this._rigidbody = this.transform.GetComponent<Rigidbody>() as Rigidbody;
+            this._rigidbody.isKinematic = true;
+            this._collider.isTrigger = true;
+
+            this._transform = this.transform;
         }
 
         void OnTriggerEnter(Collider other) {
-            ///Debug.Log(other.transform.name);
-            if(other.gameObject == this.projectileTarget.gameObject) {
+            IHasHealth otherHasHealth = other.GetEntity<IHasHealth>();
+
+            if(otherHasHealth == null)
+                return;
+
+            if(otherHasHealth != this._target)
+                return;
+            else {
                 Debug.Log(other.name + " Has Been Hit");
-                this.projectileOrigin.GetComponent<UnitBase>().ProjectileAttack();
+                this._origin.gameObject.GetComponent<UnitBase>().ProjectileAttack();
                 Destroy(this.gameObject);
             }
         }
 
         private void Update() {
-
-            // Homing Style Projectile.
-            /*if(this._startMoving){
-                if(this.projectileTarget != null) {
-                    var relativePos = this.projectileTarget.transform.position - transform.position;
-                    var rotation = Quaternion.LookRotation(relativePos);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.5f);
-                }
-
-                transform.Translate(0, 0, this._projectileSpeed * Time.deltaTime, Space.Self);
-            }*/
-
-            /*if(this._startMoving) {
-                this._distanceCovered = Vector3.Distance(this.transform.position, this.projectileTarget.transform.position);
-                this.transform.position += Vector3.MoveTowards(this.transform.position, this.projectileTarget.transform.position, Time.deltaTime * this._projectileSpeed);
-
-                if(this._distanceCovered <= 1.0f) {
-                    Debug.Log("Has Been Hit");
-                    Destroy(this.gameObject);
-                }
-            }*/
-
-            if(this._startMoving) {
-
-                transform.Translate(Vector3.forward * (this._projectileSpeed * Time.deltaTime), Space.Self);
-                //this.transform.position = Vector3.MoveTowards(this.transform.position, this.projectileTarget.position, this._projectileSpeed * Time.deltaTime);
-            }
+            this.UpdateProjectile();
         }
         #endregion
 
         #region CLASS
-        public void SetupTarget(GameObject origin, Transform target, Transform releasePoint, float speed) {
-            UnityEditor.EditorApplication.isPaused = true;
-            this.projectileOrigin = origin;
-            this.projectileTarget = target;
-            this._projectileSpeed = speed;
-            this.transform.position = releasePoint.position;
-            this.transform.LookAt(target, Vector3.forward);
+        protected virtual void UpdateProjectile() {
+            if(this._startMoving) {
+                transform.Translate(Vector3.forward * (this._speed * Time.deltaTime), Space.Self);
+                this._distanceCovered = Vector3.Distance(this._transform.position, this._target.position);
+
+                if(this._distanceCovered <= 0.0f + this._distanceOffset) {
+                    Debug.Log(this._target.gameObject.name + " Has Been Hit");
+                    this._origin.gameObject.GetComponent<UnitBase>().ProjectileAttack();
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+
+        public void SetupTarget(IHasHealth origin, IHasHealth target, Vector3 releasePoint, float speed) {
+            //UnityEditor.EditorApplication.isPaused = true;
+
+            this._origin = origin;
+            this._target = target;
+            this._speed = speed;
+
+            this.transform.position = releasePoint;
+            this.transform.LookAt(target.transform, Vector3.forward);
             float y = this.transform.eulerAngles.y;
             this.transform.eulerAngles = new Vector3(0.0f, y);
-
-            //this._temp = new Transform();
-            //this._temp.LookAt(target.transform);
-
-            //this._temp.rotation = new Quaternion(releasePoint.rotation.x, this._temp.rotation.y, releasePoint.rotation.z, releasePoint.rotation.w);
-
-            //this.transform.rotation = new Quaternion();
-
-            //this._distanceCovered = Vector3.Distance(this.transform.position, target.transform.position);
-
-            //transform.position = new Vector3(transform.position.x, this.transform.position.y +  2.5f, this.transform.position.z);
 
             this._startMoving = true;
         }

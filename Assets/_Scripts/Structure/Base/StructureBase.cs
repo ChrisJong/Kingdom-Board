@@ -13,36 +13,29 @@
     [RequireComponent(typeof(UnityEngine.AI.NavMeshObstacle))]
     public abstract class StructureBase : HasHealthBase, IStructure {
         #region VARIABLE
-        public abstract StructureType structureType { get; }
-        public override EntityType entityType { get { return EntityType.STRUCTURE; } }
-
-        protected NavMeshObstacle _navMeshObstacle = null;
+        [Header("STRUCTURE - DEBUGGING")]
+        [ReadOnly] public Vector3 debugCurrentPoint = Vector3.zero;
+        [ReadOnly] public Vector3 debugPreviousPoint = Vector3.zero;
 
         [Header("STRUCTURE")]
         protected StructureState _structureState = StructureState.NONE;
-        public StructureState structureState { get { return this._structureState; } set { this._structureState = value; } }
 
-        [Header("SELECTION")]
-        [ReadOnly]
-        public Vector3 debugCurrentPoint = Vector3.zero;
-        [ReadOnly]
-        public Vector3 debugPreviousPoint = Vector3.zero;
         protected Vector3? _currentPoint = null;
         protected Vector3? _previousPoint = null;
-        public Vector3 currentPoint { get { return this._currentPoint.Value; } }
-        public Vector3 previousPoint { get { return this._previousPoint.Value; } }
-
-        [Header("SELECTION")]
-        [ReadOnly]
-        public IHasHealth debugCurrentTarget = null;
-        [ReadOnly]
-        public IHasHealth debugPreviousTarget = null;
         protected IHasHealth _currentTarget = null;
         protected IHasHealth _previousTarget = null;
+
+        protected NavMeshObstacle _navMeshObstacle = null;
+
+        public override EntityType entityType { get { return EntityType.STRUCTURE; } }
+        public abstract StructureType structureType { get; }
+        public StructureState structureState { get { return this._structureState; } set { this._structureState = value; } }
+        public bool isReady { get; set; }
+
+        public Vector3 currentPoint { get { return this._currentPoint.Value; } }
+        public Vector3 previousPoint { get { return this._previousPoint.Value; } }
         public IHasHealth currentTarget { get { return this._currentTarget; } }
         public IHasHealth previousTarget { get { return this._previousTarget; } }
-
-        public bool isReady { get; set; }
         #endregion
 
         #region UNITY

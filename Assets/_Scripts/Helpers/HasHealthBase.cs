@@ -9,9 +9,15 @@
 
     public abstract class HasHealthBase : EntityBase, IHasHealth {
         #region VARIABLE
-        [Header("HEALTH")]
+
+        [Header("ENTITY ATTRIBUTES")]
         [SerializeField, ReadOnly]
         private Player _controller;
+        protected UIBase _uiComponent;
+        public Player controller { get { return this._controller; } set { this._controller = value; } }
+        public UIBase uiComponent { get { return this._uiComponent; } set { this._uiComponent = value; } }
+
+        [Header("HEALTH")]
         [SerializeField, Range(0.0f, 500.0f)]
         protected float _maxHealth = 100.0f;
         [SerializeField, ReadOnly]
@@ -20,32 +26,18 @@
         protected float _maxEnergy = 0.0f;
         [SerializeField, ReadOnly]
         protected float _debugCurrentEnergy = 0.0f;
-        protected UIBase _uiComponent;
-        protected IHasHealth _lastAttacker;
-        private float _lastAttacked;
-
-        public float maxHealth { get { return this._maxHealth; } }
-        public float maxEnergy { get { return this._maxEnergy; } }
-
         public float currentHealth { get; set; }
         public float currentEnergy { get; set; }
-
+        public float maxHealth { get { return this._maxHealth; } }
+        public float maxEnergy { get { return this._maxEnergy; } }
         public bool isDead { get { return this.currentHealth <= 0.0f || (this.gameObject != null && !this.isActive); } }
 
+        protected IHasHealth _lastAttacker;
+        private float _lastAttacked;
         public float lastAttacked { get { return this._lastAttacked; } }
-
-        public IHasHealth lastAttacker {
-            get { return this._lastAttacker; }
+        public IHasHealth lastAttacker { get { return this._lastAttacker; }
             set { this._lastAttacker = value;
                   this._lastAttacked = Time.timeSinceLevelLoad; } }
-
-        public UIBase uiComponent {
-            get { return this._uiComponent; }
-            set { this._uiComponent = value; } }
-
-        public Player controller {
-            get { return this._controller; }
-            set { this._controller = value; } }
         #endregion
 
         #region UNITY

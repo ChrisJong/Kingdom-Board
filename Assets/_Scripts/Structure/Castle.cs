@@ -15,16 +15,14 @@
     public sealed class Castle : SpawnStructureBase {
 
         #region VARIABLE
-        [Header("CASTLE")]
-
-        [Header("UI")]
+        [Header("CASTLE - UI")]
         public LineRenderDrawCircle radiusDrawer = null;
 
-        [Header("SPAWNS")]
+        [Header("CASTLE - SPAWN")]
         [SerializeField]
         private List<SpawnQueueType> _spawnQueue = new List<SpawnQueueType>();
-        public List<SpawnQueueType> spawnQueue { get { return this._spawnQueue; } }
 
+        public List<SpawnQueueType> spawnQueue { get { return this._spawnQueue; } }
         public override StructureType structureType { get { return StructureType.CASTLE; } }
         #endregion
 

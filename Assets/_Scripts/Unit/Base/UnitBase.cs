@@ -1,8 +1,6 @@
 ﻿namespace Unit {
 
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
 
     using UnityEngine;
     using UnityEngine.AI;
@@ -13,13 +11,29 @@
     using Manager;
     using Utility;
 
-    //[RequireComponent(typeof(Rigidbody), typeof(UnityEngine.AI.NavMeshAgent))]
     [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
     public abstract class UnitBase : HasHealthBase, IUnit {
 
         #region VARIABLE
-        [Header("UI")]
+        [Header("UNIT - DEBUGGING")]
+        [ReadOnly] public Vector3 debugCurrentPoint = Vector3.zero;
+        [ReadOnly] public Vector3 debugPreviousPOint = Vector3.zero;
+
+        [Header("UNIT - UI")]
         public LineRenderDrawCircle radiusDrawer = null;
+
+        ////////////////
+        ///// UNIT /////
+        ////////////////
+        [Header("UNIT")]
+        [SerializeField] protected UnitType _unitType = UnitType.NONE;
+        [SerializeField] protected UnitState _unitState = UnitState.NONE;
+        [SerializeField] protected float _unitRadius = 0.0f;
+
+        protected Vector3? _currentPoint = null;
+        protected Vector3? _previousPoint = null;
+        [SerializeField] protected IHasHealth _currentTarget = null;
+        [SerializeField] protected IHasHealth _previousTarget = null;
 
         protected RaycastHitDistanceSortComparer _hitComparer = new RaycastHitDistanceSortComparer(true);
         protected NavMeshAgent _navMeshAgent = null;
@@ -27,125 +41,90 @@
         public override EntityType entityType { get { return EntityType.UNIT; } }
         public LayerMask areaMask { get { return this._navMeshAgent.areaMask; } }
 
-        ////////////////
-        ///// UNIT /////
-        ////////////////
-        [Header("UNIT")]
-        [SerializeField]
-        protected UnitType _unitType = UnitType.NONE;
         public UnitType unitType { get { return this._unitType; } }
-        [SerializeField]
-        protected UnitState _unitState = UnitState.NONE;
         public UnitState unitState { get { return this._unitState; } set { this._unitState = value; } }
-        [SerializeField]
-        protected float _unitRadius = 0.0f;
         public float unitRadius { get { return this._unitRadius; } }
 
-        [ReadOnly]
-        public Vector3 debugCurrentPoint = Vector3.zero;
-        [ReadOnly]
-        public Vector3 debugPreviousPOint = Vector3.zero;
-        protected Vector3? _currentPoint = null;
-        protected Vector3? _previousPoint = null;
         public Vector3 currentPoint { get { return this._currentPoint.Value; } }
         public Vector3 previousPoint { get { return this._previousPoint.Value; } }
-
-        [SerializeField]
-        protected IHasHealth _currentTarget = null;
-        [SerializeField]
-        protected IHasHealth _previousTarget = null;
         public IHasHealth currentTarget { get { return this._currentTarget; } }
         public IHasHealth previousTarget { get { return this._previousTarget; } }
 
-        [Header("MOVEMENT")]
+        //////////////////
+        //// MOVEMENT ////
+        //////////////////
+        [Header("UNIT - MOVENENT")]
+        [SerializeField] protected MovementType _movementType = MovementType.NONE;
+        [SerializeField, Range(1.0f, 50.0f)] protected float _maxStamina = 10.0f;
+        [SerializeField, ReadOnly] protected float _currentStamina = 0.0f;
+        [SerializeField, Range(0.0001f, 1.0f)] protected float _minMoveThreashold = 0.01f;
+        [SerializeField, Range(1.0f, 50.0f)] protected float _moveSpeed = 5.0f;
+        [SerializeField, Range(0.1f, 10.0f)] private float _allowedMovementImprecision = 1.0f;
+
+        [SerializeField, ReadOnly] protected float _initialMovementDistance = 0.0f;
+        [SerializeField, ReadOnly] protected bool _canMove = true;
+
         private Vector3 _velocity = Vector3.zero;
         private Vector3 _lastPosition = Vector3.zero;
         private Vector3 _resetPosition = Vector3.zero;
-        public Vector3 lastPosition { get { return this._lastPosition; } set { this._lastPosition = value; } }
         protected NavMeshPath _unitPathing;
-        [Header("MOVEMENT")]
-        [SerializeField]
-        protected float _initialDistance = 0.0f;
-        [SerializeField]
-        protected MovementType _movementType = MovementType.NONE;
+        
         public MovementType movementType { get { return this.movementType; } }
-
-        [SerializeField, Range(1.0f, 50.0f)]
-        protected float _maxStamina = 10.0f;
-        protected float _currentStamina = 0.0f;
-        [SerializeField, ReadOnly]
-        protected float _debugCurrentStamina = 0.0f;
         public float currentStamina { get { return this._currentStamina; } }
-
-        //[SerializeField]
-        protected bool _canMove = true;
-        public bool canMove { get { return this._canMove; } }
-
-        [SerializeField, Range(0.0001f, 0.9999f)]
-        protected float _minMoveThreashold = 0.01f;
-        [SerializeField, Range(1.0f, 50.0f)]
-        protected float _moveSpeed = 5.0f;
         public float moveSpeed { get { return this._moveSpeed; } }
-        [SerializeField, Range(0.1f, 10.0f)]
-        private float _allowedMovementImprecision = 1.0f;
 
+        public bool canMove { get { return this._canMove; } }
         public bool isMoving { get { return this._velocity.sqrMagnitude > (this._minMoveThreashold * this._minMoveThreashold); } }
         public virtual bool isIdle { get { return !this.isMoving && !this.isDead; } }
+        public Vector3 lastPosition { get { return this._lastPosition; } set { this._lastPosition = value; } }
 
-        [Header("ATTACK")]
-        [SerializeField]
-        protected GameObject _projectile = null;
-        [SerializeField]
-        protected GameObject _projectileReleasePoint = null;
-        [SerializeField]
-        protected float _projectileSpeed = 10.0f;
+        ////////////////
+        //// ATTACK ////
+        ////////////////
+        [Header("UNIT - ATTACK")]
+        [SerializeField] protected GameObject _projectile = null;
+        [SerializeField] protected Transform _projectileReleasePoint = null;
+        [SerializeField] protected float _projectileSpeed = 10.0f;
+
+        [SerializeField, Range(0.0f, 100.0f)] protected float _minDamage = 20.0f;
+        [SerializeField, Range(0.0f, 100.0f)] protected float _maxDamage = 20.0f;
+        [SerializeField, Range(1.0f, 50.0f)] protected float _attackRadius = 7.5f;
+
+        [SerializeField] protected AttackType _attackType = AttackType.NONE;
+        [SerializeField] protected AttackType _resistanceType = AttackType.NONE;
+        [SerializeField] protected AttackType _weaknessType = AttackType.NONE;
+        [SerializeField, Range(0.0f, 10.0f)] protected float _resistanceMultiplier = 0.5f;
+        [SerializeField, Range(0.0f, 10.0f)] protected float _weaknessMultiplier = 0.5f;
+
+        [SerializeField, ReadOnly] protected bool _canAttack = true;
         protected float _lastAttack = 0.0f;
 
-        //[SerializeField]
-        protected bool _canAttack = true;
-        public bool canAttack { get { return this._canAttack; } }
-
-        [SerializeField, Range(0.0f, 100.0f)]
-        protected float _minDamage = 20.0f;
         public float minDamage { get { return this._minDamage; } }
-        [SerializeField, Range(0.0f, 100.0f)]
-        protected float _maxDamage = 20.0f;
         public float maxDamage { get { return this._maxDamage; } }
-        [SerializeField, Range(1.0f, 50.0f)]
-        protected float _attackRadius = 7.5f;
         public float attackRadius { get { return this._attackRadius; } }
 
-        [SerializeField, Range(0.0f, 10.0f)]
-        protected float _resistanceMultiplier = 0.5f;
+        public AttackType attackType { get { return this._attackType; } }
+        public AttackType resistanceType { get { return this._resistanceType; } }
+        public AttackType weaknessType { get { return this._weaknessType; } }
         public float resistancePercentage { get { return this._resistanceMultiplier; } }
-        [SerializeField, Range(0.0f, 10.0f)]
-        protected float _weaknessMultiplier = 0.5f;
         public float weaknessPercentage { get { return this._weaknessMultiplier; } }
 
-        [SerializeField]
-        protected AttackType _resistanceType = AttackType.NONE;
-        public AttackType resistanceType { get { return this._resistanceType; } }
-        [SerializeField]
-        protected AttackType _weaknessType = AttackType.NONE;
-        public AttackType weaknessType { get { return this._weaknessType; } }
-        [SerializeField]
-        protected AttackType _attackType = AttackType.NONE;
-        public AttackType attackType { get { return this._attackType; } }
-        
-        [Header("ANIMATION")]
-        [SerializeField]
-        protected float _endOfAttack = 0.8f;
-        protected Animator _animator = null;
-        private AnimationClip _animClip = null;
-        private AnimationEvent _animEvent = null;
+        public bool canAttack { get { return this._canAttack; } }
+
+        ///////////////////
+        //// ANIMATION ////
+        ///////////////////
+        [Header("UNIT - ANIMATION")]
+        [SerializeField] protected float _endOfAttackClipTime = 0.8f;
+        protected Animator _unitAnimator = null;
         #endregion
 
         #region UNITY
         protected virtual void Awake() {
             this.radiusDrawer.TurnOff();
 
-            this._animator = this.GetComponent<Animator>();
-            if(this._animator == null)
+            this._unitAnimator = this.GetComponent<Animator>();
+            if(this._unitAnimator == null)
                 throw new ArgumentNullException("Unit Animator Is Missing");
 
             //this.SetupAttackEventAnimation();
@@ -168,7 +147,6 @@
             this._canMove = true;
 
             this._currentStamina = this._maxStamina;
-            this._debugCurrentStamina = this.currentStamina;
 
             this._lastPosition = this.transform.position;
             this._navMeshAgent.speed = this._moveSpeed;
@@ -186,22 +164,66 @@
         }
 
         protected virtual void Update() {
-            switch(this._unitState) {
-                case UnitState.ATTACK_ANIMATION:
-                //this.CheckAttackAnimation();
-                break;
+            if(!this.isDead && this._unitState != UnitState.DEAD && this._unitState != UnitState.NONE && this._unitState != UnitState.ANY)
+                this.UpdateUnit();
+        }
 
-                case UnitState.MOVING:
-                this.CheckMovement();
-                break;
+        // For Debugging Purpose.
+        public void OnDrawGizmos() {
+            if(this._unitState == UnitState.ATTACK_ANIMATION) {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(this.transform.position, this._attackRadius);
             }
         }
+
         #endregion
 
         #region CLASS
+        ///////////////////
+        //// UNITSTATE ////
+        ///////////////////
+        #region UNIT_STATE
+        protected virtual void SPAWNSTATE() {
+
+        }
+
+        protected virtual void IDLESTATE() {
+
+        }
+
+        protected virtual void ATTACKSTANDBYSTATE() {
+
+        }
+
+        protected virtual void ATTACKANIMATIONSTATE() {
+
+        }
+
+        protected virtual void ATTACKSTATE() {
+
+        }
+
+        protected virtual void MOVINGSTANDBYSTATE() {
+
+        }
+
+        protected virtual void MOVINGSTATE() {
+            this.CheckMovement();
+        }
+
+        protected virtual void FINISHEDSTATE() {
+
+        }
+
+        protected virtual void DEADSTATE() {
+
+        }
+        #endregion
+
         //////////////
         //// UNIT ////
         //////////////
+        #region UNIT
         public virtual bool SetPoint(Vector3 point) {
             Vector3 position = Vector3.zero;
 
@@ -230,19 +252,51 @@
         }
 
         public virtual bool SetTarget(IHasHealth target) {
-
             if(this._currentTarget != null)
                 this._previousTarget = this._currentTarget;
 
             this._currentTarget = target;
 
             if(this._unitState == UnitState.ATTACK_STANDBY) {
-                float distance = Vector3.Distance(this.position, target.position);
-
-                if(!this.IsEnemy(target) || (distance + this.unitRadius) > this.attackRadius) {
+                if(this.IsAlly(target)) {
+                    this._currentTarget = null;
+                    this._previousTarget = null;
+                    // NOTE: display ui messsage indicating that the target is an allay.
                     return false;
-                } else {
+                }
+
+                bool targetInRange = false;
+
+                // Distance checks to see if the target is within range of the attack radius. Doesn't take into account differernt size bounds of geometry, just the center point position.
+                float distance = Vector3.Distance(this.position, target.position);
+                if(distance + this._unitRadius > this._attackRadius)
+                    targetInRange = false;
+                else
+                    targetInRange = true;
+
+                // Seoncdary check using unity OverlapSphere to hit any unit/structure colliders within the attack radius.
+                if(!targetInRange) {
+                    Collider[] hits = Physics.OverlapSphere(this.position, this._attackRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
+                    for(int i = 0; i < hits.Length; i++) {
+                        IHasHealth hitHasHealth = hits[i].GetEntity<IHasHealth>();
+
+                        if(hitHasHealth == null)
+                            continue;
+
+                        if(hitHasHealth != target)
+                            continue;
+                        else {
+                            targetInRange = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(targetInRange && this.IsEnemy(target)) {
                     this.StartAttackAnimation();
+                } else {
+                    // NOTEL display ui message stating the target is out of range.
+                    return targetInRange;
                 }
             }
 
@@ -251,9 +305,12 @@
 
         protected virtual void UpdateUnit() {
             switch(this._unitState) {
+                case UnitState.ATTACK_STANDBY:
+                this.ATTACKSTANDBYSTATE();
+                break;
 
-                case UnitState.DEAD:
-                Debug.Log(this.name + "IS DEAD!");
+                case UnitState.MOVING:
+                this.MOVINGSTATE();
                 break;
             }
         }
@@ -269,33 +326,38 @@
         public virtual void Finished() {
             this._unitState = UnitState.FINISH;
         }
+        #endregion
 
         //////////////////
         //// MOVEMENT ////
         //////////////////
         #region MOVEMENT
         public virtual void MoveTo(Vector3 dest) {
-            //NavMeshHit hit;
             NavMeshPath path = new NavMeshPath();
 
             this.StopMoving();
-
-            /*if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
-                if((hit.position - this.position).sqrMagnitude < (this._navMeshAgent.stoppingDistance * this._navMeshAgent.stoppingDistance))
-                    return; // destination not far enough away.
-            }*/
 
             this._navMeshAgent.CalculatePath(dest, path);
             this._navMeshAgent.SetPath(path);
             this._unitPathing = path;
 
             if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
-                this._initialDistance = this._navMeshAgent.remainingDistance;
+                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+                if(float.IsInfinity(_initialMovementDistance)) {
+                    Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method");
+                    float finalDistance = 0;
+                    Vector3[] corners = this._navMeshAgent.path.corners;
+                    for(int i = 0; i < corners.Length; i++)
+                        finalDistance += Mathf.Abs((corners[i] - corners[i+1]).magnitude);
+
+                    this._initialMovementDistance = finalDistance;
+                }
+                    
                 this._navMeshAgent.isStopped = false;
                 this.lastPosition = this.position;
             } else {
                 this._navMeshAgent.SetDestination(dest);
-                this._initialDistance = this._navMeshAgent.remainingDistance;
+                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
             }
 
             this._unitState = UnitState.MOVING;
@@ -364,13 +426,10 @@
                 }
             } else {
 
-                if(this._navMeshAgent.remainingDistance == this._initialDistance)
+                if(this._navMeshAgent.remainingDistance == this._initialMovementDistance)
                     return;
 
                 // Stamina Calculations go here.
-
-                //this._currentStamina = Mathf.Clamp(this._currentStamina - (this._navMeshAgent.remainingDistance * 0.5f), 0.0f, this._maxStamina);
-                //this._debugCurrentStamina = this._currentStamina;
             }
         }
         #endregion
@@ -385,11 +444,12 @@
                 this.InternalAttack(this.GetDamage());
             } else {
                 GameObject temp = Instantiate(this._projectile);
+                Projectile tempProjjectile = temp.GetComponent<Projectile>() as Projectile;
 
-                if(temp.GetComponent<Projectile>() == null)
+                if(tempProjjectile == null)
                     temp.AddComponent<Projectile>();
-
-                temp.GetComponent<Projectile>().SetupTarget(this.gameObject, this._currentTarget.gameObject.GetComponent<Collider>().transform, this._projectileReleasePoint.transform, this._projectileSpeed);
+                else
+                    tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, this._projectileReleasePoint.position, this._projectileSpeed);
             }
         }
 
@@ -453,8 +513,8 @@
         ///////////////////
         #region ANIMATION
         public void InitialSetupAnimation() {
-            this._animator = this.GetComponent<Animator>();
-            if(this._animator == null)
+            this._unitAnimator = this.GetComponent<Animator>();
+            if(this._unitAnimator == null)
                 throw new ArgumentNullException("Unit Animator Is Missing");
 
             this.SetupAttackEventAnimation();
@@ -466,32 +526,32 @@
             this.StopMoving();
 
             this._unitState = UnitState.ATTACK_ANIMATION;
-            this._animator.Play("Attack");
+            this._unitAnimator.Play("Attack");
         }
 
         protected virtual void SetupAttackEventAnimation() {
-            this._animEvent = new AnimationEvent();
+            AnimationEvent animEvent = new AnimationEvent();
+            AnimationClip animcLip = new AnimationClip();
 
-            if(this._endOfAttack <= 0.0f)
-                throw new ArgumentException("End of Attack Animation Timer Needs to be Set, Cannot Be 0");
+            if(this._endOfAttackClipTime <= 0.0f)
+                throw new ArgumentException("End of Attack Animation Timer Needs to be Set, Cannot Be Set At 0 Seconds");
 
-            this._animEvent.time = this._endOfAttack;
-            this._animEvent.functionName = "Attack";
+            animEvent.time = this._endOfAttackClipTime;
+            animEvent.functionName = "Attack";
 
-            foreach(AnimationClip clip in this._animator.runtimeAnimatorController.animationClips) {
+            foreach(AnimationClip clip in this._unitAnimator.runtimeAnimatorController.animationClips) {
                 if(clip.name.Contains("Attack")) {
-                    this._animClip = clip;
-                    
                     // Function To Help Find Frame Event Time.
                     /*foreach(AnimationEvent evt in clip.events) {
                         Debug.Log("Event Attack Time: " + evt.time);
+                        UnityEditor.EditorApplication.isPaused = true;
                     }*/
-
+                    animcLip = clip;
                     break;
                 }
             }
 
-            this._animClip.AddEvent(this._animEvent);
+            animcLip.AddEvent(animEvent);
         }
         #endregion
         #endregion

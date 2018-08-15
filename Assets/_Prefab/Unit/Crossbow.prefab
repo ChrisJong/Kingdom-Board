@@ -3962,32 +3962,34 @@ MonoBehaviour:
   _debugCurrentHealth: 0
   _maxEnergy: 0
   _debugCurrentEnergy: 0
+  debugCurrentPoint: {x: 0, y: 0, z: 0}
+  debugPreviousPOint: {x: 0, y: 0, z: 0}
   radiusDrawer: {fileID: 114575797156760798}
   _unitType: 2
   _unitState: 0
   _unitRadius: 0
-  debugCurrentPoint: {x: 0, y: 0, z: 0}
-  debugPreviousPOint: {x: 0, y: 0, z: 0}
-  _initialDistance: 0
   _movementType: 1
   _maxStamina: 10
-  _debugCurrentStamina: 0
+  _currentStamina: 0
   _minMoveThreashold: 0.01
   _moveSpeed: 5
   _allowedMovementImprecision: 1
+  _initialMovementDistance: 0
+  _canMove: 1
   _projectile: {fileID: 1897845359850564, guid: c19f75ce600aaa446830a0251f8f8b60,
     type: 2}
-  _projectileReleasePoint: {fileID: 1595416913911762}
+  _projectileReleasePoint: {fileID: 4899472032770678}
   _projectileSpeed: 10
   _minDamage: 20
   _maxDamage: 20
   _attackRadius: 7.5
-  _resistanceMultiplier: 0.5
-  _weaknessMultiplier: 0.5
+  _attackType: 0
   _resistanceType: 0
   _weaknessType: 0
-  _attackType: 0
-  _endOfAttack: 0.8
+  _resistanceMultiplier: 0.5
+  _weaknessMultiplier: 0.5
+  _canAttack: 1
+  _endOfAttackClipTime: 0.8
 --- !u!114 &114367389997848946
 MonoBehaviour:
   m_ObjectHideFlags: 1

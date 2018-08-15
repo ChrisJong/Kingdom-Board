@@ -20,6 +20,7 @@
         ////////////////
         //// PLAYER ////
         ////////////////
+        [Header("PLAYER")]
         public uint id;
         public uint roll;
         private string _name;
@@ -51,6 +52,7 @@
         ////////////////
         //// Camera ////
         ////////////////
+        [Header("PLAYER - CAMERA")]
         private PlayerCamera _playerCamera;
         private PlayerSelect _playerSelection;
         [SerializeField]

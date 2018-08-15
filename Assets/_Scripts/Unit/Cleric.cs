@@ -15,17 +15,14 @@
     public sealed class Cleric : UnitBase {
 
         #region 
-        [Header("SPECIAL - HEALING")]
-        [SerializeField]
-        private bool _canHeal = true;
-        public bool canHeal { get { return this._canHeal; } }
+        [Header("CLERIC - HEALING")]
+        [SerializeField] private bool _canHeal = true;
+        [SerializeField, Range(1.0f, 50.0f)] private float _healingRadius = 10.0f;
+        [SerializeField, Range(1.0f, 100.0f)] private float _healingAmount = 5.0f;
 
-        [SerializeField, Range(1.0f, 50.0f)]
-        private float _healingRadius = 10.0f;
+        public bool canHeal { get { return this._canHeal; } }
         public float healingRadius { get { return this._healingRadius; } }
-        [SerializeField, Range(1.0f, 100.0f)]
-        private float _healingAmount;
-        public float healingAoumt { get { return this._healingAmount; } }
+        public float healingAmoumt { get { return this._healingAmount; } }
         #endregion
 
         #region UNITY
@@ -52,7 +49,7 @@
         public void Heal(IHasHealth target) {
             this.LookAt(target.position);
             
-            this._animator.Play("Cast");
+            this._unitAnimator.Play("Cast");
 
             this.InternalHeal(target);
 

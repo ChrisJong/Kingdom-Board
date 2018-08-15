@@ -15,24 +15,18 @@
     public sealed class Wizard : UnitBase {
 
         #region VARIABLE
-        [Header("ATTACK")]
-        [SerializeField, Range(1.0f, 50.0f)]
-        private float _splashRadius = 10.0f;
+        [Header("WIZARD - ATTACK")]
+        [SerializeField, Range(1.0f, 50.0f)] private float _splashRadius = 10.0f;
         public float splashRadius { get { return this._splashRadius; } }
         #endregion
 
-        #region UNITY
-        protected override void Update() {
-            switch(this._unitState) {
-                case UnitState.ATTACK_STANDBY:
-                Debug.Log("Current Aoe Coord: "  + this.controller.playerSelection.GetCurrentPointOnGround().ToString());
-                break;
-            }
+        #region CLASS
+        protected override void ATTACKSTANDBYSTATE() {
+            base.ATTACKSTANDBYSTATE();
+
+            Debug.Log("Current Aoe Coord: " + this.controller.playerSelection.GetCurrentPointOnGround().ToString());
         }
 
-        #endregion
-
-        #region CLASS
         protected override void InternalAttack(float damage) {
             // NOTE: Find units within the splashRadius and calculate damage on the distance from the main attack source.
             var hits = Utils.hitsBuffers;
