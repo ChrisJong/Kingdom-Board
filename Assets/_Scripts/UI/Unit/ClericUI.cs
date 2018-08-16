@@ -66,7 +66,7 @@
         }
 
         private void InitiateHeal() {
-            var unitScript = (Cleric)this.unit;
+            Cleric unitScript = this.unit as Cleric;
 
             if(!unitScript.canHeal) {
                 Debug.Log(unit.name + "Can Not Heal Anymore.");
@@ -76,9 +76,10 @@
             Debug.Log("BEGIN HEALING");
             this._healing = true;
             this.controller.playerSelection.lockSelection = true;
-            //this.controller.selectionState = SelectionState.UNIT_SPECIAL;
+            this.controller.selectionState = SelectionState.SELECT_ALLYTARGET;
 
             this.unit.radiusDrawer.TurnOn();
+            this.unit.unitState = UnitState.HEAL_STANDBY;
             this.unit.radiusDrawer.DrawSpecialRadius(unitScript.healingRadius);
 
             this._btnCancel.gameObject.SetActive(true);

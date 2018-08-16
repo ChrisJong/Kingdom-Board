@@ -8,6 +8,9 @@
         ATTACK_STANDBY,
         ATTACK_ANIMATION,
         ATTACK,
+        HEAL_STANDBY,
+        HEAL_ANIMATION,
+        HEAL,
         SPECIAL_STANDBY,
         SPECIAL_ANIMATION,
         SPECIAL, // Anything to do with casting spells or a secondary attack.

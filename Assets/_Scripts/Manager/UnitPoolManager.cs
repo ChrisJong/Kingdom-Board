@@ -35,7 +35,7 @@
 
                 this._pools.Add(setup.type, new UnitPool(setup.prefab, host, setup.initialInstanceCount));
 
-                setup.prefab.GetComponent<UnitBase>().InitialSetupAnimation();
+                setup.prefab.GetComponent<UnitBase>().SetupAnimation();
             }
         }
 

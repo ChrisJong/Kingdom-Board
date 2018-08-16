@@ -9,7 +9,6 @@
     using Helpers;
     using Manager;
     using UI;
-    using Utility;
 
     [RequireComponent(typeof(ClericUI))]
     public sealed class Cleric : UnitBase {
@@ -23,6 +22,12 @@
         public bool canHeal { get { return this._canHeal; } }
         public float healingRadius { get { return this._healingRadius; } }
         public float healingAmoumt { get { return this._healingAmount; } }
+
+        ///////////////////
+        //// ANIMATION ////
+        ///////////////////
+        [Header("CLERIC - ANIMATION")]
+        [SerializeField] private float _endOfCastClipTime = 0.0f;
         #endregion
 
         #region UNITY
@@ -39,54 +44,136 @@
             this._canHeal = true;
         }
 
+        public override void ProjectileCollisionEvent() {
+            base.ProjectileCollisionEvent();
+
+            if(this._unitState == UnitState.HEAL_ANIMATION) {
+                this._unitState = UnitState.HEAL;
+                this.InternalHeal();
+            }
+        }
+
+        protected override void CheckStandbyState(out bool value) {
+            base.CheckStandbyState(out value);
+
+            if(this._unitState == UnitState.HEAL_STANDBY) {
+                if(this.IsEnemy(this._currentTarget)) {
+                    this._currentTarget = null;
+                    this._previousTarget = null;
+
+                    value = false;
+                    return;
+                }
+
+                bool targetInRange = false;
+
+                float distance = Vector3.Distance(this.position, this._currentTarget.position);
+                if(distance + this._unitRadius < this._healingRadius)
+                    targetInRange = true;
+
+                if(!targetInRange) {
+                    Collider[] hits = Physics.OverlapSphere(this.position, this._healingRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
+                    for(int i = 0; i < hits.Length; i++) {
+                        IHasHealth hitHasHealth = hits[i].GetEntity<IHasHealth>();
+
+                        if(hitHasHealth == null)
+                            continue;
+
+                        if(hitHasHealth != this._currentTarget)
+                            continue;
+                        else {
+                            targetInRange = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(targetInRange) {
+                    this.StartStateAnimation();
+                } else {
+                    value = targetInRange;
+                    return;
+                }
+            }
+
+            value = true;
+        }
+
         /////////////////
         //// HEALING ////
         /////////////////
+        #region HEALING
         public void FinishHealing() {
             this._canHeal = false;
         }
 
-        public void Heal(IHasHealth target) {
-            this.LookAt(target.position);
-            
-            this._unitAnimator.Play("Cast");
+        public void Heal() {
+            Debug.Log("HEALING UNIT");
+            if(this._projectile == null) {
+                this._unitState = UnitState.HEAL;
+                this.InternalHeal();
+            } else {
+                // NOTE: need to pass into a ID for the type of particle the end of the projectile should spawn.
+                GameObject temp = Instantiate(this._projectile);
+                Projectile tempProjjectile = temp.GetComponent<Projectile>() as Projectile;
 
-            this.InternalHeal(target);
-
-            ((UI.ClericUI)this._uiComponent).FinishHeal();
-            this._canHeal = false;
-        }
-
-        public void InternalHeal(IHasHealth target) {
-            var hits = Utils.hitsBuffers;
-            //var pos = this.position + this.transform.forward * this._unitRadius;
-            var pos = target.position;
-            Physics.SphereCastNonAlloc(pos, this._unitRadius * 2.0f, this.transform.forward, hits, this._healingRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
-
-            this._hitComparer.position = this.position;
-            Array.Sort(hits, this._hitComparer);
-
-            for(int i = 0; i < hits.Length; i++) {
-                var hit = hits[i];
-
-                if(hit.transform == null)
-                    continue;
-
-                //if(hit.transform == this.transform)
-                    //continue; // jgnore hits with itself;
-
-                var hasHealth = hit.collider.GetEntity<IHasHealth>();
-                if(hasHealth == null || hasHealth.isDead)
-                    continue; // ignore anything that doesn't contain health or is dead.
-
-                if(this.IsEnemy(hasHealth))
-                    continue; // ignore enemies.
-
-                // only attack the original target chosen.
-                hasHealth.AddHealth(this._healingAmount);
-                break;
+                if(tempProjjectile == null)
+                    temp.AddComponent<Projectile>();
+                else
+                    tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, this._projectileReleasePoint.position, this._projectileSpeed);
             }
         }
+
+        private void InternalHeal() {
+            this._currentTarget.AddHealth(this._healingAmount);
+
+            ((UI.ClericUI)this._uiComponent).FinishHeal();
+            this._unitState = UnitState.IDLE;
+            this._canHeal = false;
+        }
+        #endregion
+
+        ///////////////////
+        //// ANIMATION ////
+        ///////////////////
+        #region ANIMATION
+        public override void StartStateAnimation() {
+            base.StartStateAnimation();
+
+            if(this._unitState == UnitState.HEAL_STANDBY) {
+                this._unitState = UnitState.HEAL_ANIMATION;
+                this._unitAnimator.Play("Cast");
+            }
+        }
+
+        protected override void SetupEventAnimation() {
+            base.SetupEventAnimation();
+
+            AnimationEvent animEvent = new AnimationEvent();
+            AnimationClip animClip = new AnimationClip();
+
+            Debug.Log("SETUP HEALING ANIMATION EVENT");
+
+            if(this._endOfCastClipTime <= 0.0f)
+                throw new ArgumentException("End Of Animation Clip Time CAN NOT be set to 0 seconds");
+
+            animEvent.time = this._endOfCastClipTime;
+            animEvent.functionName = "Heal";
+
+            foreach(AnimationClip clip in this._unitAnimator.runtimeAnimatorController.animationClips) {
+                if(clip.name.Contains("Cast")) {
+                    /*foreach(AnimationEvent evt in clip.events) {
+                        Debug.Log("Event Cast Time: " + evt.time);
+                        UnityEditor.EditorApplication.isPaused = true;
+                    }*/
+                    animClip = clip;
+                    break;
+                }
+            }
+
+            animClip.AddEvent(animEvent);
+        }
+        #endregion
         #endregion
     }
 }

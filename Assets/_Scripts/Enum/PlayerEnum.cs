@@ -3,6 +3,7 @@
     public enum SelectionState {
         NONE = 0,
         FREE = 1,
+        STANDBY,
         SELECT_TARGET, // ANY
         SELECT_ALLYTARGET,
         SELECT_ENEMYTARGET,

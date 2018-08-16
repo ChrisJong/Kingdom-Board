@@ -20,7 +20,7 @@
         public HasHealthBase previousSelected;
 
         public Vector3 moveTo;
-        public HasHealthBase toAttack;
+        public HasHealthBase targetSelected;
 
         //public Selectable currentHover;
         //public Selectable previousHover;
@@ -176,11 +176,11 @@
             if(Input.GetMouseButtonUp(0)) {
                 if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
                     if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
-                        toAttack = this._hitInfo.transform.GetComponent<HasHealthBase>();
+                        targetSelected = this._hitInfo.transform.GetComponent<HasHealthBase>();
 
-                        if(this.CheckTargetSelection(toAttack)) {
+                        if(this.CheckTargetSelection(targetSelected)) {
                             if(this.currentSelected is ISelected) {
-                                if(!(this.currentSelected as ISelected).SetTarget(toAttack as IHasHealth)) {
+                                if(!(this.currentSelected as ISelected).SetTarget(targetSelected as IHasHealth)) {
                                     Debug.Log("Unit out of range");
                                     return;
                                 }
@@ -188,7 +188,7 @@
                                 Debug.LogWarning(this.currentSelected.name + " Deson't Inherit from ISelection Interface.");
                             }
                         } else {
-                            Debug.LogWarning(toAttack.name + " - Entity Isn't Apart Of Any Player Group.");
+                            Debug.LogWarning(targetSelected.name + " - Entity Isn't Apart Of Any Player Group.");
                             return;
                         }
                     }
@@ -196,6 +196,7 @@
             }
         }
 
+        // NOTE: this needs to be changed let the unit/structure figure out if the targetselected needs to be an ally or an enemy.
         private bool CheckTargetSelection(HasHealthBase target) {
             if(this._controller.selectionState == SelectionState.SELECT_ENEMYTARGET) {
                 return this.currentSelected.IsEnemy(target);

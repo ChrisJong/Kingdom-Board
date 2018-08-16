@@ -218,6 +218,56 @@
         protected virtual void DEADSTATE() {
 
         }
+
+        protected virtual void CheckStandbyState(out bool value) {
+            if(this._unitState == UnitState.ATTACK_STANDBY) {
+                if(this.IsAlly(this._currentTarget)) {
+                    this._currentTarget = null;
+                    this._previousTarget = null;
+                    // NOTE: display ui messsage indicating that the target is an allay.
+                    value = false;
+                    Debug.Log("Ally Selected");
+                    return;
+                }
+
+                Debug.Log("Ally Selected - Cannot Access");
+
+                bool targetInRange = false;
+
+                // Distance checks to see if the target is within range of the attack radius. Doesn't take into account differernt size bounds of geometry, just the center point position.
+                float distance = Vector3.Distance(this.position, this._currentTarget.position);
+                if(distance + this._unitRadius < this._attackRadius)
+                    targetInRange = true;
+
+                // Seoncdary check using unity OverlapSphere to hit any unit/structure colliders within the attack radius.
+                if(!targetInRange) {
+                    Collider[] hits = Physics.OverlapSphere(this.position, this._attackRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
+                    for(int i = 0; i < hits.Length; i++) {
+                        IHasHealth hitHasHealth = hits[i].GetEntity<IHasHealth>();
+
+                        if(hitHasHealth == null)
+                            continue;
+
+                        if(hitHasHealth != this._currentTarget)
+                            continue;
+                        else {
+                            targetInRange = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(targetInRange) {
+                    this.StartStateAnimation();
+                } else {
+                    // NOTEL display ui message stating the target is out of range.
+                    value = targetInRange;
+                    return;
+                }
+            }
+
+            value = true;
+        }
         #endregion
 
         //////////////
@@ -252,12 +302,18 @@
         }
 
         public virtual bool SetTarget(IHasHealth target) {
+            bool targetIsValid = false;
+
             if(this._currentTarget != null)
                 this._previousTarget = this._currentTarget;
 
             this._currentTarget = target;
 
-            if(this._unitState == UnitState.ATTACK_STANDBY) {
+            this.CheckStandbyState(out targetIsValid);
+
+            Debug.Log("Target Selected Is Value? " + targetIsValid.ToString());
+
+            /*if(this._unitState == UnitState.ATTACK_STANDBY) {
                 if(this.IsAlly(target)) {
                     this._currentTarget = null;
                     this._previousTarget = null;
@@ -298,17 +354,20 @@
                     // NOTEL display ui message stating the target is out of range.
                     return targetInRange;
                 }
-            }
+            }*/
 
-            return true;
+            return targetIsValid;
+        }
+
+        public virtual void ProjectileCollisionEvent() {
+            if(this._unitState == UnitState.ATTACK_ANIMATION) {
+                this._unitState = UnitState.ATTACK;
+                this.InternalAttack(this.GetDamage());
+            }
         }
 
         protected virtual void UpdateUnit() {
             switch(this._unitState) {
-                case UnitState.ATTACK_STANDBY:
-                this.ATTACKSTANDBYSTATE();
-                break;
-
                 case UnitState.MOVING:
                 this.MOVINGSTATE();
                 break;
@@ -347,7 +406,7 @@
                     Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method");
                     float finalDistance = 0;
                     Vector3[] corners = this._navMeshAgent.path.corners;
-                    for(int i = 0; i < corners.Length; i++)
+                    for(int i = 0; i <= corners.Length; i++)
                         finalDistance += Mathf.Abs((corners[i] - corners[i+1]).magnitude);
 
                     this._initialMovementDistance = finalDistance;
@@ -453,11 +512,6 @@
             }
         }
 
-        public virtual void ProjectileAttack() {
-            this._unitState = UnitState.ATTACK;
-            this.InternalAttack(this.GetDamage());
-        }
-
         public float GetDamage() {
             float damage = UnityEngine.Random.Range(this._minDamage, this._maxDamage);
             return Mathf.Round(damage);
@@ -512,26 +566,30 @@
         //// ANIMATION ////
         ///////////////////
         #region ANIMATION
-        public void InitialSetupAnimation() {
+        public virtual void SetupAnimation() {
             this._unitAnimator = this.GetComponent<Animator>();
             if(this._unitAnimator == null)
                 throw new ArgumentNullException("Unit Animator Is Missing");
 
-            this.SetupAttackEventAnimation();
+            this.SetupEventAnimation();
         }
 
-        public virtual void StartAttackAnimation() {
+        public virtual void StartStateAnimation() {
             this._lastAttack = Time.timeSinceLevelLoad;
             this.LookAt(this._currentTarget.position);
             this.StopMoving();
 
-            this._unitState = UnitState.ATTACK_ANIMATION;
-            this._unitAnimator.Play("Attack");
+            if(this._unitState == UnitState.ATTACK_STANDBY) {
+                this._unitState = UnitState.ATTACK_ANIMATION;
+                this._unitAnimator.Play("Attack");
+            }
         }
 
-        protected virtual void SetupAttackEventAnimation() {
+        protected virtual void SetupEventAnimation() {
             AnimationEvent animEvent = new AnimationEvent();
             AnimationClip animcLip = new AnimationClip();
+
+            Debug.Log("SETUP ATTACK ANIMATION EVENT");
 
             if(this._endOfAttackClipTime <= 0.0f)
                 throw new ArgumentException("End of Attack Animation Timer Needs to be Set, Cannot Be Set At 0 Seconds");

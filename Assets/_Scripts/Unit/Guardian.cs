@@ -2,8 +2,6 @@
 
     using UnityEngine;
 
-    using Constants;
-    using Enum;
     using UI;
 
     [RequireComponent(typeof(GuardianUI))]

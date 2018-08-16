@@ -2,15 +2,16 @@
 
     using UnityEngine;
 
+    using Enum;
     using Helpers;
     using Manager;
-    using Utility;
 
     [RequireComponent(typeof(Rigidbody))]
     public class Projectile : MonoBehaviour {
         #region VARIABLE
         private IHasHealth _origin;
         private IHasHealth _target;
+        private ParticleType _particleType;
 
         private Collider _collider;
         private Rigidbody _rigidbody;
@@ -45,7 +46,11 @@
                 return;
             else {
                 Debug.Log(other.name + " Has Been Hit");
-                this._origin.gameObject.GetComponent<UnitBase>().ProjectileAttack();
+                this._origin.gameObject.GetComponent<UnitBase>().ProjectileCollisionEvent();
+
+                if(this._particleType != ParticleType.NONE)
+                    ParticlePoolManager.instance.SpawnParticleSystem(this._particleType, this._transform.position, this._transform.rotation);
+
                 Destroy(this.gameObject);
             }
         }
@@ -63,18 +68,23 @@
 
                 if(this._distanceCovered <= 0.0f + this._distanceOffset) {
                     Debug.Log(this._target.gameObject.name + " Has Been Hit");
-                    this._origin.gameObject.GetComponent<UnitBase>().ProjectileAttack();
+                    this._origin.gameObject.GetComponent<UnitBase>().ProjectileCollisionEvent();
+
+                    if(this._particleType != ParticleType.NONE)
+                        ParticlePoolManager.instance.SpawnParticleSystem(this._particleType, this._transform.position, this._transform.rotation);
+
                     Destroy(this.gameObject);
                 }
             }
         }
 
-        public void SetupTarget(IHasHealth origin, IHasHealth target, Vector3 releasePoint, float speed) {
+        public void SetupTarget(IHasHealth origin, IHasHealth target, Vector3 releasePoint, float speed, ParticleType particle = ParticleType.NONE) {
             //UnityEditor.EditorApplication.isPaused = true;
 
             this._origin = origin;
             this._target = target;
             this._speed = speed;
+            this._particleType = particle;
 
             this.transform.position = releasePoint;
             this.transform.LookAt(target.transform, Vector3.forward);
