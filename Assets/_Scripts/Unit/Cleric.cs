@@ -45,11 +45,11 @@
         }
 
         public override void ProjectileCollisionEvent() {
-            base.ProjectileCollisionEvent();
-
             if(this._unitState == UnitState.HEAL_ANIMATION) {
                 this._unitState = UnitState.HEAL;
                 this.InternalHeal();
+            } else {
+                base.ProjectileCollisionEvent();
             }
         }
 
@@ -99,6 +99,10 @@
             value = true;
         }
 
+        protected override void SpawnAttackParticle() {
+            ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_CLERIC_ATTACK, this._currentTarget.position);
+        }
+
         /////////////////
         //// HEALING ////
         /////////////////
@@ -109,8 +113,10 @@
 
         public void Heal() {
             Debug.Log("HEALING UNIT");
+            ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_CLERIC_HEAL, this._currentTarget.position);
             if(this._projectile == null) {
                 this._unitState = UnitState.HEAL;
+                ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_CLERIC_HEAL, this._currentTarget.position);
                 this.InternalHeal();
             } else {
                 // NOTE: need to pass into a ID for the type of particle the end of the projectile should spawn.

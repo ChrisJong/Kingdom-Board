@@ -11,7 +11,7 @@
         #region VARIABLE
         private IHasHealth _origin;
         private IHasHealth _target;
-        private ParticleType _particleType;
+        private ParticleType _particleType = ParticleType.NONE;
 
         private Collider _collider;
         private Rigidbody _rigidbody;
@@ -48,9 +48,6 @@
                 Debug.Log(other.name + " Has Been Hit");
                 this._origin.gameObject.GetComponent<UnitBase>().ProjectileCollisionEvent();
 
-                if(this._particleType != ParticleType.NONE)
-                    ParticlePoolManager.instance.SpawnParticleSystem(this._particleType, this._transform.position, this._transform.rotation);
-
                 Destroy(this.gameObject);
             }
         }
@@ -70,9 +67,6 @@
                     Debug.Log(this._target.gameObject.name + " Has Been Hit");
                     this._origin.gameObject.GetComponent<UnitBase>().ProjectileCollisionEvent();
 
-                    if(this._particleType != ParticleType.NONE)
-                        ParticlePoolManager.instance.SpawnParticleSystem(this._particleType, this._transform.position, this._transform.rotation);
-
                     Destroy(this.gameObject);
                 }
             }
@@ -84,7 +78,9 @@
             this._origin = origin;
             this._target = target;
             this._speed = speed;
-            this._particleType = particle;
+
+            if(particle != ParticleType.NONE || particle != ParticleType.ANY)
+                this._particleType = particle;
 
             this.transform.position = releasePoint;
             this.transform.LookAt(target.transform, Vector3.forward);

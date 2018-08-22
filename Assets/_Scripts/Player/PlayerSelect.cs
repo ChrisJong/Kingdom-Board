@@ -1,5 +1,7 @@
 ﻿namespace Player {
 
+    using System;
+
     using UnityEngine;
     using UnityEngine.AI;
     using UnityEngine.EventSystems;
@@ -9,6 +11,7 @@
     using Helpers;
     using Structure;
     using Unit;
+    using Utility;
 
     public class PlayerSelect : MonoBehaviour {
         #region VARIABLE
@@ -37,7 +40,12 @@
 
         #region UNITY
         private void Awake() {
-            this._camera = this.GetComponent<Camera>() as Camera; 
+            Camera playerCamera = this.GetComponent<Camera>() as Camera;
+            if(playerCamera == null)
+                Debug.LogError("Player Controller Needs A CAmera script");
+
+            if(this._camera == null)
+                this._camera = this.GetComponent<Camera>() as Camera;
         }
 
         private void Update() {
@@ -124,7 +132,7 @@
             if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
                 var temp = this._hitInfo.transform.GetComponent<HasHealthBase>();
 
-                if(temp.entityType == Enum.EntityType.UNIT) {
+                if(temp.entityType == EntityType.UNIT) {
                     if(((UnitBase)temp).unitState == UnitState.FINISH)
                         return;
                 }

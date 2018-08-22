@@ -72,8 +72,9 @@ GameObject:
   - component: {fileID: 4282063266607124}
   - component: {fileID: 198796485973892258}
   - component: {fileID: 199007981107081330}
+  - component: {fileID: 114853695762483804}
   m_Layer: 0
-  m_Name: explosion_targeted
+  m_Name: impact_mage_attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,6 +135,18 @@ Transform:
   m_Father: {fileID: 4282063266607124}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &114853695762483804
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1799762427370938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b99989d2ba4aa7e4b81fbf0de5892253, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _poolID: 0
 --- !u!198 &198321797451865922
 ParticleSystem:
   m_ObjectHideFlags: 1

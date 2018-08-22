@@ -8,8 +8,11 @@
     public enum ParticleType {
         NONE = 0,
         ANY = ~0,
-        SMALL_SPARK = 1,
-        SMALL_SMOKE,
-        SMALL_IMPACT
+        IMPACT_MELEE = 1,
+        IMPACT_RANGE,
+        IMPACT_CLERIC_ATTACK,
+        IMPACT_CLERIC_HEAL,
+        IMPACT_MAGE_ATTACK,
+        IMPACT_WIZARD_ATTACK
     }
 }

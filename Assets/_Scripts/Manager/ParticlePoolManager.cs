@@ -28,8 +28,11 @@
             GameObject managerHost = new GameObject("Particles");
             managerHost.transform.SetParent(this.transform);
 
-            for(int i = 0; i > this._poolSetup.Length; i++) {
+            for(int i = 0; i < this._poolSetup.Length; i++) {
                 ParticlePoolSetup setup = this._poolSetup[i];
+
+                if(setup.prefab.GetComponent<ParticleComponent>() == null)
+                    setup.prefab.AddComponent<ParticleComponent>();
 
                 GameObject host = new GameObject(setup.type.ToString());
                 host.transform.SetParent(managerHost.transform);
@@ -55,6 +58,10 @@
         /// <param name="rotation"></param>
         public void SpawnParticleSystem(ParticleType type, Vector3 position, Quaternion rotation) {
             IParticleSystem system = this._pools[type].Get(position, rotation);
+
+            if(system == null)
+                Debug.LogError("System NOt Found");
+
             system.Play();
 
             if(this.gameObject.activeSelf)

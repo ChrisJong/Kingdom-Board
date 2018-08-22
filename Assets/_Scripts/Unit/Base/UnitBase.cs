@@ -171,8 +171,8 @@
         // For Debugging Purpose.
         public void OnDrawGizmos() {
             if(this._unitState == UnitState.ATTACK_ANIMATION) {
-                Gizmos.color = Color.red;
-                Gizmos.DrawSphere(this.transform.position, this._attackRadius);
+                //Gizmos.color = Color.red;
+                //Gizmos.DrawSphere(this.transform.position, this._attackRadius);
             }
         }
 
@@ -371,6 +371,10 @@
                 case UnitState.MOVING:
                 this.MOVINGSTATE();
                 break;
+
+                case UnitState.ATTACK_STANDBY:
+                this.ATTACKSTANDBYSTATE();
+                break;
             }
         }
             
@@ -406,7 +410,8 @@
                     Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method");
                     float finalDistance = 0;
                     Vector3[] corners = this._navMeshAgent.path.corners;
-                    for(int i = 0; i <= corners.Length; i++)
+
+                    for(int i = 0; i < corners.Length; ++i)
                         finalDistance += Mathf.Abs((corners[i] - corners[i+1]).magnitude);
 
                     this._initialMovementDistance = finalDistance;
@@ -478,7 +483,7 @@
                 this.StopMoving();
             }
 
-            Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
+            //Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
             if(this._navMeshAgent.remainingDistance <= this._navMeshAgent.stoppingDistance) {
                 if(!this._navMeshAgent.hasPath || this._navMeshAgent.velocity.sqrMagnitude == 0.0f) {
                     this._unitState = UnitState.MOVING_STANDBY;
@@ -553,12 +558,25 @@
         }
 
         protected virtual void InternalAttack(float damage) {
+            this.SpawnAttackParticle();
+
             this._currentTarget.lastAttacker = this;
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth);
 
             ((UI.UnitUI)this._uiComponent).FinishAttack();
             this._unitState = UnitState.IDLE;
             this._canAttack = false;
+        }
+
+        protected virtual void SpawnAttackParticle() {
+            if(this._projectile != null) {
+                Vector3 relativePos = this.position - this._currentTarget.position;
+                Quaternion tempRotation = Quaternion.LookRotation(relativePos);
+
+                ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_RANGE, this._currentTarget.position, tempRotation);
+            } else {
+                ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_MELEE, this._currentTarget.position);
+            }
         }
         #endregion
 

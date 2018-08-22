@@ -16,6 +16,6 @@
         public GameObject prefab;
 
         [Range(1, 100)]
-        public int initialInstanceCount = 25;
+        public int initialInstanceCount = 3;
     }
 }

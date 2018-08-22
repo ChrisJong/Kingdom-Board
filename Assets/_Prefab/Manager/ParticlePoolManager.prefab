@@ -8,15 +8,15 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications: []
     m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
+  m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1770262931608676}
-  m_IsPrefabParent: 1
+  m_IsPrefabAsset: 1
 --- !u!1 &1770262931608676
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  serializedVersion: 6
   m_Component:
   - component: {fileID: 4106337514921438}
   - component: {fileID: 114100389914760632}
@@ -30,7 +30,7 @@ GameObject:
 --- !u!4 &4106337514921438
 Transform:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1770262931608676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -43,7 +43,7 @@ Transform:
 --- !u!114 &114100389914760632
 MonoBehaviour:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1770262931608676}
   m_Enabled: 1
@@ -53,11 +53,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _poolSetup:
   - type: 1
-    prefab: {fileID: 0}
-    initialInstanceCount: 25
+    prefab: {fileID: 1746679079965506, guid: 96efe3c6c55f1104e90c04954a592abb, type: 2}
+    initialInstanceCount: 3
   - type: 2
-    prefab: {fileID: 0}
-    initialInstanceCount: 25
+    prefab: {fileID: 1047562941365972, guid: b015662a4317cab48abb3d09a8f1d7e1, type: 2}
+    initialInstanceCount: 3
   - type: 3
-    prefab: {fileID: 0}
-    initialInstanceCount: 25
+    prefab: {fileID: 1809346545857010, guid: f06f4ba241ccc8849882b2cc3fa57f25, type: 2}
+    initialInstanceCount: 3
+  - type: 4
+    prefab: {fileID: 1293439872407380, guid: 03e97c16a0ddd7c4a8aca9b0c100aa8b, type: 2}
+    initialInstanceCount: 3
+  - type: 5
+    prefab: {fileID: 1799762427370938, guid: 9a060013f80335b49ace3ed89db15ddb, type: 2}
+    initialInstanceCount: 3
+  - type: 6
+    prefab: {fileID: 1340897210577122, guid: df6079e1a9e56c34ea7a3b4e6a9fc283, type: 2}
+    initialInstanceCount: 3
