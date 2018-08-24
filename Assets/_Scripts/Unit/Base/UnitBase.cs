@@ -503,6 +503,7 @@
         ////////////////
         #region ATTACK
         public virtual void Attack() {
+            Vector3 releasePosition = this._projectileReleasePoint.position;
             if(this._projectile == null) {
                 this._unitState = UnitState.ATTACK;
                 this.InternalAttack(this.GetDamage());
@@ -513,7 +514,7 @@
                 if(tempProjjectile == null)
                     temp.AddComponent<Projectile>();
                 else
-                    tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, this._projectileReleasePoint.position, this._projectileSpeed);
+                    tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, releasePosition, this._projectileSpeed);
             }
         }
 
@@ -618,10 +619,10 @@
             foreach(AnimationClip clip in this._unitAnimator.runtimeAnimatorController.animationClips) {
                 if(clip.name.Contains("Attack")) {
                     // Function To Help Find Frame Event Time.
-                    /*foreach(AnimationEvent evt in clip.events) {
+                    foreach(AnimationEvent evt in clip.events) {
                         Debug.Log("Event Attack Time: " + evt.time);
                         UnityEditor.EditorApplication.isPaused = true;
-                    }*/
+                    }
                     animcLip = clip;
                     break;
                 }

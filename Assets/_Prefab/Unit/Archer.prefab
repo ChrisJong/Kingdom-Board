@@ -2894,17 +2894,17 @@ MonoBehaviour:
   _projectile: {fileID: 1213313291399790, guid: 5fa941dfb9b864e4d931db273bde05c4,
     type: 2}
   _projectileReleasePoint: {fileID: 4295147750568050}
-  _projectileSpeed: 10
+  _projectileSpeed: 20
   _minDamage: 20
   _maxDamage: 20
-  _attackRadius: 7.5
+  _attackRadius: 12
   _attackType: 0
   _resistanceType: 0
   _weaknessType: 0
   _resistanceMultiplier: 0.5
   _weaknessMultiplier: 0.5
   _canAttack: 1
-  _endOfAttackClipTime: 0.42
+  _endOfAttackClipTime: 0.461
 --- !u!114 &114247233725767592
 MonoBehaviour:
   m_ObjectHideFlags: 1

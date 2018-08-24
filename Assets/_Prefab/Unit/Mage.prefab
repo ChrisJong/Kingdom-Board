@@ -3085,15 +3085,14 @@ MonoBehaviour:
   _projectileSpeed: 10
   _minDamage: 20
   _maxDamage: 20
-  _attackRadius: 7.5
+  _attackRadius: 8
   _attackType: 0
   _resistanceType: 0
   _weaknessType: 0
   _resistanceMultiplier: 0.5
   _weaknessMultiplier: 0.5
   _canAttack: 1
-  _endOfAttackClipTime: 0.8
-  _splashRadius: 10
+  _endOfAttackClipTime: 0.545
 --- !u!114 &114943122591262820
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -174,12 +174,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbd7355fcf4462d4ebe83b29935db62b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileTarget: {fileID: 0}
-  projectileOrigin: {fileID: 0}
-  _temp: {fileID: 0}
-  projectileCollider: {fileID: 0}
-  projectileRigidbody: {fileID: 0}
-  _projectileSpeed: 0
 --- !u!135 &135085023253946298
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -1018,7 +1012,7 @@ ParticleSystem:
     rateOverDistance:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 15
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -5641,7 +5635,7 @@ ParticleSystem:
     rateOverDistance:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 15
       minScalar: 0
       maxCurve:
         serializedVersion: 2
