@@ -1,10 +1,10 @@
 ﻿namespace Unit {
 
     using System;
-    using System.Collections;
     using System.Collections.Generic;
 
     using UnityEngine;
+    using UnityEditor;
 
     using Constants;
     using Enum;
@@ -23,6 +23,7 @@
         private Transform _splashRadiusTransform = null;
 
         public float splashRadius { get { return this._splashRadius; } }
+        public LineRenderDrawCircle splashRadiusDrawer { get { return this._splashRadiusDrawer; } }
         #endregion
 
         #region UNITY
@@ -50,12 +51,19 @@
         protected override void ATTACKSTANDBYSTATE() {
             base.ATTACKSTANDBYSTATE();
 
-            if(!this._splashRadiusDrawer.gameObject.activeSelf)
+            if(!this._splashRadiusDrawer.gameObject.activeSelf) {
                 this._splashRadiusDrawer.TurnOn();
-            else
-                this._splashRadiusTransform.position = this.controller.playerSelection.GetCurrentPointOnGround();
 
-            Debug.Log("Current Aoe Coord: " + this.controller.playerSelection.GetCurrentPointOnGround().ToString());
+                // Debugging for changing the size of the splash radius at runtime/gametime.
+                this._splashRadiusDrawer.UpdateRadius(this.splashRadius);
+            } else {
+                // Debugging for changing the size of the splash radius at runtime/gametime.
+                this._splashRadiusDrawer.UpdateRadius(this.splashRadius);
+
+                this._splashRadiusTransform.position = this.controller.playerSelection.GetCurrentPointOnGround();
+            }
+
+            //Debug.Log("Current Aoe Coord: " + this.controller.playerSelection.GetCurrentPointOnGround().ToString());
         }
 
         protected override void InternalAttack(float damage) {

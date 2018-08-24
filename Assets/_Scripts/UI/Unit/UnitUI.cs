@@ -27,8 +27,8 @@
         [SerializeField]
         protected List<Material> _unitMaterials;
 
-        private bool _attacking = false;
-        private bool _moving = false;
+        protected bool _attacking = false;
+        protected bool _moving = false;
         #endregion
         
         #region UNITY
@@ -225,11 +225,13 @@
                 this._attacking = false;
                 this.controller.selectionState = SelectionState.FREE;
                 this.unit.radiusDrawer.TurnOff();
+                this.unit.unitState = UnitState.IDLE;
             } else if(this._moving) {
                 this.ResetUI();
                 this._moving = false;
                 this.controller.selectionState = SelectionState.FREE;
                 this.unit.radiusDrawer.TurnOff();
+                this.unit.unitState = UnitState.IDLE;
                 this.unit.CancelMove();
             }
         }

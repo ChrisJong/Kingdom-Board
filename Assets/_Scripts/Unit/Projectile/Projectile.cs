@@ -11,7 +11,6 @@
         #region VARIABLE
         private IHasHealth _origin;
         private IHasHealth _target;
-        private ParticleType _particleType = ParticleType.NONE;
 
         private Collider _collider;
         private Rigidbody _rigidbody;
@@ -72,15 +71,12 @@
             }
         }
 
-        public void SetupTarget(IHasHealth origin, IHasHealth target, Vector3 releasePoint, float speed, ParticleType particle = ParticleType.NONE) {
+        public void SetupTarget(IHasHealth origin, IHasHealth target, Vector3 releasePoint, float speed) {
             //UnityEditor.EditorApplication.isPaused = true;
 
             this._origin = origin;
             this._target = target;
             this._speed = speed;
-
-            if(particle != ParticleType.NONE || particle != ParticleType.ANY)
-                this._particleType = particle;
 
             this.transform.position = releasePoint;
             this.transform.LookAt(target.transform, Vector3.forward);

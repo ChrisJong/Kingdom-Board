@@ -1,6 +1,7 @@
 ﻿namespace Utility {
 
     using UnityEngine;
+    using UnityEditor;
 
     [RequireComponent(typeof(LineRenderer))]
     public class LineRenderDrawCircle : MonoBehaviour {
@@ -101,6 +102,24 @@
 
         public void DrawSpecialRadius(float radius, float width = 0.1f, int segments = 128) {
             this.DrawRadius(Color.white, radius, width, segments);
+        }
+
+        public void UpdateRadius(float radius = 10.0f) {
+            this.xRadius = radius;
+            this.yRadius = radius;
+
+            EditorUtility.SetDirty(this);
+
+            this.Draw();
+        }
+
+        public void UpdateRadius(float xRadius = 10.0f, float yRadius = 10.0f) {
+            this.xRadius = xRadius;
+            this.yRadius = yRadius;
+
+            EditorUtility.SetDirty(this);
+
+            this.Draw();
         }
     }
 }
