@@ -504,6 +504,7 @@
         #region ATTACK
         public virtual void Attack() {
             Vector3 releasePosition = this._projectileReleasePoint.position;
+
             if(this._projectile == null) {
                 this._unitState = UnitState.ATTACK;
                 this.InternalAttack(this.GetDamage());
@@ -610,8 +611,8 @@
 
             Debug.Log("SETUP ATTACK ANIMATION EVENT");
 
-            if(this._endOfAttackClipTime <= 0.0f)
-                throw new ArgumentException("End of Attack Animation Timer Needs to be Set, Cannot Be Set At 0 Seconds");
+            /*if(this._endOfAttackClipTime <= 0.0f)
+                throw new ArgumentException("End of Attack Animation Timer Needs to be Set, Cannot Be Set At 0 Seconds");*/
 
             animEvent.time = this._endOfAttackClipTime;
             animEvent.functionName = "Attack";
@@ -619,10 +620,10 @@
             foreach(AnimationClip clip in this._unitAnimator.runtimeAnimatorController.animationClips) {
                 if(clip.name.Contains("Attack")) {
                     // Function To Help Find Frame Event Time.
-                    foreach(AnimationEvent evt in clip.events) {
+                    /*foreach(AnimationEvent evt in clip.events) {
                         Debug.Log("Event Attack Time: " + evt.time);
                         UnityEditor.EditorApplication.isPaused = true;
-                    }
+                    }*/
                     animcLip = clip;
                     break;
                 }

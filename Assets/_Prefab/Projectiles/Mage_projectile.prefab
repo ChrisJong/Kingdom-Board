@@ -174,12 +174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbd7355fcf4462d4ebe83b29935db62b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileTarget: {fileID: 0}
-  projectileOrigin: {fileID: 0}
-  _temp: {fileID: 0}
-  projectileCollider: {fileID: 0}
-  projectileRigidbody: {fileID: 0}
-  _projectileSpeed: 0
+  _particleSystem: {fileID: 198602639626922244}
 --- !u!135 &135344975582280430
 SphereCollider:
   m_ObjectHideFlags: 1

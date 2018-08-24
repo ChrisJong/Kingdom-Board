@@ -5,10 +5,13 @@
     using Enum;
     using Helpers;
     using Manager;
+    using Particle;
 
     [RequireComponent(typeof(Rigidbody))]
     public class Projectile : MonoBehaviour {
         #region VARIABLE
+        [SerializeField] private ParticleSystem _particleSystem;
+
         private IHasHealth _origin;
         private IHasHealth _target;
 
@@ -47,6 +50,11 @@
                 Debug.Log(other.name + " Has Been Hit");
                 this._origin.gameObject.GetComponent<UnitBase>().ProjectileCollisionEvent();
 
+                if(this._particleSystem != null) {
+                    this._particleSystem.gameObject.AddComponent<ProjectileParticle>();
+                    this._particleSystem.transform.parent = null;
+                }
+
                 Destroy(this.gameObject);
             }
         }
@@ -65,6 +73,11 @@
                 if(this._distanceCovered <= 0.0f + this._distanceOffset) {
                     Debug.Log(this._target.gameObject.name + " Has Been Hit");
                     this._origin.gameObject.GetComponent<UnitBase>().ProjectileCollisionEvent();
+
+                    if(this._particleSystem != null) {
+                        this._particleSystem.gameObject.AddComponent<ProjectileParticle>();
+                        this._particleSystem.transform.parent = null;
+                    }
 
                     Destroy(this.gameObject);
                 }

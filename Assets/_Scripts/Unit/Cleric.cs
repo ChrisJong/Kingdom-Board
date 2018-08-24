@@ -168,10 +168,10 @@
 
             foreach(AnimationClip clip in this._unitAnimator.runtimeAnimatorController.animationClips) {
                 if(clip.name.Contains("Cast")) {
-                    foreach(AnimationEvent evt in clip.events) {
+                    /*foreach(AnimationEvent evt in clip.events) {
                         Debug.Log("Event Cast Time: " + evt.time);
                         UnityEditor.EditorApplication.isPaused = true;
-                    }
+                    }*/
                     animClip = clip;
                     break;
                 }
