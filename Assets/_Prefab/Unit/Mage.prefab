@@ -3086,11 +3086,11 @@ MonoBehaviour:
   _minDamage: 20
   _maxDamage: 20
   _attackRadius: 8
-  _attackType: 0
-  _resistanceType: 0
-  _weaknessType: 0
+  _attackType: 2
+  _resistanceType: 1
+  _weaknessType: 3
   _resistanceMultiplier: 0.5
-  _weaknessMultiplier: 0.5
+  _weaknessMultiplier: 2
   _canAttack: 1
   _endOfAttackClipTime: 0.545
 --- !u!114 &114943122591262820

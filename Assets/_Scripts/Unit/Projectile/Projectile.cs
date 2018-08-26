@@ -14,6 +14,7 @@
 
         private IHasHealth _origin;
         private IHasHealth _target;
+        private Vector3 _targetPosition;
 
         private Collider _collider;
         private Rigidbody _rigidbody;
@@ -87,14 +88,25 @@
         public void SetupTarget(IHasHealth origin, IHasHealth target, Vector3 releasePoint, float speed) {
             //UnityEditor.EditorApplication.isPaused = true;
 
+            Collider targetCollider = target.transform.GetComponent<Collider>();
+            if(targetCollider == null)
+                return;
+
+            if(targetCollider is CapsuleCollider)
+                this._targetPosition = new Vector3(target.position.x, target.position.y + ((CapsuleCollider)targetCollider).center.y, target.position.z);
+            else if(targetCollider is BoxCollider)
+                this._targetPosition = new Vector3(target.position.x, target.position.y + ((BoxCollider)targetCollider).center.y, target.position.z);
+            else
+                this._targetPosition = target.position;
+
             this._origin = origin;
-            this._target = target;
+            this._target = target;            
             this._speed = speed;
 
             this.transform.position = releasePoint;
-            this.transform.LookAt(target.transform, Vector3.forward);
-            float y = this.transform.eulerAngles.y;
-            this.transform.eulerAngles = new Vector3(0.0f, y);
+            this.transform.LookAt(this._targetPosition, Vector3.forward);
+            //float y = this.transform.eulerAngles.y;
+            //this.transform.eulerAngles = new Vector3(0.0f, y);
 
             this._startMoving = true;
         }

@@ -91,10 +91,11 @@
         [SerializeField, Range(1.0f, 50.0f)] protected float _attackRadius = 7.5f;
 
         [SerializeField] protected AttackType _attackType = AttackType.NONE;
+        //[SerializeField] protected ArmorType _armorType = ArmorType.NONE;
         [SerializeField] protected AttackType _resistanceType = AttackType.NONE;
         [SerializeField] protected AttackType _weaknessType = AttackType.NONE;
-        [SerializeField, Range(0.0f, 10.0f)] protected float _resistanceMultiplier = 0.5f;
-        [SerializeField, Range(0.0f, 10.0f)] protected float _weaknessMultiplier = 0.5f;
+        [SerializeField, Range(0.0f, 3.0f)] protected float _resistanceMultiplier = 0.5f;
+        [SerializeField, Range(0.0f, 3.0f)] protected float _weaknessMultiplier = 0.5f;
 
         [SerializeField, ReadOnly] protected bool _canAttack = true;
         protected float _lastAttack = 0.0f;
@@ -104,6 +105,7 @@
         public float attackRadius { get { return this._attackRadius; } }
 
         public AttackType attackType { get { return this._attackType; } }
+        //public ArmorType armorType { get { return this._armorType; } }
         public AttackType resistanceType { get { return this._resistanceType; } }
         public AttackType weaknessType { get { return this._weaknessType; } }
         public float resistancePercentage { get { return this._resistanceMultiplier; } }
@@ -406,13 +408,14 @@
 
             if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
                 this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+
                 if(float.IsInfinity(_initialMovementDistance)) {
-                    Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method");
+                    Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method: Corners - " + this._navMeshAgent.path.corners.Length.ToString());
                     float finalDistance = 0;
                     Vector3[] corners = this._navMeshAgent.path.corners;
 
-                    for(int i = 0; i < corners.Length; ++i)
-                        finalDistance += Mathf.Abs((corners[i] - corners[i+1]).magnitude);
+                    for(int i = 0; i < corners.Length-1; ++i)
+                        finalDistance += Mathf.Abs((corners[i] - corners[i + 1]).magnitude);
 
                     this._initialMovementDistance = finalDistance;
                 }
@@ -524,25 +527,43 @@
             return Mathf.Round(damage);
         }
 
-        public override bool ReceiveDamage(float damage, IHasHealth target) {
+        public override bool ReceiveDamage(float damage, IHasHealth incoming) {
             if(this.isDead)
                 return true;
 
-            ICanAttack unit = target as ICanAttack;
-            float finalDamage = 0.0f;
-            float finalmultiplier = 0.0f;
+            ICanAttack attacker = incoming as ICanAttack;
+            float finalDamage = damage;
 
-            if(unit.attackType == this.resistanceType)
-                finalmultiplier += this.resistancePercentage;
-            else if(unit.attackType == this.weaknessType)
-                finalmultiplier -= this.weaknessPercentage;
+            // Unit Based Multipliers
+            if(attacker.attackType == this.resistanceType)
+                finalDamage = Mathf.Round(damage * this.resistancePercentage);
+            else if(attacker.attackType == this.weaknessType)
+                finalDamage = Mathf.Round(damage * this.weaknessPercentage);
+            
+            Debug.Log("Attack Calculation: " + finalDamage.ToString());
 
-            // NOTE: add multiplier from other sources of damage and armour, also from the envrioment and height.
+            // Height based Multipliers
+            float heightCalulations = this.position.y - attacker.position.y;
+            bool isWithinHeightThreshold = (Mathf.Abs(heightCalulations) >= UnitValues.ATTACKHEIGHTTHRESHOLD) ? true : false;
+            bool isAttackerBelow = (Mathf.Sign(heightCalulations) == 1) ? true : false;
 
-            finalDamage = Mathf.Round(damage * finalmultiplier);
+            Debug.Log("Height Threshold: " + Mathf.Abs(heightCalulations));
 
+            if(isWithinHeightThreshold) {
+                if(isAttackerBelow)
+                    finalDamage = Mathf.Round(finalDamage * UnitValues.ABOVEHEIGHTMULTIPLIER);
+                else
+                    finalDamage = Mathf.Round(finalDamage * UnitValues.BELOWHEIGHTMULTIPLIER);
+
+                Debug.Log("Height Calculations: " + finalDamage.ToString());
+            }
+
+            // Check to never go beyond negative values.
+            if(finalDamage <= 0.0f)
+                finalDamage = 0.0f;
+
+            Debug.Log("Current Target " + this.name + ": Took " + finalDamage.ToString() + " of Damage from - " + incoming.gameObject.name);
             this.RemoveHealth(finalDamage);
-            Debug.Log("Current Target (" + this.name + "): Took" + finalDamage.ToString() + " of Damage from - " + target.gameObject.name);
             this.uiComponent.UpdateUI();
 
             if(this.currentHealth <= 0.0f) {
