@@ -3390,6 +3390,34 @@ Prefab:
       propertyPath: m_TagString
       value: Structure
       objectReference: {fileID: 0}
+    - target: {fileID: 100066, guid: a8d35faa50835594498ae86dabbaade9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100020, guid: a8d35faa50835594498ae86dabbaade9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a8d35faa50835594498ae86dabbaade9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100014, guid: a8d35faa50835594498ae86dabbaade9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100012, guid: a8d35faa50835594498ae86dabbaade9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100052, guid: a8d35faa50835594498ae86dabbaade9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100078, guid: a8d35faa50835594498ae86dabbaade9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8d35faa50835594498ae86dabbaade9, type: 3}
   m_IsPrefabAsset: 0
@@ -3398,6 +3426,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: a8d35faa50835594498ae86dabbaade9,
     type: 3}
   m_PrefabInternal: {fileID: 267303777}
+--- !u!1 &267303779 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100002, guid: a8d35faa50835594498ae86dabbaade9,
+    type: 3}
+  m_PrefabInternal: {fileID: 267303777}
+--- !u!64 &267303780
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 267303779}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300000, guid: 3603428b7d8caa546b295a0ec34b1ec1, type: 3}
 --- !u!1 &269337462
 GameObject:
   m_ObjectHideFlags: 0
