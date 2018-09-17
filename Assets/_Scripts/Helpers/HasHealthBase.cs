@@ -57,6 +57,7 @@
 
         #region CLASS
         public abstract bool ReceiveDamage(float damage, IHasHealth target);
+        public abstract bool ReceiveDamage(float damage, IHasHealth target, Vector3 origin);
 
         public virtual bool AddHealth(float amount) {
             if(this.isDead)

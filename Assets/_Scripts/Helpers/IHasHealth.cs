@@ -1,5 +1,7 @@
 ﻿namespace Helpers {
 
+    using UnityEngine;
+
     using Player;
     using UI;
 
@@ -18,6 +20,7 @@
         bool AddHealth(float amount);
         bool RemoveHealth(float amount);
         bool ReceiveDamage(float damage, IHasHealth target);
+        bool ReceiveDamage(float damage, IHasHealth target, Vector3 origin);
         bool UseEnergy(float amount);
         bool IsAlly(IHasHealth other);
         bool IsEnemy(IHasHealth other);

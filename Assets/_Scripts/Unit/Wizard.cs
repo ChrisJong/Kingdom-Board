@@ -70,7 +70,7 @@
             this.SpawnAttackParticle();
 
             this._currentTarget.lastAttacker = this;
-            this._currentTarget.ReceiveDamage(damage, this as IHasHealth);
+            this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.transform.position);
 
             // NOTE: Find units within the splashRadius and calculate damage on the distance from the main attack source.
             var hits = Utils.hitsBuffers;
@@ -108,7 +108,7 @@
                 finalDamage = Mathf.Round(damage - ((distance / this._splashRadius) * damage));
 
                 hitHasHealth.lastAttacker = this;
-                hitHasHealth.ReceiveDamage(finalDamage, this as IHasHealth);
+                hitHasHealth.ReceiveDamage(finalDamage, this as IHasHealth, this._currentTarget.position);
                 //Debug.Log("Current Target (" + hitHasHealth.gameObject.name + "): Took " + finalDamage.ToString() + " of Damage");
             }
 

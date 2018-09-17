@@ -580,11 +580,20 @@
             return false;
         }
 
+        public override bool ReceiveDamage(float damage, IHasHealth target, Vector3 origin) {
+            if(this.isDead)
+                return true;
+
+            this.PlayHitAnimations(origin);
+
+            return this.ReceiveDamage(damage, target);
+        }
+
         protected virtual void InternalAttack(float damage) {
             this.SpawnAttackParticle();
 
             this._currentTarget.lastAttacker = this;
-            this._currentTarget.ReceiveDamage(damage, this as IHasHealth);
+            this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.transform.position);
 
             ((UI.UnitUI)this._uiComponent).FinishAttack();
             this._unitState = UnitState.IDLE;
@@ -613,6 +622,37 @@
                 throw new ArgumentNullException("Unit Animator Is Missing");
 
             this.SetupEventAnimation();
+        }
+
+        public virtual void PlayHitAnimations(Vector3 origin) {
+            Vector3 newOrigin = new Vector3(origin.x, 0.0f, origin.z);
+            Vector3 newPos = new Vector3(this.transform.position.x, 0.0f, this.transform.position.z);
+
+            Vector3 directionNormal = (newOrigin - newPos).normalized;
+            float signedAngle = Vector3.SignedAngle(directionNormal, this.transform.forward, Vector3.up);
+            float angleInDegrees = (signedAngle + 360.0f) % 360;
+
+            Debug.Log("Angle TO Degrees: " + angleInDegrees.ToString());
+
+            if(angleInDegrees <= UnitValues.FRONT_L || angleInDegrees >= UnitValues.FRONT_R) {
+                // FRONt.
+                this._unitAnimator.Play("HitFromFront");
+                Debug.Log("ATTACKED FRON FRONT");
+            } else if(angleInDegrees >= UnitValues.BEHIND_L && angleInDegrees <= UnitValues.BEHIND_R) {
+                // BEHIND
+                this._unitAnimator.Play("HitFromBehind");
+                Debug.Log("ATTACKED FROM BEHIND");
+            } else if(angleInDegrees > UnitValues.FRONT_L && angleInDegrees < UnitValues.BEHIND_L) {
+                // LEFT
+                this._unitAnimator.Play("HitFromLeft");
+                Debug.Log("ATTACKED FROM LEFT");
+            } else if(angleInDegrees > UnitValues.BEHIND_R && angleInDegrees < UnitValues.FRONT_R) {
+                // RIGHT
+                this._unitAnimator.Play("HitFromRight");
+                Debug.Log("ATTACKED FROM RIGHT");
+            } else {
+                Debug.LogError("Angle TO Degree Is Out Of Bounds, Produced Result: " + angleInDegrees.ToString());
+            }
         }
 
         public virtual void StartStateAnimation() {

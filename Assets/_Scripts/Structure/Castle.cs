@@ -10,6 +10,7 @@
     using Helpers;
     using UI;
     using Utility;
+    using System;
 
     [RequireComponent(typeof(CastleUI))]
     public sealed class Castle : SpawnStructureBase {
@@ -32,6 +33,10 @@
             if(isDead)
                 this.controller.OnDeath();
             return isDead;
+        }
+
+        public override bool ReceiveDamage(float damage, IHasHealth target, Vector3 origin) {
+            return this.ReceiveDamage(damage, target);
         }
 
         public void CheckSpawnQueue() {
