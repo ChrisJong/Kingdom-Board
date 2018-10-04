@@ -68,6 +68,36 @@
             return val;
         }
 
+        public static bool PointInBounds(Bounds b, Vector3 p) {
+            Vector3 min = b.min;
+            Vector3 max = b.max;
+
+            if(p.x < min.x || p.y < min.y || p.z < min.z)
+                return false;
+
+            if(p.x > max.x || p.y < max.y || p.z > max.z)
+                return false;
+
+            // Point is within the bounds.
+            return true;
+        }
+
+        public static Vector3 ClosesPointToBounds(Bounds b, Vector3 p) {
+            Vector3 r = p;
+            Vector3 min = b.min;
+            Vector3 max = b.max;
+
+            r.x = (r.x < min.x) ? min.x : r.x;
+            r.y = (r.y < min.x) ? min.y : r.y;
+            r.z = (r.z < min.x) ? min.z : r.z;
+
+            r.x = (r.x > max.x) ? max.x : r.x;
+            r.y = (r.y > max.x) ? max.y : r.y;
+            r.z = (r.z > max.x) ? max.z : r.z;
+
+            return r;
+        }
+
         // Gets the direction the entity is facing.
         public static Vector3 GetObjectFacingDirection(Transform entity) {
             return new Vector3(Mathf.Sin(entity.rotation.eulerAngles.y * Mathf.Deg2Rad),

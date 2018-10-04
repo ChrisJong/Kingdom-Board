@@ -25,7 +25,8 @@
         protected IHasHealth _currentTarget = null;
         protected IHasHealth _previousTarget = null;
 
-        protected BoxCollider _navBoxCollider = null;
+        protected Collider _collider = null;
+        protected Bounds _colliderBounds;
         protected NavMeshObstacle _navMeshObstacle = null;
 
         public override EntityType entityType { get { return EntityType.STRUCTURE; } }
@@ -41,14 +42,15 @@
 
         #region UNITY
         protected virtual void Awake() {
-            this._navBoxCollider = this.GetComponent<BoxCollider>() as BoxCollider;
+            this._collider = this.GetComponent<BoxCollider>() as BoxCollider;
             this._navMeshObstacle = this.GetComponent<NavMeshObstacle>() as NavMeshObstacle;
 
-            if(this._navBoxCollider == null)
+            if(this._collider == null)
                 Debug.LogWarning("Structure Needs a Collider to Carve a path around the navmesh");
 
+            this._colliderBounds = this._collider.bounds;
             this._navMeshObstacle.carving = true;
-            this._navBoxCollider.enabled = false;
+            this._collider.enabled = false;
         }
 
         protected override void OnEnable() {

@@ -20,8 +20,7 @@
         public LineRenderDrawCircle radiusDrawer = null;
 
         [Header("CASTLE - SPAWN")]
-        [SerializeField]
-        private List<SpawnQueueType> _spawnQueue = new List<SpawnQueueType>();
+        [SerializeField] private List<SpawnQueueType> _spawnQueue = new List<SpawnQueueType>();
 
         public List<SpawnQueueType> spawnQueue { get { return this._spawnQueue; } }
         public override StructureType structureType { get { return StructureType.CASTLE; } }

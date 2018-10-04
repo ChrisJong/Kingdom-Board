@@ -66,6 +66,7 @@
         public void Return(T entity) {
             entity.transform.SetParent(this._host.transform);
             entity.gameObject.SetActive(false);
+
             this._pool.Enqueue(entity);
         }
 

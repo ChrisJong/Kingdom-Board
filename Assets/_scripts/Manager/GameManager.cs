@@ -66,6 +66,9 @@
                 else
                     p.NewTurn(false);
             }
+
+            if(Constants.UnitValues.DEATHCOUNTER != 0)
+                UnitPoolManager.instance.Countdown();
         }
 
         public void CheckRound() {

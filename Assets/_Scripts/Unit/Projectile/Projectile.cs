@@ -48,15 +48,7 @@
             if(otherHasHealth != this._target)
                 return;
             else {
-                Debug.Log(other.name + " Has Been Hit");
-                this._origin.gameObject.GetComponent<UnitBase>().ProjectileCollisionEvent();
-
-                if(this._particleSystem != null) {
-                    this._particleSystem.gameObject.AddComponent<ProjectileParticle>();
-                    this._particleSystem.transform.parent = null;
-                }
-
-                Destroy(this.gameObject);
+                this.FinishCollision();
             }
         }
 
@@ -66,25 +58,6 @@
         #endregion
 
         #region CLASS
-        protected virtual void UpdateProjectile() {
-            if(this._startMoving) {
-                transform.Translate(Vector3.forward * (this._speed * Time.deltaTime), Space.Self);
-                this._distanceCovered = Vector3.Distance(this._transform.position, this._target.position);
-
-                if(this._distanceCovered <= 0.0f + this._distanceOffset) {
-                    Debug.Log(this._target.gameObject.name + " Has Been Hit");
-                    this._origin.gameObject.GetComponent<UnitBase>().ProjectileCollisionEvent();
-
-                    if(this._particleSystem != null) {
-                        this._particleSystem.gameObject.AddComponent<ProjectileParticle>();
-                        this._particleSystem.transform.parent = null;
-                    }
-
-                    Destroy(this.gameObject);
-                }
-            }
-        }
-
         public void SetupTarget(IHasHealth origin, IHasHealth target, Vector3 releasePoint, float speed) {
             //UnityEditor.EditorApplication.isPaused = true;
 
@@ -100,7 +73,7 @@
                 this._targetPosition = target.position;
 
             this._origin = origin;
-            this._target = target;            
+            this._target = target;
             this._speed = speed;
 
             this.transform.position = releasePoint;
@@ -109,6 +82,29 @@
             //this.transform.eulerAngles = new Vector3(0.0f, y);
 
             this._startMoving = true;
+        }
+
+        protected virtual void UpdateProjectile() {
+            if(this._startMoving) {
+                transform.Translate(Vector3.forward * (this._speed * Time.deltaTime), Space.Self);
+                this._distanceCovered = Vector3.Distance(this._transform.position, this._target.position);
+
+                if(this._distanceCovered <= 0.0f + this._distanceOffset) {
+                    this.FinishCollision();
+                }
+            }
+        }
+
+        private void FinishCollision() {
+            Debug.Log(this._target.gameObject.name + " Has Been Hit");
+            this._origin.gameObject.GetComponent<UnitBase>().ProjectileCollisionEvent();
+
+            if(this._particleSystem != null) {
+                this._particleSystem.gameObject.AddComponent<ProjectileParticle>();
+                this._particleSystem.transform.parent = null;
+            }
+
+            Destroy(this.gameObject);
         }
         #endregion
     }

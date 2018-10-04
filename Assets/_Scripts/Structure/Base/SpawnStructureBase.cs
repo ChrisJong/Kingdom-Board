@@ -9,7 +9,7 @@
         #region vARIBALE
         [Header("SPAWN STRUCTURE")]
         [SerializeField] protected float _spawnDistance = 6.0f;
-        protected float _anglePerSpawn = 15.0f;
+        protected float _anglePerSpawn = 15.0f; // Need to delete.
         protected float _lastSpawn;
         protected int _lastSpawnIndex = 0;
 

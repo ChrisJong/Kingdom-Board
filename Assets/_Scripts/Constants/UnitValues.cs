@@ -4,6 +4,9 @@
 
     public static class UnitValues {
 
+        // 0 = Infinite
+        public const int DEATHCOUNTER = 3;
+
         public const float MOVEMENTCOST = 0.25F;
         public const float MELEERANGE = 1.5f;
 

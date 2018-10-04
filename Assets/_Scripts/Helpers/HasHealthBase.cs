@@ -11,21 +11,16 @@
         #region VARIABLE
 
         [Header("ENTITY ATTRIBUTES")]
-        [SerializeField, ReadOnly]
-        private Player _controller;
+        [SerializeField, ReadOnly] private Player _controller;
         protected UIBase _uiComponent;
         public Player controller { get { return this._controller; } set { this._controller = value; } }
         public UIBase uiComponent { get { return this._uiComponent; } set { this._uiComponent = value; } }
 
         [Header("HEALTH")]
-        [SerializeField, Range(0.0f, 500.0f)]
-        protected float _maxHealth = 100.0f;
-        [SerializeField, ReadOnly]
-        protected float _debugCurrentHealth = 0.0f;
-        [SerializeField, Range(0.0f, 500.0f)]
-        protected float _maxEnergy = 0.0f;
-        [SerializeField, ReadOnly]
-        protected float _debugCurrentEnergy = 0.0f;
+        [SerializeField, Range(0.0f, 500.0f)] protected float _maxHealth = 100.0f;
+        [SerializeField, ReadOnly] protected float _debugCurrentHealth = 0.0f;
+        [SerializeField, Range(0.0f, 500.0f)] protected float _maxEnergy = 0.0f;
+        [SerializeField, ReadOnly] protected float _debugCurrentEnergy = 0.0f;
         public float currentHealth { get; set; }
         public float currentEnergy { get; set; }
         public float maxHealth { get { return this._maxHealth; } }
@@ -44,7 +39,7 @@
         protected override void OnEnable() {
             base.OnEnable();
 
-            this.currentHealth = this._maxHealth;
+            this.currentHealth = 5.0f;//this._maxHealth;
             this._debugCurrentHealth = this._maxHealth;
 
             this.currentEnergy = this._maxEnergy;

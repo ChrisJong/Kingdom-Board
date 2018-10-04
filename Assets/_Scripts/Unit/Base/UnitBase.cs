@@ -1,6 +1,8 @@
 ﻿namespace Unit {
 
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
 
     using UnityEngine;
     using UnityEngine.AI;
@@ -15,13 +17,6 @@
     public abstract class UnitBase : HasHealthBase, IUnit {
 
         #region VARIABLE
-        [Header("UNIT - DEBUGGING")]
-        [ReadOnly] public Vector3 debugCurrentPoint = Vector3.zero;
-        [ReadOnly] public Vector3 debugPreviousPOint = Vector3.zero;
-
-        [Header("UNIT - UI")]
-        public LineRenderDrawCircle radiusDrawer = null;
-
         ////////////////
         ///// UNIT /////
         ////////////////
@@ -119,6 +114,19 @@
         [Header("UNIT - ANIMATION")]
         [SerializeField] protected float _endOfAttackClipTime = 0.8f;
         protected Animator _unitAnimator = null;
+
+        [SerializeField] protected GameObject _deathPrefab = null;
+        [SerializeField, Range(1.0f, 50.0f)] protected float _explosionRadius = 10.0f;
+        [SerializeField, Range(1.0f, 1000.0f)] protected float _explosionForce = 300.0f;
+
+        [Header("UNIT - DEBUGGING")]
+        [ReadOnly]
+        public Vector3 debugCurrentPoint = Vector3.zero;
+        [ReadOnly]
+        public Vector3 debugPreviousPOint = Vector3.zero;
+
+        [Header("UNIT - UI")]
+        public LineRenderDrawCircle radiusDrawer = null;
         #endregion
 
         #region UNITY
@@ -391,6 +399,11 @@
         public virtual void Finished() {
             this._unitState = UnitState.FINISH;
         }
+
+        public virtual void UnitDeath() {
+            if(this._deathPrefab != null)
+                this.PlayDeathAnimation();
+        }
         #endregion
 
         //////////////////
@@ -570,8 +583,10 @@
                 if(this.controller != null)
                     this.controller.units.Remove(this);
 
-                UnitPoolManager.instance.Return(this);
                 // NOTE: play any death animations, or add in any death effects onto the scene. 
+                this.UnitDeath();
+
+                UnitPoolManager.instance.Return(this);
 
                 return true;
             } else {
@@ -664,6 +679,34 @@
                 this._unitState = UnitState.ATTACK_ANIMATION;
                 this._unitAnimator.Play("Attack");
             }
+        }
+
+        protected virtual void PlayDeathAnimation() {
+            Transform uTransform = this.transform;
+            Vector3 uPoseition = this.position;
+            Quaternion uRotation = this.rotation;
+
+            // Move the unit below the stage.
+            this.transform.position = new Vector3(uPoseition.x, -100.0f, uPoseition.z);
+
+            // Calculate the position and force for the Physics Force.
+            Vector3 explsioonDirection = (this.lastAttacker.position - uPoseition).normalized;
+            Vector3 explosionPosition = uPoseition + explsioonDirection * this._unitRadius;
+
+            // Zero out the directional Normal y to even out the stage.
+            explsioonDirection.y = 0.0f;
+
+            // Create the death prefab and grab its rigidbody
+            GameObject deathGO = Instantiate(this._deathPrefab, uPoseition, uRotation);
+            deathGO.ColorRenderers(this.controller.color);
+            Rigidbody[] deathRB = deathGO.GetComponentsInChildren<Rigidbody>() as Rigidbody[];
+
+            foreach(Rigidbody rb in deathRB) {
+                rb.AddForceAtPosition(explsioonDirection * this._explosionForce, explosionPosition);
+            }
+
+            UnitPoolManager.instance.AddUnitDeath(deathGO, UnitValues.DEATHCOUNTER);
+
         }
 
         protected virtual void SetupEventAnimation() {
