@@ -22,6 +22,23 @@ ModelImporter:
     100032: upperBody_collider
     100034: upperBodyRightCut_collider
     100036: quiverStrap_collider
+    100038: archer_bowBottom_collider
+    100040: archer_bowTop_collider
+    100042: archer_capeLower_collider
+    100044: archer_leftArm_collider
+    100046: archer_lowerBody_collider
+    100048: archer_lowerBodyLeftCut_collider
+    100050: archer_quiverArrow_01_collider
+    100052: archer_quiverArrow_02_collider
+    100054: archer_quiverArrow_03_collider
+    100056: archer_quiverArrow_04_collider
+    100058: archer_quiverBottom_collider
+    100060: archer_quiverStrap_collider
+    100062: archer_quiverTop_collider
+    100064: archer_rightArm_collider
+    100066: archer_rightFingersHeldArrow_collider
+    100068: archer_upperBody_collider
+    100070: archer_upperBodyRightCut_collider
     400000: //RootNode
     400002: bowBottom_collider
     400004: bowTop_collider
@@ -41,6 +58,23 @@ ModelImporter:
     400032: upperBody_collider
     400034: upperBodyRightCut_collider
     400036: quiverStrap_collider
+    400038: archer_bowBottom_collider
+    400040: archer_bowTop_collider
+    400042: archer_capeLower_collider
+    400044: archer_leftArm_collider
+    400046: archer_lowerBody_collider
+    400048: archer_lowerBodyLeftCut_collider
+    400050: archer_quiverArrow_01_collider
+    400052: archer_quiverArrow_02_collider
+    400054: archer_quiverArrow_03_collider
+    400056: archer_quiverArrow_04_collider
+    400058: archer_quiverBottom_collider
+    400060: archer_quiverStrap_collider
+    400062: archer_quiverTop_collider
+    400064: archer_rightArm_collider
+    400066: archer_rightFingersHeldArrow_collider
+    400068: archer_upperBody_collider
+    400070: archer_upperBodyRightCut_collider
     2100000: lambert1
     2300000: bowBottom_collider
     2300002: bowTop_collider
@@ -60,6 +94,23 @@ ModelImporter:
     2300030: upperBody_collider
     2300032: upperBodyRightCut_collider
     2300034: quiverStrap_collider
+    2300036: archer_bowBottom_collider
+    2300038: archer_bowTop_collider
+    2300040: archer_capeLower_collider
+    2300042: archer_leftArm_collider
+    2300044: archer_lowerBody_collider
+    2300046: archer_lowerBodyLeftCut_collider
+    2300048: archer_quiverArrow_01_collider
+    2300050: archer_quiverArrow_02_collider
+    2300052: archer_quiverArrow_03_collider
+    2300054: archer_quiverArrow_04_collider
+    2300056: archer_quiverBottom_collider
+    2300058: archer_quiverStrap_collider
+    2300060: archer_quiverTop_collider
+    2300062: archer_rightArm_collider
+    2300064: archer_rightFingersHeldArrow_collider
+    2300066: archer_upperBody_collider
+    2300068: archer_upperBodyRightCut_collider
     3300000: bowBottom_collider
     3300002: bowTop_collider
     3300004: capeLower_collider
@@ -78,6 +129,23 @@ ModelImporter:
     3300030: upperBody_collider
     3300032: upperBodyRightCut_collider
     3300034: quiverStrap_collider
+    3300036: archer_bowBottom_collider
+    3300038: archer_bowTop_collider
+    3300040: archer_capeLower_collider
+    3300042: archer_leftArm_collider
+    3300044: archer_lowerBody_collider
+    3300046: archer_lowerBodyLeftCut_collider
+    3300048: archer_quiverArrow_01_collider
+    3300050: archer_quiverArrow_02_collider
+    3300052: archer_quiverArrow_03_collider
+    3300054: archer_quiverArrow_04_collider
+    3300056: archer_quiverBottom_collider
+    3300058: archer_quiverStrap_collider
+    3300060: archer_quiverTop_collider
+    3300062: archer_rightArm_collider
+    3300064: archer_rightFingersHeldArrow_collider
+    3300066: archer_upperBody_collider
+    3300068: archer_upperBodyRightCut_collider
     4300000: upperBody_collider
     4300002: upperBodyRightCut_collider
     4300004: lowerBodyLeftCut_collider
@@ -96,9 +164,26 @@ ModelImporter:
     4300030: quiverArrow_04_collider
     4300032: pedestal_collider
     4300034: quiverStrap_collider
+    4300036: archer_upperBody_collider
+    4300038: archer_upperBodyRightCut_collider
+    4300040: archer_lowerBodyLeftCut_collider
+    4300042: archer_lowerBody_collider
+    4300044: archer_rightArm_collider
+    4300046: archer_rightFingersHeldArrow_collider
+    4300048: archer_leftArm_collider
+    4300050: archer_bowTop_collider
+    4300052: archer_bowBottom_collider
+    4300054: archer_quiverTop_collider
+    4300056: archer_quiverBottom_collider
+    4300058: archer_quiverStrap_collider
+    4300060: archer_capeLower_collider
+    4300062: archer_quiverArrow_01_collider
+    4300064: archer_quiverArrow_02_collider
+    4300066: archer_quiverArrow_03_collider
+    4300068: archer_quiverArrow_04_collider
   externalObjects: {}
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -130,10 +215,10 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    importVisibility: 1
-    importBlendShapes: 1
-    importCameras: 1
-    importLights: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -151,10 +236,10 @@ ModelImporter:
     hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    normalImportMode: 0
-    tangentImportMode: 3
+    normalImportMode: 2
+    tangentImportMode: 2
     normalCalculationMode: 4
-  importAnimation: 1
+  importAnimation: 0
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2

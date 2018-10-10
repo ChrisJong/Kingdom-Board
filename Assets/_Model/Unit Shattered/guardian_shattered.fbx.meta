@@ -1,0 +1,229 @@
+fileFormatVersion: 2
+guid: 74518e36ec0259a4fb3a785a4a0f6b4a
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: heartShard
+    100004: leftArmShieldHeld
+    100006: lowerBody
+    100008: lowerBodyRightCut
+    100010: midBody
+    100012: rightHandSwordHeld
+    100014: rightShoulder
+    100016: shieldCnr
+    100018: shieldTop
+    100020: swordBody
+    100022: swordTip
+    100024: upperBody
+    100026: guardian_heartShard
+    100028: guardian_leftArmShieldHeld
+    100030: guardian_lowerBody
+    100032: guardian_lowerBodyRightCut
+    100034: guardian_midBody
+    100036: guardian_rightHandSwordHeld
+    100038: guardian_rightShoulder
+    100040: guardian_shieldCnr
+    100042: guardian_shieldTop
+    100044: guardian_swordBody
+    100046: guardian_swordTip
+    100048: guardian_upperBody
+    400000: //RootNode
+    400002: heartShard
+    400004: leftArmShieldHeld
+    400006: lowerBody
+    400008: lowerBodyRightCut
+    400010: midBody
+    400012: rightHandSwordHeld
+    400014: rightShoulder
+    400016: shieldCnr
+    400018: shieldTop
+    400020: swordBody
+    400022: swordTip
+    400024: upperBody
+    400026: guardian_heartShard
+    400028: guardian_leftArmShieldHeld
+    400030: guardian_lowerBody
+    400032: guardian_lowerBodyRightCut
+    400034: guardian_midBody
+    400036: guardian_rightHandSwordHeld
+    400038: guardian_rightShoulder
+    400040: guardian_shieldCnr
+    400042: guardian_shieldTop
+    400044: guardian_swordBody
+    400046: guardian_swordTip
+    400048: guardian_upperBody
+    2100000: lambert1
+    2100002: shattered_material
+    2100004: guardian_accessories_material
+    2100006: guardian_base_material
+    2300000: heartShard
+    2300002: leftArmShieldHeld
+    2300004: lowerBody
+    2300006: lowerBodyRightCut
+    2300008: midBody
+    2300010: rightHandSwordHeld
+    2300012: rightShoulder
+    2300014: shieldCnr
+    2300016: shieldTop
+    2300018: swordBody
+    2300020: swordTip
+    2300022: upperBody
+    2300024: guardian_heartShard
+    2300026: guardian_leftArmShieldHeld
+    2300028: guardian_lowerBody
+    2300030: guardian_lowerBodyRightCut
+    2300032: guardian_midBody
+    2300034: guardian_rightHandSwordHeld
+    2300036: guardian_rightShoulder
+    2300038: guardian_shieldCnr
+    2300040: guardian_shieldTop
+    2300042: guardian_swordBody
+    2300044: guardian_swordTip
+    2300046: guardian_upperBody
+    3300000: heartShard
+    3300002: leftArmShieldHeld
+    3300004: lowerBody
+    3300006: lowerBodyRightCut
+    3300008: midBody
+    3300010: rightHandSwordHeld
+    3300012: rightShoulder
+    3300014: shieldCnr
+    3300016: shieldTop
+    3300018: swordBody
+    3300020: swordTip
+    3300022: upperBody
+    3300024: guardian_heartShard
+    3300026: guardian_leftArmShieldHeld
+    3300028: guardian_lowerBody
+    3300030: guardian_lowerBodyRightCut
+    3300032: guardian_midBody
+    3300034: guardian_rightHandSwordHeld
+    3300036: guardian_rightShoulder
+    3300038: guardian_shieldCnr
+    3300040: guardian_shieldTop
+    3300042: guardian_swordBody
+    3300044: guardian_swordTip
+    3300046: guardian_upperBody
+    4300000: upperBody
+    4300002: rightShoulder
+    4300004: midBody
+    4300006: heartShard
+    4300008: lowerBodyRightCut
+    4300010: lowerBody
+    4300012: rightHandSwordHeld
+    4300014: swordTip
+    4300016: swordBody
+    4300018: leftArmShieldHeld
+    4300020: shieldTop
+    4300022: shieldCnr
+    4300024: guardian_upperBody
+    4300026: guardian_rightShoulder
+    4300028: guardian_midBody
+    4300030: guardian_heartShard
+    4300032: guardian_lowerBodyRightCut
+    4300034: guardian_lowerBody
+    4300036: guardian_rightHandSwordHeld
+    4300038: guardian_swordTip
+    4300040: guardian_swordBody
+    4300042: guardian_leftArmShieldHeld
+    4300044: guardian_shieldTop
+    4300046: guardian_shieldCnr
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: guardian_accessories_material
+    second: {fileID: 2100000, guid: 19179c434de6e864296d218b98cdf209, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: guardian_base_material
+    second: {fileID: 2100000, guid: 5ca88d8b8d44bc64f9627fa79334da67, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shattered_material
+    second: {fileID: 2100000, guid: bfead15b473f664478376ad070605ca0, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

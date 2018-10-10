@@ -52,6 +52,23 @@ ModelImporter:
     100092: upperBody_collider
     100094: upperBodyRightCut
     100096: upperBodyRightCut_collider
+    100098: archer_bowBottom
+    100100: archer_bowTop
+    100102: archer_capeLower
+    100104: archer_leftArm
+    100106: archer_lowerBody
+    100108: archer_lowerBodyLeftCut
+    100110: archer_quiverArrow_01
+    100112: archer_quiverArrow_02
+    100114: archer_quiverArrow_03
+    100116: archer_quiverArrow_04
+    100118: archer_quiverBottom
+    100120: archer_quiverStrap
+    100122: archer_quiverTop
+    100124: archer_rightArm
+    100126: archer_rightFingersHeldArrow
+    100128: archer_upperBody
+    100130: archer_upperBodyRightCut
     400000: //RootNode
     400002: arrow_notched
     400004: bow
@@ -101,7 +118,27 @@ ModelImporter:
     400092: upperBody_collider
     400094: upperBodyRightCut
     400096: upperBodyRightCut_collider
+    400098: archer_bowBottom
+    400100: archer_bowTop
+    400102: archer_capeLower
+    400104: archer_leftArm
+    400106: archer_lowerBody
+    400108: archer_lowerBodyLeftCut
+    400110: archer_quiverArrow_01
+    400112: archer_quiverArrow_02
+    400114: archer_quiverArrow_03
+    400116: archer_quiverArrow_04
+    400118: archer_quiverBottom
+    400120: archer_quiverStrap
+    400122: archer_quiverTop
+    400124: archer_rightArm
+    400126: archer_rightFingersHeldArrow
+    400128: archer_upperBody
+    400130: archer_upperBodyRightCut
     2100000: lambert1
+    2100002: shattered_material
+    2100004: archer_base_material
+    2100006: archer_accessories_material
     2300000: arrow_notched
     2300002: bow
     2300004: cape_lower_cut
@@ -148,6 +185,23 @@ ModelImporter:
     2300086: upperBody_collider
     2300088: upperBodyRightCut
     2300090: upperBodyRightCut_collider
+    2300092: archer_bowBottom
+    2300094: archer_bowTop
+    2300096: archer_capeLower
+    2300098: archer_leftArm
+    2300100: archer_lowerBody
+    2300102: archer_lowerBodyLeftCut
+    2300104: archer_quiverArrow_01
+    2300106: archer_quiverArrow_02
+    2300108: archer_quiverArrow_03
+    2300110: archer_quiverArrow_04
+    2300112: archer_quiverBottom
+    2300114: archer_quiverStrap
+    2300116: archer_quiverTop
+    2300118: archer_rightArm
+    2300120: archer_rightFingersHeldArrow
+    2300122: archer_upperBody
+    2300124: archer_upperBodyRightCut
     3300000: arrow_notched
     3300002: bow
     3300004: cape_lower_cut
@@ -194,6 +248,23 @@ ModelImporter:
     3300086: upperBody_collider
     3300088: upperBodyRightCut
     3300090: upperBodyRightCut_collider
+    3300092: archer_bowBottom
+    3300094: archer_bowTop
+    3300096: archer_capeLower
+    3300098: archer_leftArm
+    3300100: archer_lowerBody
+    3300102: archer_lowerBodyLeftCut
+    3300104: archer_quiverArrow_01
+    3300106: archer_quiverArrow_02
+    3300108: archer_quiverArrow_03
+    3300110: archer_quiverArrow_04
+    3300112: archer_quiverBottom
+    3300114: archer_quiverStrap
+    3300116: archer_quiverTop
+    3300118: archer_rightArm
+    3300120: archer_rightFingersHeldArrow
+    3300122: archer_upperBody
+    3300124: archer_upperBodyRightCut
     4300000: pedestal
     4300002: arrow_notched
     4300004: l_arm_cut
@@ -240,10 +311,42 @@ ModelImporter:
     4300086: quiverArrow_02_collider
     4300088: quiverArrow_03_collider
     4300090: quiverArrow_04_collider
+    4300092: archer_upperBody
+    4300094: archer_upperBodyRightCut
+    4300096: archer_lowerBodyLeftCut
+    4300098: archer_lowerBody
+    4300100: archer_rightArm
+    4300102: archer_rightFingersHeldArrow
+    4300104: archer_leftArm
+    4300106: archer_bowTop
+    4300108: archer_bowBottom
+    4300110: archer_quiverArrow_01
+    4300112: archer_quiverArrow_02
+    4300114: archer_quiverArrow_03
+    4300116: archer_quiverArrow_04
+    4300118: archer_quiverTop
+    4300120: archer_quiverBottom
+    4300122: archer_quiverStrap
+    4300124: archer_capeLower
     2186277476908879412: ImportLogs
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: archer_accessories_material
+    second: {fileID: 2100000, guid: c09a578e7b08c9042a5dc1f522c61612, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: archer_base_material
+    second: {fileID: 2100000, guid: 04ed30458624eef43b7833eb93e8552a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shattered_material
+    second: {fileID: 2100000, guid: bfead15b473f664478376ad070605ca0, type: 2}
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1

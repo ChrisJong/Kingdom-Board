@@ -9,6 +9,7 @@ public class player_dan : MonoBehaviour {
     public int playerID;
 
     [SerializeField] private Camera playerCam;
+    [SerializeField] private LayerMask unitsLayerMask;
     private cursor_dan cursorController;
     private LineRenderer lineRenderer;
     [SerializeField] private Transform xLocator;
@@ -21,9 +22,24 @@ public class player_dan : MonoBehaviour {
 
     private void Update()
     {
-        SeeWhatImHovering();
+        //SeeWhatImHovering();
 
         if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, unitsLayerMask))
+            {
+                shatter_test unitToShatter = hit.transform.GetComponent<shatter_test>();
+                if (unitToShatter)
+                {
+                    unitToShatter.ShatterUnit(hit.point);
+                }
+            }
+        }
+
+        /*if (Input.GetMouseButtonDown(0))
         {
             DeselectUnit();
             TrySelectUnit();
@@ -32,7 +48,7 @@ public class player_dan : MonoBehaviour {
         if (Input.GetMouseButtonDown(1))
         {
             SeeWhatIClicked();
-        }
+        }*/
     }
 
     private void SeeWhatImHovering()

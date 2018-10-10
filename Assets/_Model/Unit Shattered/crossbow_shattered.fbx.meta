@@ -1,0 +1,164 @@
+fileFormatVersion: 2
+guid: 9bccf5099804d4a43af417fb36452afe
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: crossbow_backBeltQuiver
+    100002: crossbow_head
+    100004: crossbow_heartShard
+    100006: crossbow_leftArmFrontCrossbow
+    100008: crossbow_leftShoulder
+    100010: crossbow_lowerBack
+    100012: crossbow_lowerBody
+    100014: crossbow_midBodyLeftCut
+    100016: crossbow_midBodyRightCut
+    100018: crossbow_rightHandBackCrossBow
+    100020: crossbow_rightShoulder
+    100022: //RootNode
+    400000: crossbow_backBeltQuiver
+    400002: crossbow_head
+    400004: crossbow_heartShard
+    400006: crossbow_leftArmFrontCrossbow
+    400008: crossbow_leftShoulder
+    400010: crossbow_lowerBack
+    400012: crossbow_lowerBody
+    400014: crossbow_midBodyLeftCut
+    400016: crossbow_midBodyRightCut
+    400018: crossbow_rightHandBackCrossBow
+    400020: crossbow_rightShoulder
+    400022: //RootNode
+    2100000: lambert1
+    2100002: shattered_material
+    2100004: crossbow_base_material
+    2100006: crossbow_accessories_material
+    2300000: crossbow_backBeltQuiver
+    2300002: crossbow_head
+    2300004: crossbow_heartShard
+    2300006: crossbow_leftArmFrontCrossbow
+    2300008: crossbow_leftShoulder
+    2300010: crossbow_lowerBack
+    2300012: crossbow_lowerBody
+    2300014: crossbow_midBodyLeftCut
+    2300016: crossbow_midBodyRightCut
+    2300018: crossbow_rightHandBackCrossBow
+    2300020: crossbow_rightShoulder
+    3300000: crossbow_backBeltQuiver
+    3300002: crossbow_head
+    3300004: crossbow_heartShard
+    3300006: crossbow_leftArmFrontCrossbow
+    3300008: crossbow_leftShoulder
+    3300010: crossbow_lowerBack
+    3300012: crossbow_lowerBody
+    3300014: crossbow_midBodyLeftCut
+    3300016: crossbow_midBodyRightCut
+    3300018: crossbow_rightHandBackCrossBow
+    3300020: crossbow_rightShoulder
+    4300000: crossbow_head
+    4300002: crossbow_rightShoulder
+    4300004: crossbow_leftArmFrontCrossbow
+    4300006: crossbow_rightHandBackCrossBow
+    4300008: crossbow_leftShoulder
+    4300010: crossbow_heartShard
+    4300012: crossbow_midBodyRightCut
+    4300014: crossbow_midBodyLeftCut
+    4300016: crossbow_lowerBack
+    4300018: crossbow_lowerBody
+    4300020: crossbow_backBeltQuiver
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: crossbow_accessories_material
+    second: {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: crossbow_base_material
+    second: {fileID: 2100000, guid: 8676df77b7b81ff47bc7fcb21f902453, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shattered_material
+    second: {fileID: 2100000, guid: bfead15b473f664478376ad070605ca0, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

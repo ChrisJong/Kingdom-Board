@@ -6,21 +6,15 @@ public class shatter_test : MonoBehaviour {
 
     [SerializeField] private GameObject[] unitGfx;
     [SerializeField] private GameObject shatteredPrefab;
-    [SerializeField] private Camera playerCam;
-    [SerializeField] private LayerMask unitLayer;
 
     private GameObject shatteredObj;
-    private bool shattered;
+    private bool shattered = false;
 
     public float explosiveRadius;
     public float explosiveForce;
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !shattered)
-        {
-            ShatterUnit();
-        }
 
         if (Input.GetKeyDown(KeyCode.Space) && shattered)
         {
@@ -28,15 +22,12 @@ public class shatter_test : MonoBehaviour {
         }
     }
 
-    private void ShatterUnit()
+    public void ShatterUnit(Vector3 _explosivePos)
     {
-        RaycastHit hit;
-        Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, unitLayer))
+        if (!shattered)
         {
             CreateShatteredUnit();
-            CreateExplosionForce(hit.point);
+            CreateExplosionForce(_explosivePos);
         }
     }
 

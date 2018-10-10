@@ -1,14 +1,52 @@
 fileFormatVersion: 2
-guid: 38aa0e322d2a9204cad540aef42e7bd8
+guid: 76baee2841e00aa4db0745dbb5d5b732
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
+    100000: cleric_leftArm_collider
+    100002: cleric_lowerBody_collider
+    100004: cleric_midBody_collider
+    100006: cleric_pedestal_collider
+    100008: cleric_rightArm_collider
+    100010: cleric_rightHand_collider
+    100012: //RootNode
+    100014: cleric_upperBody_collider
+    100016: cleric_upperBodyLeftCut_collider
+    400000: cleric_leftArm_collider
+    400002: cleric_lowerBody_collider
+    400004: cleric_midBody_collider
+    400006: cleric_pedestal_collider
+    400008: cleric_rightArm_collider
+    400010: cleric_rightHand_collider
+    400012: //RootNode
+    400014: cleric_upperBody_collider
+    400016: cleric_upperBodyLeftCut_collider
     2100000: lambert1
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: pCylinder1
+    2100002: lambert7
+    2300000: cleric_leftArm_collider
+    2300002: cleric_lowerBody_collider
+    2300004: cleric_midBody_collider
+    2300006: cleric_pedestal_collider
+    2300008: cleric_rightArm_collider
+    2300010: cleric_rightHand_collider
+    2300012: cleric_upperBody_collider
+    2300014: cleric_upperBodyLeftCut_collider
+    3300000: cleric_leftArm_collider
+    3300002: cleric_lowerBody_collider
+    3300004: cleric_midBody_collider
+    3300006: cleric_pedestal_collider
+    3300008: cleric_rightArm_collider
+    3300010: cleric_rightHand_collider
+    3300012: cleric_upperBody_collider
+    3300014: cleric_upperBodyLeftCut_collider
+    4300000: cleric_upperBody_collider
+    4300002: cleric_upperBodyLeftCut_collider
+    4300004: cleric_midBody_collider
+    4300006: cleric_lowerBody_collider
+    4300008: cleric_rightArm_collider
+    4300010: cleric_rightHand_collider
+    4300012: cleric_leftArm_collider
+    4300014: cleric_pedestal_collider
   externalObjects: {}
   materials:
     importMaterials: 0

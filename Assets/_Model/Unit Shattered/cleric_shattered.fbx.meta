@@ -1,0 +1,149 @@
+fileFormatVersion: 2
+guid: 25f1786e69d2f854d97f6b8ca509aa47
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: cleric_leftArm
+    100002: cleric_lowerBody
+    100004: cleric_midBody
+    100006: cleric_pedestal
+    100008: cleric_rightArm
+    100010: cleric_rightHand
+    100012: //RootNode
+    100014: cleric_upperBody
+    100016: cleric_upperBodyLeftCut
+    400000: cleric_leftArm
+    400002: cleric_lowerBody
+    400004: cleric_midBody
+    400006: cleric_pedestal
+    400008: cleric_rightArm
+    400010: cleric_rightHand
+    400012: //RootNode
+    400014: cleric_upperBody
+    400016: cleric_upperBodyLeftCut
+    2100000: lambert1
+    2100002: cleric_accessories_material
+    2100004: cleric_base_material
+    2100006: shattered_material
+    2300000: cleric_leftArm
+    2300002: cleric_lowerBody
+    2300004: cleric_midBody
+    2300006: cleric_pedestal
+    2300008: cleric_rightArm
+    2300010: cleric_rightHand
+    2300012: cleric_upperBody
+    2300014: cleric_upperBodyLeftCut
+    3300000: cleric_leftArm
+    3300002: cleric_lowerBody
+    3300004: cleric_midBody
+    3300006: cleric_pedestal
+    3300008: cleric_rightArm
+    3300010: cleric_rightHand
+    3300012: cleric_upperBody
+    3300014: cleric_upperBodyLeftCut
+    4300000: cleric_upperBody
+    4300002: cleric_upperBodyLeftCut
+    4300004: cleric_midBody
+    4300006: cleric_lowerBody
+    4300008: cleric_rightArm
+    4300010: cleric_rightHand
+    4300012: cleric_leftArm
+    4300014: cleric_pedestal
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cleric_accessories_material
+    second: {fileID: 2100000, guid: 873f693cb66fea449ba336ec8742d9f3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cleric_base_material
+    second: {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shattered_material
+    second: {fileID: 2100000, guid: bfead15b473f664478376ad070605ca0, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

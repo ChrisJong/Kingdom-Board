@@ -1,0 +1,209 @@
+fileFormatVersion: 2
+guid: 024454799dc89a840b6a4de35319de07
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: bowString
+    100002: bowTop
+    100004: frontBody
+    100006: leftFlank
+    100008: //RootNode
+    100010: lowerBodyBackCut
+    100012: lowerBodyRightCut
+    100014: quiver
+    100016: rightArm
+    100018: rightHandHeldBow
+    100020: upperBody
+    100022: longbow_bowString
+    100024: longbow_bowTop
+    100026: longbow_frontBody
+    100028: longbow_leftFlank
+    100030: longbow_lowerBodyBackCut
+    100032: longbow_lowerBodyRightCut
+    100034: longbow_quiver
+    100036: longbow_rightArm
+    100038: longbow_rightHandHeldBow
+    100040: longbow_upperBody
+    400000: bowString
+    400002: bowTop
+    400004: frontBody
+    400006: leftFlank
+    400008: //RootNode
+    400010: lowerBodyBackCut
+    400012: lowerBodyRightCut
+    400014: quiver
+    400016: rightArm
+    400018: rightHandHeldBow
+    400020: upperBody
+    400022: longbow_bowString
+    400024: longbow_bowTop
+    400026: longbow_frontBody
+    400028: longbow_leftFlank
+    400030: longbow_lowerBodyBackCut
+    400032: longbow_lowerBodyRightCut
+    400034: longbow_quiver
+    400036: longbow_rightArm
+    400038: longbow_rightHandHeldBow
+    400040: longbow_upperBody
+    2100000: lambert1
+    2100002: shattered_material
+    2100004: longbow_base_material
+    2100006: longbow_accessories_material
+    2300000: bowString
+    2300002: bowTop
+    2300004: frontBody
+    2300006: leftFlank
+    2300008: lowerBodyBackCut
+    2300010: lowerBodyRightCut
+    2300012: quiver
+    2300014: rightArm
+    2300016: rightHandHeldBow
+    2300018: upperBody
+    2300020: longbow_bowString
+    2300022: longbow_bowTop
+    2300024: longbow_frontBody
+    2300026: longbow_leftFlank
+    2300028: longbow_lowerBodyBackCut
+    2300030: longbow_lowerBodyRightCut
+    2300032: longbow_quiver
+    2300034: longbow_rightArm
+    2300036: longbow_rightHandHeldBow
+    2300038: longbow_upperBody
+    3300000: bowString
+    3300002: bowTop
+    3300004: frontBody
+    3300006: leftFlank
+    3300008: lowerBodyBackCut
+    3300010: lowerBodyRightCut
+    3300012: quiver
+    3300014: rightArm
+    3300016: rightHandHeldBow
+    3300018: upperBody
+    3300020: longbow_bowString
+    3300022: longbow_bowTop
+    3300024: longbow_frontBody
+    3300026: longbow_leftFlank
+    3300028: longbow_lowerBodyBackCut
+    3300030: longbow_lowerBodyRightCut
+    3300032: longbow_quiver
+    3300034: longbow_rightArm
+    3300036: longbow_rightHandHeldBow
+    3300038: longbow_upperBody
+    4300000: upperBody
+    4300002: rightArm
+    4300004: leftFlank
+    4300006: lowerBodyBackCut
+    4300008: lowerBodyRightCut
+    4300010: frontBody
+    4300012: rightHandHeldBow
+    4300014: bowTop
+    4300016: bowString
+    4300018: quiver
+    4300020: longbow_upperBody
+    4300022: longbow_rightArm
+    4300024: longbow_leftFlank
+    4300026: longbow_lowerBodyBackCut
+    4300028: longbow_lowerBodyRightCut
+    4300030: longbow_frontBody
+    4300032: longbow_rightHandHeldBow
+    4300034: longbow_bowTop
+    4300036: longbow_bowString
+    4300038: longbow_quiver
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: longbow_accessories_material
+    second: {fileID: 2100000, guid: 59ab3a8e1202aab46ac50bcaf122153a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: longbow_base_material
+    second: {fileID: 2100000, guid: 9984d6a4db1f4e942b06b0a2d976c4cd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shattered_material
+    second: {fileID: 2100000, guid: bfead15b473f664478376ad070605ca0, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 2
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
