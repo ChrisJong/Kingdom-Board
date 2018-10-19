@@ -28,6 +28,7 @@ public class ResearchCard_dan : MonoBehaviour, IPointerDownHandler {
     private bool isSpawning = true;
     private bool isRotating = false;
     private bool isFading = false;
+    private bool isMoving = false;
 
 
     #region Functionality
@@ -61,7 +62,7 @@ public class ResearchCard_dan : MonoBehaviour, IPointerDownHandler {
         researchUI = ResearchUI_dan.instance;
     }
 
-    public void SetUpCard(int _cardID, int _classID)
+    public void SetUpCard(int _cardID, int _classID, bool _isInitialCard)
     {
         cardID = _cardID;
         classType = _classID;
@@ -82,7 +83,10 @@ public class ResearchCard_dan : MonoBehaviour, IPointerDownHandler {
 
         name = "Card " + cardID + ": " + classString;
 
-        PlaySpawnCardAnimation();
+        if (_isInitialCard)
+        {
+            PlaySpawnCardAnimation();
+        }
     }
 
     public void ChangeToBasicUnitCard(int _cardID, bool _isBasicUnit)
@@ -186,6 +190,10 @@ public class ResearchCard_dan : MonoBehaviour, IPointerDownHandler {
         name = "Card " + cardID + ": " + classString + upgradeString;
     }
 
+    #endregion
+
+    #region Return Information
+
     public int ClassType()
     {
         return classType;
@@ -208,7 +216,7 @@ public class ResearchCard_dan : MonoBehaviour, IPointerDownHandler {
 
     #endregion
 
-    #region Animations
+    #region Animations & Triggers
 
     public void PlayClickCardAnimation()
     {
@@ -257,7 +265,7 @@ public class ResearchCard_dan : MonoBehaviour, IPointerDownHandler {
 
     #endregion
 
-    #region Generated Animations
+    #region Scripted Animations
 
     private void FlipXScale()
     {
@@ -296,6 +304,11 @@ public class ResearchCard_dan : MonoBehaviour, IPointerDownHandler {
 
     public IEnumerator BeginCardRotation()
     {
+        if (isRotating)
+        {
+            yield break;
+        }
+
         isRotating = true;
 
         while (currentY < 90)
@@ -348,6 +361,13 @@ public class ResearchCard_dan : MonoBehaviour, IPointerDownHandler {
 
     public IEnumerator MoveCardToPosition(float _xToMoveTo)
     {
+        if (isMoving)
+        {
+            yield break;
+        }
+
+        isMoving = true;
+
         Vector3 startPos = transform.position;
 
         float distanceRemaining = Mathf.Abs(startPos.x - _xToMoveTo);
@@ -375,7 +395,21 @@ public class ResearchCard_dan : MonoBehaviour, IPointerDownHandler {
             yield return new WaitForEndOfFrame();
         }
 
+        isMoving = false;
+
+        researchUI.CardFinishedMoving(cardID);
+
         yield return null;
+    }
+
+    public bool IsMoving()
+    {
+        return isMoving;
+    }
+
+    public void DestroyCard()
+    {
+        Destroy(gameObject);
     }
 
     #endregion
