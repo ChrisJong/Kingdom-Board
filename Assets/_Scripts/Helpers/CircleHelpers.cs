@@ -6,7 +6,7 @@
 
     public static class CircleHelpers {
 
-        public static Vector3 GetPointOnCircle(Vector3 position, float radius, float anglePerSpawn, int index) {
+        public static Vector3 GetPointOnCircle(Vector3 position, float radius, float anglePerSpawn, uint index) {
             var max = 360f / anglePerSpawn;
             var ang = (index % max) * anglePerSpawn;
 

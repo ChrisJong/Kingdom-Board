@@ -3967,9 +3967,6 @@ MonoBehaviour:
   _debugCurrentHealth: 0
   _maxEnergy: 0
   _debugCurrentEnergy: 0
-  debugCurrentPoint: {x: 0, y: 0, z: 0}
-  debugPreviousPOint: {x: 0, y: 0, z: 0}
-  radiusDrawer: {fileID: 114741620110894288}
   _unitType: 9
   _unitState: 0
   _unitRadius: 0
@@ -3994,6 +3991,13 @@ MonoBehaviour:
   _weaknessMultiplier: 2
   _canAttack: 1
   _endOfAttackClipTime: 0.714
+  _deathPrefab: {fileID: 1244811562548892, guid: de604bc86bc7ea24dae04cd7b3e93f8e,
+    type: 2}
+  _explosionRadius: 10
+  _explosionForce: 300
+  debugCurrentPoint: {x: 0, y: 0, z: 0}
+  debugPreviousPOint: {x: 0, y: 0, z: 0}
+  radiusDrawer: {fileID: 114741620110894288}
 --- !u!114 &114245433306442484
 MonoBehaviour:
   m_ObjectHideFlags: 1

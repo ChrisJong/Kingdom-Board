@@ -48,8 +48,12 @@
             if(this._collider == null)
                 Debug.LogWarning("Structure Needs a Collider to Carve a path around the navmesh");
 
-            this._colliderBounds = this._collider.bounds;
+            
             this._navMeshObstacle.carving = true;
+        }
+
+        public virtual void Init() {
+            this._colliderBounds = this._collider.bounds;
             this._collider.enabled = false;
         }
 

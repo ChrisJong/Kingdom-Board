@@ -3,8 +3,8 @@
     public enum StructureState {
         NONE = 0,
         ANY = ~0,
-        SPAWN = 1,
-        IDLE,
+        IDLE = 1,
+        SPAWN,
         STANDBY_TARGET,
         STANDBY_POINT,
         FINISHED,

@@ -104,6 +104,27 @@
             this.DrawRadius(Color.white, radius, width, segments);
         }
 
+        public void DrawRectangle(Color color, Bounds bound, float distance, float width = 0.01f) {
+            this.lineColour = color;
+            this.segments = 4;
+
+            Vector3 min = bound.min;
+            Vector3 max = bound.max;
+            Vector3[] positions = new Vector3[4];
+
+            // Bottom Left
+            positions[0] = new Vector3(min.x - distance, min.y, min.z - distance);
+            // Bottom Right
+            positions[1] = new Vector3(max.x + distance, min.y, min.z - distance);
+            // Top Right
+            positions[2] = new Vector3(max.x + distance, min.y, max.z + distance);
+            // Top Left
+            positions[3] = new Vector3(min.x - distance, min.y, max.z + distance);
+
+            this.LineRender.SetPositions(positions);
+
+        }
+
         public void UpdateRadius(float radius = 10.0f) {
             this.xRadius = radius;
             this.yRadius = radius;

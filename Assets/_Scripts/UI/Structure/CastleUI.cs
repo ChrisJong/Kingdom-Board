@@ -1,5 +1,8 @@
 ﻿namespace UI {
 
+    using System.Collections;
+    using System.Collections.Generic;
+
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -10,191 +13,222 @@
     public class CastleUI : ScreenSpaceUI {
 
         #region VARIABLE
-        public Castle castle;
+        [SerializeField] private bool _spawnListOpen = false;
+        [SerializeField] private bool _spawnListToggle = false;
 
-        public Text textInfo;
+        [SerializeField] private RectTransform _tSpawnQueue;
+        [SerializeField] private RectTransform _tSpawnList;
 
-        public Button btnSpawn;
-        public Button btnBack;
+        [SerializeField] private GameObject _btnQueue;
 
-        public Button _btnSpawnArcher;
-        public Button _btnSpawnCrossbow;
-        public Button _btnSpawnLongbow;
+        [SerializeField] private Button _btnOpenList;
+        [SerializeField] private Button _btnCloseList;
 
-        public Button _btnSpawnMage;
-        public Button _btnSpawnCleric;
-        public Button _btnSpawnWizard;
+        [SerializeField] private Button _btnArcher;
+        [SerializeField] private Button _btnLongbow;
+        [SerializeField] private Button _btnCrossbow;
 
-        public Button _btnSpawnWarrior;
-        public Button _btnSpawnKnight;
-        public Button _btnSpawnGuardian;
+        [SerializeField] private Button _btnWarrior;
+        [SerializeField] private Button _btnKnight;
+        [SerializeField] private Button _btnGuardian;
 
-        private GameObject _spawnParent;
+        [SerializeField] private Button _btnMage;
+        [SerializeField] private Button _btnWizard;
+        [SerializeField] private Button _btnCleric;
 
-        //private List<Button> _listSpawns;
+        [SerializeField] private Castle _castle;
 
-        private bool _showSpawn = false;
-        private bool _showDefault = true;
+        [SerializeField] private List<UnitQueueButton> _queueList;
+
+        [SerializeField] private UnitQueueButton _lastQueueButton = null;
+        [SerializeField] private UnitQueueButton _toSpawn = null;
+
+        [Header("Castle UI - Queue Padding")]
+        [SerializeField] private float _paddingLeft = 5.0f;
+        [SerializeField] private float _paddingTop = 5.0f; 
+        [SerializeField] private float _paddingBetween = 35.0f;
+
+        public UnitQueueButton lastQueueButton { get { return this._lastQueueButton; } }
+        public UnitQueueButton toSpawn { get { return this._toSpawn; } }
         #endregion
 
         #region UNITY
         protected override void Awake() {
-            if(this.castle == null) {
-                this.castle = this.transform.GetComponent<Castle>();
-                this.controller = this.castle.controller;
+            if(this._castle == null) {
+                this._castle = this.transform.GetComponent<Castle>();
+                this.controller = this._castle.controller;
             }
 
-            this.FindUI(this.transform, UIValues.Structure.CASTLEUI);
-            base.Awake();
+            //this.FindUI(this.transform, UIValues.Structure.CASTLEUI);
+
+            if(this.tUI != null)
+                this._goUI = this.tUI.gameObject;
+
+            //base.Awake();
 
             this.Init();
-            
+
             this.ResetUI();
         }
-
         #endregion
 
         #region CLASS
         private void Init() {
-            if(this.btnSpawn == null)
-                this.btnSpawn = this._tSelected.Find(UIValues.Structure.SPAWNBUTTON).GetComponent<Button>();
+            this._btnOpenList.onClick.AddListener(this.OpenSpawnLlsT);
+            this._btnCloseList.onClick.AddListener(this.CloseSpawnList);
 
-            if(this._tSelected.Find(UIValues.Structure.SPAWNGROUP) != null)
-                this._spawnParent = this._tSelected.Find(UIValues.Structure.SPAWNGROUP).gameObject;
+            this._btnArcher.onClick.AddListener(delegate { this.AddToQueue(UnitType.ARCHER, this._btnArcher.image.sprite); });
+            this._btnLongbow.onClick.AddListener(delegate { this.AddToQueue(UnitType.LONGBOW, this._btnLongbow.image.sprite); });
+            this._btnCrossbow.onClick.AddListener(delegate { this.AddToQueue(UnitType.CROSSBOW, this._btnCrossbow.image.sprite); });
 
-            if(this.btnBack == null)
-                this.btnBack = this.FindButton(this._spawnParent.transform, UIValues.Structure.BACKBUTTON);
+            this._btnWarrior.onClick.AddListener(delegate { this.AddToQueue(UnitType.WARRIOR, this._btnWarrior.image.sprite); });
+            this._btnGuardian.onClick.AddListener(delegate { this.AddToQueue(UnitType.GUARDIAN, this._btnGuardian.image.sprite); });
+            this._btnKnight.onClick.AddListener(delegate { this.AddToQueue(UnitType.KNIGHT, this._btnKnight.image.sprite); });
 
-            if(this._btnSpawnMage == null)
-                this._btnSpawnMage = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNMAGE);
-
-            if(this._btnSpawnCleric == null)
-                this._btnSpawnCleric = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNCLERIC);
-
-            if(this._btnSpawnWizard == null)
-                this._btnSpawnWizard = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNWIZARD);
-
-            if(this._btnSpawnArcher == null)
-                this._btnSpawnArcher = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNARCHER);
-
-            if(this._btnSpawnCrossbow == null)
-                this._btnSpawnCrossbow = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNCROSSBOW);
-
-            if(this._btnSpawnLongbow == null)
-                this._btnSpawnLongbow = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNLONGBOW);
-
-            if(this._btnSpawnWarrior == null)
-                this._btnSpawnWarrior = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNWARRIOR);
-
-            if(this._btnSpawnKnight == null)
-                this._btnSpawnKnight = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNKNIGHT);
-
-            if(this._btnSpawnGuardian == null)
-                this._btnSpawnGuardian = this.FindButton(this._spawnParent.transform, UIValues.Structure.SPAWNGUARdIAN);
-
-            this.btnSpawn.onClick.AddListener(this.ShowSpawn);
-            this.btnBack.onClick.AddListener(this.GoBack);
-
-            this._btnSpawnArcher.onClick.AddListener(delegate { this.AddToQueue(UnitType.ARCHER); });
-            this._btnSpawnCrossbow.onClick.AddListener(delegate { this.AddToQueue(UnitType.CROSSBOW); });
-            this._btnSpawnLongbow.onClick.AddListener(delegate { this.AddToQueue(UnitType.LONGBOW); });
-
-            this._btnSpawnMage.onClick.AddListener(delegate { this.AddToQueue(UnitType.MAGE); });
-            this._btnSpawnCleric.onClick.AddListener(delegate { this.AddToQueue(UnitType.CLERIC); });
-            this._btnSpawnWizard.onClick.AddListener(delegate { this.AddToQueue(UnitType.WIZARD); });
-
-            this._btnSpawnWarrior.onClick.AddListener(delegate { this.AddToQueue(UnitType.WARRIOR); });
-            this._btnSpawnKnight.onClick.AddListener(delegate { this.AddToQueue(UnitType.KNIGHT); });
-            this._btnSpawnGuardian.onClick.AddListener(delegate { this.AddToQueue(UnitType.GUARDIAN); });
-
-            if(this.textInfo == null)
-                this.textInfo = this._tHover.Find("Info_TEXT").GetComponent<Text>();
+            this._btnMage.onClick.AddListener(delegate { this.AddToQueue(UnitType.MAGE, this._btnMage.image.sprite); });
+            this._btnWizard.onClick.AddListener(delegate { this.AddToQueue(UnitType.WIZARD, this._btnWizard.image.sprite); });
+            this._btnCleric.onClick.AddListener(delegate { this.AddToQueue(UnitType.CLERIC, this._btnCleric.image.sprite); });
         }
 
         public override void UpdateUI() {
             base.UpdateUI();
-
-            this.UpdateInfo();
         }
 
         public override void Display() {
             base.Display();
-
-            if(this._goSelected.activeSelf)
-                return;
-
-            this._goSelected.SetActive(true);
+            this._goUI.SetActive(true);
         }
 
         public override void Hide() {
             base.Hide();
-
-            if(!this._goSelected.activeSelf)
-                return;
-
-            this.ResetUI();
-            this._goSelected.SetActive(false);
-
-            if(this._goHover.activeSelf)
-                this._goHover.SetActive(false);
+            this._goUI.SetActive(false);
+            this.CloseSpawnList();
         }
 
         protected override void ResetUI() {
-            this._spawnParent.SetActive(false);
-
-            this.btnSpawn.gameObject.SetActive(true);
-            this._showSpawn = false;
-            this._showDefault = true;
-            this.castle.radiusDrawer.TurnOff();
+            this._tSpawnList.position = new Vector3(-200.0f, this._tSpawnList.position.y, this._tSpawnList.position.z);
+            this._tSpawnQueue.position = new Vector3(0.0f, this._tSpawnQueue.position.y, this._tSpawnQueue.position.z);
         }
 
-        private void ShowSpawn() {
-            if(this._showDefault) {
-                this._spawnParent.SetActive(true);
+        private void OpenSpawnLlsT() {
+            Debug.Log("Open Spawn List");
 
-                this.btnSpawn.gameObject.SetActive(false);
-                this._showSpawn = true;
-                this._showDefault = false;
+            // NOTE: need to change the spawn list movement into a StartCoroutine method.
+            if(!this._spawnListOpen) {
+                this._tSpawnList.position = new Vector3(0.0f, this._tSpawnList.position.y, this._tSpawnList.position.z);
+                this._tSpawnQueue.position = new Vector3(200.0f, this._tSpawnQueue.position.y, this._tSpawnQueue.position.z);
+            }
 
-                this.castle.radiusDrawer.TurnOn();
-                this.castle.radiusDrawer.DrawRadius(this.castle.spawnDistance);
+            this._spawnListOpen = true;
+            this._spawnListToggle = true;
+        }
+
+        private void CloseSpawnList() {
+            Debug.Log("Close Spawn List");
+
+            this._spawnListOpen = false;
+            this._spawnListToggle = true;
+
+            // NOTE: need to change the spawn list movement into a StartCoroutine method.
+            this._tSpawnList.position = new Vector3(-200.0f, this._tSpawnList.position.y, this._tSpawnList.position.z);
+            this._tSpawnQueue.position = new Vector3(0.0f, this._tSpawnQueue.position.y, this._tSpawnQueue.position.z);
+        }
+
+        public void CheckSpawnQueue(SpawnQueueType queue) {            
+            foreach(UnitQueueButton button in this._queueList) {
+                Debug.Log("Button ID: " + button.id);
+                Debug.Log("Queue ID: " + queue.id);
+                if(button.id == queue.id)
+                    button.Ready();
             }
         }
 
-        private void GoBack() {
-            if(this._showSpawn) {
-                this._spawnParent.SetActive(false);
-
-                this.btnSpawn.gameObject.SetActive(true);
-                this._showSpawn = false;
-                this._showDefault = true;
-                this.castle.radiusDrawer.TurnOff();
-            }
-        }
-
-        private void AddToQueue(UnitType type) {
+        public void AddToQueue(UnitType type) {
             Debug.Log("TRYING TO ADD " + type.ToString() + " TO " + this.controller.name + " QUEUE");
-            if(!this.castle.AddUnitToQueue(type))
-                Debug.LogWarning("UNABLE TO ADD " + type.ToString() + " TO QUEUE");
-
-            this.UpdateInfo();
+            //if(!this._castle.AddUnitToQueue(type))
+                //Debug.LogWarning("UNABLE TO ADD " + type.ToString() + " TO QUEUE");
         }
 
-        private void UpdateInfo() {
-            string text = string.Empty;
-            string spawnlist = string.Empty;
+        public void AddToQueue(UnitType type, Sprite sprite){
+            // NOTE: need to fix this part of the code since creating and deleting an object is a waste of resources if its never going to get used.
+            // Spawn The Queue Button on the Screen.
 
-            text = "HEALTH: " + this.castle.currentHealth + " / " + this.castle.maxHealth + "\r\n" +
-                   "SPAWN LIST: " + "\r\n";
+            uint id = 0;
 
-            if(this.castle.spawnQueue.Count != 0) {
-                foreach(SpawnQueueType spawn in castle.spawnQueue) {
-                    spawnlist += spawn.type.ToString() + " - " + spawn.counter + " Round Until Spawn" + "\r\n";
+            if(this._castle.AddUnitToQueue(type, out id)) {
+                // Add a button to the UI Queue List.
+                GameObject go = GameObject.Instantiate(this._btnQueue);
+                UnitQueueButton button = go.GetComponent<UnitQueueButton>();
+                button.Init(id, type, sprite, this._castle, this);
+                button.SetQueueType(this._castle.lastQueue);
+                this._queueList.Add(button);
+
+                go.transform.SetParent(this._tSpawnQueue);
+                go.transform.position = this._btnOpenList.transform.position;
+
+                if(this._queueList.Count < this._castle.queueLImit) {
+                    if(!this._btnOpenList.IsActive())
+                        this._btnOpenList.gameObject.SetActive(true);
+
+                    // Position the button and move the OpenSpawnList (or disable it if the queue count is higher than the spawnlimit).
+                    Vector3 openListPos = this._btnOpenList.transform.position;
+                    this._btnOpenList.transform.position = new Vector3(openListPos.x, openListPos.y - 35.0f, openListPos.z);
+
+                } else {
+                    this._btnOpenList.gameObject.SetActive(false);
+                    this.CloseSpawnList();
                 }
-                text += spawnlist;
+            } else {
+                // NOTE: need to display a message here to the user that the an error or a limit has been reached.
+                Debug.LogWarning("Either the limit as been reached: " + this._castle.spawnQueue.Count.ToString() + ", or the Type (" + type.ToString() + ") is not Supported");
+            }
+        }
+
+        public void RemoveFromQueue(SpawnQueueType queue) {
+            UnitQueueButton toRemove = null;
+
+            foreach(UnitQueueButton remove in this._queueList){
+                if(remove.id == queue.id) {
+                    toRemove = remove;
+                    break;
+                }
             }
 
-            this.textInfo.text = text;
+            if(toRemove != null) {
+                if(this._queueList.Contains(toRemove)) {
+                    this._queueList.Remove(toRemove);
+                    toRemove.Delete();
+                    this.UpdateQueueUI();
+                } else
+                    Debug.LogError("An error has occured.");
+            }
+        }
+
+        public void RemoveFromQueue(UnitQueueButton unit) {
+            if(this._queueList.Contains(unit)) {
+                uint id = unit.id;
+                this._queueList.Remove(unit);
+                this._castle.RemoveUnitFromQueue(id);
+                this.UpdateQueueUI();
+            } else {
+                Debug.LogError("The Queued Unit Doesn't Exisit in the Queue List" + unit.typeToSpawn);
+            }
+        }
+
+        public void UpdateQueueUI() {
+            for(int i = 0; i < this._queueList.Count; i++) {
+
+                
+
+                Vector3 pos = new Vector3(this._paddingLeft, -(i * this._paddingBetween) - this._paddingTop, 0.0f);
+
+                Debug.Log("New Position: " + pos.ToString());
+                //Debug.Log("Current Position: " + this._queueList[i].localPostion.ToString());
+
+                this._queueList[i].transform.position = Vector3.zero;
+
+                //Debug.Log("Added New Postion: " + this._queueList[i].localPostion.ToString());
+            }
         }
         #endregion
     }

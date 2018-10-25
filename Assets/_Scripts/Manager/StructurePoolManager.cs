@@ -64,7 +64,7 @@
 
             controller.structures.Add(structure);
             structure.transform.SetParent(controller.structureGroup.transform);
-
+            ((StructureBase)structure).Init();
             return structure;
         }
 

@@ -40,8 +40,18 @@
             }
         }
 
+        public bool SpawnUnit(UnitType type, Player controller, Vector3 position) {
 
-        public bool SpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, ref int spawnIndex) {
+            if(type == UnitType.NONE || type == UnitType.ANY || !this._pools.ContainsKey(type)) {
+                Debug.LogError(this.ToString() + " cannot spawn unit of type (not suypported)" + type);
+                return false;
+            }
+            this.InteralSpawnUnit(type, controller, position);
+
+            return true;
+        }
+
+        public bool SpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, ref uint spawnIndex) {
             if(type == UnitType.NONE || type == UnitType.ANY || !this._pools.ContainsKey(type)) {
                 Debug.LogError(this.ToString() + " cannot spawn unit of type (not supported): " + type);
                 return false;
@@ -51,7 +61,24 @@
             return true;
         }
 
-        private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, int spawnIndex) {
+        private IUnit InteralSpawnUnit(UnitType type, Player controller, Vector3 position) {
+            UnitPool pool = this._pools[type];
+            Vector3 pos = position;
+            pos = Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
+            IUnit unit = pool.Get(pos, Quaternion.identity);
+
+            unit.controller = controller;
+            unit.uiComponent.controller = controller;
+            unit.gameObject.ColorRenderers(controller.color);
+
+            ((UnitUI)unit.uiComponent).Init();
+            controller.units.Add(null);
+            unit.transform.SetParent(controller.unitGroup.transform);
+
+            return unit;
+        }
+
+        private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, uint spawnIndex) {
             var pool = this._pools[type];
             var pos = CircleHelpers.GetPointOnCircle(position, spawnDistance, anglePerSpawm, spawnIndex);
             //Debug.Log("spawn position: " + pos);

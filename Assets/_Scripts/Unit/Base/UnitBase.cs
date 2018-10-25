@@ -159,6 +159,7 @@
             this._currentStamina = this._maxStamina;
 
             this._lastPosition = this.transform.position;
+            this._resetPosition = this.position;
             this._navMeshAgent.speed = this._moveSpeed;
         }
 
@@ -401,6 +402,8 @@
         }
 
         public virtual void UnitDeath() {
+            this.controller.RemoveFromUnitCap(2); // Remove unit Cap Cost from player.
+
             if(this._deathPrefab != null)
                 this.PlayDeathAnimation();
         }
@@ -415,6 +418,7 @@
 
             this.StopMoving();
 
+            this._resetPosition = this.position;
             this._navMeshAgent.CalculatePath(dest, path);
             this._navMeshAgent.SetPath(path);
             this._unitPathing = path;

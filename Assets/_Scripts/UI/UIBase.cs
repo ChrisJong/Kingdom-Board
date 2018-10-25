@@ -102,10 +102,12 @@
             this.showSelected = true;
             this.showHover = true;
         }
+
         public virtual void Hide() {
             this.showSelected = false;
             this.showHover = false;
         }
+
         protected abstract void ResetUI();
 
         public virtual void UpdateUI() {

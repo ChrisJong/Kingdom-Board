@@ -170,7 +170,7 @@
 
                     if(this.currentSelected is ISelected) {
                         if(!(this.currentSelected as ISelected).SetPoint(this._hitInfo.point)) {
-                            //Debug.Log("Can't Move Here");
+                            Debug.LogWarning("The Location Selected Is invalid: " + this._hitInfo.point.ToString());
                             return;
                         }
                     } else {

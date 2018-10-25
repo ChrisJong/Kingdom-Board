@@ -38,12 +38,19 @@
         public static void ColorRenderers(this GameObject go, Color color, bool ignoreParticleSystem = true) {
             var renderers = go.GetComponents<Renderer>();
             for(int i = 0; i < renderers.Length; i++) {
+                if(renderers[i].name.Contains("shattered") || renderers[i].name.StartsWith("shattered") || renderers[i].name.EndsWith("shattered"))
+                    continue;
+
                 if(!ignoreParticleSystem || renderers[i].GetComponent<ParticleSystem>() == null)
                     renderers[i].material.color = color;
             }
 
             renderers = go.GetComponentsInChildren<Renderer>();
             for(int i = 0; i < renderers.Length; i++) {
+                //Debug.Log("Renderer Name: " + renderers[i].name);
+                if(renderers[i].name.Contains("shattered") || renderers[i].name.StartsWith("shattered") || renderers[i].name.EndsWith("shattered"))
+                    continue;
+
                 if(!ignoreParticleSystem || renderers[i].GetComponent<ParticleSystem>() == null)
                     renderers[i].material.color = color;
 
@@ -75,10 +82,10 @@
             if(p.x < min.x || p.y < min.y || p.z < min.z)
                 return false;
 
-            if(p.x > max.x || p.y < max.y || p.z > max.z)
+            if(p.x > max.x || p.y > max.y || p.z > max.z)
                 return false;
 
-            // Point is within the bounds.
+            // Point is inside of bounds
             return true;
         }
 
@@ -89,13 +96,55 @@
 
             r.x = (r.x < min.x) ? min.x : r.x;
             r.y = (r.y < min.x) ? min.y : r.y;
-            r.z = (r.z < min.x) ? min.z : r.z;
+            r.z = (r.z < min.z) ? min.z : r.z;
 
             r.x = (r.x > max.x) ? max.x : r.x;
             r.y = (r.y > max.x) ? max.y : r.y;
-            r.z = (r.z > max.x) ? max.z : r.z;
+            r.z = (r.z > max.z) ? max.z : r.z;
 
             return r;
+        }
+
+        public static float DistanceToPointToBounds(Vector3 location, Bounds bound) {
+            Vector2 point = new Vector2(location.x, location.z);
+
+            // Formula doesnt take into account the height of both the location point and the bounds height.
+            //float height = location.y;
+            float xMin = bound.min.x;
+            float yMin = bound.min.z;
+            float xMax = bound.max.x;
+            float yMax = bound.max.z;
+
+            if(point.x < xMin) {
+                if(point.y < yMin) {
+                    Vector2 diff = point - new Vector2(xMin, yMin);
+                    return diff.magnitude;
+                } else if(point.y < yMax) {
+                    Vector2 diff = point - new Vector2(xMin, yMax);
+                    return diff.magnitude;
+                } else {
+                    return xMin - point.x;
+                }
+            } else if(point.x > xMax) {
+                if(point.y < yMin) {
+                    Vector2 diff = point - new Vector2(xMax, yMin);
+                    return diff.magnitude;
+                } else if(point.y > yMax) {
+                    Vector2 diff = point - new Vector2(xMax, yMax);
+                    return diff.magnitude;
+                } else {
+                    return point.x - xMax;
+                }
+            } else {
+                if(point.y < yMin) {
+                    return yMin - point.y;
+                } else if(point.y > yMax) {
+                    return point.y - yMax;
+                } else {
+                    // the location point is within the bounds.
+                    return 0.0f;
+                }
+            }
         }
 
         // Gets the direction the entity is facing.
