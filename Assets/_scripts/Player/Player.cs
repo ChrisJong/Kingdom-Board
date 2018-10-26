@@ -145,8 +145,9 @@
         }
 
         public abstract void UpdatePlayer();
-        
+
         public virtual void NewTurn(bool attacking) {
+
             this._isAttacking = attacking;
             this._turnEnded = false;
             this._playerCamera.gameObject.SetActive(attacking);

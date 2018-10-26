@@ -2,9 +2,9 @@
 
     using UnityEngine;
     using UnityEditor;
+    using System;
 
-    [RequireComponent(typeof(LineRenderer))]
-    public class LineRenderDrawCircle : MonoBehaviour {
+    public class LineRenderDrawCircle : LineRender {
         [Range(0, 256)]
         public int segments = 128;
         [Range(0, 10)]
@@ -23,7 +23,7 @@
             //this.Draw();
         }
 
-        private void Init() {
+        public override void Init() {
             this.LineRender = this.gameObject.GetComponent<LineRenderer>() as LineRenderer;
             this.LineRender.material = new Material(Shader.Find("Particles/Standard Unlit"));
 
@@ -41,7 +41,7 @@
             this.LineRender.allowOcclusionWhenDynamic = false;
         }
 
-        public void Draw() {
+        public override void Draw() {
             float x;
             //float y;
             float z;
@@ -141,6 +141,10 @@
             EditorUtility.SetDirty(this);
 
             this.Draw();
+        }
+
+        public override void SetActive(bool state) {
+            this.gameObject.SetActive(state);
         }
     }
 }

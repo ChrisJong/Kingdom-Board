@@ -8,7 +8,7 @@
     public abstract class SpawnStructureBase : StructureBase {
         #region vARIBALE
         [Header("SPAWN STRUCTURE")]
-        [SerializeField] protected float _spawnDistance = 10.0f;
+        [SerializeField] protected float _spawnDistance = 5.0f;
         protected float _anglePerSpawn = 15.0f;
         protected float _lastSpawn;
 
@@ -35,7 +35,6 @@
                 return false;
             }
 
-            this._unitQueueCount++;
             this._lastQueueID = this._unitQueueCount;
             return UnitPoolManager.instance.SpawnUnit(type, this.controller, this.position, this._spawnDistance, this._anglePerSpawn, ref this._lastQueueID);
         }
@@ -46,7 +45,6 @@
                 return false;
             }
 
-            this._unitQueueCount++;
             this._lastQueueID = this._unitQueueCount;
 
             return UnitPoolManager.instance.SpawnUnit(type, this.controller, position);

@@ -17,7 +17,7 @@
 
         #region VARIABLE
         [Header("CASTLE - UI")]
-        public LineRenderDrawCircle radiusDrawer = null;
+        public LineRenderDrawRectangle radiusDrawer = null;
 
         [Header("CASTLE - SPAWN")]
         [SerializeField] private List<SpawnQueueType> _spawnQueue;
@@ -38,6 +38,13 @@
 
             this._spawnQueue = new List<SpawnQueueType>(this._queueLimit);
             this._unitQueueCount = 0;
+        }
+
+        public override void Init() {
+            base.Init();
+
+            this.radiusDrawer.Draw(this._colliderBounds, this._spawnDistance);
+            this.radiusDrawer.SetActive(false);
         }
         #endregion
 
@@ -85,6 +92,7 @@
                 return;
 
             for(int i = 0; i < this._spawnQueue.Count; i++) {
+                Debug.Log("Queue Count: " + this._spawnQueue.Count + " - Counter: " + i.ToString());
                 if(this._spawnQueue[i].Countdown()) {
                     ((CastleUI)this.uiComponent).CheckSpawnQueue(this._spawnQueue[i]);
                 }
@@ -107,13 +115,13 @@
                 SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, type, counter);
                 this._lastQueue = temp;
                 this._spawnQueue.Add(temp);
-
+                this._unitQueueCount++;
                 return true;
             }
             return false;
         }
 
-        public bool AddUnitToQueue(UnitType type, out uint id) {
+        public bool AddUnitToQueue(UnitType type, ref uint id) {
             id = this._unitQueueCount;
             return this.AddUnitToQueue(type);
         }
@@ -132,18 +140,21 @@
         public bool RemoveUnitFromQueue(uint id) {
             SpawnQueueType toRemove = null;
 
+            Debug.Log("To Remove ID: " + id.ToString());
+
             foreach(SpawnQueueType queue in this._spawnQueue) {
-                if(queue.id == id)
+                if(queue.id == id) {
                     toRemove = queue;
-                else {
-                    return false;
-                    Debug.LogError("An Error has Occured while trying to find the unit to remove from the list: " + queue.type.ToString());
-                }  
+                    break;
+                } else
+                    continue;
             }
 
             if(toRemove != null) {
                 if(!toRemove.ready) {
                     // NOte: return resources back to the player since the unit wasn't ready to spawn (probably a change in preference)
+                    this.controller.AddResource(this.GetUnitResourceCost(toRemove.type));
+                    this.controller.RemoveFromUnitCap(this.GetUnitCapCost(toRemove.type));
                 }
 
                 this._spawnQueue.Remove(toRemove);
@@ -183,6 +194,7 @@
 
                 this.controller.selectionState = SelectionState.FREE;
                 this.structureState = StructureState.IDLE;
+                this.radiusDrawer.SetActive(false);
 
                 return true;
             } else {
@@ -193,6 +205,7 @@
         public bool SetSpawn(uint id) {
             this.controller.selectionState = SelectionState.SELECT_POINT;
             this.structureState = StructureState.SPAWN;
+            this.radiusDrawer.SetActive(true);
 
             // Grab the unit to spawn from the queue list.
             this._toSpawn = null;

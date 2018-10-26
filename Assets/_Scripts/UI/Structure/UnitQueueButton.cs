@@ -91,20 +91,16 @@
                 this._button.spriteState = this._spriteState;
         }
 
-        private void Spawn() {
-            // A switch or change needs to happen so you can get a point in the world to spawn the unit.
-
-            this._castle.SetSpawn(this.id);
-
-            Debug.Log("Ready to Spawn: " + _queueType.ToString());
-        }
-
         public void Delete() {
             if(!this._queueType.ready)
                 this._castleUI.RemoveFromQueue(this);
             this._button.onClick.RemoveListener(this.ButtonClick);
 
             Destroy(this.gameObject);
+        }
+
+        private void Spawn() {
+            this._castle.SetSpawn(this.id);
         }
 
         private void RemoveButton() {

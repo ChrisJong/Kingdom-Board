@@ -132,6 +132,9 @@
             if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
                 var temp = this._hitInfo.transform.GetComponent<HasHealthBase>();
 
+                //if(this._controller.state == PlayerState.DEFENDING && temp.entityType == EntityType.UNIT)
+                    //return;
+
                 if(temp.entityType == EntityType.UNIT) {
                     if(((UnitBase)temp).unitState == UnitState.FINISH)
                         return;

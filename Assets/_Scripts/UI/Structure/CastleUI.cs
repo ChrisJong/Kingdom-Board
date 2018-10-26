@@ -47,6 +47,7 @@
         [SerializeField] private float _paddingLeft = 5.0f;
         [SerializeField] private float _paddingTop = 5.0f; 
         [SerializeField] private float _paddingBetween = 35.0f;
+        [SerializeField] private Vector3 _initialQueuePlacement = Vector3.zero;
 
         public UnitQueueButton lastQueueButton { get { return this._lastQueueButton; } }
         public UnitQueueButton toSpawn { get { return this._toSpawn; } }
@@ -77,6 +78,8 @@
             this._btnOpenList.onClick.AddListener(this.OpenSpawnLlsT);
             this._btnCloseList.onClick.AddListener(this.CloseSpawnList);
 
+            this._initialQueuePlacement = this._btnOpenList.transform.position;
+
             this._btnArcher.onClick.AddListener(delegate { this.AddToQueue(UnitType.ARCHER, this._btnArcher.image.sprite); });
             this._btnLongbow.onClick.AddListener(delegate { this.AddToQueue(UnitType.LONGBOW, this._btnLongbow.image.sprite); });
             this._btnCrossbow.onClick.AddListener(delegate { this.AddToQueue(UnitType.CROSSBOW, this._btnCrossbow.image.sprite); });
@@ -103,6 +106,8 @@
             base.Hide();
             this._goUI.SetActive(false);
             this.CloseSpawnList();
+
+            this._castle.radiusDrawer.SetActive(false);
         }
 
         protected override void ResetUI() {
@@ -155,7 +160,7 @@
 
             uint id = 0;
 
-            if(this._castle.AddUnitToQueue(type, out id)) {
+            if(this._castle.AddUnitToQueue(type, ref id)) {
                 // Add a button to the UI Queue List.
                 GameObject go = GameObject.Instantiate(this._btnQueue);
                 UnitQueueButton button = go.GetComponent<UnitQueueButton>();
@@ -218,16 +223,11 @@
         public void UpdateQueueUI() {
             for(int i = 0; i < this._queueList.Count; i++) {
 
-                
+                // NOTE: need to fix up the placement using the padding vector instead of the inital placement.
+                // NOTE: Errors occur become the button is using some other local position that isnt the panel.
+                //Vector3 pos = new Vector3(this._paddingLeft, -(i * this._paddingBetween) - this._paddingTop, 0.0f);
 
-                Vector3 pos = new Vector3(this._paddingLeft, -(i * this._paddingBetween) - this._paddingTop, 0.0f);
-
-                Debug.Log("New Position: " + pos.ToString());
-                //Debug.Log("Current Position: " + this._queueList[i].localPostion.ToString());
-
-                this._queueList[i].transform.position = Vector3.zero;
-
-                //Debug.Log("Added New Postion: " + this._queueList[i].localPostion.ToString());
+                this._queueList[i].transform.position = new Vector3(this._initialQueuePlacement.x, this._initialQueuePlacement.y - (i * this._paddingBetween), this._initialQueuePlacement.z);
             }
         }
         #endregion
