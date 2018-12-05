@@ -791,8 +791,6 @@ public class ResearchUI_dan : MonoBehaviour {
     {
         currentState = ShownCardsState.backToClasses;
 
-        
-
         if (currentOptions() == 1)
         {
             int onlyOptionIndex = -1;
@@ -817,6 +815,15 @@ public class ResearchUI_dan : MonoBehaviour {
             else
             {
                 Debug.Log("HUGE ERROR: Could not find card index for only option available");
+            }
+        }
+        else if (currentOptions() == 2)
+        {
+            cardsRemaining = 2;
+
+            for (int i = 0; i < 2; i++)
+            {
+                StartCoroutine(researchCards[i].MoveCardToPosition(xPosWhenClicked));
             }
         }
         else if (currentOptions() == 3)
