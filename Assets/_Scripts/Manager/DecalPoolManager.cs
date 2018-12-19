@@ -41,6 +41,10 @@
             }
         }
 
+        public override void Init() {
+            throw new NotImplementedException();
+        }
+
         public void SpawnDecalOnGround(DecalType decalType, Vector3 position) {
             DecalPool pool = this._pools[decalType];
             Vector3 pos = Utility.Utils.GetGroundedPosition(position);

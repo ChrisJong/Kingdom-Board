@@ -7,6 +7,7 @@
 
     using Player;
     using Extension;
+    using System;
 
     public sealed class UIManager : SingletonMono<UIManager> {
 
@@ -19,6 +20,10 @@
 
         protected override void Awake() {
             base.Awake();
+        }
+
+        public override void Init() {
+            throw new NotImplementedException();
         }
 
         public bool SetupPlayerUI(int numOfPlayers, Player player) {

@@ -20,4 +20,13 @@
         END,
         DEAD
     };
+
+    public enum ResearchState {
+        NONE = 0,
+        ANY = ~0,
+        CLASS = 1,
+        UNIT,
+        UPGRADE,
+        FINISHED
+    };
 }

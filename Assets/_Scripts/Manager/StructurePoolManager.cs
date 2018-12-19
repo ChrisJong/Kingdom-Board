@@ -38,6 +38,10 @@
             }
         }
 
+        public override void Init() {
+            throw new NotImplementedException();
+        }
+
         /*public bool BuildStructuree(StructureType type) {
             if(type == StructureType.NONE || type == StructureType.ANY) {
                 Debug.LogError(this.ToString() + " cannot spawn structure of type (not supported): " + type);
@@ -56,10 +60,7 @@
             var structure = pool.Get(pos, controller.spawnLocation.rotation);
             structure.controller = controller;
 
-            structure.uiComponent = structure.transform.GetComponentInChildren<CastleUI>() as ScreenSpaceUI;
-            structure.uiComponent.controller = controller;
             structure.gameObject.ColorRenderers(controller.color);
-            ((CastleUI)structure.uiComponent).Hide();
             //structure.isReady = costs.time == 0.0f;
 
             controller.structures.Add(structure);

@@ -21,7 +21,7 @@
 
         #region UNITY
         protected override void Awake() {
-            this.FindUI(this.transform, UIValues.Player.PLAYERUI);
+            this.FindUI(this.transform, UIValues.UISUFFIX);
 
             if(this.tUI.Find(UIValues.PERSISTANCEGROUP) != null) {
                 this._tPersistance = this.tUI.Find(UIValues.PERSISTANCEGROUP);
@@ -58,6 +58,8 @@
         #region CLASS
         public override void Display() {
             this._goUI.SetActive(true);
+
+            this.UpdateInfo();
         }
 
         public override void Hide() {
@@ -83,15 +85,16 @@
         }
 
         private void EndTurn() {
-            this.controller.EndTurn();
             this.Hide();
+            this.controller.EndTurn();
         }
 
         private void UpdateInfo() {
             string text = string.Empty;
 
             text = "GOLD: " + this.controller.CurrentGold.ToString() + "\r\n" +
-                   "UNIT CAP: " + this.controller.CurrentUnitCap.ToString() + " / " + this.controller.MaxUnitCap;
+                   "UNIT CAP: " + this.controller.CurrentUnitCap.ToString() + " / " + this.controller.MaxUnitCap + "\r\n" + 
+                   "PHASE: " + this.controller.state.ToString();
 
             this.textInfo.text = text;
         }

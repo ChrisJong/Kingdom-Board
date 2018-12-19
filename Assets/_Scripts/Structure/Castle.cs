@@ -8,15 +8,17 @@
     using Constants;
     using Enum;
     using Helpers;
+    using Research;
     using UI;
     using Utility;
-    using System;
 
     [RequireComponent(typeof(CastleUI))]
     public sealed class Castle : SpawnStructureBase {
 
         #region VARIABLE
+
         [Header("CASTLE - UI")]
+        [SerializeField] private CastleUI _ui = null;
         public LineRenderDrawRectangle radiusDrawer = null;
 
         [Header("CASTLE - SPAWN")]
@@ -25,6 +27,8 @@
         private SpawnQueueType _lastQueue = null;
         private SpawnQueueType _toSpawn = null;
 
+        public CastleUI UI { get { return this._ui; } }
+
         public List<SpawnQueueType> spawnQueue { get { return this._spawnQueue; } }
         public override StructureType structureType { get { return StructureType.CASTLE; } }
 
@@ -32,23 +36,20 @@
         public SpawnQueueType toSpawn { get { return this._toSpawn; } set { this._toSpawn = value; } }
         #endregion
 
-        #region UNITY
-        protected override void Awake() {
-            base.Awake();
+        #region CLASS
+        public override void Init() {
+            base.Init();
 
             this._spawnQueue = new List<SpawnQueueType>(this._queueLimit);
             this._unitQueueCount = 0;
-        }
 
-        public override void Init() {
-            base.Init();
+            this._ui = this.transform.GetComponent<CastleUI>() as CastleUI;
+            this._ui.Init(this);
 
             this.radiusDrawer.Draw(this._colliderBounds, this._spawnDistance);
             this.radiusDrawer.SetActive(false);
         }
-        #endregion
 
-        #region CLASS
         public override bool SetPoint(Vector3 point) {
             Vector3 position = Vector3.zero;
 
@@ -99,6 +100,10 @@
             }
         }
 
+        public void AddToQueue(UnitType unitType, Sprite image) {
+            this._ui.AddToQueue(unitType, image);
+        }
+
         public bool AddUnitToQueue(UnitType type) {
             int capCost = this.GetUnitCapCost(type);
             int counter = this.GetUnitSpawnCounter(type);
@@ -139,8 +144,6 @@
 
         public bool RemoveUnitFromQueue(uint id) {
             SpawnQueueType toRemove = null;
-
-            Debug.Log("To Remove ID: " + id.ToString());
 
             foreach(SpawnQueueType queue in this._spawnQueue) {
                 if(queue.id == id) {
@@ -220,6 +223,10 @@
                 return false;
 
             return true;
+        }
+
+        public void UnlockUnitToSpawn(ClassType classType, UnitType unitType) {
+            this._ui.UnlockSpawnButton(classType, unitType);
         }
 
         private int GetUnitCapCost(UnitType type) {

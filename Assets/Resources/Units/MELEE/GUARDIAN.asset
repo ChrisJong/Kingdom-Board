@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbc93419e3b21bf4689c8bf42dfd403c, type: 3}
+  m_Name: GUARDIAN
+  m_EditorClassIdentifier: 
+  classType: 1
+  unitType: 9
+  classTier: 2
+  cardFaceSprite: {fileID: 21300000, guid: 823c2f9b4122a2241b135e494badb201, type: 3}
+  cardBackSprite: {fileID: 21300000, guid: 18de7e74e68496441a1bd0652da96e9e, type: 3}
+  SpawnIconLockedsprite: {fileID: 21300000, guid: ec0cc70a0a109ce4aadc0c30f8bfb514,
+    type: 3}
+  spawnIconUnlockedSprite: {fileID: 21300000, guid: fb8923e9b8db54446ab7dea288ef915c,
+    type: 3}
+  prefabMain: {fileID: 0}
+  prefabDeath: {fileID: 1244811562548892, guid: de604bc86bc7ea24dae04cd7b3e93f8e,
+    type: 2}
+  prefabProjectile: {fileID: 0}
+  movementType: 1
+  attackType: 1
+  resistanceType: 3
+  weaknessType: 2
+  resistanceMultiplier: 0.5
+  weaknessMultiplier: 2
+  heath: 100
+  stamina: 10
+  minAttack: 10
+  maxAttack: 10
+  attackRange: 1.5
+  moveSpeed: 5
+  projectileSpeed: 0
+  endOfAttackClipTime: 0
+  splashRange: 0
+  healingDamage: 0
+  healingRange: 0
+  endOfCastClipTime: 0

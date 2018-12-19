@@ -1,115 +1,124 @@
 ﻿namespace Manager {
 
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
     using UnityEngine;
 
+    using Enum;
     using Extension;
     using Player;
     using Utility;
 
+
     public class GameManager : SingletonMono<GameManager> {
 
         #region VARIABLE
-        public int RoundCount { get; private set; }
-        private int _indexOnAttack = 0;
-        private int _indexInView = 0;
         private int _numberOfPlayers = 2;
+        [SerializeField] private int _roundCount = 0;
+        [SerializeField] private int _indexOnAttack = 0;
+        [SerializeField] private int _indexInView = 0;
 
-        public AssetManager _assetManager;
+        private List<Player> _players = new List<Player>();
+        private List<Transform> _spawnPoints = new List<Transform>();
 
-        public Player PlayerInView { get; private set; }
-        public Player PlayerOnAttack { get; private set; }
+        [SerializeField] private Player _playerOnAttack = null;
+        [SerializeField] private Player _playerInView = null;
 
-        public List<Player> _players;
-        private List<Transform> _spawnPoints;
+        public GameObject _prefabPlayer = null;
 
-        public List<Player> players { get { return this._players; } }
+        public int RoundCount { get { return this._roundCount; } }
+
+        public Player PlayerOnAttack { get { return this._playerOnAttack; } }
+        public Player PlayerInView { get { return this._playerInView; } }
         #endregion
 
         #region UNITY
-        public void OnDisable() {
-            this.PlayerInView = null;
-            this.PlayerOnAttack = null;
-            this._players = null;
-            this._spawnPoints = null;
-        }
-
         protected override void Awake() {
             base.Awake();
-
-            this._players = new List<Player>();
-            this._spawnPoints = new List<Transform>();
 
             this.FindSpawnPoints();
         }
 
         private void Start() {
-            this._assetManager = AssetManager.instance;
-            if(this._assetManager == null)
-                Debug.LogError("ASSET MANAGER IS MISSING PLEASE ADD ONE");
-
             this.CreatePlayers();
+
+            this._roundCount++;
+            Debug.Log("Round: " + RoundCount.ToString());
+            this.NewRound();
         }
         #endregion
 
         #region CLASS
-        private void NewRound() {
-            this.RoundCount++;
-            Debug.Log("Round: " + RoundCount.ToString());
+        public override void Init() {
+            throw new NotImplementedException();
+        }
 
-            foreach(Player p in this._players) {
-                if(p == this.PlayerOnAttack)
-                    p.NewTurn(true);
-                else
-                    p.NewTurn(false);
+        public void CheckRound() {
+            int playersFinished = 0;
+
+            foreach(Player player in this._players) {
+                if(player.turnEnded || player.state == PlayerState.END)
+                    playersFinished++;
+            }
+
+            if(playersFinished >= this._numberOfPlayers) {
+                this.EndRound();
+            } else {
+                this.NextPlayer(); //return;
+            }
+        }
+
+        /// <summary>
+        /// Method for Debugging Purposes swtich to the next player and changes the camera.
+        /// </summary>
+        private void NextPlayer() {           
+            // Going out of range.
+            
+            // Change to the next player in the list.
+            this._indexInView++;
+            if(this._indexInView == this._numberOfPlayers)
+                this._indexInView = 0;
+
+            this._playerInView = this._players[this._indexInView];
+
+            // Enable there camera and Ui and start there turn.
+            this._playerInView.StartTurn();
+        }
+
+        private void NewRound() {
+            foreach(Player player in this._players) {
+                if(player == this._playerOnAttack) {
+                    player.NewTurn(true);
+                    player.StartTurn();
+                } else {
+                    player.NewTurn(false);
+                    //p.StartTurn();
+                }
             }
 
             if(Constants.UnitValues.DEATHCOUNTER != 0)
                 UnitPoolManager.instance.Countdown();
         }
 
-        public void CheckRound() {
-            if(!this.PlayerOnAttack.turnEnded) {
-                return;
-            } else {
-                if(!CheckPlayerOrder()) {
-                    this.EndRound();
-                } else {
-                    this.NextPlayer();
-                }
-            }
-        }
-
-        private bool CheckPlayerOrder() {
-            var count = this._indexOnAttack + 1;
-            if(count > this._numberOfPlayers - 1)
-                return false; // start a new round.
-            else 
-                return true; // next player in the lists turn.
-        }
-
-        private void NextPlayer() {
-            this._indexOnAttack += 1;
-            this._indexInView = this._indexOnAttack;
-            this.PlayerOnAttack = this._players[this._indexOnAttack];
-            this.PlayerInView = this.PlayerOnAttack;
-
-            foreach(Player p in this._players) {
-                if(p == this.PlayerOnAttack)
-                    p.NewTurn(true);
-                else
-                    p.NewTurn(false);
-            }
-        }
-
         private void EndRound() {
-            this._indexOnAttack = 0;
-            this._indexInView = 0;
-            this.PlayerOnAttack = this._players[this._indexOnAttack];
-            this.PlayerInView = this.PlayerOnAttack;
+            // Change the current attacker to become the defender
+
+            // Change the attacking player to the next person on the list.
+            this._indexOnAttack++;
+            this._indexInView = this._indexOnAttack;
+            if(this._indexOnAttack >= this._numberOfPlayers) {
+                this._indexOnAttack = 0;
+                this._indexInView = 0;
+
+                this._roundCount++;
+                Debug.Log("Round: " + RoundCount.ToString());
+            }
+
+            this._playerOnAttack = this._players[this._indexOnAttack];
+            this._playerInView = this._players[this._indexOnAttack];
 
             this.NewRound();
         }
@@ -130,10 +139,11 @@
 
         private void CreatePlayers() {
             for(int i = 0; i < this._numberOfPlayers; i++) {
-                GameObject temp = new GameObject("Player" + (i + 1).ToString());
-                var player = temp.AddComponent<Human>() as Human;
-                player.roll = (uint)Random.Range(0, 100);
-                //Debug.Log(player.name + " Rolled: " + player.roll.ToString());
+                GameObject temp = Instantiate(this._prefabPlayer);
+                Human player = temp.AddComponent<Human>() as Human;
+
+                temp.name = "Human_" + (i + 1).ToString().PadLeft(2, '0');
+                player.roll = (uint)UnityEngine.Random.Range(0, 100);
                 this._players.Add(player);
             }
 
@@ -141,21 +151,20 @@
 
             this._indexOnAttack = 0;
             this._indexInView = 0;
-            this.PlayerOnAttack = this._players[0];
-            this.PlayerInView = this._players[0];
+            this._playerOnAttack = this._players[0];
+            this._playerInView = this._players[0];
 
             for(int i = 0; i < this._numberOfPlayers; i++) {
-                if(this.players[i] == this.PlayerOnAttack)
-                    this.players[i].color = new Color(0.8823529f, 0.8823529f, 0.8823529f, 1.0f);
-                else
-                    this.players[i].color = new Color(0.2352941f, 0.2352941f, 0.2352941f, 1.0f);
-
-                this._players[i].Create(this._spawnPoints[i], (uint)i);
-                this._players[i].Init((i == this._indexOnAttack) ? true : false);
+                if(i == 0) {
+                    this._players[i].color = new Color(0.8823529f, 0.8823529f, 0.8823529f, 1.0f);
+                    this._players[i].Create(this._spawnPoints[i], (uint)i);
+                    this._players[i].Init(true);
+                } else {
+                    this._players[i].color = new Color(0.2352941f, 0.2352941f, 0.2352941f, 1.0f);
+                    this._players[i].Create(this._spawnPoints[i], (uint)i);
+                    this._players[i].Init(false);
+                }
             }
-
-            this.RoundCount++;
-            Debug.Log("Round: " + RoundCount.ToString());
         }
         #endregion
     }

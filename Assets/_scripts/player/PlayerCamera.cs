@@ -220,7 +220,7 @@
         #endregion
 
         #region STATIC
-        public static PlayerCamera CreateCamera(Player p, Transform startPoint, bool OnAttack = false) {
+        public static PlayerCamera CreateCamera(Player p, Transform startPoint) {
             GameObject tempCamera = new GameObject("Player" + (p.id+1).ToString().PadLeft(1) + "_CAMERA");
 
             tempCamera.AddComponent<Camera>();
@@ -239,9 +239,6 @@
 
             //tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z + 7.5f);
             tempCamera.transform.localRotation = Quaternion.Euler(0.0f, startPoint.eulerAngles.y + 180.0f, 0.0f);
-
-            if(!OnAttack)
-                tempCamera.SetActive(false);
 
             return tempCamera.GetComponent<PlayerCamera>() as PlayerCamera;
         }

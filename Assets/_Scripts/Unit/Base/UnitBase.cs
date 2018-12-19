@@ -717,8 +717,6 @@
             AnimationEvent animEvent = new AnimationEvent();
             AnimationClip animcLip = new AnimationClip();
 
-            Debug.Log("SETUP ATTACK ANIMATION EVENT");
-
             /*if(this._endOfAttackClipTime <= 0.0f)
                 throw new ArgumentException("End of Attack Animation Timer Needs to be Set, Cannot Be Set At 0 Seconds");*/
 

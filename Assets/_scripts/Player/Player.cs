@@ -10,6 +10,8 @@
     using Enum;
     using Helpers;
     using Manager;
+    using Research;
+    using Scriptable;
     using Structure;
     using UI;
     using Unit;
@@ -31,7 +33,7 @@
         private bool _turnEnded;
         private Transform _spawnLocation;
         private Color _color;
-        private PlayerState _state = PlayerState.NONE;
+        [SerializeField] private PlayerState _state = PlayerState.NONE;
 
         public int CurrentGold { get { return this._currentGold; } }
         public int CurrentUnitCap { get { return this._currentUnitCap; } }
@@ -41,13 +43,16 @@
         //////////////////
         //// Entities ////
         //////////////////
-        public Castle _castle;
+        private Castle _castle;
         private IList<IUnit> _units;
         private IList<IStructure> _structures;
         private GameObject _unitGroup = null;
         public GameObject unitGroup { get { return this._unitGroup; } }
         private GameObject _structureGroup = null;
         public GameObject structureGroup { get { return this._structureGroup; } }
+
+        private Research _research;
+        private Dictionary<ClassType, List<UpgradeScriptable>> _unitUpgrades = new Dictionary<ClassType, List<UpgradeScriptable>>();
 
         ////////////////
         //// Camera ////
@@ -112,8 +117,7 @@
             this._structureGroup.transform.SetParent(this.transform);
 
             this.id = id;
-            this._name = "Player" + (id + 1).ToString().PadLeft(2, '0');
-            this.gameObject.name = this._name;
+            this._name = gameObject.name;
             this._turnEnded = false;
 
             this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -122,42 +126,67 @@
 
             this._castle = StructurePoolManager.instance.GetStartCastle(this);
 
-            GameObject ui = GameObject.Instantiate(AssetManager.instance.playerUI, this.transform);
-            ui.name = UIValues.Player.PLAYERUI;
+            GameObject ui = this.transform.Find(UIValues.UISUFFIX).gameObject;
             this._uiComponent = this.gameObject.AddComponent<PlayerUI>();
             this._uiComponent.controller = this;
+
+            this._research = this.transform.GetComponent<Research>() as Research;
+            if(this._research == null)
+                this._research = this.gameObject.AddComponent<Research>() as Research;
+            this._research.Init(this);
         }
 
         public virtual void Init(bool attacking) {
-            this._isAttacking = attacking;
-
             if(attacking) {
-                this._uiComponent.Display();
+                this._isAttacking = attacking;
+                this._uiComponent.Hide();
                 this._state = PlayerState.ATTACKING;
             } else {
+                this._isAttacking = false;
                 this._uiComponent.Hide();
                 this._state = PlayerState.DEFENDING;
             }
 
             this._selectionState = SelectionState.FREE;
-            this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation, attacking);
+            this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation);
             this._playerSelection = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
         }
 
         public abstract void UpdatePlayer();
 
-        public virtual void NewTurn(bool attacking) {
+        public void StartTurn() {
 
-            this._isAttacking = attacking;
-            this._turnEnded = false;
-            this._playerCamera.gameObject.SetActive(attacking);
+            // (For SinglePlayer) Turn the camera off and hide the ui.
+            this._playerCamera.gameObject.SetActive(true);
+
             this.uiComponent.Display();
 
-            if(attacking)
+            if(this._state == PlayerState.ATTACKING) {
                 this._castle.CheckSpawnQueue();
+                this._research.CheckResearchPhase(GameManager.instance.RoundCount);
+            }
+        }
 
-            foreach(IUnit unit in this._units)
-                unit.NewTurn();
+        public virtual void NewTurn(bool attacking) {
+
+            // (For SinglePlayer) Turn the camera off and hide the ui.
+            this._playerCamera.gameObject.SetActive(false);
+
+            this._uiComponent.Hide();
+
+            if(attacking) {
+                this._state = PlayerState.ATTACKING;
+                this._isAttacking = attacking;
+            } else {
+                this._state = PlayerState.DEFENDING;
+                this._isAttacking = false;
+            }
+
+            this._turnEnded = false;
+
+            for(int i = 0; i < this._units.Count; i++) {
+                this._units[i].NewTurn();
+            }
         }
 
         public virtual void EndTurn() {
@@ -166,6 +195,12 @@
 
             this._playerSelection.EndTurn();
             this._turnEnded = true;
+
+            // (For SinglePlayer) Turn the camera off and hide the ui.
+            this._playerCamera.gameObject.SetActive(false);
+
+            this._uiComponent.Hide();
+
             GameManager.instance.CheckRound();
         }
 

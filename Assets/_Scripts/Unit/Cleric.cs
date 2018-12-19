@@ -27,7 +27,7 @@
         //// ANIMATION ////
         ///////////////////
         [Header("CLERIC - ANIMATION")]
-        [SerializeField] private float _endOfCastClipTime = 0.0f;
+        [SerializeField] private float _endOfCastClipTime = 0.542f;
         #endregion
 
         #region UNITY
@@ -157,8 +157,6 @@
 
             AnimationEvent animEvent = new AnimationEvent();
             AnimationClip animClip = new AnimationClip();
-
-            Debug.Log("SETUP HEALING ANIMATION EVENT");
 
             if(this._endOfCastClipTime <= 0.0f)
                 throw new ArgumentException("End Of Animation Clip Time CAN NOT be set to 0 seconds");

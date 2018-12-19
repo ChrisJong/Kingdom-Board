@@ -41,6 +41,10 @@
             }
         }
 
+        public override void Init() {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Spawns a pariticle system of the given type at the specified position, with default rotation.
         /// </summary>

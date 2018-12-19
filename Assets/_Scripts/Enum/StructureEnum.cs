@@ -11,6 +11,12 @@
         DEAD,
     }
 
+    public enum StructureGroupType {
+        NONE = 0,
+        ANY = ~0,
+        MAIN = 1
+    }
+
     /// <summary>
     /// Enum type for the different kind of structures in the game.
     /// NONE and ANY values are used for searching generic elements.

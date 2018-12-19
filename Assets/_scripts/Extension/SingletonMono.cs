@@ -15,5 +15,7 @@
 
             instance = this as T;
         }
+
+        public abstract void Init();
     }
 }

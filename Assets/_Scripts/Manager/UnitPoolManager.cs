@@ -1,6 +1,5 @@
 ﻿namespace Manager {
 
-    using System;
     using System.Collections.Generic;
 
     using UnityEngine;
@@ -9,21 +8,32 @@
     using Extension;
     using Helpers;
     using Player;
+    using Scriptable;
     using UI;
     using Unit;
     using Utility;
 
     public sealed class UnitPoolManager : SingletonMono<UnitPoolManager> {
 
-        private static readonly int unitTypeLength = Enum.GetNames(typeof(UnitType)).Length - 2;
+        private static readonly int unitTypeLength = System.Enum.GetNames(typeof(UnitType)).Length - 2;
 
         [SerializeField] private UnitPoolSetup[] _poolSetup = new UnitPoolSetup[unitTypeLength];
         private readonly Dictionary<UnitType, UnitPool> _pools = new Dictionary<UnitType, UnitPool>(unitTypeLength, new UnitTypeComparer());
 
         [SerializeField] private List<UnitDeath> _poolDeath = new List<UnitDeath>();
 
+        [SerializeField] private List<UnitScriptable> _unitDataList = new List<UnitScriptable>();
+
+        public List<UnitScriptable> UnitDataList {
+            get { return this._unitDataList; }
+        }
+
         protected override void Awake() {
             base.Awake();
+
+            if(this.LoadUnitData()) {
+
+            }
 
             var managerHost = new GameObject("Units");
             managerHost.transform.SetParent(this.transform);
@@ -38,6 +48,10 @@
 
                 setup.prefab.GetComponent<UnitBase>().SetupAnimation();
             }
+        }
+
+        public override void Init() {
+            
         }
 
         public bool SpawnUnit(UnitType type, Player controller, Vector3 position) {
@@ -59,6 +73,27 @@
             this.InternalSpawnUnit(type, controller, position, spawnDistance, anglePerSpawm, spawnIndex);
             spawnIndex++;
             return true;
+        }
+        
+        private bool LoadUnitData() {
+
+            int classCount = System.Enum.GetNames(typeof(ClassType)).Length - 2;
+
+            for(int i = 0; i < classCount; i++) {
+                string className = ((ClassType)i + 1).ToString();
+                string path = "Units/" + className;
+
+                UnityEngine.Object[] temp = Resources.LoadAll(path, typeof(UnitScriptable));
+
+                for(int a = 0; a < temp.Length; a++)
+                    this._unitDataList.Add(temp[a] as UnitScriptable);
+                
+            }
+
+            if(this._unitDataList.Count > 0)
+                return true;
+            else
+                return false;
         }
 
         private IUnit InteralSpawnUnit(UnitType type, Player controller, Vector3 position) {
