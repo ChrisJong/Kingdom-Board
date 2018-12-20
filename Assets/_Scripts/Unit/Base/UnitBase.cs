@@ -11,6 +11,7 @@
     using Enum;
     using Helpers;
     using Manager;
+    using Scriptable;
     using Utility;
 
     [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
@@ -21,6 +22,9 @@
         ///// UNIT /////
         ////////////////
         [Header("UNIT")]
+        private UnitScriptable _data;
+
+        [SerializeField] protected ClassType _classType = ClassType.NONE;
         [SerializeField] protected UnitType _unitType = UnitType.NONE;
         [SerializeField] protected UnitState _unitState = UnitState.NONE;
         [SerializeField] protected float _unitRadius = 0.0f;
@@ -36,6 +40,7 @@
         public override EntityType entityType { get { return EntityType.UNIT; } }
         public LayerMask areaMask { get { return this._navMeshAgent.areaMask; } }
 
+        public ClassType classType { get { return this._classType; } }
         public UnitType unitType { get { return this._unitType; } }
         public UnitState unitState { get { return this._unitState; } set { this._unitState = value; } }
         public float unitRadius { get { return this._unitRadius; } }
@@ -407,6 +412,25 @@
             if(this._deathPrefab != null)
                 this.PlayDeathAnimation();
         }
+
+        public virtual void ApplyUpgrade(UnitUpgradeType type, float value) {
+            switch(type) {
+                case UnitUpgradeType.ATTACK:
+                this._minDamage += value;
+                this._maxDamage += value;
+                break;
+
+                case UnitUpgradeType.HEALTH:
+                this.currentHealth += value;
+                this._maxHealth += value;
+                break;
+
+                case UnitUpgradeType.STAMINA:
+                this._currentStamina += value;
+                this._maxStamina += value;
+                break;
+            }
+        }
         #endregion
 
         //////////////////
@@ -585,7 +609,7 @@
 
             if(this.currentHealth <= 0.0f) {
                 if(this.controller != null)
-                    this.controller.units.Remove(this);
+                    this.controller.RemoveUnit(this);
 
                 // NOTE: play any death animations, or add in any death effects onto the scene. 
                 this.UnitDeath();

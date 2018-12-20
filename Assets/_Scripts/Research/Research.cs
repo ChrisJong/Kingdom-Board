@@ -45,6 +45,8 @@
         private Dictionary<ClassType, List<ResearchUpgradeData>> _unitUprades = new Dictionary<ClassType, List<ResearchUpgradeData>>();
         [SerializeField] private List<ResearchCard> _cardsToDisplay = new List<ResearchCard>();
 
+        [SerializeField] private Dictionary<ClassType, List<ResearchUpgradeData>> _upgrades = new Dictionary<ClassType, List<ResearchUpgradeData>>();
+
         [SerializeField] private GameObject _researchGroup = null;
         [SerializeField] private GameObject _prefabResearchCard = null;
         [SerializeField] private GameObject _prefabBackButton = null;
@@ -117,7 +119,7 @@
             return false;
         }
 
-        public void SelectedCard(ClassType classType = ClassType.NONE, UnitType unitType = UnitType.NONE, int keyID = -1) {
+        public void SelectedCard(int keyID = -1, ClassType classType = ClassType.NONE, UnitType unitType = UnitType.NONE, UnitUpgradeType upgradeType = UnitUpgradeType.NONE) {
             if(this._state == ResearchState.CLASS) {
 
                 foreach(ResearchCard classCard in this._classCards) {
@@ -151,11 +153,17 @@
                 this._state = ResearchState.FINISHED;
 
             } else if(this._state == ResearchState.UPGRADE) {
-                UpgradeScriptable data = null;
-                if(keyID >= 0)
-                    data = this._upgradeDataList[keyID];
+                ResearchUpgradeData data = this._upgrades[classType][keyID];
 
-                //this._castle.AddNewUpgrades(data);
+                // Change the upgrade data in the research class.
+                data.ResearchUpgrade();
+
+                // Update the unit data in the controller class.
+                if(this._controller.ClassUnits[classType].Count != 0) {
+                    foreach(UnitBase unit in this._controller.ClassUnits[classType]) {
+                        this.ApplyUpgrade(unit, data);
+                    }
+                }
 
                 foreach(ResearchCard card in this._cardsToDisplay)
                     card.HideCard();
@@ -164,6 +172,26 @@
 
                 this._state = ResearchState.FINISHED;
             }
+        }
+
+        public void ApplyUpgrades(IUnit unit) {
+
+            foreach(ResearchUpgradeData data in this._upgrades[unit.classType]) {
+
+                UnitBase temp = unit as UnitBase;
+
+                if(data.ResearchCount == 0)
+                    continue;
+                else
+                    temp.ApplyUpgrade(data.UpgradeType, data.CurrentValue);
+            }
+        }
+
+        private void ApplyUpgrade(UnitBase Unit, ResearchUpgradeData data) {
+            if(data.ResearchCount == 0)
+                return;
+
+            Unit.ApplyUpgrade(data.UpgradeType, data.CurrentValue);
         }
 
         private void DisplayResearchCards() {
@@ -234,6 +262,7 @@
             foreach(ResearchUpgradeCard card in group.GetCards()) {
                 //this._cardsToDisplay.Add(card);
                 temp.Add(((ResearchCard)card));
+                card.UpdateCard();
             }
 
             this._cardsToDisplay = temp;
@@ -398,27 +427,34 @@
             for(int i = 0; i < classCount; i++) {
 
                 List<ResearchUpgradeCard> container = new List<ResearchUpgradeCard>();
+                List<ResearchUpgradeData> dataList = new List<ResearchUpgradeData>();
                 ClassType type = (ClassType)i + 1;
+
+                int count = 0;
 
                 for(int j = 0; j < upgradecount; j++) {
 
-                    UpgradeScriptable upgradeData = null;
+                    UpgradeScriptable data = null;
+                    ResearchUpgradeData upgradeData = null;
 
                     if(upgradecount != 0)
-                        upgradeData = this._upgradeDataList[j];
+                        data = this._upgradeDataList[j];
                     else
                         Debug.LogError("Upgrade DAta Is Empty: " + upgradecount.ToString());
 
-                    if(upgradeData.classType == type) {
+                    if(data.classType == type) {
                         GameObject go = Instantiate(this._prefabResearchCard, this._researchGroup.transform);
                         ResearchUpgradeCard card = go.AddComponent<ResearchUpgradeCard>() as ResearchUpgradeCard;
 
-                        go.name = upgradeData.classType.ToString() + "_" + upgradeData.upgradeType.ToString() + "_CARD";
+                        upgradeData = new ResearchUpgradeData(count, data);
+                        go.name = data.classType.ToString() + "_" + data.upgradeType.ToString() + "_CARD";
 
-                        card.Init(this, upgradeData, Vector3.zero, j);
+                        card.Init(this, data, upgradeData, Vector3.zero, count);
                         container.Add(card);
+                        dataList.Add(upgradeData);
 
                         card.HideCard();
+                        count++;
                     }
                 }
 
@@ -430,6 +466,7 @@
                     group = null;
 
                 this._upgradeCards.Add(type, group);
+                this._upgrades.Add(type, dataList);
             }
         }
 

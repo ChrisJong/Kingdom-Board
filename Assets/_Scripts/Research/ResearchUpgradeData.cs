@@ -70,10 +70,10 @@
             return false;
         }
 
-        public void ReesarchUpgrade() {
+        public void ResearchUpgrade() {
             this._researchCount++;
 
-            this.IncreaseValue();
+            //this.IncreaseValue();
 
             // apply the research to the units for the player.
         }

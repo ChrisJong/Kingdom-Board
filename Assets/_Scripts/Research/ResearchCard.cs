@@ -10,14 +10,17 @@
     using Enum;
     using System;
 
+    [RequireComponent(typeof(ResearchCardAnimation))]
     public abstract class ResearchCard : MonoBehaviour, IPointerUpHandler {
 
         #region VARIABLE
 
         [SerializeField] protected Research _research;
+        [SerializeField] protected ResearchCardAnimation _researchAnimation;
 
         [SerializeField] protected ClassType _classType = ClassType.NONE;
         [SerializeField] protected UnitType _unitType = UnitType.NONE;
+        [SerializeField] protected UnitUpgradeType _upgradeType = UnitUpgradeType.NONE;
 
         [SerializeField] protected int _keyID = -1; // -1 Doesn't belong in anything.
 
@@ -26,7 +29,7 @@
         protected RectTransform _rectTransform;
         protected Image _image;
         protected Button _button;
-        protected Text _text;
+        [SerializeField] protected Text _text;
         protected GameObject _gameObject;
 
         [SerializeField] protected Sprite _faceSprite = null;
@@ -60,7 +63,10 @@
             this._gameObject = this.gameObject as GameObject;
             this._image = this.transform.GetComponent<Image>() as Image;
             this._button = this.transform.GetComponent<Button>() as Button;
-            this._text = this.transform.GetComponent<Text>() as Text;
+            this._researchAnimation = this.transform.GetComponent<ResearchCardAnimation>() as ResearchCardAnimation;
+
+            GameObject temp = this.transform.Find("Text").gameObject;
+            this._text = temp.GetComponent<Text>() as Text;
 
             this._research = parent;
 
@@ -72,10 +78,12 @@
             this._keyID = keyID;
 
             this._rectTransform.anchoredPosition = pos;
+
+            this._researchAnimation.Init(this);
         }
 
         public virtual void Clicked() {
-            this._research.SelectedCard(this._classType, this._unitType, this._keyID);
+            this._research.SelectedCard(this._keyID, this._classType, this._unitType, this._upgradeType);
         }
 
         public virtual void DisplayCard() {
@@ -91,10 +99,13 @@
         }
 
         public virtual void SetPosition(Vector3 pos) {
+            //this._researchAnimation.PlaySpawnAnimation();
+
             if(this._rectTransform.anchoredPosition == ((Vector2)pos))
                 return;
             else
                 this._rectTransform.anchoredPosition = pos;
+
         }
         #endregion
     }

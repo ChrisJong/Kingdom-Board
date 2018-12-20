@@ -45,6 +45,7 @@
         //////////////////
         private Castle _castle;
         private IList<IUnit> _units;
+        private Dictionary<ClassType, List<IUnit>> _classUnits;
         private IList<IStructure> _structures;
         private GameObject _unitGroup = null;
         public GameObject unitGroup { get { return this._unitGroup; } }
@@ -84,6 +85,7 @@
 
         public Castle castle { get { return this._castle; } }
         public IList<IUnit> units { get { return this._units; } }
+        public Dictionary<ClassType, List<IUnit>> ClassUnits { get { return this._classUnits; } }
         public IList<IStructure> structures { get { return this._structures; } }
 
         public PlayerCamera playerCamera { get { return this._playerCamera; } }
@@ -150,6 +152,12 @@
             this._selectionState = SelectionState.FREE;
             this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation);
             this._playerSelection = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
+
+            this._classUnits = new Dictionary<ClassType, List<IUnit>>();
+            for(int i = 0; i < System.Enum.GetNames(typeof(ClassType)).Length - 2; i++) {
+                ClassType classType = ((ClassType)i + 1);
+                this._classUnits.Add(classType, new List<IUnit>());
+            }
         }
 
         public abstract void UpdatePlayer();
@@ -254,6 +262,27 @@
 
         public void RemoveFromUnitCap(int cost) {
             this._currentUnitCap -= cost;
+        }
+
+        public void AddUnit(IUnit unit) {
+            if(!this._units.Contains(unit))
+                this._units.Add(unit);
+
+            if(this._classUnits.ContainsKey(unit.classType))
+                if(!this._classUnits[unit.classType].Contains(unit))
+                    this._classUnits[unit.classType].Add(unit);
+
+            // Apply any Research upgrade to this new unit.
+            this._research.ApplyUpgrades(unit);
+        }
+
+        public void RemoveUnit(IUnit unit) {
+            if(this._units.Contains(unit))
+                this._units.Remove(unit);
+
+            if(this._classUnits.ContainsKey(unit.classType))
+                if(this._classUnits[unit.classType].Contains(unit))
+                    this._classUnits[unit.classType].Remove(unit);
         }
         #endregion
     }

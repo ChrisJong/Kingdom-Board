@@ -107,7 +107,7 @@
             unit.gameObject.ColorRenderers(controller.color);
 
             ((UnitUI)unit.uiComponent).Init();
-            controller.units.Add(unit);
+            controller.AddUnit(unit);
             unit.transform.SetParent(controller.unitGroup.transform);
 
             return unit;
@@ -125,7 +125,7 @@
             unit.gameObject.ColorRenderers(controller.color);
 
             ((UnitUI)unit.uiComponent).Init();
-            controller.units.Add(unit);
+            controller.AddUnit(unit);
             unit.transform.SetParent(controller.unitGroup.transform);
 
             return unit;

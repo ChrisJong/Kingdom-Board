@@ -6,6 +6,7 @@
     using Helpers;
     
     public interface IUnit : IHasHealth, ICanMove, ICanAttack, ISelected {
+        ClassType classType { get; }
         UnitType unitType { get; }
         LayerMask areaMask { get; }
 

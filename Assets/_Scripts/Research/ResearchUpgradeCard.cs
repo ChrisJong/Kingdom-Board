@@ -12,17 +12,28 @@
 
         #region VARIABLE
 
-        [SerializeField] UpgradeScriptable _data;
+        private UpgradeScriptable _data = null;
+        private ResearchUpgradeData _upgradeData = null;
 
         #endregion
 
         #region CLASS
 
-        public void Init(Research parent, UpgradeScriptable data, Vector3 pos, int keyID = -1) {
+        public void Init(Research parent, UpgradeScriptable data, ResearchUpgradeData upgradeData, Vector3 pos, int keyID = -1) {
             this.Init(parent, data.cardFaceSprite, data.cardBackSprite, pos, data.classType, UnitType.NONE, keyID);
 
             if(this._image != null)
                 this._image.sprite = this._faceSprite;
+            
+            this._upgradeType = data.upgradeType;
+            this._text.text = "+" + data.value;
+            this._data = data;
+            this._upgradeData = upgradeData;
+        }
+
+        public void UpdateCard() {
+            this._text.text = "+" + this._upgradeData.CurrentValue + "\r\n" +
+                              "Times Researched: " + this._upgradeData.ResearchCount.ToString();
         }
 
         #endregion
