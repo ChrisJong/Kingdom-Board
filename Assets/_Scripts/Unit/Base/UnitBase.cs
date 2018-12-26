@@ -751,6 +751,7 @@
                 if(clip.name.Contains("Attack")) {
                     // Function To Help Find Frame Event Time.
                     /*foreach(AnimationEvent evt in clip.events) {
+                        Debug.Log("Class Type: " + this._unitType.ToString());
                         Debug.Log("Event Attack Time: " + evt.time);
                         UnityEditor.EditorApplication.isPaused = true;
                     }*/

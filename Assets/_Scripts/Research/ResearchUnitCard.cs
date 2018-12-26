@@ -36,8 +36,8 @@
 
             this._classTier = data.classTier;
 
-            if(this._image != null)
-                this._image.sprite = this._faceSprite;
+            /*if(this._image != null)
+                this._image.sprite = this._faceSprite;*/
         }
 
         public override void Clicked() {
@@ -45,7 +45,9 @@
             if(this._unitType != UnitType.NONE)
                 this._unlocked = true;
 
-            base.Clicked();
+            this._cardAnimation.PlayFadeAnimation();
+
+            this.Finished();
         }
         #endregion
     }

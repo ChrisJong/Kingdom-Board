@@ -16,7 +16,7 @@
         #region VARIABLE
 
         [SerializeField] protected Research _research;
-        [SerializeField] protected ResearchCardAnimation _researchAnimation;
+        [SerializeField] protected ResearchCardAnimation _cardAnimation;
 
         [SerializeField] protected ClassType _classType = ClassType.NONE;
         [SerializeField] protected UnitType _unitType = UnitType.NONE;
@@ -25,33 +25,37 @@
         [SerializeField] protected int _keyID = -1; // -1 Doesn't belong in anything.
 
         [SerializeField] protected bool _toggled = false;
+        [SerializeField] protected bool _isFrontFace = false;
+        [SerializeField] protected bool _ready = false;
 
         protected RectTransform _rectTransform;
         protected Image _image;
         protected Button _button;
-        [SerializeField] protected Text _text;
+        protected Text _text;
         protected GameObject _gameObject;
 
         [SerializeField] protected Sprite _faceSprite = null;
         [SerializeField] protected Sprite _backSprite = null;
 
-        public bool Toggled {
-            get { return this._toggled; }
-        }
+        public ResearchCardAnimation CardAnimation { get { return this._cardAnimation; } }
 
-        public ClassType ClassType {
-            get { return this._classType; }
-        }
+        public bool Toggled { get { return this._toggled; } }
+        public bool IsFrontFace { get { return this._isFrontFace; } }
+        public bool Ready { get { return this._ready; } set { this._ready = value; if(value) this._research.CardsReady++; } }
 
-        public UnitType UnitType {
-            get { return this._unitType; }
-        }
+        public ClassType ClassType { get { return this._classType; } }
+        public UnitType UnitType { get { return this._unitType; } }
+        public UnitUpgradeType UpgradeType { get { return this._upgradeType; } }
+
+        public RectTransform rectTransform { get { return this._rectTransform; } }
+        public Image image { get { return this._image; } }
 
         #endregion
 
         #region UNITY
         public void OnPointerUp(PointerEventData eventData) {
-            this.Clicked();
+            if(this._cardAnimation.State == CardState.FINISHED)
+                this.Clicked();
         }
         #endregion
 
@@ -63,7 +67,7 @@
             this._gameObject = this.gameObject as GameObject;
             this._image = this.transform.GetComponent<Image>() as Image;
             this._button = this.transform.GetComponent<Button>() as Button;
-            this._researchAnimation = this.transform.GetComponent<ResearchCardAnimation>() as ResearchCardAnimation;
+            this._cardAnimation = this.transform.GetComponent<ResearchCardAnimation>() as ResearchCardAnimation;
 
             GameObject temp = this.transform.Find("Text").gameObject;
             this._text = temp.GetComponent<Text>() as Text;
@@ -79,10 +83,18 @@
 
             this._rectTransform.anchoredPosition = pos;
 
-            this._researchAnimation.Init(this);
+            this._isFrontFace = false;
+            if(this._image != null)
+                this._image.sprite = this._backSprite;
+
+            this._cardAnimation.Init(this);
         }
 
         public virtual void Clicked() {
+            StartCoroutine(this._cardAnimation.RotateAndFade());
+        }
+
+        public virtual void Finished() {
             this._research.SelectedCard(this._keyID, this._classType, this._unitType, this._upgradeType);
         }
 
@@ -93,7 +105,7 @@
         }
 
         public virtual void HideCard() {
-            this._toggled = false;
+            this.ResetCard();
 
             this._gameObject.SetActive(false);
         }
@@ -106,6 +118,31 @@
             else
                 this._rectTransform.anchoredPosition = pos;
 
+        }
+
+        public virtual void ChangeFace() {
+            if(this._isFrontFace) {
+
+                this._isFrontFace = false;
+                this._image.sprite = this._backSprite;
+
+            } else {
+
+                this._isFrontFace = true;
+                this._image.sprite = this._faceSprite;
+
+            }
+        }
+
+        public virtual void ResetCard() {
+            this._toggled = false;
+            this._ready = false;
+
+            if(this._isFrontFace)
+                this.ChangeFace();
+
+            this._image.color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+            this._rectTransform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         }
         #endregion
     }

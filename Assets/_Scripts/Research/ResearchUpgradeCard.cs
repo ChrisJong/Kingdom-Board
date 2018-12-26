@@ -22,8 +22,8 @@
         public void Init(Research parent, UpgradeScriptable data, ResearchUpgradeData upgradeData, Vector3 pos, int keyID = -1) {
             this.Init(parent, data.cardFaceSprite, data.cardBackSprite, pos, data.classType, UnitType.NONE, keyID);
 
-            if(this._image != null)
-                this._image.sprite = this._faceSprite;
+            /*if(this._image != null)
+                this._image.sprite = this._faceSprite;*/
             
             this._upgradeType = data.upgradeType;
             this._text.text = "+" + data.value;
@@ -36,6 +36,12 @@
                               "Times Researched: " + this._upgradeData.ResearchCount.ToString();
         }
 
+        public override void Clicked() {
+
+            this._cardAnimation.PlayFadeAnimation();
+
+            this.Finished();
+        }
         #endregion
     }
 }

@@ -20,7 +20,8 @@
         [SerializeField] private Player _controller;
         [SerializeField] private Castle _castle;
 
-        [SerializeField] private ResearchState _state = ResearchState.NONE;
+        [SerializeField] private ResearchState _currentState = ResearchState.NONE;
+        [SerializeField] private ResearchState _previousState = ResearchState.NONE;
 
         [SerializeField] private ClassType _classSelected = ClassType.NONE;
         [SerializeField] private ClassType _previousClassSelected = ClassType.NONE;
@@ -28,6 +29,7 @@
 
         [SerializeField] private int[] _researchTurns = { 1, 3, 6, 12, 36 };
         [SerializeField] private int _researchCount = 0;
+        [SerializeField] private int _cardsReady = 0;
 
         [SerializeField] private bool _isUnitResearch = false;
 
@@ -35,6 +37,9 @@
         [SerializeField] private float _padding = 50.0f;
         [SerializeField] private float _cardWidth = 150.0f;
         [SerializeField] private float _cardHeight = 210.5f;
+
+        [SerializeField] private ResearchCard _previousCardSelected = null;
+        [SerializeField] private ResearchCard _currentCardSelected = null;
 
         [SerializeField] private List<ClassScriptable> _classDataList = new List<ClassScriptable>();
         [SerializeField] private List<UpgradeScriptable> _upgradeDataList = new List<UpgradeScriptable>(); // List that holds all the upgrades available.
@@ -53,12 +58,23 @@
 
         private Button _backButton;
 
-        public int ResearchCount {
-            get { return this._researchCount; }
-        }
+        public int ResearchCount { get { return this._researchCount; } }
+        public int CardsReady { get { return this._cardsReady; } set { this._cardsReady = value; } }
 
-        public ResearchState State {
-            get { return this._state; }
+        public ResearchState CurrentState { get { return this._currentState; } }
+        public ResearchState PreviousState { get { return this._previousState; } }
+
+        #endregion
+
+        #region UNITY
+
+        private void Update() {
+            if(this._currentState != ResearchState.BACK)
+                return;
+            else {
+                if(this._cardsReady == this._cardsToDisplay.Count)
+                    this.Back();
+            }
         }
 
         #endregion
@@ -83,7 +99,7 @@
                 rectTransform.anchoredPosition = pos;
 
                 this._backButton = temp.GetComponent<Button>() as Button;
-                this._backButton.onClick.AddListener(Back);
+                this._backButton.onClick.AddListener(BackButton);
                 this._backButton.gameObject.SetActive(false);
             }
 
@@ -96,53 +112,69 @@
 
         public bool CheckResearchPhase(int currentTurn) {
 
-            Debug.Log("Current Turn: " + currentTurn.ToString());
+            this._previousState = ResearchState.NONE;
+            this._currentState = ResearchState.START;
 
             if(this.ResearchCount > this._researchTurns.Length) {
-                this._state = ResearchState.CLASS;
+                Debug.Log("Current Turn: " + currentTurn.ToString() + " - " + " Upgrade Research");
                 this._isUnitResearch = false;
                 this.DisplayResearchCards();
                 return false;
             }
 
             if(currentTurn == this._researchTurns[this._researchCount]) {
+                Debug.Log("Current Turn: " + currentTurn.ToString() + " - " + " Unit Research");
+
                 this._researchCount++;
-                this._state = ResearchState.CLASS;
                 this._isUnitResearch = true;
                 this.DisplayResearchCards();
                 return true;
             }
 
-            this._state = ResearchState.CLASS;
+            Debug.Log("Current Turn: " + currentTurn.ToString() + " - " + " Upgrade Research");
+
             this._isUnitResearch = false;
             this.DisplayResearchCards();
             return false;
         }
 
         public void SelectedCard(int keyID = -1, ClassType classType = ClassType.NONE, UnitType unitType = UnitType.NONE, UnitUpgradeType upgradeType = UnitUpgradeType.NONE) {
-            if(this._state == ResearchState.CLASS) {
+            if(this._currentState == ResearchState.CLASS) {
 
                 foreach(ResearchCard classCard in this._classCards) {
-                    classCard.HideCard();
+                    if(classCard.ClassType == classType) {
+                        this._currentCardSelected = classCard;
+                    } else {
+                        classCard.CardAnimation.PlayFadeAnimation();
+                    }
                 }
 
                 this._classSelected = classType;
                 this._unitSelected = unitType;
 
-                if(this._isUnitResearch)
-                    this._state = ResearchState.UNIT;
-                else
-                    this._state = ResearchState.UPGRADE;
+                if(this._isUnitResearch) {
+                    this._previousState = this._currentState;
+                    this._currentState = ResearchState.UNIT;
+                } else {
+                    this._previousState = this._currentState;
+                    this._currentState = ResearchState.UPGRADE;
+                }
 
                 this._backButton.gameObject.SetActive(true);
                 this.DisplayResearchCards();
 
-            } else if(this._state == ResearchState.UNIT) {
+            } else if(this._currentState == ResearchState.UNIT) {
 
                 this._castle.UnlockUnitToSpawn(classType, unitType);
 
-                for(int i = 0; i < this._cardsToDisplay.Count; i++)
-                    this._cardsToDisplay[i].HideCard();
+                for(int i = 0; i < this._cardsToDisplay.Count; i++) {
+                    if(this._cardsToDisplay[i].UnitType != unitType)
+                        StartCoroutine(this._cardsToDisplay[i].CardAnimation.RotateAndFade());
+                    else {
+                        this._previousCardSelected = this._currentCardSelected;
+                        this._currentCardSelected = this._cardsToDisplay[i];
+                    }
+                }
 
                 this._backButton.gameObject.SetActive(false);
 
@@ -150,9 +182,10 @@
                 this._classSelected = classType;
                 this._unitSelected = unitType;
 
-                this._state = ResearchState.FINISHED;
+                this._previousState = this._currentState;
+                this._currentState = ResearchState.FINISHED;
 
-            } else if(this._state == ResearchState.UPGRADE) {
+            } else if(this._currentState == ResearchState.UPGRADE) {
                 ResearchUpgradeData data = this._upgrades[classType][keyID];
 
                 // Change the upgrade data in the research class.
@@ -165,13 +198,35 @@
                     }
                 }
 
-                foreach(ResearchCard card in this._cardsToDisplay)
-                    card.HideCard();
+                foreach(ResearchCard card in this._cardsToDisplay) {
+                    if(card.UpgradeType != upgradeType) {
+                        StartCoroutine(card.CardAnimation.RotateAndFade());
+                    } else {
+                        this._previousCardSelected = this._currentCardSelected;
+                        this._currentCardSelected = card;
+                    }
+                }
 
                 this._backButton.gameObject.SetActive(false);
 
-                this._state = ResearchState.FINISHED;
+                this._previousState = this._currentState;
+                this._currentState = ResearchState.FINISHED;
             }
+        }
+
+        public void Back() {
+            //this._previousState = this._currentState;
+            this._currentState = ResearchState.CLASS;
+            this._backButton.gameObject.SetActive(false);
+            this._cardsReady = 0;
+
+            Debug.Log("Back calls");
+
+            foreach(ResearchCard card in this._cardsToDisplay) {
+                card.CardAnimation.PlayFadeAnimation();
+            }
+
+            this.DisplayResearchCards();
         }
 
         public void ApplyUpgrades(IUnit unit) {
@@ -197,9 +252,53 @@
         private void DisplayResearchCards() {
 
             //this._cardsToDisplay.Clear();
-            //this._cardsToDisplay = null;
+            //this._cardsToDisplay = null
 
-            if(this._state == ResearchState.CLASS) {
+            if(this._currentState == ResearchState.UNIT) {
+                this.DisplayUnitCards();
+            } else if(this._currentState == ResearchState.UPGRADE) {
+                this.DisplayUpgradeCards();
+            } else {
+                this.DisplayClassCards();
+            }
+        }
+
+        private void DisplayClassCards() {
+            if(this._currentState == ResearchState.START) {
+
+                List<ResearchCard> temp = new List<ResearchCard>();
+
+                foreach(ResearchCard classCard in this._classCards) {
+
+                    if(this._isUnitResearch) { // Unit Research
+                        if(classCard.ClassType == this._previousClassSelected)
+                            continue;
+                        if(this._unitCards[classCard.ClassType].AnyCardsToUnlock()) {
+                            classCard.DisplayCard();
+                            temp.Add(classCard);
+                        }
+                    } else { // Upgrade Research
+                        if(!this._unitCards[classCard.ClassType].IsBaseTierUnlocked()) {
+                            continue;
+                        } else {
+                            classCard.DisplayCard();
+                            temp.Add(classCard);
+                        }
+                    }
+                }
+
+                this._cardsToDisplay = temp;
+                this.RepositionCards();
+
+                this._previousState = this._currentState;
+                this._currentState = ResearchState.CLASS;
+
+                foreach(ResearchCard card in this._cardsToDisplay) {
+                    card.ResetCard();
+                    card.CardAnimation.PlaySpawnAnimation();
+                }
+
+            } else {
 
                 List<ResearchCard> temp = new List<ResearchCard>();
 
@@ -223,12 +322,15 @@
                 }
 
                 this._cardsToDisplay = temp;
-                this.RepositionCards();
 
-            } else if(this._state == ResearchState.UNIT) {
-                this.DisplayUnitCards();
-            } else if(this._state == ResearchState.UPGRADE) {
-                this.DisplayUpgradeCards();
+                this._previousState = this._currentState;
+                this._currentState = ResearchState.CLASS;
+
+                foreach(ResearchClassCard card in this._cardsToDisplay) {
+                    card.SetPosition(Vector3.zero);
+                }
+
+                this.SetMovePositions();
             }
         }
 
@@ -248,8 +350,11 @@
             if(this._cardsToDisplay.Count != 0) {
                 foreach(ResearchCard card in this._cardsToDisplay) {
                     card.DisplayCard();
-                    this.RepositionCards();
+                    card.SetPosition(this._currentCardSelected.rectTransform.anchoredPosition);
                 }
+
+                this.SetMovePositions();
+
             } else {
                 Debug.LogWarning("THERE ARE NO CARDS TO DISPLAY: " + this._cardsToDisplay.Count.ToString());
             }
@@ -269,12 +374,14 @@
 
             foreach(ResearchCard card in this._cardsToDisplay) {
                 card.DisplayCard();
-                this.RepositionCards();
+                card.SetPosition(this._currentCardSelected.rectTransform.anchoredPosition);
             }
+
+            this.SetMovePositions();
         }
 
         private void HideCards() {
-            if(this._state == ResearchState.CLASS) {
+            if(this._currentState == ResearchState.CLASS) {
                 foreach(ResearchCard card in this._classCards) {
                     if(card.Toggled)
                         card.HideCard();
@@ -291,22 +398,25 @@
             }
         }
 
-        private void Back() {
-            if(this._state == ResearchState.UNIT) {
+        private void BackButton() {
+            if(this._currentState == ResearchState.UNIT) {
 
-                this.HideCards();
-                this._state = ResearchState.CLASS;
-                this._backButton.gameObject.SetActive(false);
+                foreach(ResearchUnitCard card in this._cardsToDisplay) {
+                    card.CardAnimation.Back(Vector3.zero);
+                }
 
-                this.DisplayResearchCards();
+                this._previousState = this._currentState;
+                this._currentState = ResearchState.BACK;
 
-            } else if(this._state == ResearchState.UPGRADE) {
+            } else if(this._currentState == ResearchState.UPGRADE) {
 
-                this.HideCards();
-                this._state = ResearchState.CLASS;
-                this._backButton.gameObject.SetActive(false);
+                
+                foreach(ResearchUpgradeCard card in this._cardsToDisplay) {
+                    card.CardAnimation.Back(Vector3.zero);
+                }
 
-                this.DisplayResearchCards();
+                this._previousState = this._currentState;
+                this._currentState = ResearchState.BACK;
             }
         }
 
@@ -326,6 +436,29 @@
                     startPos += 200.0f;
                 }
             }
+        }
+
+        private void SetMovePositions() {
+            float startPos = -200.0f; // For 3 cards.
+
+            for(int i = 0; i < this._cardsToDisplay.Count; i++) {
+                if(this._cardsToDisplay.Count == 1) {
+                    this._cardsToDisplay[i].CardAnimation.SetMoveTo(Vector3.zero);
+                } else if(this._cardsToDisplay.Count == 2) {
+                    if(i == 0) // Left
+                        this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3(-100.0f, 0.0f, 0.0f));
+                    else // Right
+                        this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3(100.0f, 0.0f, 0.0f));
+                } else if(this._cardsToDisplay.Count > 2) {
+                    Debug.Log("Card: " + this._cardsToDisplay[i].ClassType.ToString());
+                    this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3(startPos, 0.0f, 0.0f));
+                    startPos += 200.0f;
+                }
+            }
+        }
+
+        private void RepositionSelectedCard() {
+
         }
 
         private bool LoadClassData() {

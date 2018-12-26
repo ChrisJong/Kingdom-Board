@@ -53,7 +53,6 @@
         public GameObject structureGroup { get { return this._structureGroup; } }
 
         private Research _research;
-        private Dictionary<ClassType, List<UpgradeScriptable>> _unitUpgrades = new Dictionary<ClassType, List<UpgradeScriptable>>();
 
         ////////////////
         //// Camera ////
