@@ -30,7 +30,7 @@
         private int _currentUnitCap;
         private int _maxUnitCap;
         private bool _isAttacking;
-        private bool _turnEnded;
+        [SerializeField] private bool _turnEnded;
         private Transform _spawnLocation;
         private Color _color;
         [SerializeField] private PlayerState _state = PlayerState.NONE;
@@ -161,12 +161,28 @@
 
         public abstract void UpdatePlayer();
 
-        public void StartTurn() {
+        public void SetupNewTurn() {
+
+            this._state = PlayerState.START;
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(true);
 
+            this._uiComponent.ShowBanner();
+        } 
+
+        public void StartTurn() {
+
+            if(this._isAttacking) {
+                this._state = PlayerState.ATTACKING;
+                GameManager.instance.StartPlayTimer();
+            } else
+                this._state = PlayerState.DEFENDING;
+
+            // (For SinglePlayer) Turn the camera off and hide the ui.
+            this._playerCamera.gameObject.SetActive(true);
             this.uiComponent.Display();
+            this.uiComponent.ShowBanner();
 
             if(this._state == PlayerState.ATTACKING) {
                 this._castle.CheckSpawnQueue();
@@ -178,7 +194,6 @@
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(false);
-
             this._uiComponent.Hide();
 
             if(attacking) {
@@ -208,6 +223,7 @@
 
             this._uiComponent.Hide();
 
+            GameManager.instance.StopPlayTimer();
             GameManager.instance.CheckRound();
         }
 

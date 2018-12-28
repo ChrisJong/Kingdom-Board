@@ -181,6 +181,13 @@
 
         public void RemoveFromQueue(QueueButton unit) {
             if(this._queueList.Contains(unit)) {
+
+                Vector3 pos = unit.rectTransfrom.anchoredPosition;
+
+                Debug.Log("Queue Button Position: " + pos.ToString());
+
+                ((RectTransform)this._btnOpenList.transform).anchoredPosition = pos;
+
                 uint id = unit.id;
                 this._queueList.Remove(unit);
                 this._castle.RemoveUnitFromQueue(id);

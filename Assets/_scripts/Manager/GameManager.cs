@@ -21,15 +21,22 @@
         [SerializeField] private int _indexOnAttack = 0;
         [SerializeField] private int _indexInView = 0;
 
+        [SerializeField] private float _countdown = 0.0f;
+        private float _countdownLimit = 60.0f;
+
         private List<Player> _players = new List<Player>();
         private List<Transform> _spawnPoints = new List<Transform>();
 
         [SerializeField] private Player _playerOnAttack = null;
         [SerializeField] private Player _playerInView = null;
 
+        private IEnumerator _timer;
+
         public GameObject _prefabPlayer = null;
 
         public int RoundCount { get { return this._roundCount; } }
+
+        public float Countdown { get { return this._countdown; } }
 
         public Player PlayerOnAttack { get { return this._playerOnAttack; } }
         public Player PlayerInView { get { return this._playerInView; } }
@@ -43,6 +50,9 @@
         }
 
         private void Start() {
+            this._countdown = this._countdownLimit;
+            this._timer = this.StartCountdown();
+
             this.CreatePlayers();
 
             this._roundCount++;
@@ -71,6 +81,15 @@
             }
         }
 
+        public void StartPlayTimer() {
+            StopCoroutine(this._timer);
+            StartCoroutine(this._timer);
+        }
+
+        public void StopPlayTimer() {
+            StopCoroutine(this._timer);
+        }
+
         /// <summary>
         /// Method for Debugging Purposes swtich to the next player and changes the camera.
         /// </summary>
@@ -85,14 +104,19 @@
             this._playerInView = this._players[this._indexInView];
 
             // Enable there camera and Ui and start there turn.
-            this._playerInView.StartTurn();
+            //this._playerInView.StartTurn();
+            this._playerInView.SetupNewTurn();
         }
 
         private void NewRound() {
+            this._countdown = this._countdownLimit;
+
             foreach(Player player in this._players) {
                 if(player == this._playerOnAttack) {
                     player.NewTurn(true);
-                    player.StartTurn();
+
+                    player.SetupNewTurn();
+                    //player.StartTurn();
                 } else {
                     player.NewTurn(false);
                     //p.StartTurn();
@@ -165,6 +189,40 @@
                     this._players[i].Init(false);
                 }
             }
+        }
+
+        private IEnumerator StartCountdown() {
+            if(this._countdown <= 0.0f && this._playerInView.turnEnded) {
+                // end the players turns
+                this._playerInView.EndTurn();
+                this._countdown = this._countdownLimit;
+                yield break;
+            }
+
+            this._countdown = this._countdownLimit;
+
+            do {
+
+                this._countdown -= Time.deltaTime;
+                this._playerInView.uiComponent.UpdareTimer(this._countdown);
+
+                if(this._playerInView.turnEnded)
+                    break;
+
+                yield return new WaitForEndOfFrame();
+
+            } while(this._countdown > 0.0f && !this._playerInView.turnEnded);
+
+            this._countdown = 0.0f;
+            this._playerInView.uiComponent.UpdareTimer(this._countdown);
+
+            // End players turn.
+            if(this._countdown <= 0.0f)
+                this._playerInView.EndTurn();
+
+            this._countdown = this._countdownLimit;
+
+            yield return null;
         }
         #endregion
     }

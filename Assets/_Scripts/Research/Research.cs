@@ -457,10 +457,6 @@
             }
         }
 
-        private void RepositionSelectedCard() {
-
-        }
-
         private bool LoadClassData() {
             Object[] temp = Resources.LoadAll("Class", typeof(ClassScriptable));
 

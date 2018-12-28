@@ -46,7 +46,6 @@
         }
         #endregion
 
-
         #region CLASS
 
         public void Init(ResearchCard card) {
