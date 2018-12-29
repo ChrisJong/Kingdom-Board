@@ -182,7 +182,7 @@
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(true);
             this.uiComponent.Display();
-            this.uiComponent.ShowBanner();
+            //this.uiComponent.ShowBanner();
 
             if(this._state == PlayerState.ATTACKING) {
                 this._castle.CheckSpawnQueue();
