@@ -29,7 +29,7 @@ public class unitTraining_ribbon : MonoBehaviour
         Image ribbonImage = GetComponent<Image>();
         ribbonImage.color = _classColor;
 
-        Vector3 pos = new Vector3(-30, _yPos, 0);
+        Vector3 pos = new Vector3(-390, _yPos, 0);
         transform.localPosition = pos;
 
         PlaySpawnAnimation();

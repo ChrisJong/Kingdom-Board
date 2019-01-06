@@ -20,7 +20,7 @@ public class unitTraining_test : MonoBehaviour
     private bool isShowingUnitTrainingPanel = false;
 
     private float showPanelXPos = 420f;
-    private float hidePanelXPos = -290f;
+    private float hidePanelXPos = -270f;
 
     private float panelMoveSpeed = 50f;
     private bool panelIsMoving = false;
@@ -32,15 +32,21 @@ public class unitTraining_test : MonoBehaviour
 
     private float ribbonStartingYPos = 0f;
     private float ribbonHeight = 60f;
-    private float ribbonVerticalPadding = 5f;
+    private float ribbonVerticalPadding = 2f;
     private float ribbonMoveSpeed = 10f;
 
     [SerializeField] private Sprite[] unitSprites = new Sprite[9];
     [SerializeField] private string[] unitNames = new string[9];
 
+    [SerializeField] private Button[] unitButtons = new Button[9];
+    [SerializeField] private Image[] lockedImages = new Image[9];
+
     [SerializeField] private Color meleeColor;
     [SerializeField] private Color rangedColor;
     [SerializeField] private Color magicColor;
+
+    private enum TurnState { attack, defend };
+    private TurnState currentTurnState = TurnState.attack;
 
     private void Update()
     {
