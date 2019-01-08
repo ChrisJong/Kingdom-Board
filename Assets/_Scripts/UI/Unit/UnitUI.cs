@@ -11,7 +11,7 @@
     using Enum;
     using Unit;
 
-    public abstract class UnitUI : ScreenSpaceUI {
+    public abstract class UnitUI : ScreenSpace {
 
         #region VARIABLE
         public UnitBase unit;
@@ -32,115 +32,24 @@
         #endregion
         
         #region UNITY
-        protected override void Awake() {
-            if(this.unit == null) {
-                this.unit = this.transform.GetComponent<UnitBase>();
-                this.controller = this.unit.controller;
-            }
-
-            foreach(Renderer render in this.GetComponentsInChildren<Renderer>()) {
-                foreach(Material mat in render.materials) {
-                    this._unitMaterials.Add(mat);
-                }
-            }
-
-            this.FindUI(this.transform, UIValues.Unit.UNITUI);
-            base.Awake();
-
-            if(this._btnEnd == null)
-                this._btnEnd = this.FindButton(this._tSelected, UIValues.Unit.ENDBUTTON);
-
-            if(this._btnCancel == null)
-                this._btnCancel = this.FindButton(this._tSelected, UIValues.Unit.CANCELBUTTON);
-            this._btnCancel.gameObject.SetActive(false);
-
-            if(this._btnAttack == null)
-                this._btnAttack = this.FindButton(this._tSelected, UIValues.Unit.ATTACKBUTTON);
-
-            if(this._btnMove == null)
-                this._btnMove = this.FindButton(this._tSelected, UIValues.Unit.MOVEBUTTON);
-
-            if(this._btnFinishMove == null)
-                this._btnFinishMove = this.FindButton(this._tSelected, "Finish_BTN");
-            this._btnFinishMove.gameObject.SetActive(false);
-
-            if(this._textInfo == null)
-                this._textInfo = this._tHover.Find(UIValues.Unit.INFOTEXT).GetComponent<Text>();
-        }
-
-        protected virtual void OnEnable() {
-            if(this.controller == null)
-                this.controller = this.unit.controller;
-
-            this._btnEnd.onClick.AddListener(this.End);
-            this._btnCancel.onClick.AddListener(this.Cancel);
-            this._btnAttack.onClick.AddListener(this.InitiateAttack);
-            this._btnMove.onClick.AddListener(this.InitiateMove);
-            this._btnFinishMove.onClick.AddListener(this.FinishMove);
-        }
-
-        protected virtual void OnDisable() {
-            this._btnEnd.onClick.RemoveListener(this.End);
-            this._btnCancel.onClick.RemoveListener(this.Cancel);
-            this._btnAttack.onClick.RemoveListener(this.InitiateAttack);
-            this._btnMove.onClick.RemoveListener(this.InitiateMove);
-            this._btnFinishMove.onClick.RemoveListener(this.FinishMove);
-        }
-
-        protected override void OnMouseEnter() {
-            base.OnMouseEnter();
-
-            this.ActivateOutline(Color.green);
-        }
-
-        protected override void OnMouseExit() {
-            base.OnMouseExit();
-
-            this.DeactivateOutline();
-        }
         #endregion
 
         #region CLASS
-        public void Init() {
+        public override void Init() {
             this.UpdateInfo();
         }
 
         public override void UpdateUI() {
-            base.UpdateUI();
-
             this.UpdateInfo();
         }
 
-        public override void Display() {
-            base.Display();
-
-            if(this._goSelected.activeSelf)
-                return;
-
-            this._goSelected.SetActive(true);
+        public override void DisplayUI() {
         }
 
-        public override void Hide() {
-            base.Hide();
-
-            if(!this._goSelected.activeSelf)
-                return;
-
-            this.ResetUI();
-            this._goSelected.SetActive(false);
-
-            if(this._goHover.activeSelf)
-                this._goHover.SetActive(false);
+        public override void HideUI() {
         }
 
-        protected override void ResetUI() {
-            this._btnCancel.gameObject.SetActive(false);
-            this._btnFinishMove.gameObject.SetActive(false);
-            this._btnAttack.gameObject.SetActive(true);
-            this._btnMove.gameObject.SetActive(true);
-            this._btnEnd.gameObject.SetActive(true);
-            this._attacking = false;
-            this._moving = false;
+        public override void ResetUI() {
         }
 
         protected virtual void ActivateOutline(Color color, float width = 0.03f) {
@@ -240,7 +149,7 @@
             this.unit.Finished();
             this.ResetUI();
             this.UpdateInfo();
-            this.Hide();
+            this.HideUI();
         }
 
         private void UpdateInfo() {

@@ -68,11 +68,11 @@
         ////////////
         //// UI ////
         ////////////
-        private PlayerUI _uiComponent;
+        protected PlayerUI _ui;
 
-        public PlayerUI uiComponent {
-            get { return this._uiComponent; }
-            set { this._uiComponent = value; } }
+        public PlayerUI UI {
+            get { return this._ui; }
+            set { this._ui = value; } }
 
         ///////////////////////
         //// Getter/Setter ////
@@ -112,6 +112,9 @@
 
         #region CLASS
         public virtual void Create(Transform spawnLocation, uint id = 0) {
+
+            this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+
             this._unitGroup = new GameObject("_units");
             this._unitGroup.transform.SetParent(this.transform);
             this._structureGroup = new GameObject("_structures");
@@ -121,15 +124,9 @@
             this._name = gameObject.name;
             this._turnEnded = false;
 
-            this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-
             this._spawnLocation = spawnLocation;
 
             this._castle = StructurePoolManager.instance.GetStartCastle(this);
-
-            GameObject ui = this.transform.Find(UIValues.UISUFFIX).gameObject;
-            this._uiComponent = this.gameObject.AddComponent<PlayerUI>();
-            this._uiComponent.controller = this;
 
             this._research = this.transform.GetComponent<Research>() as Research;
             if(this._research == null)
@@ -140,12 +137,12 @@
         public virtual void Init(bool attacking) {
             if(attacking) {
                 this._isAttacking = attacking;
-                this._uiComponent.Hide();
-                this._state = PlayerState.ATTACKING;
+                this._ui.HideUI();
+                this._state = PlayerState.START;
             } else {
                 this._isAttacking = false;
-                this._uiComponent.Hide();
-                this._state = PlayerState.DEFENDING;
+                this._ui.HideUI();
+                this._state = PlayerState.START;
             }
 
             this._selectionState = SelectionState.FREE;
@@ -168,7 +165,7 @@
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(true);
 
-            this._uiComponent.ShowBanner();
+            this._ui.ShowBanner();
         } 
 
         public void StartTurn() {
@@ -181,7 +178,7 @@
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(true);
-            this.uiComponent.Display();
+            this.UI.DisplayUI();
             //this.uiComponent.ShowBanner();
 
             if(this._state == PlayerState.ATTACKING) {
@@ -194,7 +191,7 @@
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(false);
-            this._uiComponent.Hide();
+            this._ui.HideUI();
 
             if(attacking) {
                 this._state = PlayerState.ATTACKING;
@@ -221,7 +218,7 @@
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(false);
 
-            this._uiComponent.Hide();
+            this._ui.HideUI();
 
             GameManager.instance.StopPlayTimer();
             GameManager.instance.CheckRound();

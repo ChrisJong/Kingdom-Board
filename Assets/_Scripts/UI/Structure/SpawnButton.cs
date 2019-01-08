@@ -18,13 +18,20 @@
 
         [SerializeField] private bool _isLocked = true;
 
+        [SerializeField] private Sprite _unitIconSprite;
         [SerializeField] private Sprite _lockedSprite;
-        [SerializeField] private Sprite _unlockedSprite;
+        [SerializeField] private Sprite _backgroundSprite;
 
         private RectTransform _rectTransform;
-        private GameObject _gameObject;
         private Button _button;
+
+        private GameObject _gameObject;
+        private GameObject _unitIconObject;
+        private GameObject _lockedObject;
+
         private Image _image;
+        private Image _unitIconImage;
+        private Image _lockedmage;
 
         public ClassType ClassType {
             get { return this._classType; }
@@ -44,7 +51,7 @@
 
         public void OnPointerUp(PointerEventData eventData) {
             if(!this._isLocked)
-                this._Castle.AddToQueue(this._unitType, this._unlockedSprite);
+                this._Castle.AddToQueue(this._unitType, this._unitIconSprite);
             else
                 return;
         }
@@ -53,7 +60,7 @@
 
         #region CLASS
 
-        public void Init(Castle castle, Sprite unlockedSprite, Sprite lockedSprite, ClassType classType = ClassType.NONE, UnitType unitType = UnitType.NONE, bool locked = true) {
+        public void Init(Castle castle, Sprite unitIconSprite, Sprite lockedSprite, ClassType classType = ClassType.NONE, UnitType unitType = UnitType.NONE, bool locked = true) {
 
             this._Castle = castle; 
 
@@ -65,7 +72,7 @@
             this._classType = classType;
             this._unitType = unitType;
 
-            this._unlockedSprite = unlockedSprite;
+            this._unitIconSprite = unitIconSprite;
             this._lockedSprite = lockedSprite;
 
             this._isLocked = locked;
@@ -77,8 +84,8 @@
 
             } else {
 
-                if(this._unlockedSprite != null)
-                    this._image.sprite = this._unlockedSprite;
+                if(this._unitIconSprite != null)
+                    this._image.sprite = this._unitIconSprite;
 
             }
         } 
@@ -90,7 +97,7 @@
 
         public void Unlock() {
             this._isLocked = false;
-            this._image.sprite = this._unlockedSprite;
+            this._image.sprite = this._unitIconSprite;
         }
 
         #endregion

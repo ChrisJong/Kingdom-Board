@@ -147,6 +147,9 @@
 
                 this._state = CardState.ROTATE;
 
+                if(this._card.GetType() == typeof(ResearchUpgradeCard))
+                    ((ResearchUpgradeCard)this._card).ActivateText(false);
+
                 while(this._yCoord < 90.0f) {
 
                     this.RotateCard();
@@ -155,6 +158,9 @@
 
                 this._card.ChangeFace();
                 this.FlipXScale();
+
+                if(this._card.GetType() == typeof(ResearchUpgradeCard))
+                    ((ResearchUpgradeCard)this._card).ActivateText(true);
 
                 while(this._yCoord < 180.0f) {
 
@@ -239,6 +245,9 @@
                 }
             }
 
+            if(this._card.GetType() == typeof(ResearchUpgradeCard))
+                ((ResearchUpgradeCard)this._card).ActivateText(false);
+
             while(this._yCoord < 90.0f) {
 
                 this.RotateCard();
@@ -247,6 +256,9 @@
 
             this._card.ChangeFace();
             this.FlipXScale();
+
+            if(this._card.GetType() == typeof(ResearchUpgradeCard))
+                ((ResearchUpgradeCard)this._card).ActivateText(true);
 
             while(this._yCoord < 180.0f) {
 

@@ -13072,6 +13072,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1470373712052640, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
     - target: {fileID: 4667649126367802, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -13103,6 +13107,18 @@ PrefabInstance:
     - target: {fileID: 4667649126367802, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}
       propertyPath: m_RootOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667649126367802, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667649126367802, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667649126367802, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}

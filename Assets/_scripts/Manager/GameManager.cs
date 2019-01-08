@@ -32,7 +32,8 @@
 
         private IEnumerator _timer;
 
-        public GameObject _prefabPlayer = null;
+        public GameObject aiPrefab = null;
+        public GameObject humanPrefab = null;
 
         public int RoundCount { get { return this._roundCount; } }
 
@@ -163,8 +164,11 @@
 
         private void CreatePlayers() {
             for(int i = 0; i < this._numberOfPlayers; i++) {
-                GameObject temp = Instantiate(this._prefabPlayer);
-                Human player = temp.AddComponent<Human>() as Human;
+                GameObject temp = Instantiate(this.humanPrefab);
+                Human player = temp.GetComponent<Human>() as Human;
+
+                if(player == null)
+                    player = temp.AddComponent<Human>() as Human;
 
                 temp.name = "Human_" + (i + 1).ToString().PadLeft(2, '0');
                 player.roll = (uint)UnityEngine.Random.Range(0, 100);
@@ -204,7 +208,6 @@
             do {
 
                 this._countdown -= Time.deltaTime;
-                this._playerInView.uiComponent.UpdareTimer(this._countdown);
 
                 if(this._playerInView.turnEnded)
                     break;
@@ -214,7 +217,6 @@
             } while(this._countdown > 0.0f && !this._playerInView.turnEnded);
 
             this._countdown = 0.0f;
-            this._playerInView.uiComponent.UpdareTimer(this._countdown);
 
             // End players turn.
             if(this._countdown <= 0.0f)

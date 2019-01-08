@@ -85,6 +85,9 @@
             this._controller = controller;
             this._castle = controller.castle;
 
+            if(this._researchGroup == null)
+                this._researchGroup = this._controller.UI.researchGroup;
+
             if(this._backButton == null) {
                 GameObject temp = null;
                 RectTransform rectTransform = null;
@@ -367,13 +370,14 @@
             foreach(ResearchUpgradeCard card in group.GetCards()) {
                 //this._cardsToDisplay.Add(card);
                 temp.Add(((ResearchCard)card));
-                card.UpdateCard();
             }
 
             this._cardsToDisplay = temp;
 
-            foreach(ResearchCard card in this._cardsToDisplay) {
+            foreach(ResearchUpgradeCard card in this._cardsToDisplay) {
+                card.ActivateText(false);
                 card.DisplayCard();
+                card.UpdateCard();
                 card.SetPosition(this._currentCardSelected.rectTransform.anchoredPosition);
             }
 
@@ -458,7 +462,7 @@
         }
 
         private bool LoadClassData() {
-            Object[] temp = Resources.LoadAll("Class", typeof(ClassScriptable));
+            Object[] temp = Resources.LoadAll("Scriptable/Class", typeof(ClassScriptable));
 
             foreach(Object data in temp) {
                 this._classDataList.Add((ClassScriptable)data);
@@ -477,7 +481,7 @@
             for(int i = 0; i < classCount; i++) {
                 string className = ((ClassType)i + 1).ToString();
                 string path = "Upgrades/" + className;
-                Object[] temp = Resources.LoadAll(path, typeof(UpgradeScriptable));
+                Object[] temp = Resources.LoadAll("Scriptable/" + path, typeof(UpgradeScriptable));
 
                 foreach(Object data in temp)
                     this._upgradeDataList.Add(data as UpgradeScriptable);

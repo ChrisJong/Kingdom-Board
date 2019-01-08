@@ -83,7 +83,7 @@
                 string className = ((ClassType)i + 1).ToString();
                 string path = "Units/" + className;
 
-                UnityEngine.Object[] temp = Resources.LoadAll(path, typeof(UnitScriptable));
+                UnityEngine.Object[] temp = Resources.LoadAll("Scriptable/" + path, typeof(UnitScriptable));
 
                 for(int a = 0; a < temp.Length; a++)
                     this._unitDataList.Add(temp[a] as UnitScriptable);

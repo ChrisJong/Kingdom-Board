@@ -5,6 +5,6 @@
 
     using Player;
 
-    public abstract class ScreenSpaceUI : UIBase {
+    public abstract class ScreenSpace : UIBase {
     }
 }

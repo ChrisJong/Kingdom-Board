@@ -13,7 +13,7 @@
     using Scriptable;
     using Structure;
 
-    public class CastleUI : ScreenSpaceUI {
+    public class CastleUI : ScreenSpace {
 
         #region VARIABLE
         [SerializeField] private Player _player;
@@ -25,11 +25,19 @@
         [SerializeField] private RectTransform _spawnQueue = null;
         [SerializeField] private RectTransform _spawnList = null;
 
-        [SerializeField] private GameObject _prefabSpawnListButton;
-        [SerializeField] private GameObject _btnQueue;
+        [SerializeField] private RectTransform _meleePanel = null;
+        [SerializeField] private RectTransform _meleeButtonPanel = null;
 
-        [SerializeField] private Button _btnOpenList;
-        [SerializeField] private Button _btnCloseList;
+        [SerializeField] private RectTransform _rangePanel = null;
+        [SerializeField] private RectTransform _rangeButtonPanel = null;
+
+        [SerializeField] private RectTransform _magicPanel = null;
+        [SerializeField] private RectTransform _magicButtonPanel = null;
+
+        [SerializeField] private GameObject _spawnListButton;
+        [SerializeField] private GameObject _queueRibbonButton;
+
+        [SerializeField] private Button _btnToggleBook;
 
         [SerializeField] private List<QueueButton> _queueList;
         [SerializeField] private List<SpawnButton> _spawnListButtons = new List<SpawnButton>();
@@ -37,21 +45,11 @@
         [SerializeField] private QueueButton _lastQueueButton = null;
         [SerializeField] private QueueButton _toSpawn = null;
 
-        [Header("Castle UI - Queue Padding")]
-        [SerializeField] private float _paddingLeft = 5.0f;
-        [SerializeField] private float _paddingTop = 5.0f; 
-        [SerializeField] private float _paddingBetween = 35.0f;
-        [SerializeField] private Vector3 _initialQueuePlacement = Vector3.zero;
-
-        [SerializeField] private float _spawnPaddingLeft = 0.0f;
-        [SerializeField] private float _spawnPaddingTop = 0.0f;
-        [SerializeField] private float _spawnPaddingBetween = 0.0f;
-
-        [SerializeField] private float _meleePosition = -55.0f;
-        [SerializeField] private float _rangePosition = 0.0f;
-        [SerializeField] private float _magicPoseition = 55.0f;
-        [SerializeField] private float _listYposition = -100.0f;
-        [SerializeField] private float _listPaddaing = 50.0f;
+        [Header("Spawn Book UI")]
+        [SerializeField] private float _spawnButtonWidth = 50.0f;
+        [SerializeField] private float _spawnButtonHeight = 50.0f;
+        [SerializeField] private float _spawnButtonPadding = 10.0f;
+        [SerializeField] private float _spawnButtonTierPadding = 60.0f;
 
         public QueueButton lastQueueButton { get { return this._lastQueueButton; } }
         public QueueButton toSpawn { get { return this._toSpawn; } }
@@ -66,31 +64,35 @@
             this._player = castle.controller;
             this._castle = castle;
 
-            RectTransform temp = this._player.transform.Find("_UI") as RectTransform;
-            this._spawnGroup = temp.Find("Spawn") as RectTransform;
+            this._spawnGroup = this._player.UI.spawnGroup.transform as RectTransform;
 
-            this._spawnQueue = this._spawnGroup.Find("Queue_Panel") as RectTransform;
-            this._spawnList = this._spawnGroup.Find("List_Panel") as RectTransform;
-            
-            this._btnOpenList = this._spawnQueue.Find("Open_BTN").GetComponent<Button>() as Button;
-            this._btnCloseList = this._spawnList.Find("Close_BTN").GetComponent<Button>() as Button;
-            this._btnOpenList.onClick.AddListener(this.ToggleSpawnGroup);
-            this._btnCloseList.onClick.AddListener(this.ToggleSpawnGroup);
+            /*this._spawnQueue = this._spawnGroup.Find("Queue_Panel") as RectTransform;
+            this._spawnList = this._spawnGroup.Find("SpawnList_Panel") as RectTransform;
 
-            this._initialQueuePlacement = this._btnOpenList.transform.position;
+            this._meleePanel = this._spawnList.Find("Melee_Panel") as RectTransform;
+            this._magicButtonPanel = this._meleePanel.Find("UnitButton_Panel") as RectTransform;
+            this._rangePanel = this._spawnList.Find("Range_Panel") as RectTransform;
+            this._rangeButtonPanel = this._rangePanel.Find("UnitButton_Panel") as RectTransform;
+            this._magicPanel = this._spawnList.Find("Magic_Panel") as RectTransform;
+            this._magicButtonPanel = this._magicPanel.Find("UnitButton_Panel") as RectTransform;
 
-            this.GenerateSpawnListButtons();
+            this._btnToggleBook = this._spawnList.GetComponent<Button>() as Button;
+            this._btnToggleBook.onClick.AddListener(this.ToggleSpawnGroup);*/
 
-            this.Hide();
+            //this._initialQueuePlacement = this._btnOpenList.transform.position;
+
+            //this.GenerateSpawnListButtons();
+
+            this.HideUI();
             //this.ResetUI();
         }
 
-        public override void Display() {
+        public override void DisplayUI() {
             this.CloseSpawnList();
             this._spawnGroup.gameObject.SetActive(true);
         }
 
-        public override void Hide() {
+        public override void HideUI() {
             this._spawnGroup.gameObject.SetActive(false);
 
             this.CloseSpawnList();
@@ -98,9 +100,13 @@
             this._castle.radiusDrawer.SetActive(false);
         }
 
-        protected override void ResetUI() {
+        public override void ResetUI() {
             this._spawnList.position = new Vector3(-200.0f, this._spawnList.position.y, this._spawnList.position.z);
             this._spawnQueue.position = new Vector3(0.0f, this._spawnQueue.position.y, this._spawnQueue.position.z);
+        }
+
+        public override void UpdateUI() {
+            throw new System.NotImplementedException();
         }
 
         public void CheckSpawnQueue(SpawnQueueType queue) {            
@@ -112,17 +118,11 @@
             }
         }
 
-        public void AddToQueue(UnitType type) {
-            //Debug.Log("TRYING TO ADD " + type.ToString() + " TO " + this.controller.name + " QUEUE");
-            //if(!this._castle.AddUnitToQueue(type))
-                //Debug.LogWarning("UNABLE TO ADD " + type.ToString() + " TO QUEUE");
-        }
-
         public void AddToQueue(UnitType type, Sprite sprite){
             // NOTE: need to fix this part of the code since creating and deleting an object is a waste of resources if its never going to get used.
             // Spawn The Queue Button on the Screen.
 
-            uint id = 0;
+            /*uint id = 0;
 
             if(this._castle.AddUnitToQueue(type, ref id)) {
                 // Add a button to the UI Queue List.
@@ -156,7 +156,7 @@
             } else {
                 // NOTE: need to display a message here to the user that the an error or a limit has been reached.
                 Debug.LogWarning("Either the limit as been reached: " + this._castle.spawnQueue.Count.ToString() + ", or the Type (" + type.ToString() + ") is not Supported");
-            }
+            }*/
         }
 
         public void RemoveFromQueue(SpawnQueueType queue) {
@@ -186,7 +186,7 @@
 
                 Debug.Log("Queue Button Position: " + pos.ToString());
 
-                ((RectTransform)this._btnOpenList.transform).anchoredPosition = pos;
+                //((RectTransform)this._btnOpenList.transform).anchoredPosition = pos;
 
                 uint id = unit.id;
                 this._queueList.Remove(unit);
@@ -204,7 +204,7 @@
                 // NOTE: Errors occur become the button is using some other local position that isnt the panel.
                 //Vector3 pos = new Vector3(this._paddingLeft, -(i * this._paddingBetween) - this._paddingTop, 0.0f);
 
-                this._queueList[i].transform.position = new Vector3(this._initialQueuePlacement.x, this._initialQueuePlacement.y - (i * this._paddingBetween), this._initialQueuePlacement.z);
+                //this._queueList[i].transform.position = new Vector3(this._initialQueuePlacement.x, this._initialQueuePlacement.y - (i * this._paddingBetween), this._initialQueuePlacement.z);
             }
         }
 
@@ -249,7 +249,7 @@
 
             for(int i = 0; i < UnitPoolManager.instance.UnitDataList.Count; i++) {
                 UnitScriptable unit = UnitPoolManager.instance.UnitDataList[i];
-                GameObject go = Instantiate(this._prefabSpawnListButton);
+                GameObject go = Instantiate(this._spawnListButton);
                 SpawnButton btn = go.GetComponent<SpawnButton>() as SpawnButton;
                 RectTransform rectTransform = go.GetComponent<RectTransform>() as RectTransform;
 
@@ -259,14 +259,14 @@
                 go.transform.SetParent(this._spawnList);
 
                 if(unit.classType == ClassType.MELEE) {
-                    Vector3 pos = new Vector3(this._meleePosition, this._listYposition - (this._listPaddaing * classCount), 0.0f);
-                    rectTransform.anchoredPosition = pos;
+                    //Vector3 pos = new Vector3(this._meleePosition, this._listYposition - (this._listPaddaing * classCount), 0.0f);
+                    //rectTransform.anchoredPosition = pos;
                 } else if(unit.classType == ClassType.RANGE) {
-                    Vector3 pos = new Vector3(this._rangePosition, this._listYposition - (this._listPaddaing * classCount), 0.0f);
-                    rectTransform.anchoredPosition = pos;
+                    //Vector3 pos = new Vector3(this._rangePosition, this._listYposition - (this._listPaddaing * classCount), 0.0f);
+                    //rectTransform.anchoredPosition = pos;
                 } else if(unit.classType == ClassType.MAGIC) {
-                    Vector3 pos = new Vector3(this._magicPoseition, this._listYposition - (this._listPaddaing * classCount), 0.0f);
-                    rectTransform.anchoredPosition = pos;
+                    //Vector3 pos = new Vector3(this._magicPoseition, this._listYposition - (this._listPaddaing * classCount), 0.0f);
+                    //rectTransform.anchoredPosition = pos;
                 }
 
                 classCount++;

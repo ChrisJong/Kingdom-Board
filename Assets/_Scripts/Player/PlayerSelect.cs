@@ -60,8 +60,8 @@
         }
 
         public void EndTurn() {
-            if(this.currentSelected != null && this.currentSelected.uiComponent.showSelected)
-                this.currentSelected.uiComponent.Hide();
+            if(this.currentSelected != null)
+                this.currentSelected.uiComponent.HideUI();
 
             this.currentSelected = null;
             this.previousSelected = null;
@@ -144,11 +144,11 @@
                 if(temp.controller.id == this._controller.id) {
                     if(this.currentSelected != null && !temp.Equals(this.currentSelected)) {
                         this.previousSelected = this.currentSelected;
-                        this.previousSelected.uiComponent.Hide();
+                        this.previousSelected.uiComponent.HideUI();
                     }
 
                     this.currentSelected = temp;
-                    this.currentSelected.uiComponent.Display();
+                    this.currentSelected.uiComponent.DisplayUI();
 
                     this.selected = true;
                 }
@@ -161,7 +161,7 @@
             if(!EventSystem.current.IsPointerOverGameObject()) {
                 if(this.currentSelected != null) {
                     this.previousSelected = this.currentSelected;
-                    this.currentSelected.uiComponent.Hide(); // Hide UI;
+                    this.currentSelected.uiComponent.HideUI(); // Hide UI;
                     this.currentSelected = null;
                 }
                 this.selected = false;
@@ -223,25 +223,6 @@
 
         private void SelectSpawnPoint() {
 
-        }
-
-        private void DebugText(UnitBase unit, UnitBase selection) {
-            float damage = unit.GetDamage();
-            float extraDamage = 0.0f;
-            string damagetext = damage.ToString() + "(" + "+" +extraDamage.ToString() + ")";
-
-            if(unit.attackType == selection.weaknessType) {
-                extraDamage = (damage * (selection.weaknessPercentage / 100.0f));
-                damagetext = damage.ToString() + "(" + "+" + extraDamage.ToString() + ")";
-            }
-            if(unit.attackType == selection.resistanceType) {
-                extraDamage = damage * (selection.resistancePercentage / 100.0f);
-                damagetext = damage.ToString() + "(" + "-" + extraDamage.ToString() + ")";
-            }
-
-            string temp = "\r\n" + unit.name + " Attacking: " + selection.name + " For " + damagetext + " DAMAGe";
-
-            this._controller.uiComponent.ChangeDebugText(temp);
         }
 
         // NOTE: instead of using this i've used the unity OnMouseEnter/Exit to simulate hovering over an object.

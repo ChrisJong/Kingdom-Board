@@ -15,24 +15,7 @@
         #endregion
 
         #region UNITY
-        protected override void Awake() {
-            base.Awake();
 
-            if(this._btnHeal == null)
-                this._btnHeal = this.FindButton(this._tSelected, UIValues.Unit.HEALBUTTON);
-        }
-
-        protected override void OnEnable() {
-            base.OnEnable();
-
-            this._btnHeal.onClick.AddListener(this.InitiateHeal);
-        }
-
-        protected override void OnDisable() {
-            base.OnDisable();
-
-            this._btnHeal.onClick.RemoveListener(this.InitiateHeal);
-        }
         #endregion
 
         #region CLASS
@@ -48,7 +31,7 @@
             this.ResetUI();
         }
 
-        protected override void ResetUI() {
+        public override void ResetUI() {
             base.ResetUI();
 
             this._btnHeal.gameObject.SetActive(true);

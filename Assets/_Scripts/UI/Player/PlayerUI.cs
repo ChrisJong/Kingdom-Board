@@ -6,79 +6,91 @@
     using UnityEngine;
     using UnityEngine.UI;
 
-    using Constants;
-    using Enum;
+    using TMPro;
 
-    public class PlayerUI : ScreenSpaceUI {
+    using Enum;
+    using Player;
+
+    public class PlayerUI : ScreenSpace {
 
         #region VARIABLE
-        public Text textInfo;
-        public Text textTimer;
-        public Text debugInfo;
-        public Button btnEnd;
 
-        protected Transform _tPersistance;
-        protected GameObject _goPersistance;
+        [SerializeField] private PlayerEndButton _endTurnButton = null;
+        [SerializeField] private PlayerBanner _playerBanner = null;
 
-        [SerializeField] protected List<Transform> _childrenList = new List<Transform>();
+        [SerializeField] private GameObject _displayGroup = null;
+        private RectTransform _displayGroupTransform = null;
 
-        private GameObject _bannerGroup = null;
-        private PlayerBanner _banner = null;
+        [SerializeField] private TextMeshProUGUI _infoText;
+
+        public GameObject bannerGroup = null;
+        public GameObject spawnGroup = null;
+        public GameObject researchGroup = null;
+
+        [SerializeField] protected List<Transform> _uiChildrenList = new List<Transform>();
 
         #endregion
 
         #region UNITY
-        protected override void Awake() {
-            this.FindUI(this.transform, UIValues.UISUFFIX);
-
-            if(this.tUI.Find(UIValues.PERSISTANCEGROUP) != null) {
-                this._tPersistance = this.tUI.Find(UIValues.PERSISTANCEGROUP);
-                this._goPersistance = this._tPersistance.gameObject;    
-
-                this.debugInfo = this.tUI.Find("Debug_TEXT").GetComponent<Text>();
-                this.debugInfo.text = "";
-            }
-
-            if(this._tPersistance.Find(UIValues.Player.ENDBUTTON) != null)
-                this.btnEnd = this._tPersistance.Find(UIValues.Player.ENDBUTTON).GetComponent<Button>();
-
-            this.textInfo = this._tPersistance.Find("Info_TEXT").GetComponent<Text>();
-            this.textTimer = this._tPersistance.Find("Timer_TEXT").GetComponent<Text>();
-
-            this._bannerGroup = this._goUI.transform.Find("Banner").gameObject;
-            this._banner = this._bannerGroup.GetComponent<PlayerBanner>() as PlayerBanner;
-            this._banner.Init(this);
-
-            foreach(Transform temp in this._goUI.GetComponentInChildren<Transform>()) {
-                if(temp.GetHashCode() == this._bannerGroup.transform.GetHashCode())
-                    continue;
-                this._childrenList.Add(temp);
-            }
-        }
-
-        private void OnEnable() {
-            this.btnEnd.onClick.AddListener(this.EndTurn);
-        }
-
-        private void OnDisable() {
-            this.btnEnd.onClick.RemoveListener(this.EndTurn);
-        }
 
         public void Update() {
-            if(controller.selectionState != SelectionState.FREE)
-                this.btnEnd.gameObject.SetActive(false);
-            else
-                this.btnEnd.gameObject.SetActive(true);
 
-            this.UpdateInfo();
+            if(this.controller.state == PlayerState.ATTACKING || this.controller.state == PlayerState.DEFENDING) {
+                this._endTurnButton.UpdateButton();
+                this.UpdateInfo();
+            }
         }
+
         #endregion
 
         #region CLASS
-        public override void Display() {
+        public override void Init(Player controller) {
+            base.Init(controller);
+
+            if(this._displayGroup == null)
+                this._displayGroup = this._uiGroupRectTransform.Find("_Display").gameObject;
+            else
+                this._displayGroupTransform = this._displayGroup.transform as RectTransform;
+
+            if(this._infoText == null)
+                this._infoText = this._displayGroupTransform.Find("info_TEXT").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
+
+            if(this._endTurnButton == null) {
+                this._endTurnButton = this._displayGroupTransform.Find("End_BTN").GetComponent<PlayerEndButton>() as PlayerEndButton;
+                this._endTurnButton.Init(this);
+            } else
+                this._endTurnButton.Init(this);
+
+            if(this.bannerGroup == null) {
+                this.bannerGroup = this._uiGroup.transform.Find("Banner").gameObject;
+                this._playerBanner = this.bannerGroup.GetComponent<PlayerBanner>() as PlayerBanner;
+                this._playerBanner.Init(this);
+            } else if(this._playerBanner == null) {
+                this._playerBanner = this.bannerGroup.GetComponent<PlayerBanner>() as PlayerBanner;
+                this._playerBanner.Init(this);
+            } else 
+                this._playerBanner.Init(this);
+
+            foreach(Transform temp in this._uiGroup.GetComponentInChildren<Transform>()) {
+                if(temp.GetHashCode() == this.bannerGroup.transform.GetHashCode())
+                    continue;
+
+                if(temp.name == "Spawn") {
+                    this.spawnGroup = temp.gameObject;
+                }
+
+                if(temp.name == "Research")
+                    this.researchGroup = temp.gameObject;
+
+                this._uiChildrenList.Add(temp);
+            }
+
+        }
+
+        public override void DisplayUI() {
             //this._goUI.SetActive(true);
 
-            foreach(Transform temp in this._childrenList) {
+            foreach(Transform temp in this._uiChildrenList) {
                 if(temp.gameObject.activeSelf)
                     continue;
 
@@ -88,16 +100,12 @@
             this.UpdateInfo();
         }
 
-        public void UpdareTimer(float time) {
-            this.textTimer.text = Mathf.Round(time).ToString();
-        }
-
-        public override void Hide() {
+        public override void HideUI() {
             //this._goUI.SetActive(false);
 
-            this._bannerGroup.gameObject.SetActive(false);
+            this.bannerGroup.gameObject.SetActive(false);
 
-            foreach(Transform temp in this._childrenList) {
+            foreach(Transform temp in this._uiChildrenList) {
                 if(!temp.gameObject.activeSelf)
                     continue;
 
@@ -105,39 +113,33 @@
             }
         }
 
-        protected override void ResetUI() {
+        public override void ResetUI() {
             throw new System.NotImplementedException();
         }
 
         public override void UpdateUI() {
             if(this.controller.turnEnded) {
-                this.Hide();
+                this.HideUI();
             } else {
                 this.UpdateInfo();
             }
         }
 
-        public void ChangeDebugText(string text) {
-            string temp = "Debug: " + text;
-
-            this.debugInfo.text = temp;
-        }
-
         public void ShowBanner() {
-            if(!this._bannerGroup.activeSelf)
-                this._bannerGroup.SetActive(true);
+            if(!this.bannerGroup.activeSelf)
+                this.bannerGroup.SetActive(true);
 
-            this._banner.SwapBanner(this.controller.isAttacking);
+            this._playerBanner.SwapBanner(this.controller.isAttacking);
 
-            this._banner.StartBannerAnimation();
+            this._playerBanner.StartBannerAnimation();
         }
 
         public void FinishedBannerAnim() {
             this.controller.StartTurn();
         }
 
-        private void EndTurn() {
-            this.Hide();
+        public void EndTurn() {
+            this.HideUI();
             this.controller.EndTurn();
         }
 
@@ -148,7 +150,7 @@
                    "UNIT CAP: " + this.controller.CurrentUnitCap.ToString() + " / " + this.controller.MaxUnitCap + "\r\n" + 
                    "PHASE: " + this.controller.state.ToString();
 
-            this.textInfo.text = text;
+            this._infoText.text = text;
         }
         #endregion
     }

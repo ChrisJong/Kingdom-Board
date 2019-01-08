@@ -36,6 +36,10 @@
                               "Times Researched: " + this._upgradeData.ResearchCount.ToString();
         }
 
+        public void ActivateText(bool enabled) {
+            this._text.gameObject.SetActive(enabled);
+        }
+
         public override void Clicked() {
 
             this._cardAnimation.PlayFadeAnimation();
