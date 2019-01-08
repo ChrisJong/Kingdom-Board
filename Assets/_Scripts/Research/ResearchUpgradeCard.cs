@@ -42,6 +42,8 @@
 
         public override void Clicked() {
 
+            this.ActivateText(false);
+
             this._cardAnimation.PlayFadeAnimation();
 
             this.Finished();

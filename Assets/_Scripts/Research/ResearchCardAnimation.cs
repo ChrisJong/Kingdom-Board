@@ -65,6 +65,7 @@
 
         public void PlayFadeAnimation() {
             this._state = CardState.FADE;
+
             this._animation.Play("CardFade_Anim");
         }
 
@@ -195,6 +196,9 @@
                 this._card.ChangeFace();
                 this.FlipXScale();
 
+                if(this._card.GetType() == typeof(ResearchUpgradeCard))
+                    ((ResearchUpgradeCard)this._card).ActivateText(false);
+
                 while(this._yCoord < 180.0f) {
 
                     this.RotateCard();
@@ -246,7 +250,7 @@
             }
 
             if(this._card.GetType() == typeof(ResearchUpgradeCard))
-                ((ResearchUpgradeCard)this._card).ActivateText(false);
+                ((ResearchUpgradeCard)this._card).ActivateText(true);
 
             while(this._yCoord < 90.0f) {
 
@@ -258,7 +262,7 @@
             this.FlipXScale();
 
             if(this._card.GetType() == typeof(ResearchUpgradeCard))
-                ((ResearchUpgradeCard)this._card).ActivateText(true);
+                ((ResearchUpgradeCard)this._card).ActivateText(false);
 
             while(this._yCoord < 180.0f) {
 

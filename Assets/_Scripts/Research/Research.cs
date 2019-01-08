@@ -201,7 +201,7 @@
                     }
                 }
 
-                foreach(ResearchCard card in this._cardsToDisplay) {
+                foreach(ResearchUpgradeCard card in this._cardsToDisplay) {
                     if(card.UpgradeType != upgradeType) {
                         StartCoroutine(card.CardAnimation.RotateAndFade());
                     } else {
@@ -375,9 +375,9 @@
             this._cardsToDisplay = temp;
 
             foreach(ResearchUpgradeCard card in this._cardsToDisplay) {
+                card.UpdateCard();
                 card.ActivateText(false);
                 card.DisplayCard();
-                card.UpdateCard();
                 card.SetPosition(this._currentCardSelected.rectTransform.anchoredPosition);
             }
 

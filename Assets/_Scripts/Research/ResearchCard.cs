@@ -141,6 +141,7 @@
             if(this._isFrontFace)
                 this.ChangeFace();
 
+            this._text.gameObject.SetActive(false);
             this._image.color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
             this._rectTransform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         }
