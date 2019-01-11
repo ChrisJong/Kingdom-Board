@@ -87,7 +87,7 @@
         private bool CastRayToWorld(LayerMask mask) {
             this._ray = this._camera.ScreenPointToRay(Input.mousePosition);
 
-            //Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
+            Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
 
             if(EventSystem.current.IsPointerOverGameObject())
                 return false;

@@ -4,31 +4,32 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbc93419e3b21bf4689c8bf42dfd403c, type: 3}
   m_Name: CROSSBOW
   m_EditorClassIdentifier: 
+  ClassData: {fileID: 11400000, guid: 0623b9ffe7001aa4e9dc2f95d3427132, type: 2}
   classType: 2
   unitType: 2
   classTier: 2
   cardFaceSprite: {fileID: 21300000, guid: ac94dd8e28c3baf4b82b44b4ce5bcadd, type: 3}
   cardBackSprite: {fileID: 21300000, guid: 18de7e74e68496441a1bd0652da96e9e, type: 3}
-  SpawnIconLockedsprite: {fileID: 21300000, guid: ec0cc70a0a109ce4aadc0c30f8bfb514,
-    type: 3}
-  spawnIconUnlockedSprite: {fileID: 21300000, guid: b54a254fd17ccef4bbcfe888dc0a3942,
-    type: 3}
+  TrainIconSprite: {fileID: 21300000, guid: 9886633546379034fb8367dd3b57f1d3, type: 3}
   prefabMain: {fileID: 0}
   prefabDeath: {fileID: 1897845359850564, guid: c19f75ce600aaa446830a0251f8f8b60,
-    type: 2}
+    type: 3}
   prefabProjectile: {fileID: 1897845359850564, guid: c19f75ce600aaa446830a0251f8f8b60,
-    type: 2}
+    type: 3}
   movementType: 1
   attackType: 3
   resistanceType: 2
   weaknessType: 3
+  goldCost: 500
+  populationCost: 1
   resistanceMultiplier: 0.5
   weaknessMultiplier: 2
   heath: 100

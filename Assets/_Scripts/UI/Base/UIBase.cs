@@ -8,13 +8,14 @@
     using Player;
 
     // NOTES: https://stackoverflow.com/questions/41391708/how-to-detect-click-touch-events-on-ui-and-gameobjects
+    // NOTES: https://answers.unity.com/questions/1077069/implementing-ipointerclickhandler-interface-does-n.html
     // UI needs input needs to changed to use EventSystems For Mouse & Touch Inputs.
 
     public abstract class UIBase : MonoBehaviour, IUIComponent {
 
         #region VARIABLE
 
-        [SerializeField] private Player _controller;
+        [SerializeField] protected Player _controller;
 
         protected GameObject _uiGroup;
         protected Canvas _uiCanvas;

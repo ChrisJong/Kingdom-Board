@@ -77,6 +77,7 @@
 
                 if(temp.name == "Spawn") {
                     this.spawnGroup = temp.gameObject;
+                    this.spawnGroup.SetActive(false);
                 }
 
                 if(temp.name == "Research")
@@ -94,6 +95,9 @@
                 if(temp.gameObject.activeSelf)
                     continue;
 
+                if(temp.gameObject == this.spawnGroup)
+                    continue;
+
                 temp.gameObject.SetActive(true);
             }
 
@@ -107,6 +111,9 @@
 
             foreach(Transform temp in this._uiChildrenList) {
                 if(!temp.gameObject.activeSelf)
+                    continue;
+
+                if(temp.gameObject == this.spawnGroup)
                     continue;
 
                 temp.gameObject.SetActive(false);

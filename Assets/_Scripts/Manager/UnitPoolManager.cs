@@ -23,11 +23,13 @@
         [SerializeField] private List<UnitDeath> _poolDeath = new List<UnitDeath>();
 
         [SerializeField] private List<UnitScriptable> _unitDataList = new List<UnitScriptable>();
+        private Dictionary<ClassType, List<UnitScriptable>> _sortedUnitList = new Dictionary<ClassType, List<UnitScriptable>>();
 
-        public List<UnitScriptable> UnitDataList {
-            get { return this._unitDataList; }
-        }
+        public List<UnitScriptable> UnitDataList { get { return this._unitDataList; } }
 
+        public Dictionary<ClassType, List<UnitScriptable>> SortedUnitList { get { return this._sortedUnitList; } }
+
+        #region UNITY
         protected override void Awake() {
             base.Awake();
 
@@ -49,7 +51,9 @@
                 setup.prefab.GetComponent<UnitBase>().SetupAnimation();
             }
         }
+        #endregion
 
+        #region CLASS
         public override void Init() {
             
         }
@@ -60,6 +64,7 @@
                 Debug.LogError(this.ToString() + " cannot spawn unit of type (not suypported)" + type);
                 return false;
             }
+
             this.InteralSpawnUnit(type, controller, position);
 
             return true;
@@ -80,14 +85,21 @@
             int classCount = System.Enum.GetNames(typeof(ClassType)).Length - 2;
 
             for(int i = 0; i < classCount; i++) {
+                List<UnitScriptable> tempList = new List<UnitScriptable>();
                 string className = ((ClassType)i + 1).ToString();
                 string path = "Units/" + className;
 
                 UnityEngine.Object[] temp = Resources.LoadAll("Scriptable/" + path, typeof(UnitScriptable));
 
                 for(int a = 0; a < temp.Length; a++)
-                    this._unitDataList.Add(temp[a] as UnitScriptable);
-                
+                    tempList.Add(temp[a] as UnitScriptable);
+
+                tempList.Sort((x1, x2) => x1.classTier.CompareTo(x2.classTier));
+
+                this._sortedUnitList.Add(((ClassType)i + 1), tempList);
+
+                this._unitDataList.AddRange(tempList);
+
             }
 
             if(this._unitDataList.Count > 0)
@@ -167,5 +179,53 @@
                 toRemove.Clear();
             }
         }
+
+        public UnitScriptable FetchUnitData(UnitType unitType) {
+            UnitScriptable unitData = null;
+
+            for(int i = 0; i < this._unitDataList.Count; i++) {
+                if(this._unitDataList[i].unitType == unitType) {
+                    unitData = this._unitDataList[i];
+                    break;
+                }
+            }
+
+            if(unitData == null)
+                Debug.LogError("No Such Unit (" + unitType.ToString() + ")");
+
+            return unitData;
+        }
+
+        public UnitScriptable FetchUnitData(ClassType classType, UnitType unitType) {
+            List<UnitScriptable> unitList = this.FetchClassUnitsData(classType);
+            UnitScriptable unitData = null;
+
+            if(unitList == null || unitList.Count == 0)
+                Debug.LogError("No Such Unit (" + unitType.ToString() + ") Exists within the " + classType.ToString() + " Class");
+            else {
+                for(int i = 0; i < unitList.Count; i++) {
+                    if(unitList[i].unitType == unitType) {
+                        unitData = unitList[i];
+                        break;
+                    }
+                }
+            }
+
+            if(unitData == null)
+                Debug.LogError("No Such Unit (" + unitType.ToString() + ") Exists within the " + classType.ToString() + " Class");
+
+            return unitData;
+        }
+
+        public List<UnitScriptable> FetchClassUnitsData(ClassType classType) {
+            if(this._sortedUnitList.ContainsKey(classType))
+                return this._sortedUnitList[classType];
+            else {
+                Debug.LogError("There Is No Such Class Type Called: " + classType.ToString());
+                return null;
+            }
+        }
+
+        #endregion
     }
 }

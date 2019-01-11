@@ -4,31 +4,32 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbc93419e3b21bf4689c8bf42dfd403c, type: 3}
   m_Name: ARCHER
   m_EditorClassIdentifier: 
+  ClassData: {fileID: 11400000, guid: 0623b9ffe7001aa4e9dc2f95d3427132, type: 2}
   classType: 2
   unitType: 1
   classTier: 1
   cardFaceSprite: {fileID: 21300000, guid: f920fe2d4830dec40bffc789590e3e00, type: 3}
   cardBackSprite: {fileID: 21300000, guid: 18de7e74e68496441a1bd0652da96e9e, type: 3}
-  SpawnIconLockedsprite: {fileID: 21300000, guid: ec0cc70a0a109ce4aadc0c30f8bfb514,
-    type: 3}
-  spawnIconUnlockedSprite: {fileID: 21300000, guid: 078f83b1aea073b42bdf388368e99ec5,
-    type: 3}
+  TrainIconSprite: {fileID: 21300000, guid: 8a214b8a6c8f4974aabe0ca77e940622, type: 3}
   prefabMain: {fileID: 0}
   prefabDeath: {fileID: 1640903272305634, guid: 043b090d8b189214398c16f982d3ed8d,
-    type: 2}
+    type: 3}
   prefabProjectile: {fileID: 1213313291399790, guid: 5fa941dfb9b864e4d931db273bde05c4,
-    type: 2}
+    type: 3}
   movementType: 1
   attackType: 3
   resistanceType: 2
   weaknessType: 3
+  goldCost: 500
+  populationCost: 1
   resistanceMultiplier: 0.5
   weaknessMultiplier: 2
   heath: 100

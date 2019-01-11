@@ -4,30 +4,31 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbc93419e3b21bf4689c8bf42dfd403c, type: 3}
   m_Name: KNIGHT
   m_EditorClassIdentifier: 
+  ClassData: {fileID: 11400000, guid: aa945018846e6ff49ad9dcb1adf13157, type: 2}
   classType: 1
   unitType: 8
   classTier: 2
   cardFaceSprite: {fileID: 21300000, guid: 66303042aa483cb4984ad19c741d4043, type: 3}
   cardBackSprite: {fileID: 21300000, guid: 18de7e74e68496441a1bd0652da96e9e, type: 3}
-  SpawnIconLockedsprite: {fileID: 21300000, guid: ec0cc70a0a109ce4aadc0c30f8bfb514,
-    type: 3}
-  spawnIconUnlockedSprite: {fileID: 21300000, guid: 9460757007a108841b3667b46f615f5f,
-    type: 3}
+  TrainIconSprite: {fileID: 21300000, guid: 160aa89ad9c40e74c8b7c7b567f61f98, type: 3}
   prefabMain: {fileID: 0}
   prefabDeath: {fileID: 1903209259689268, guid: 8ec73f3208de6ac49863e29e1731a06e,
-    type: 2}
+    type: 3}
   prefabProjectile: {fileID: 0}
   movementType: 1
   attackType: 1
   resistanceType: 3
   weaknessType: 2
+  goldCost: 500
+  populationCost: 1
   resistanceMultiplier: 0.5
   weaknessMultiplier: 2
   heath: 100

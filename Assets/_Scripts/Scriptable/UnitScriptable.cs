@@ -11,6 +11,7 @@
     public class UnitScriptable : ScriptableObject {
 
         [Header("TYPES")]
+        public ClassScriptable ClassData = null;
         public ClassType classType = ClassType.NONE;
         public UnitType unitType = UnitType.NONE;
 
@@ -19,24 +20,24 @@
         [Header("UI")]
         public Sprite cardFaceSprite = null;
         public Sprite cardBackSprite = null;
-        public Sprite SpawnIconLockedsprite = null;
-        public Sprite spawnIconUnlockedSprite = null;
+        public Sprite TrainIconSprite = null;
 
         [Header("PREFAB")]
         public GameObject prefabMain;
         public GameObject prefabDeath;
         public GameObject prefabProjectile;
 
-        [Header("DATA - MAIN")]
+        [Header("DATA - ATTRIBUTE TYPES")]
         public MovementType movementType = MovementType.NONE;
         public AttackType attackType = AttackType.NONE;
         public AttackType resistanceType = AttackType.NONE;
         public AttackType weaknessType = AttackType.NONE;
 
-        [Range(0.0f, 5.0f)]
-        public float resistanceMultiplier = 0.0f;
-        [Range(0.0f, 5.0f)]
-        public float weaknessMultiplier = 0.0f;
+        [Header("DATA - ATTRIBUTE VALUES")]
+        public float goldCost = 500.0f;
+        public float populationCost = 1.0f;
+        [Range(0.0f, 3.0f)] public float resistanceMultiplier = 0.0f;
+        [Range(0.0f, 3.0f)] public float weaknessMultiplier = 0.0f;
         public float heath = 0.0f;
         public float stamina = 0.0f;
         public float minAttack = 0.0f;

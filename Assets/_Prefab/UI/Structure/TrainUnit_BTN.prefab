@@ -160,6 +160,7 @@ GameObject:
   - component: {fileID: 3171099171411004327}
   - component: {fileID: 4026560437694805632}
   - component: {fileID: 6194093438864995752}
+  - component: {fileID: 8811744971764802566}
   m_Layer: 5
   m_Name: TrainUnit_BTN
   m_TagString: Untagged
@@ -246,7 +247,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
     m_DisabledColor: {r: 0.39607844, g: 0.39607844, b: 0.39607844, a: 1}
     m_ColorMultiplier: 1
@@ -278,3 +279,27 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &8811744971764802566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372144370788003199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53de1eeb49bdd47439e095aeaf5780f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Castle: {fileID: 0}
+  _classType: 0
+  _unitType: 0
+  _isLocked: 1
+  _unitIconSprite: {fileID: 0}
+  _lockedSprite: {fileID: 0}
+  _backgroundSprite: {fileID: 0}
+  _unitIconObject: {fileID: 427850491266633441}
+  _lockedObject: {fileID: 3732585739846814868}
+  _image: {fileID: 0}
+  _unitIconImage: {fileID: 7326845011590820909}
+  _lockedmage: {fileID: 8531052653949096619}

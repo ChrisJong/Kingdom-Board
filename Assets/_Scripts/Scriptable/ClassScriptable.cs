@@ -16,5 +16,6 @@
         public Sprite cardFaceSprite = null;
         public Sprite cardBackSprite = null;
         public Sprite Icon = null;
+        public Color ClassColor = Color.white;
     }
 }

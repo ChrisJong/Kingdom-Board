@@ -227,6 +227,9 @@
             tempCamera.AddComponent<FlareLayer>();
             tempCamera.AddComponent<AudioListener>();
 
+            // NOTE: Used for IPointerHandlers for Shape Colliders, Doesn't actually work at the moment cause it collides with the Phyiscs Raycast in the Player Select Script.
+            //tempCamera.AddComponent<UnityEngine.EventSystems.PhysicsRaycaster>();
+
             tempCamera.AddComponent<PlayerCamera>().playerID = p.id;
             tempCamera.AddComponent<PlayerSelect>().Init(p);
 

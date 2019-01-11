@@ -23,7 +23,6 @@
         [SerializeField] private ResearchCard _card;
 
         [SerializeField] private CardState _state = CardState.NONE;
-        [SerializeField] private CardState _previousState = CardState.NONE;
 
         [SerializeField] private Animation _animation = null;
 

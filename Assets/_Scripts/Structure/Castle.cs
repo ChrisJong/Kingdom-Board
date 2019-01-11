@@ -8,7 +8,8 @@
     using Constants;
     using Enum;
     using Helpers;
-    using Research;
+    using Manager;
+    using Scriptable;
     using UI;
     using Utility;
 
@@ -17,14 +18,11 @@
 
         #region VARIABLE
 
-        [Header("CASTLE - UI")]
-        [SerializeField] private CastleUI _ui = null;
+        private CastleUI _ui = null;
         public LineRenderDrawRectangle radiusDrawer = null;
 
         [Header("CASTLE - SPAWN")]
         [SerializeField] private List<SpawnQueueType> _spawnQueue;
-
-        private SpawnQueueType _lastQueue = null;
         private SpawnQueueType _toSpawn = null;
 
         public CastleUI UI { get { return this._ui; } }
@@ -32,7 +30,6 @@
         public List<SpawnQueueType> spawnQueue { get { return this._spawnQueue; } }
         public override StructureType structureType { get { return StructureType.CASTLE; } }
 
-        public SpawnQueueType lastQueue { get { return this._lastQueue; } }
         public SpawnQueueType toSpawn { get { return this._toSpawn; } set { this._toSpawn = value; } }
         #endregion
 
@@ -94,18 +91,13 @@
 
             for(int i = 0; i < this._spawnQueue.Count; i++) {
                 Debug.Log("Queue Count: " + this._spawnQueue.Count + " - Counter: " + i.ToString());
-                if(this._spawnQueue[i].Countdown()) {
-                    ((CastleUI)this.uiComponent).CheckSpawnQueue(this._spawnQueue[i]);
-                }
+                this._spawnQueue[i].Countdown();
             }
         }
 
-        public void AddToQueue(UnitType unitType, Sprite image) {
-            this._ui.AddToQueue(unitType, image);
-        }
+        public bool AddUnitToQueue(ClassType classType, UnitType unitType) {
 
-        public bool AddUnitToQueue(UnitType type) {
-            int capCost = this.GetUnitCapCost(type);
+            /*int capCost = this.GetUnitCapCost(type);
             int counter = this.GetUnitSpawnCounter(type);
             int cost = this.GetUnitResourceCost(type);
 
@@ -118,26 +110,37 @@
                 this.controller.AddToUnitCap(capCost);
 
                 SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, type, counter);
-                this._lastQueue = temp;
                 this._spawnQueue.Add(temp);
                 this._unitQueueCount++;
                 return true;
             }
-            return false;
+            return false;*/
+
+            UnitScriptable unitData = UnitPoolManager.instance.FetchUnitData(classType, unitType);
+
+            if(this._spawnQueue.Count >= this.queueLImit)
+                return false;
+
+            // NOTE: Resource and Cap limit checks go here.
+
+            SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, unitType);
+
+            this._ui.AddToQueue(unitData, temp);
+
+            this._unitQueueCount++;
+            this._spawnQueue.Add(temp);
+
+            return true;
         }
 
-        public bool AddUnitToQueue(UnitType type, ref uint id) {
-            id = this._unitQueueCount;
-            return this.AddUnitToQueue(type);
-        }
-
-        public bool RemoveUnitFromQueue(SpawnQueueType unit) {
-            if(!this._spawnQueue.Contains(unit)) {
-                Debug.LogError("Spawn Queue Doesn't Contain Unit of Type: " + unit.type.ToString());
+        public bool RemoveUnitFromQueue(SpawnQueueType queue) {
+            if(!this._spawnQueue.Contains(queue)) {
+                Debug.LogError("Spawn Queue Doesn't Contain Unit of Type: " + queue.type.ToString());
                 return false;
             }
 
-            this._spawnQueue.Remove(unit);
+            this._ui.RemoveFromQueue(queue);
+            this._spawnQueue.Remove(queue);
 
             return true;
         }
@@ -161,6 +164,7 @@
                 }
 
                 this._spawnQueue.Remove(toRemove);
+                this._ui.SortQueue();
                 return true;
             } else
                 return false;

@@ -14,7 +14,8 @@
 
         public bool ready = false;
 
-        public UnitType type;
+        public UnitType type = UnitType.NONE;
+        public QueueButton queueButton = null;
 
         public SpawnQueueType(uint id, UnitType type) {
             this.type = type;
@@ -28,15 +29,24 @@
             this.counter = count;
         }
 
+        public void SetQueueButton(QueueButton button) {
+            this.queueButton = button;
+        }
+
         public bool Countdown() {
             --this.counter;
 
             if(this.counter <= 0) {
                 this.ready = true;
+                this.queueButton.Ready();
                 return true;
             }
 
             return false;
+        }
+
+        public void Remove() {
+            this.queueButton = null;
         }
     }
 }

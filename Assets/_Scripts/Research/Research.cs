@@ -17,32 +17,21 @@
 
         #region VARIABLE
 
-        [SerializeField] private Player _controller;
-        [SerializeField] private Castle _castle;
-
-        [SerializeField] private ResearchState _currentState = ResearchState.NONE;
-        [SerializeField] private ResearchState _previousState = ResearchState.NONE;
-
-        [SerializeField] private ClassType _classSelected = ClassType.NONE;
-        [SerializeField] private ClassType _previousClassSelected = ClassType.NONE;
-        [SerializeField] private UnitType _unitSelected = UnitType.NONE;
-
-        [SerializeField] private int[] _researchTurns = { 1, 3, 6, 12, 36 };
-        [SerializeField] private int _researchCount = 0;
-        [SerializeField] private int _cardsReady = 0;
-
-        [SerializeField] private bool _isUnitResearch = false;
-
-        [Header("UI - VALUES/POSITION")]
-        [SerializeField] private float _padding = 50.0f;
-        [SerializeField] private float _cardWidth = 150.0f;
-        [SerializeField] private float _cardHeight = 210.5f;
+        private Player _controller;
+        private Castle _castle;
 
         [SerializeField] private ResearchCard _previousCardSelected = null;
         [SerializeField] private ResearchCard _currentCardSelected = null;
 
         [SerializeField] private List<ClassScriptable> _classDataList = new List<ClassScriptable>();
-        [SerializeField] private List<UpgradeScriptable> _upgradeDataList = new List<UpgradeScriptable>(); // List that holds all the upgrades available.
+        [SerializeField] private List<UpgradeScriptable> _upgradeDataList = new List<UpgradeScriptable>();
+
+        [SerializeField] private ClassType _classSelected = ClassType.NONE;
+        [SerializeField] private ClassType _previousClassSelected = ClassType.NONE;
+        private UnitType _unitSelected = UnitType.NONE;
+
+        [SerializeField] private ResearchState _currentState = ResearchState.NONE;
+        [SerializeField] private ResearchState _previousState = ResearchState.NONE;
 
         [SerializeField] private List<ResearchCard> _classCards = new List<ResearchCard>();
         private Dictionary<ClassType, ResearchUnitGroup> _unitCards = new Dictionary<ClassType, ResearchUnitGroup>();
@@ -50,11 +39,18 @@
         private Dictionary<ClassType, List<ResearchUpgradeData>> _unitUprades = new Dictionary<ClassType, List<ResearchUpgradeData>>();
         [SerializeField] private List<ResearchCard> _cardsToDisplay = new List<ResearchCard>();
 
-        [SerializeField] private Dictionary<ClassType, List<ResearchUpgradeData>> _upgrades = new Dictionary<ClassType, List<ResearchUpgradeData>>();
+        private Dictionary<ClassType, List<ResearchUpgradeData>> _upgrades = new Dictionary<ClassType, List<ResearchUpgradeData>>();
+
+        //[SerializeField] private int[] _researchTurns = { 1, 3, 6, 12, 36 };
+        [SerializeField] private int[] _researchTurns = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        [SerializeField] private int _researchCount = 0;
+        [SerializeField] private int _cardsReady = 0;
+
+        private bool _isUnitResearch = false;
 
         [SerializeField] private GameObject _researchGroup = null;
-        [SerializeField] private GameObject _prefabResearchCard = null;
-        [SerializeField] private GameObject _prefabBackButton = null;
+        public GameObject researchCardPrefab = null;
+        public GameObject backButtonPrefab = null;
 
         private Button _backButton;
 
@@ -93,8 +89,8 @@
                 RectTransform rectTransform = null;
                 Vector3 pos = new Vector3(0.0f, 0.0f - ((216 / 2 + 70 / 2) + 10.0f), 0.0f);
 
-                if(this._prefabBackButton != null)
-                    temp = Instantiate(this._prefabBackButton, this._researchGroup.transform);
+                if(this.backButtonPrefab != null)
+                    temp = Instantiate(this.backButtonPrefab, this._researchGroup.transform);
                 else
                     Debug.LogError("Back Button Prefab Cannot Be Empty!");
 
@@ -499,7 +495,7 @@
             
             for(int i = 0; i < classCount; i++) {
                 ClassScriptable data = this._classDataList[i];
-                GameObject go = Instantiate(this._prefabResearchCard, this._researchGroup.transform);;
+                GameObject go = Instantiate(this.researchCardPrefab, this._researchGroup.transform);;
                 ResearchClassCard card = go.AddComponent<ResearchClassCard>() as ResearchClassCard;
                 Vector3 pos = new Vector3(startpos, 0.0f, 1.0f);
 
@@ -529,7 +525,7 @@
                     UnitScriptable unitData = UnitPoolManager.instance.UnitDataList[j];
 
                     if(unitData.classType == type) {
-                        GameObject go = Instantiate(this._prefabResearchCard, this._researchGroup.transform);
+                        GameObject go = Instantiate(this.researchCardPrefab, this._researchGroup.transform);
                         ResearchUnitCard card = go.AddComponent<ResearchUnitCard>() as ResearchUnitCard;
 
                         go.name = unitData.unitType.ToString() + "_CARD";
@@ -576,7 +572,7 @@
                         Debug.LogError("Upgrade DAta Is Empty: " + upgradecount.ToString());
 
                     if(data.classType == type) {
-                        GameObject go = Instantiate(this._prefabResearchCard, this._researchGroup.transform);
+                        GameObject go = Instantiate(this.researchCardPrefab, this._researchGroup.transform);
                         ResearchUpgradeCard card = go.AddComponent<ResearchUpgradeCard>() as ResearchUpgradeCard;
 
                         upgradeData = new ResearchUpgradeData(count, data);

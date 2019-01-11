@@ -16,42 +16,46 @@
     public class CastleUI : ScreenSpace {
 
         #region VARIABLE
-        [SerializeField] private Player _player;
-        [SerializeField] private Castle _castle;
+        private Castle _castle;
 
-        [SerializeField] private bool _spawnGroupToggle = false;
+        [SerializeField] private List<QueueButton> _queueList = new List<QueueButton>();
+        [SerializeField] private List<TrainButton> _trainListButtons = new List<TrainButton>();
 
-        [SerializeField] private RectTransform _spawnGroup = null;
-        [SerializeField] private RectTransform _spawnQueue = null;
-        [SerializeField] private RectTransform _spawnList = null;
-
-        [SerializeField] private RectTransform _meleePanel = null;
-        [SerializeField] private RectTransform _meleeButtonPanel = null;
-
-        [SerializeField] private RectTransform _rangePanel = null;
-        [SerializeField] private RectTransform _rangeButtonPanel = null;
-
-        [SerializeField] private RectTransform _magicPanel = null;
-        [SerializeField] private RectTransform _magicButtonPanel = null;
-
-        [SerializeField] private GameObject _spawnListButton;
-        [SerializeField] private GameObject _queueRibbonButton;
-
-        [SerializeField] private Button _btnToggleBook;
-
-        [SerializeField] private List<QueueButton> _queueList;
-        [SerializeField] private List<SpawnButton> _spawnListButtons = new List<SpawnButton>();
-
-        [SerializeField] private QueueButton _lastQueueButton = null;
         [SerializeField] private QueueButton _toSpawn = null;
 
-        [Header("Spawn Book UI")]
-        [SerializeField] private float _spawnButtonWidth = 50.0f;
-        [SerializeField] private float _spawnButtonHeight = 50.0f;
-        [SerializeField] private float _spawnButtonPadding = 10.0f;
-        [SerializeField] private float _spawnButtonTierPadding = 60.0f;
+        IEnumerator _panelAnimation;
 
-        public QueueButton lastQueueButton { get { return this._lastQueueButton; } }
+        [SerializeField] private bool _spawnGroupToggle = false;
+        [SerializeField] private bool _spawnGroupMoving = false;
+
+        [Header("Unit Training Panel")]
+        [SerializeField] private float _showPanelPosX = 420.0f;
+        [SerializeField] private float _hidePanelPoxX = -270.0f;
+        [SerializeField] private float _panelMoveSpeed = 50.0f;
+        private float _trainingButtonSize = 50.0f;
+        [SerializeField] private float _trainingTierPadding = 120.0f;
+        [SerializeField] private float _trainingPadiding = 10.0f;
+        private float _queueStartPosY = 0.0f;
+        private float _queueHeight = 60.0f;
+        [SerializeField] private float _queueVerticalPadding = 2.0f;
+        [SerializeField] private float _queueMoveSpeed = 10.0f;
+
+        [Space]
+        [SerializeField] private GameObject _trainUnitPrefab;
+        [SerializeField] private GameObject _queueRibbonPrefab;
+
+        private RectTransform _spawnGroup = null;
+        private RectTransform _spawnQueueGroup = null;
+        private RectTransform _spawnListGroup = null;
+        private RectTransform _spawnBackground = null;
+
+        private RectTransform _meleePanel = null;
+        private RectTransform _meleeButtonPanel = null;
+        private RectTransform _rangePanel = null;
+        private RectTransform _rangeButtonPanel = null;
+        private RectTransform _magicPanel = null;
+        private RectTransform _magicButtonPanel = null;
+
         public QueueButton toSpawn { get { return this._toSpawn; } }
         #endregion
 
@@ -61,122 +65,74 @@
 
         #region CLASS
         public void Init(Castle castle) {
-            this._player = castle.controller;
+
+            this.Init(castle.controller);
+
             this._castle = castle;
 
-            this._spawnGroup = this._player.UI.spawnGroup.transform as RectTransform;
+            this._panelAnimation = this.MoveTrainingPanel();
+            this._spawnGroup = this._controller.UI.spawnGroup.transform as RectTransform;
 
-            /*this._spawnQueue = this._spawnGroup.Find("Queue_Panel") as RectTransform;
-            this._spawnList = this._spawnGroup.Find("SpawnList_Panel") as RectTransform;
+            this._spawnQueueGroup = this._spawnGroup.Find("Queue_Panel") as RectTransform;
+            this._spawnListGroup = this._spawnGroup.Find("UnitTrain_Panel") as RectTransform;
+            this._spawnBackground = this._spawnGroup.Find("Background") as RectTransform;
+            this._spawnListGroup.gameObject.AddComponent<TrainBookToggle>().Init(this);
+            this._spawnBackground.gameObject.AddComponent<TrainBookToggle>().Init(this);
 
-            this._meleePanel = this._spawnList.Find("Melee_Panel") as RectTransform;
-            this._magicButtonPanel = this._meleePanel.Find("UnitButton_Panel") as RectTransform;
-            this._rangePanel = this._spawnList.Find("Range_Panel") as RectTransform;
+            this._meleePanel = this._spawnListGroup.Find("Melee_Panel") as RectTransform;
+            this._meleeButtonPanel = this._meleePanel.Find("UnitButton_Panel") as RectTransform;
+            this._rangePanel = this._spawnListGroup.Find("Range_Panel") as RectTransform;
             this._rangeButtonPanel = this._rangePanel.Find("UnitButton_Panel") as RectTransform;
-            this._magicPanel = this._spawnList.Find("Magic_Panel") as RectTransform;
+            this._magicPanel = this._spawnListGroup.Find("Magic_Panel") as RectTransform;
             this._magicButtonPanel = this._magicPanel.Find("UnitButton_Panel") as RectTransform;
 
-            this._btnToggleBook = this._spawnList.GetComponent<Button>() as Button;
-            this._btnToggleBook.onClick.AddListener(this.ToggleSpawnGroup);*/
-
-            //this._initialQueuePlacement = this._btnOpenList.transform.position;
-
-            //this.GenerateSpawnListButtons();
+            this.GenerateSpawnListButtons();
 
             this.HideUI();
-            //this.ResetUI();
         }
 
         public override void DisplayUI() {
-            this.CloseSpawnList();
             this._spawnGroup.gameObject.SetActive(true);
         }
 
         public override void HideUI() {
-            this._spawnGroup.gameObject.SetActive(false);
+            Debug.Log("Hide UI");
 
-            this.CloseSpawnList();
+            this.ResetSpawnGroup();
+            this._spawnGroup.gameObject.SetActive(false);
 
             this._castle.radiusDrawer.SetActive(false);
         }
 
         public override void ResetUI() {
-            this._spawnList.position = new Vector3(-200.0f, this._spawnList.position.y, this._spawnList.position.z);
-            this._spawnQueue.position = new Vector3(0.0f, this._spawnQueue.position.y, this._spawnQueue.position.z);
+            this.ResetSpawnGroup();
         }
-
+            
         public override void UpdateUI() {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
-        public void CheckSpawnQueue(SpawnQueueType queue) {            
-            foreach(QueueButton button in this._queueList) {
-                Debug.Log("Button ID: " + button.id);
-                Debug.Log("Queue ID: " + queue.id);
-                if(button.id == queue.id)
-                    button.Ready();
-            }
-        }
+        public void AddToQueue(UnitScriptable unitData, SpawnQueueType queueType) {
 
-        public void AddToQueue(UnitType type, Sprite sprite){
-            // NOTE: need to fix this part of the code since creating and deleting an object is a waste of resources if its never going to get used.
-            // Spawn The Queue Button on the Screen.
+            float yPos = this._queueStartPosY - this._queueList.Count * (this._queueHeight + this._queueVerticalPadding);
 
-            /*uint id = 0;
+            GameObject go = Instantiate(this._queueRibbonPrefab, this._spawnQueueGroup);
+            QueueButton queueButton = go.GetComponent<QueueButton>() as QueueButton;
 
-            if(this._castle.AddUnitToQueue(type, ref id)) {
-                // Add a button to the UI Queue List.
-                GameObject go = GameObject.Instantiate(this._btnQueue);
-                QueueButton button = go.GetComponent<QueueButton>();
-                RectTransform rect = go.transform as RectTransform;
-
-                button.Init(id, type, sprite, this._castle, this);
-                button.SetQueueType(this._castle.lastQueue);
-                this._queueList.Add(button);
-
-                //go.transform.SetParent(this._spawnQueue);
-                //go.transform.position = this._btnOpenList.transform.position;
-
-                rect.SetParent(this._spawnQueue);
-                rect.anchoredPosition = ((RectTransform)this._btnOpenList.transform).anchoredPosition;
-
-                if(this._queueList.Count < this._castle.queueLImit) {
-                    if(!this._btnOpenList.IsActive())
-                        this._btnOpenList.gameObject.SetActive(true);
-
-                    // Position the button and move the OpenSpawnList (or disable it if the queue count is higher than the spawnlimit).
-                    Vector3 openListPos = this._btnOpenList.transform.position;
-                    this._btnOpenList.transform.position = new Vector3(openListPos.x, openListPos.y - 35.0f, openListPos.z);
-                    //((RectTransform)this._btnOpenList.transform).anchoredPosition = new Vector3(openListPos.x, openListPos.y - 35.0f, openListPos.z);
-
-                } else {
-                    this._btnOpenList.gameObject.SetActive(false);
-                    this.CloseSpawnList();
-                }
-            } else {
-                // NOTE: need to display a message here to the user that the an error or a limit has been reached.
-                Debug.LogWarning("Either the limit as been reached: " + this._castle.spawnQueue.Count.ToString() + ", or the Type (" + type.ToString() + ") is not Supported");
-            }*/
+            queueButton.Init(yPos, this._castle, queueType, unitData.ClassData.ClassColor, unitData.TrainIconSprite);
+            queueType.SetQueueButton(queueButton);
+            this._queueList.Add(queueButton);
         }
 
         public void RemoveFromQueue(SpawnQueueType queue) {
-            QueueButton toRemove = null;
 
-            foreach(QueueButton remove in this._queueList){
-                if(remove.id == queue.id) {
-                    toRemove = remove;
-                    break;
-                }
-            }
+            if(this._queueList.Contains(queue.queueButton)) {
 
-            if(toRemove != null) {
-                if(this._queueList.Contains(toRemove)) {
-                    this._queueList.Remove(toRemove);
-                    toRemove.Delete();
-                    this.UpdateQueueUI();
-                } else
-                    Debug.LogError("An error has occured.");
-            }
+                this._queueList.Remove(queue.queueButton);
+                this.SortQueue();
+
+            } else
+                Debug.LogError("There is no Queue For Spawning, " + "ID: " + queue.id.ToString() + " - " + queue.type);
         }
 
         public void RemoveFromQueue(QueueButton unit) {
@@ -188,91 +144,145 @@
 
                 //((RectTransform)this._btnOpenList.transform).anchoredPosition = pos;
 
-                uint id = unit.id;
+                uint id = unit.ID;
                 this._queueList.Remove(unit);
                 this._castle.RemoveUnitFromQueue(id);
-                this.UpdateQueueUI();
+
             } else {
                 Debug.LogError("The Queued Unit Doesn't Exisit in the Queue List" + unit.typeToSpawn);
             }
         }
 
-        public void UpdateQueueUI() {
+        public void SortQueue() {
             for(int i = 0; i < this._queueList.Count; i++) {
-
-                // NOTE: need to fix up the placement using the padding vector instead of the inital placement.
-                // NOTE: Errors occur become the button is using some other local position that isnt the panel.
-                //Vector3 pos = new Vector3(this._paddingLeft, -(i * this._paddingBetween) - this._paddingTop, 0.0f);
-
-                //this._queueList[i].transform.position = new Vector3(this._initialQueuePlacement.x, this._initialQueuePlacement.y - (i * this._paddingBetween), this._initialQueuePlacement.z);
+                float yPos = this._queueStartPosY - i * (this._queueHeight + this._queueVerticalPadding);
+                StartCoroutine(this._queueList[i].MoveButton(yPos, this._queueMoveSpeed));
             }
         }
 
         public void UnlockSpawnButton(ClassType classType, UnitType unitType) {
             // Search for the button using the class and unit type.
-            foreach(SpawnButton button in this._spawnListButtons) {
+            foreach(TrainButton button in this._trainListButtons) {
                 if(button.UnitType == unitType) {
                     button.Unlock();
                 }
             }
         }
 
-        private void ToggleSpawnGroup() {
+        public void ToggleSpawnGroup() {
             this._spawnGroupToggle = !this._spawnGroupToggle;
 
-            if(this._spawnGroupToggle) {
-                this._spawnGroup.position = new Vector3(0.0f, this._spawnGroup.position.y, this._spawnGroup.position.z);
-            } else {
-                this._spawnGroup.position = new Vector3(-200.0f, this._spawnGroup.position.y, this._spawnGroup.position.z);
-            }
+            if(this._spawnGroupMoving)
+                StopCoroutine(this._panelAnimation);
+
+            this._panelAnimation = null;
+            this._panelAnimation = this.MoveTrainingPanel();
+            StartCoroutine(this._panelAnimation);
         }
 
-        private void OpenSpawnLlsT() {
-            // NOTE: need to change the spawn list movement into a StartCoroutine method.
-            if(!this._spawnGroupToggle) {
-                this._spawnGroupToggle = true;
-                this._spawnGroup.position = new Vector3(-200.0f, this._spawnGroup.position.y, this._spawnGroup.position.z);
-            }
-        }
+        private void ResetSpawnGroup() {
 
-        private void CloseSpawnList() {
-            // NOTE: need to change the spawn list movement into a StartCoroutine method.
-            if(this._spawnGroupToggle) {
-                this._spawnGroupToggle = false;
-                this._spawnGroup.position = new Vector3(0.0f, this._spawnGroup.position.y, this._spawnGroup.position.z);
-            }
+            if(this._spawnGroupMoving)
+                StopCoroutine(this._panelAnimation);
+
+            Vector3 tempPos = this._spawnGroup.anchoredPosition;
+
+            this._spawnGroupMoving = false;
+            this._spawnGroupToggle = false;
+            this._panelAnimation = null;
+
+            tempPos.x = this._hidePanelPoxX;
+            this._spawnGroup.anchoredPosition = tempPos;
         }
 
         private void GenerateSpawnListButtons() {
 
-            int classCount = 0;
+            int max = System.Enum.GetNames(typeof(ClassType)).Length - 2;
 
-            for(int i = 0; i < UnitPoolManager.instance.UnitDataList.Count; i++) {
-                UnitScriptable unit = UnitPoolManager.instance.UnitDataList[i];
-                GameObject go = Instantiate(this._spawnListButton);
-                SpawnButton btn = go.GetComponent<SpawnButton>() as SpawnButton;
-                RectTransform rectTransform = go.GetComponent<RectTransform>() as RectTransform;
+            for(int i = 0; i < max; i++) {
 
-                go.name = unit.unitType.ToString() + "_BTN";
-                btn.Init(this._castle, unit.spawnIconUnlockedSprite, unit.SpawnIconLockedsprite, unit.classType, unit.unitType, true);
-                this._spawnListButtons.Add(btn);
-                go.transform.SetParent(this._spawnList);
+                ClassType classType = ((ClassType)i + 1);
+                List<UnitScriptable> unitList = UnitPoolManager.instance.SortedUnitList[classType];
 
-                if(unit.classType == ClassType.MELEE) {
-                    //Vector3 pos = new Vector3(this._meleePosition, this._listYposition - (this._listPaddaing * classCount), 0.0f);
-                    //rectTransform.anchoredPosition = pos;
-                } else if(unit.classType == ClassType.RANGE) {
-                    //Vector3 pos = new Vector3(this._rangePosition, this._listYposition - (this._listPaddaing * classCount), 0.0f);
-                    //rectTransform.anchoredPosition = pos;
-                } else if(unit.classType == ClassType.MAGIC) {
-                    //Vector3 pos = new Vector3(this._magicPoseition, this._listYposition - (this._listPaddaing * classCount), 0.0f);
-                    //rectTransform.anchoredPosition = pos;
+                for(int j = 0; j < unitList.Count; j++) {
+
+                    UnitScriptable unit = unitList[j];
+                    GameObject go = Instantiate(this._trainUnitPrefab);
+                    TrainButton btn = go.GetComponent<TrainButton>() as TrainButton;
+                    RectTransform rect = go.transform as RectTransform;
+
+                    go.name = unit.unitType.ToString() + "_BTN";
+                    btn.Init(this._castle, unit, true);
+                    this._trainListButtons.Add(btn);
+
+                    if(classType == ClassType.MELEE)
+                        rect.SetParent(this._meleeButtonPanel);
+                    else if(classType == ClassType.RANGE)
+                        rect.SetParent(this._rangeButtonPanel);
+                    else if(classType == ClassType.MAGIC)
+                        rect.SetParent(this._magicButtonPanel);
+                    else
+                        Debug.LogError("Not Class Type Exists for this unit: " + classType.ToString());
+
+                    rect.anchoredPosition = Vector2.zero;
+
+                    if(j == 1) {
+
+                        rect.anchoredPosition = new Vector2(this._trainingTierPadding, 0.0f);
+
+                    } else if(j > 1) {
+
+                        float xPos = (this._trainingButtonSize * (j - 1)) + this._trainingPadiding;
+                        rect.anchoredPosition = new Vector2(this._trainingTierPadding + xPos, 0.0f);
+
+                    }
+
+                }
+            }
+        }
+
+        private IEnumerator MoveTrainingPanel() {
+            this._spawnGroupMoving = true;
+
+            if(this._spawnGroupToggle) { // Open
+
+                while(this._spawnGroup.anchoredPosition.x < this._showPanelPosX) {
+
+                    Vector3 panelPos = this._spawnGroup.anchoredPosition;
+                    panelPos.x += this._panelMoveSpeed;
+                    this._spawnGroup.anchoredPosition = panelPos;
+
+                    if(panelPos.x >= this._showPanelPosX) {
+
+                        panelPos.x = this._showPanelPosX;
+                        this._spawnGroup.anchoredPosition = panelPos;
+                        break;
+                    }
+
+                    yield return new WaitForEndOfFrame();
                 }
 
-                classCount++;
-                if(classCount % 3 == 0)
-                    classCount = 0;
+            } else { // Close
+
+                while(this._spawnGroup.anchoredPosition.x > this._hidePanelPoxX) {
+
+                    Vector3 panelPos = this._spawnGroup.anchoredPosition;
+                    panelPos.x -= this._panelMoveSpeed;
+                    this._spawnGroup.anchoredPosition = panelPos;
+
+                    if(panelPos.x <= this._hidePanelPoxX) {
+
+                        panelPos.x = this._hidePanelPoxX;
+                        this._spawnGroup.anchoredPosition = panelPos;
+                        break;
+                    }
+
+                    yield return new WaitForEndOfFrame();
+                }
             }
+
+            this._spawnGroupMoving = false;
+            yield return null;
         }
 
         #endregion

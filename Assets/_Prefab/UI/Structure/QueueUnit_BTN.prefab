@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 8502699068482145955}
   - component: {fileID: 8502699068482145952}
   - component: {fileID: 49270181}
+  - component: {fileID: 473750088107117261}
   m_Layer: 5
   m_Name: QueueUnit_BTN
   m_TagString: Untagged
@@ -239,6 +240,37 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &473750088107117261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8502699068482145966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8b2403befecf25488ad819449746d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _castle: {fileID: 0}
+  _castleUI: {fileID: 0}
+  _queueType:
+    id: 0
+    counter: 0
+    ready: 0
+    type: 0
+    queueButton: {fileID: 0}
+  _readyColor: {r: 0, g: 0, b: 0, a: 0}
+  _waitingColor: {r: 1, g: 1, b: 1, a: 1}
+  _unitIconSprite: {fileID: 0}
+  _rectTransform: {fileID: 8502699068482145953}
+  _animation: {fileID: 49270181}
+  _unitIconAnimation: {fileID: 1236505329}
+  _textAnimation: {fileID: 344319240}
+  _button: {fileID: 8502699068482145952}
+  _image: {fileID: 8502699068482145955}
+  _unitIconImage: {fileID: 2024067419332212192}
+  _unitText: {fileID: 3880111489217802115}
 --- !u!1 &8748118468754954715
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,7 +444,6 @@ Animation:
   serializedVersion: 3
   m_Animation: {fileID: 0}
   m_Animations:
-  - {fileID: 0}
   - {fileID: 7400000, guid: 101d5d370f3a33c41a6db76a55035fa0, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1

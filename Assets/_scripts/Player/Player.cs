@@ -62,7 +62,7 @@
         private PlayerSelect _playerSelection;
         [SerializeField]
         private SelectionState _selectionState = SelectionState.NONE;
-        
+
         public SelectionState selectionState { get { return this._selectionState; } set { this._selectionState = value; } }
 
         ////////////

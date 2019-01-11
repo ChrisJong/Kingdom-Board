@@ -10,8 +10,6 @@
     using Enum;
     using Extension;
     using Player;
-    using Utility;
-
 
     public class GameManager : SingletonMono<GameManager> {
 
@@ -22,7 +20,7 @@
         [SerializeField] private int _indexInView = 0;
 
         [SerializeField] private float _countdown = 0.0f;
-        private float _countdownLimit = 60.0f;
+        private float _countdownLimit = 120.0f;
 
         private List<Player> _players = new List<Player>();
         private List<Transform> _spawnPoints = new List<Transform>();
