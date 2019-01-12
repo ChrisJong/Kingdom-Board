@@ -123,8 +123,7 @@
 
             // NOTE: Resource and Cap limit checks go here.
 
-            SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, unitType);
-
+            SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, unitType, unitData.turnCost, unitData.goldCost, unitData.populationCost);
             this._ui.AddToQueue(unitData, temp);
 
             this._unitQueueCount++;
@@ -139,35 +138,14 @@
                 return false;
             }
 
+            // NOte: return resources back to the player since the unit wasn't ready to spawn (probably a change in preference)
+            //this.controller.AddResource(this.GetUnitResourceCost(toRemove.type));
+            //this.controller.RemoveFromUnitCap(this.GetUnitCapCost(toRemove.type));
+
             this._ui.RemoveFromQueue(queue);
             this._spawnQueue.Remove(queue);
 
             return true;
-        }
-
-        public bool RemoveUnitFromQueue(uint id) {
-            SpawnQueueType toRemove = null;
-
-            foreach(SpawnQueueType queue in this._spawnQueue) {
-                if(queue.id == id) {
-                    toRemove = queue;
-                    break;
-                } else
-                    continue;
-            }
-
-            if(toRemove != null) {
-                if(!toRemove.ready) {
-                    // NOte: return resources back to the player since the unit wasn't ready to spawn (probably a change in preference)
-                    this.controller.AddResource(this.GetUnitResourceCost(toRemove.type));
-                    this.controller.RemoveFromUnitCap(this.GetUnitCapCost(toRemove.type));
-                }
-
-                this._spawnQueue.Remove(toRemove);
-                this._ui.SortQueue();
-                return true;
-            } else
-                return false;
         }
 
         public bool SpawnUnit(UnitType type) {
@@ -193,22 +171,42 @@
 
             if(this.HandleSpawnUnit(this._toSpawn.type, position)) {
 
-                // Remove spawn from queue;
-                if(this._spawnQueue.Contains(this._toSpawn))
-                    this.spawnQueue.Remove(this._toSpawn);
+                this._ui.RemoveFromQueue(this._toSpawn);
+                this.spawnQueue.Remove(this._toSpawn);
 
-                ((CastleUI)this._uiComponent).RemoveFromQueue(this.toSpawn);
+                this._toSpawn.FinishedSpawn();
 
                 this.controller.selectionState = SelectionState.FREE;
                 this.structureState = StructureState.IDLE;
                 this.radiusDrawer.SetActive(false);
 
+                this._toSpawn = null;
+
                 return true;
-            } else {
+
+            } else
                 return false;
-            }
         }
 
+        public bool SetSpawn(SpawnQueueType queue) {
+
+            if(!this._spawnQueue.Contains(queue)) {
+                Debug.LogError("Spawn Queue Doesn't Contain Unit of Type: " + queue.type.ToString());
+                return false;
+            }
+
+            if(this._toSpawn != null)
+                this._toSpawn.CancelSpawn();
+
+            this.controller.selectionState = SelectionState.SELECT_SPAWNPOINT;
+            this.structureState = StructureState.SPAWN;
+            this.radiusDrawer.SetActive(true);
+            this._toSpawn = queue;
+
+            return true;
+        }
+
+        // NOTE: REMOVE
         public bool SetSpawn(uint id) {
             this.controller.selectionState = SelectionState.SELECT_POINT;
             this.structureState = StructureState.SPAWN;
@@ -229,137 +227,18 @@
             return true;
         }
 
+        public bool CancelSpawn() {
+            this._toSpawn.CancelSpawn();
+            this._toSpawn = null;
+
+            this.radiusDrawer.SetActive(false);
+            this._structureState = StructureState.IDLE;
+
+            return true;
+        }
+
         public void UnlockUnitToSpawn(ClassType classType, UnitType unitType) {
             this._ui.UnlockSpawnButton(classType, unitType);
-        }
-
-        private int GetUnitCapCost(UnitType type) {
-            int cost;
-
-            switch(type) {
-                case UnitType.ARCHER:
-                cost = UnitValues.Archer.UNITCAPCOST;
-                break;
-                case UnitType.CROSSBOW:
-                cost = UnitValues.Crossbow.UNITCAPCOST;
-                break;
-                case UnitType.LONGBOW:
-                cost = UnitValues.Longbow.UNITCAPCOST;
-                break;
-
-                case UnitType.MAGE:
-                cost = UnitValues.Mage.UNITCAPCOST;
-                break;
-                case UnitType.CLERIC:
-                cost = UnitValues.Cleric.UNITCAPCOST;
-                break;
-                case UnitType.WIZARD:
-                cost = UnitValues.Wizard.UNITCAPCOST;
-                break;
-
-                case UnitType.WARRIOR:
-                cost = UnitValues.Warrior.UNITCAPCOST;
-                break;
-                case UnitType.KNIGHT:
-                cost = UnitValues.Knight.UNITCAPCOST;
-                break;
-                case UnitType.GUARDIAN:
-                cost = UnitValues.Guardian.UNITCAPCOST;
-                break;
-
-                default:
-                Debug.LogError("Unit of type(" + type.ToString() + ") not found");
-                cost = -1;
-                break;
-            }
-
-            return cost;
-        }
-
-        private int GetUnitSpawnCounter(UnitType type) {
-            int cost;
-
-            switch(type) {
-                case UnitType.ARCHER:
-                cost = UnitValues.Archer.SPAWNCOUNT;
-                break;
-                case UnitType.CROSSBOW:
-                cost = UnitValues.Crossbow.SPAWNCOUNT;
-                break;
-                case UnitType.LONGBOW:
-                cost = UnitValues.Longbow.SPAWNCOUNT;
-                break;
-
-                case UnitType.MAGE:
-                cost = UnitValues.Mage.SPAWNCOUNT;
-                break;
-                case UnitType.CLERIC:
-                cost = UnitValues.Cleric.SPAWNCOUNT;
-                break;
-                case UnitType.WIZARD:
-                cost = UnitValues.Wizard.SPAWNCOUNT;
-                break;
-
-                case UnitType.WARRIOR:
-                cost = UnitValues.Warrior.SPAWNCOUNT;
-                break;
-                case UnitType.KNIGHT:
-                cost = UnitValues.Knight.SPAWNCOUNT;
-                break;
-                case UnitType.GUARDIAN:
-                cost = UnitValues.Guardian.SPAWNCOUNT;
-                break;
-
-                default:
-                Debug.LogError("Unit of type(" + type.ToString() + ") not found");
-                cost = -1;
-                break;
-            }
-
-            return cost;
-        }
-
-        private int GetUnitResourceCost(UnitType type) {
-            int cost;
-
-            switch(type) {
-                case UnitType.ARCHER:
-                cost = UnitValues.Archer.SPAWNCOST;
-                break;
-                case UnitType.CROSSBOW:
-                cost = UnitValues.Crossbow.SPAWNCOST;
-                break;
-                case UnitType.LONGBOW:
-                cost = UnitValues.Longbow.SPAWNCOST;
-                break;
-
-                case UnitType.MAGE:
-                cost = UnitValues.Mage.SPAWNCOST;
-                break;
-                case UnitType.CLERIC:
-                cost = UnitValues.Cleric.SPAWNCOST;
-                break;
-                case UnitType.WIZARD:
-                cost = UnitValues.Wizard.SPAWNCOST;
-                break;
-
-                case UnitType.WARRIOR:
-                cost = UnitValues.Warrior.SPAWNCOST;
-                break;
-                case UnitType.KNIGHT:
-                cost = UnitValues.Knight.SPAWNCOST;
-                break;
-                case UnitType.GUARDIAN:
-                cost = UnitValues.Guardian.SPAWNCOST;
-                break;
-
-                default:
-                Debug.LogError("Unit of type(" + type.ToString() + ") not found");
-                cost = -1;
-                break;
-            }
-
-            return cost;
         }
         #endregion
     }

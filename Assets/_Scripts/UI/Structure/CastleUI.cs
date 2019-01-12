@@ -21,8 +21,6 @@
         [SerializeField] private List<QueueButton> _queueList = new List<QueueButton>();
         [SerializeField] private List<TrainButton> _trainListButtons = new List<TrainButton>();
 
-        [SerializeField] private QueueButton _toSpawn = null;
-
         IEnumerator _panelAnimation;
 
         [SerializeField] private bool _spawnGroupToggle = false;
@@ -56,7 +54,6 @@
         private RectTransform _magicPanel = null;
         private RectTransform _magicButtonPanel = null;
 
-        public QueueButton toSpawn { get { return this._toSpawn; } }
         #endregion
 
         #region UNITY
@@ -133,24 +130,6 @@
 
             } else
                 Debug.LogError("There is no Queue For Spawning, " + "ID: " + queue.id.ToString() + " - " + queue.type);
-        }
-
-        public void RemoveFromQueue(QueueButton unit) {
-            if(this._queueList.Contains(unit)) {
-
-                Vector3 pos = unit.rectTransfrom.anchoredPosition;
-
-                Debug.Log("Queue Button Position: " + pos.ToString());
-
-                //((RectTransform)this._btnOpenList.transform).anchoredPosition = pos;
-
-                uint id = unit.ID;
-                this._queueList.Remove(unit);
-                this._castle.RemoveUnitFromQueue(id);
-
-            } else {
-                Debug.LogError("The Queued Unit Doesn't Exisit in the Queue List" + unit.typeToSpawn);
-            }
         }
 
         public void SortQueue() {

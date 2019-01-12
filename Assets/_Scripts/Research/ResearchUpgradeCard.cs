@@ -45,7 +45,7 @@
             this.ActivateText(false);
 
             this._cardAnimation.PlayFadeAnimation();
-
+            //UnityEditor.EditorApplication.isPaused = true;
             this.Finished();
         }
         #endregion

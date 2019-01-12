@@ -36,11 +36,11 @@
 
         #region CLASS
         public override void Init() {
-            this.UpdateInfo();
+            //this.UpdateInfo();
         }
 
         public override void UpdateUI() {
-            this.UpdateInfo();
+            //this.UpdateInfo();
         }
 
         public override void DisplayUI() {

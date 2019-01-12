@@ -34,6 +34,7 @@
         public AttackType weaknessType = AttackType.NONE;
 
         [Header("DATA - ATTRIBUTE VALUES")]
+        public int turnCost = 1; // The Numbner of turns it takes for it to be able to spawn.
         public float goldCost = 500.0f;
         public float populationCost = 1.0f;
         [Range(0.0f, 3.0f)] public float resistanceMultiplier = 0.0f;

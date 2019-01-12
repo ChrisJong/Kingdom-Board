@@ -54,6 +54,9 @@
             if(this._castle.controller.state == PlayerState.DEFENDING)
                 return;
 
+            if(this._castle.controller.selectionState == SelectionState.SELECT_SPAWNPOINT)
+                return;
+
             if(this.ready) {
                 this.Spawn();
             } else {
@@ -100,7 +103,11 @@
             if(this._textAnimation == null)
                 this._textAnimation = this._text.gameObject.GetComponent<Animation>() as Animation;
 
+            string textUpper = this._queueType.type.ToString();
+            string textLower = this._queueType.type.ToString();
+
             this._text.text = this._queueType.type.ToString().ToLower();
+            this._text.color = this._readyColor;
 
             this.PlayCreateAnimation();
         }
@@ -109,13 +116,36 @@
 
         public void Ready() {
             this._image.color = this._readyColor;
+            this._text.color = Color.white;
+        }
+
+        public void CancelSpawn() {
+            this.PlayCancelSpawnAnimation();
+        }
+
+        public void FinishSpawn() {
+            if(this._queueType.ready)
+                this.PlayFinishedAnimation();
         }
 
         public void Delete() {
             if(!this._queueType.ready)
                 this.PlayCancelAnimation();
+        }
 
-            //Destroy(this.gameObject);
+        public void Spawn() {
+            Debug.Log("Spawn");
+            this.PlaySetSpawnAnimation();
+            this._castle.SetSpawn(this._queueType);
+        }
+
+        public void Remove() {
+            this._castle = null;
+
+            this._queueType.Remove();
+            this._queueType = null;
+
+            Destroy(this.gameObject);
         }
 
         public IEnumerator MoveButton(float yPos, float moveSpeed) {
@@ -137,31 +167,17 @@
             yield return null;
         }
 
-        private void Spawn() {
-            Debug.Log("Spawn");
-            //this._castle.SetSpawn(this.id);
-        }
-
-        private void Remove() {
-            this._castle = null;
-
-            this._queueType.Remove();
-            this._queueType = null;
-
-            Destroy(this.gameObject);
-        }
-
         private void FinishCancelAnimation() {
             this._castle.RemoveUnitFromQueue(this._queueType);
             this.Remove();
         }
 
-        private void PlayCreateAnimation() {
-            this._animation.Play("ribbonSpawn");
+        private void FinishSpawnAnimation() {
+            this.Remove();
         }
 
-        private void PlayFadeAnimation() {
-
+        private void PlayCreateAnimation() {
+            this._animation.Play("ribbonCreate");
         }
 
         private void PlayCancelAnimation() {
@@ -174,12 +190,22 @@
             this.Invoke("FinishCancelAnimation", timer);
         }
 
-        private void PlaySpawnAnimation() {
-
+        private void PlaySetSpawnAnimation() {
+            this._animation.Play("ribbonSetSpawn");
         }
 
-        private void PlaySpawnedAnimation() {
+        private void PlayCancelSpawnAnimation() {
+            this._animation.Play("ribbonCancelSpawn");
+        }
 
+        private void PlayFinishedAnimation() {
+            float timer = this._animation.GetClip("ribbonFinished").length;
+
+            this._animation.Play("ribbonFinished");
+            this._iconAnimation.Play("ribbonCancel");
+            this._textAnimation.Play("ribbonTextCancel");
+
+            this.Invoke("FinishSpawnAnimation", timer);
         }
     }
 }

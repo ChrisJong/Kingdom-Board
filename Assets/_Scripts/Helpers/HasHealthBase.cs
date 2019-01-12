@@ -12,7 +12,7 @@
 
         [Header("ENTITY ATTRIBUTES")]
         [SerializeField, ReadOnly] private Player _controller;
-        protected UIBase _uiComponent;
+        [SerializeField] protected UIBase _uiComponent;
         public Player controller { get { return this._controller; } set { this._controller = value; } }
         public UIBase uiComponent { get { return this._uiComponent; } set { this._uiComponent = value; } }
 

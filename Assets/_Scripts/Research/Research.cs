@@ -167,9 +167,10 @@
                 this._castle.UnlockUnitToSpawn(classType, unitType);
 
                 for(int i = 0; i < this._cardsToDisplay.Count; i++) {
-                    if(this._cardsToDisplay[i].UnitType != unitType)
+                    if(this._cardsToDisplay[i].UnitType != unitType) {
+                        this._cardsToDisplay[i].CardAnimation.State = CardState.NONE;
                         StartCoroutine(this._cardsToDisplay[i].CardAnimation.RotateAndFade());
-                    else {
+                    } else {
                         this._previousCardSelected = this._currentCardSelected;
                         this._currentCardSelected = this._cardsToDisplay[i];
                     }
@@ -185,6 +186,18 @@
                 this._currentState = ResearchState.FINISHED;
 
             } else if(this._currentState == ResearchState.UPGRADE) {
+                this._backButton.gameObject.SetActive(false);
+
+                for(int i = 0; i < this._cardsToDisplay.Count; i++) {
+                    if(this._cardsToDisplay[i].UpgradeType != upgradeType) {
+                        this._cardsToDisplay[i].CardAnimation.State = CardState.NONE;
+                        StartCoroutine(this._cardsToDisplay[i].CardAnimation.RotateAndFade());
+                    } else {
+                        this._previousCardSelected = this._currentCardSelected;
+                        this._currentCardSelected = this._cardsToDisplay[i];
+                    }
+                }
+
                 ResearchUpgradeData data = this._upgrades[classType][keyID];
 
                 // Change the upgrade data in the research class.
@@ -197,17 +210,6 @@
                     }
                 }
 
-                foreach(ResearchUpgradeCard card in this._cardsToDisplay) {
-                    if(card.UpgradeType != upgradeType) {
-                        StartCoroutine(card.CardAnimation.RotateAndFade());
-                    } else {
-                        this._previousCardSelected = this._currentCardSelected;
-                        this._currentCardSelected = card;
-                    }
-                }
-
-                this._backButton.gameObject.SetActive(false);
-
                 this._previousState = this._currentState;
                 this._currentState = ResearchState.FINISHED;
             }
@@ -218,8 +220,6 @@
             this._currentState = ResearchState.CLASS;
             this._backButton.gameObject.SetActive(false);
             this._cardsReady = 0;
-
-            Debug.Log("Back calls");
 
             foreach(ResearchCard card in this._cardsToDisplay) {
                 card.CardAnimation.PlayFadeAnimation();

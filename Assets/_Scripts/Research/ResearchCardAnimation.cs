@@ -24,6 +24,8 @@
 
         [SerializeField] private CardState _state = CardState.NONE;
 
+        private IEnumerator _currentAnimation = null;
+
         [SerializeField] private Animation _animation = null;
 
         [SerializeField] private Vector3 _moveTo = Vector3.zero;
@@ -33,12 +35,10 @@
         [SerializeField] private float _rotationSpeed = 5.0f;
         [SerializeField] private float _yCoord = 0.0f;
 
-        public CardState State { get { return this._state; } }
+        public CardState State { get { return this._state; } set { this._state = value; } }
 
         #region UNITY
         public void OnPointerUp(PointerEventData eventData) {
-            Debug.Log("Card UP");
-
             if(this._state == CardState.FINISHED) {
                 this.PlayClickAnimation();
             }
@@ -172,8 +172,6 @@
                 this.FlipXScale();
 
                 this._state = CardState.FINISHED;
-
-                //Debug.Log("Fade: " + this._card.ClassType.ToString());
 
                 yield return null;
             }

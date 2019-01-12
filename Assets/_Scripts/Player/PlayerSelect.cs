@@ -222,7 +222,32 @@
         }
 
         private void SelectSpawnPoint() {
+            if(Input.GetMouseButtonUp(0)) { // Left Click!
 
+                if(this.CastRayToWorld(GlobalSettings.LayerValues.unitLayer)) {
+
+                    if(this.currentSelected is ISelected) {
+                        if(!(this.currentSelected as ISelected).SetPoint(this._hitInfo.point)) {
+                            Debug.LogWarning("The Location Selected Is invalid: " + this._hitInfo.point.ToString());
+                            return;
+                        }
+                    } else {
+                        Debug.LogWarning(this.currentSelected.name + " Doesn't Inherit from ISelection Interface.");
+                    }
+                }
+
+            } else if(Input.GetMouseButtonUp(1)) { // Right Click!
+
+                if(this.currentSelected.GetType() == typeof(Castle)) {
+                    Castle castle = this.currentSelected as Castle;
+                    castle.CancelSpawn();
+                }
+
+                this._controller.selectionState = SelectionState.FREE;
+
+            } else { // Any Other Input (Mouse)
+
+            }
         }
 
         // NOTE: instead of using this i've used the unity OnMouseEnter/Exit to simulate hovering over an object.

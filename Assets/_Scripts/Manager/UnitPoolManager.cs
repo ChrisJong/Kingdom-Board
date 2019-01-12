@@ -22,7 +22,7 @@
 
         [SerializeField] private List<UnitDeath> _poolDeath = new List<UnitDeath>();
 
-        [SerializeField] private List<UnitScriptable> _unitDataList = new List<UnitScriptable>();
+        private List<UnitScriptable> _unitDataList = new List<UnitScriptable>();
         private Dictionary<ClassType, List<UnitScriptable>> _sortedUnitList = new Dictionary<ClassType, List<UnitScriptable>>();
 
         public List<UnitScriptable> UnitDataList { get { return this._unitDataList; } }
