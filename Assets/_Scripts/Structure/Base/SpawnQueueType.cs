@@ -1,19 +1,16 @@
 ﻿namespace Structure {
 
-    using System;
-
-    using UnityEngine;
-
     using Enum;
+    using Player;
     using UI;
 
-    [Serializable]
+    [System.Serializable]
     public sealed class SpawnQueueType {
         public uint id = 0; // the id should match the id in the UnitQueueButton script
         public int counter = 0;
 
-        public float goldCost = 0;
-        public float populationCost = 0;
+        public int goldCost = 0;
+        public int populationCost = 0;
 
         public bool ready = false;
 
@@ -26,7 +23,7 @@
             this.counter = 1;
         }
 
-        public SpawnQueueType(uint id, UnitType type, int count, float goldCost, float populationCost) {
+        public SpawnQueueType(uint id, UnitType type, int count, int goldCost, int populationCost) {
             this.type = type;
             this.id = id;
             this.counter = count;

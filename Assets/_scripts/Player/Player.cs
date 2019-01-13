@@ -26,18 +26,12 @@
         public uint id;
         public uint roll;
         private string _name;
-        private int _currentGold;
-        private int _currentUnitCap;
-        private int _maxUnitCap;
         private bool _isAttacking;
         [SerializeField] private bool _turnEnded;
         private Transform _spawnLocation;
         private Color _color;
         [SerializeField] private PlayerState _state = PlayerState.NONE;
 
-        public int CurrentGold { get { return this._currentGold; } }
-        public int CurrentUnitCap { get { return this._currentUnitCap; } }
-        public int MaxUnitCap { get { return this._maxUnitCap; } }
         public PlayerState state { get { return this._state; } set { this._state = value; } }
 
         //////////////////
@@ -97,10 +91,6 @@
 
             this._units = new List<IUnit>();
             this._structures = new List<IStructure>(5);
-
-            this._currentGold = PlayerValues.STARTGOLD;
-            this._currentUnitCap = 0;
-            this._maxUnitCap = PlayerValues.STARTUNITCAP;
         }
 
         private void OnDisable() {
@@ -125,6 +115,8 @@
             this._turnEnded = false;
 
             this._spawnLocation = spawnLocation;
+
+            ResourceManager.instance.SetupPlayerResources(this);
 
             this._castle = StructurePoolManager.instance.GetStartCastle(this);
 
@@ -242,38 +234,6 @@
 
         public bool IsEnemy(IHasHealth other) {
             return !this.IsAlly(other);
-        }
-
-        public void AddResource(int quantity) {
-            this._currentGold += quantity;
-        }
-
-        public void SpendResource(int quantity) {
-            if(this.HasResource(quantity))
-                this._currentGold = this._currentGold - quantity;
-        }
-
-        public bool HasResource(int quantity) {
-            if(this._currentGold < quantity)
-                return false;
-            return true;
-        }
-
-        public bool CheckUnitCap(int cost) {
-            int newCap = this._currentUnitCap + cost;
-
-            if(newCap > this._maxUnitCap)
-                return false;
-
-            return true;
-        }
-
-        public void AddToUnitCap(int cost) {
-            this._currentUnitCap += cost;
-        }
-
-        public void RemoveFromUnitCap(int cost) {
-            this._currentUnitCap -= cost;
         }
 
         public void AddUnit(IUnit unit) {

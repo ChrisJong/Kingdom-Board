@@ -68,7 +68,7 @@
             if(this._currentState != ResearchState.BACK)
                 return;
             else {
-                if(this._cardsReady == this._cardsToDisplay.Count)
+                if(this.DisplayCardsReady())
                     this.Back();
             }
         }
@@ -168,8 +168,7 @@
 
                 for(int i = 0; i < this._cardsToDisplay.Count; i++) {
                     if(this._cardsToDisplay[i].UnitType != unitType) {
-                        this._cardsToDisplay[i].CardAnimation.State = CardState.NONE;
-                        StartCoroutine(this._cardsToDisplay[i].CardAnimation.RotateAndFade());
+                        this._cardsToDisplay[i].CardAnimation.DisableCard();
                     } else {
                         this._previousCardSelected = this._currentCardSelected;
                         this._currentCardSelected = this._cardsToDisplay[i];
@@ -190,8 +189,7 @@
 
                 for(int i = 0; i < this._cardsToDisplay.Count; i++) {
                     if(this._cardsToDisplay[i].UpgradeType != upgradeType) {
-                        this._cardsToDisplay[i].CardAnimation.State = CardState.NONE;
-                        StartCoroutine(this._cardsToDisplay[i].CardAnimation.RotateAndFade());
+                        this._cardsToDisplay[i].CardAnimation.DisableCard();
                     } else {
                         this._previousCardSelected = this._currentCardSelected;
                         this._currentCardSelected = this._cardsToDisplay[i];
@@ -239,6 +237,14 @@
                 else
                     temp.ApplyUpgrade(data.UpgradeType, data.CurrentValue);
             }
+        }
+
+        public bool DisplayCardsReady() {
+            if(this._cardsToDisplay.Count == this._cardsReady) {
+                return true;
+            }
+
+            return false;
         }
 
         private void ApplyUpgrade(UnitBase Unit, ResearchUpgradeData data) {

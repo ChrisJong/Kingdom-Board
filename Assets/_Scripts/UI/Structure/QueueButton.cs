@@ -10,6 +10,7 @@
 
     using Enum;
     using Structure;
+    using Utility;
 
     public class QueueButton : MonoBehaviour, IPointerClickHandler, IPointerUpHandler, IPointerDownHandler {
 
@@ -51,13 +52,14 @@
         public void OnPointerClick(PointerEventData eventData) {}
 
         public void OnPointerUp(PointerEventData eventData) {
-            if(this._castle.controller.state == PlayerState.DEFENDING)
-                return;
 
             if(this._castle.controller.selectionState == SelectionState.SELECT_SPAWNPOINT)
                 return;
 
             if(this.ready) {
+                if(this._castle.controller.state == PlayerState.DEFENDING)
+                    return;
+
                 this.Spawn();
             } else {
                 this.Delete();
@@ -103,10 +105,7 @@
             if(this._textAnimation == null)
                 this._textAnimation = this._text.gameObject.GetComponent<Animation>() as Animation;
 
-            string textUpper = this._queueType.type.ToString();
-            string textLower = this._queueType.type.ToString();
-
-            this._text.text = this._queueType.type.ToString().ToLower();
+            this._text.text = Utils.UppercaseFirst(this._queueType.type.ToString());
             this._text.color = this._readyColor;
 
             this.PlayCreateAnimation();
@@ -129,8 +128,11 @@
         }
 
         public void Delete() {
-            if(!this._queueType.ready)
+            if(!this._queueType.ready) {
                 this.PlayCancelAnimation();
+                Manager.ResourceManager.instance.AddResource(this._castle.controller, PlayerResource.GOLD, this._queueType.goldCost);
+                Manager.ResourceManager.instance.RemoveResource(this._castle.controller, PlayerResource.POPULATION, this._queueType.populationCost);
+            }
         }
 
         public void Spawn() {

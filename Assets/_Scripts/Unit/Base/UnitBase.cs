@@ -407,7 +407,8 @@
         }
 
         public virtual void UnitDeath() {
-            this.controller.RemoveFromUnitCap(2); // Remove unit Cap Cost from player.
+
+            ResourceManager.instance.RemoveResource(this.controller, PlayerResource.POPULATION, this._data.populationCost);
 
             if(this._deathPrefab != null)
                 this.PlayDeathAnimation();

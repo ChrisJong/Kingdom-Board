@@ -114,6 +114,7 @@
                 if(player == this._playerOnAttack) {
                     player.NewTurn(true);
 
+                    ResourceManager.instance.AddGoldPerTurn(player);
                     player.SetupNewTurn();
                     //player.StartTurn();
                 } else {

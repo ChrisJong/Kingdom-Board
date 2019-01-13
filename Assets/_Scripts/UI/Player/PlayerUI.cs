@@ -9,6 +9,7 @@
     using TMPro;
 
     using Enum;
+    using Manager;
     using Player;
 
     public class PlayerUI : ScreenSpace {
@@ -153,8 +154,12 @@
         private void UpdateInfo() {
             string text = string.Empty;
 
-            text = "GOLD: " + this.controller.CurrentGold.ToString() + "\r\n" +
-                   "UNIT CAP: " + this.controller.CurrentUnitCap.ToString() + " / " + this.controller.MaxUnitCap + "\r\n" + 
+            int gold = ResourceManager.instance.GetPlayerResource(this.controller, PlayerResource.GOLD);
+            int population = ResourceManager.instance.GetPlayerResource(this.controller, PlayerResource.POPULATION);
+            int populationCap = ResourceManager.instance.PopulationCap;
+
+            text = "GOLD: " + gold.ToString() + "\r\n" +
+                   "UNIT CAP: " + population.ToString() + " / " + populationCap.ToString() + "\r\n" + 
                    "PHASE: " + this.controller.state.ToString();
 
             this._infoText.text = text;

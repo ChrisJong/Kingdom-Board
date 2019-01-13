@@ -121,15 +121,20 @@
             if(this._spawnQueue.Count >= this.queueLImit)
                 return false;
 
-            // NOTE: Resource and Cap limit checks go here.
+            if(ResourceManager.instance.SpendResource(this.controller, PlayerResource.GOLD, unitData.goldCost) &&
+               ResourceManager.instance.SpendResource(this.controller, PlayerResource.POPULATION, unitData.populationCost)) {
 
-            SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, unitType, unitData.turnCost, unitData.goldCost, unitData.populationCost);
-            this._ui.AddToQueue(unitData, temp);
+                // Queue Unit.
+                SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, unitType, unitData.turnCost, unitData.goldCost, unitData.populationCost);
+                this._ui.AddToQueue(unitData, temp);
 
-            this._unitQueueCount++;
-            this._spawnQueue.Add(temp);
+                this._unitQueueCount++;
+                this._spawnQueue.Add(temp);
 
-            return true;
+                return true;
+            }
+
+            return false;
         }
 
         public bool RemoveUnitFromQueue(SpawnQueueType queue) {

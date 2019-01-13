@@ -31,4 +31,11 @@
         BACK,
         FINISHED
     };
+
+    public enum PlayerResource {
+        NONE = 0,
+        ANY = ~0,
+        GOLD = 1,
+        POPULATION
+    }
 }

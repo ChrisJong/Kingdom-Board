@@ -27,8 +27,9 @@ MonoBehaviour:
   attackType: 2
   resistanceType: 1
   weaknessType: 3
-  goldCost: 500
-  populationCost: 1
+  turnCost: 1
+  goldCost: 1000
+  populationCost: 2
   resistanceMultiplier: 0.5
   weaknessMultiplier: 2
   heath: 100

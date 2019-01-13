@@ -161,6 +161,17 @@
 
             return value;
         }
+
+        public static string UppercaseFirst(string s) {
+            string temp = s.ToLower();
+
+            if(string.IsNullOrEmpty(s))
+                return string.Empty;
+
+            char[] c = temp.ToCharArray();
+            c[0] = char.ToUpper(c[0]);
+            return new string(c);
+        }
         #endregion
     }
 }

@@ -24,7 +24,7 @@
 
         [SerializeField] private CardState _state = CardState.NONE;
 
-        private IEnumerator _currentAnimation = null;
+        [SerializeField] private IEnumerator _currentPlayingAnim = null;
 
         [SerializeField] private Animation _animation = null;
 
@@ -68,14 +68,25 @@
             this._animation.Play("CardFade_Anim");
         }
 
+        public void DisableCard() {
+            this.StopCoroutineAnimation();
+            this._currentPlayingAnim = this.RotateAndFade();
+            StartCoroutine(this._currentPlayingAnim);
+        }
+
         public void ChangeState() {
             if(this._state == CardState.START) {
-                StartCoroutine(StartRotation());
+
+                this.StopCoroutineAnimation();
+                this._currentPlayingAnim = this.StartRotation();
+                StartCoroutine(this._currentPlayingAnim);
             } else if(this._state == CardState.FADE) {
                 this._state = CardState.FINISHED;
                 this._card.HideCard();
             } else if(this._state == CardState.MOVE) {
-                StartCoroutine(MoveToPostion());
+                this.StopCoroutineAnimation();
+                this._currentPlayingAnim = this.MoveToPostion();
+                StartCoroutine(this._currentPlayingAnim);
             }
         }
 
@@ -85,18 +96,24 @@
             this._state = CardState.PLAYING;
             this._card.Ready = false;
 
-            StartCoroutine(this.RotateAndMove());
+            this.StopCoroutineAnimation();
+            this._currentPlayingAnim = this.RotateAndMove();
+            StartCoroutine(this._currentPlayingAnim);
         }
 
         public void SetMoveTo(Vector3 value) {
             this._moveTo = value;
 
             if(this._card.rectTransform.anchoredPosition.Equals(value)) {
-                StartCoroutine(this.StartRotation());
+                this.StopCoroutineAnimation();
+                this._currentPlayingAnim = this.StartRotation();
+                StartCoroutine(this._currentPlayingAnim);
                 return;
             }
 
-            StartCoroutine(MoveToPostion());
+            this.StopCoroutineAnimation();
+            this._currentPlayingAnim = this.MoveToPostion();
+            StartCoroutine(this._currentPlayingAnim);
         }
 
         public IEnumerator MoveToPostion() {
@@ -294,6 +311,14 @@
         private void FlipXScale() {
             Vector3 newScale = new Vector3(this._card.rectTransform.localScale.x * -1.0f, 1.0f, 1.0f);
             this._card.rectTransform.localScale = newScale;
+        }
+
+        private void StopCoroutineAnimation() {
+            if(this._currentPlayingAnim != null)
+                StopCoroutine(this._currentPlayingAnim);
+
+            this._state = CardState.NONE;
+            this._currentPlayingAnim = null;
         }
         #endregion
     }
