@@ -97,25 +97,6 @@
 
         public bool AddUnitToQueue(ClassType classType, UnitType unitType) {
 
-            /*int capCost = this.GetUnitCapCost(type);
-            int counter = this.GetUnitSpawnCounter(type);
-            int cost = this.GetUnitResourceCost(type);
-
-            // Check to see if the queue limit has been reached
-            if(this._spawnQueue.Count >= this.queueLImit)
-                return false;
-
-            if(this.controller.HasResource(cost) && this.controller.CheckUnitCap(capCost)) {
-                this.controller.SpendResource(cost);
-                this.controller.AddToUnitCap(capCost);
-
-                SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, type, counter);
-                this._spawnQueue.Add(temp);
-                this._unitQueueCount++;
-                return true;
-            }
-            return false;*/
-
             UnitScriptable unitData = UnitPoolManager.instance.FetchUnitData(classType, unitType);
 
             if(this._spawnQueue.Count >= this.queueLImit)

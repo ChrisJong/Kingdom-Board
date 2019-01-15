@@ -33,7 +33,7 @@
 
         public void UpdateCard() {
             this._text.text = "+" + this._upgradeData.CurrentValue + "\r\n" +
-                              "Times Researched: " + this._upgradeData.ResearchCount.ToString();
+                              "Times Upgraded: " + this._upgradeData.ResearchCount.ToString();
         }
 
         public void ActivateText(bool enabled) {

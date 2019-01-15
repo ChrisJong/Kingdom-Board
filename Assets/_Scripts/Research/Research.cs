@@ -87,7 +87,7 @@
             if(this._backButton == null) {
                 GameObject temp = null;
                 RectTransform rectTransform = null;
-                Vector3 pos = new Vector3(0.0f, 0.0f - ((216 / 2 + 70 / 2) + 10.0f), 0.0f);
+                Vector3 pos = new Vector3(0.0f, -300.0f, 0.0f);
 
                 if(this.backButtonPrefab != null)
                     temp = Instantiate(this.backButtonPrefab, this._researchGroup.transform);
@@ -427,38 +427,40 @@
         }
 
         private void RepositionCards() {
-            float startPos = -200.0f; // For 3 cards.
+            float cardWidth = this._cardsToDisplay[0].Width;
+            float startPos = -(cardWidth + 50.0f); // For 3 cards.
 
             for(int i = 0; i < this._cardsToDisplay.Count; i++) {
                 if(this._cardsToDisplay.Count == 1) {
                     this._cardsToDisplay[i].SetPosition(Vector3.zero);
                 } else if(this._cardsToDisplay.Count == 2) {
                     if(i == 0) // Left
-                        this._cardsToDisplay[i].SetPosition(new Vector3(-100.0f, 0.0f, 0.0f));
+                        this._cardsToDisplay[i].SetPosition(new Vector3(-(cardWidth * 0.66f), 0.0f, 0.0f));
                     else // Right
-                        this._cardsToDisplay[i].SetPosition(new Vector3(100.0f, 0.0f, 0.0f));
+                        this._cardsToDisplay[i].SetPosition(new Vector3((cardWidth * 0.66f), 0.0f, 0.0f));
                 } else if(this._cardsToDisplay.Count > 2) {
                     this._cardsToDisplay[i].SetPosition(new Vector3(startPos, 0.0f, 0.0f));
-                    startPos += 200.0f;
+                    startPos += (cardWidth + 50.0f);
                 }
             }
         }
 
         private void SetMovePositions() {
-            float startPos = -200.0f; // For 3 cards.
+            float cardWidth = this._cardsToDisplay[0].Width;
+            float startPos = -(cardWidth + 50.0f); // For 3 cards.
 
             for(int i = 0; i < this._cardsToDisplay.Count; i++) {
                 if(this._cardsToDisplay.Count == 1) {
                     this._cardsToDisplay[i].CardAnimation.SetMoveTo(Vector3.zero);
                 } else if(this._cardsToDisplay.Count == 2) {
                     if(i == 0) // Left
-                        this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3(-100.0f, 0.0f, 0.0f));
+                        this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3(-(cardWidth * 0.66f), 0.0f, 0.0f));
                     else // Right
-                        this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3(100.0f, 0.0f, 0.0f));
+                        this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3((cardWidth * 0.66f), 0.0f, 0.0f));
                 } else if(this._cardsToDisplay.Count > 2) {
                     Debug.Log("Card: " + this._cardsToDisplay[i].ClassType.ToString());
                     this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3(startPos, 0.0f, 0.0f));
-                    startPos += 200.0f;
+                    startPos += (cardWidth + 50.0f);
                 }
             }
         }

@@ -6,9 +6,9 @@
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
+    using TMPro;
 
     using Enum;
-    using System;
 
     [RequireComponent(typeof(ResearchCardAnimation))]
     public abstract class ResearchCard : MonoBehaviour, IPointerUpHandler {
@@ -24,6 +24,9 @@
 
         [SerializeField] protected int _keyID = -1; // -1 Doesn't belong in anything.
 
+        [SerializeField] protected float _width = 0.0f;
+        [SerializeField] protected float _height = 0.0f;
+
         [SerializeField] protected bool _toggled = false;
         [SerializeField] protected bool _isFrontFace = false;
         [SerializeField] protected bool _ready = false;
@@ -31,13 +34,16 @@
         protected RectTransform _rectTransform;
         protected Image _image;
         protected Button _button;
-        protected Text _text;
+        protected TextMeshProUGUI _text;
         protected GameObject _gameObject;
 
         [SerializeField] protected Sprite _faceSprite = null;
         [SerializeField] protected Sprite _backSprite = null;
 
         public ResearchCardAnimation CardAnimation { get { return this._cardAnimation; } }
+
+        public float Width { get { return this._width; } }
+        public float Height { get { return this._height; } }
 
         public bool Toggled { get { return this._toggled; } }
         public bool IsFrontFace { get { return this._isFrontFace; } }
@@ -69,8 +75,12 @@
             this._button = this.transform.GetComponent<Button>() as Button;
             this._cardAnimation = this.transform.GetComponent<ResearchCardAnimation>() as ResearchCardAnimation;
 
+            this._width = this._rectTransform.sizeDelta.x;
+            this._height = this._rectTransform.sizeDelta.y;
+
             GameObject temp = this.transform.Find("Text").gameObject;
-            this._text = temp.GetComponent<Text>() as Text;
+            this._text = temp.GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
+            this._text.text = string.Empty;
 
             this._research = parent;
 
