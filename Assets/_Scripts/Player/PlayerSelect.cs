@@ -26,8 +26,8 @@
         public Vector3 moveTo;
         public HasHealthBase targetSelected;
 
-        //public Selectable currentHover;
-        //public Selectable previousHover;
+        public HasHealthBase currentHover;
+        public HasHealthBase previousHover;
 
         public bool selected = false;
         public bool lockSelection = false;
@@ -87,7 +87,7 @@
         private bool CastRayToWorld(LayerMask mask) {
             this._ray = this._camera.ScreenPointToRay(Input.mousePosition);
 
-            Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.yellow);
+            Debug.DrawRay(this._ray.origin, this._ray.direction * this._distance, Color.red);
 
             if(EventSystem.current.IsPointerOverGameObject())
                 return false;
@@ -98,13 +98,11 @@
         private void MouseSelection() {
             switch(this._controller.selectionState) {
                 case SelectionState.FREE:
-                if(Input.GetMouseButtonUp(0)) {
-                    if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
-                        this.FreeSelection();
-                    } else {
-                        this.FreeDeselection();
-                    }
-                }
+                this.FreeState();
+                break;
+
+                case SelectionState.STANDBY:
+                this.StandbyState();
                 break;
 
                 case SelectionState.SELECT_TARGET:
@@ -129,12 +127,69 @@
             }
         }
 
-        private void FreeSelection() {
+        private void FreeState() {
+            if(Input.GetMouseButtonUp(0)) { // Left Mouse Click
+
+                if(!EventSystem.current.IsPointerOverGameObject())
+                    if(this._controller.castle.UI.SpawnGroupToggle)
+                        this._controller.castle.UI.ToggleSpawnGroup(false);
+
+                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer))
+                    this.Selection();
+
+            } else if(Input.GetMouseButtonUp(1)) { // Right M ouse Click
+
+                if(!EventSystem.current.IsPointerOverGameObject())
+                    if(this._controller.castle.UI.SpawnGroupToggle)
+                        this._controller.castle.UI.ToggleSpawnGroup(false);
+
+                this.Deselection();
+            } else {
+                this.HoverSelect();
+            }
+        }
+
+        private void StandbyState() {
+            if(Input.GetMouseButtonUp(0)) { // Left Click.
+
+                if(!EventSystem.current.IsPointerOverGameObject())
+                    if(this._controller.castle.UI.SpawnGroupToggle)
+                        this._controller.castle.UI.ToggleSpawnGroup(false);
+
+                // Castle Spawn Checks
+                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
+                    if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
+                        var temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
+
+                        if(temp.controller.id == this._controller.id) {
+                            if(temp.GetType() == typeof(Castle))
+                                if(!this._controller.castle.UI.SpawnGroupToggle)
+                                    ((CastleUI)temp.uiComponent).ToggleSpawnGroup(true);
+                        }
+                    }
+                }
+
+                Debug.Log("Selecting Point Or Unit");
+
+            } else if(Input.GetMouseButtonUp(1)) { // Right Click.
+
+                if(!EventSystem.current.IsPointerOverGameObject())
+                    if(this._controller.castle.UI.SpawnGroupToggle)
+                        this._controller.castle.UI.ToggleSpawnGroup(false);
+
+                this.Deselection();
+
+            } else {
+                //this.HoverSelect();
+            }
+        }
+
+        private void Selection() {
             if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
                 var temp = this._hitInfo.transform.GetComponent<HasHealthBase>();
 
-                //if(this._controller.state == PlayerState.DEFENDING && temp.entityType == EntityType.UNIT)
-                    //return;
+                if(this._controller.state == PlayerState.DEFENDING && temp.entityType == EntityType.UNIT)
+                    return;
 
                 if(temp.entityType == EntityType.UNIT) {
                     if(((UnitBase)temp).unitState == UnitState.FINISH)
@@ -150,6 +205,7 @@
                     this.currentSelected = temp;
                     this.currentSelected.uiComponent.DisplayUI();
 
+                    this._controller.selectionState = SelectionState.STANDBY;
                     this.selected = true;
                 }
             } else {
@@ -157,13 +213,15 @@
             }
         }
 
-        private void FreeDeselection() {
+        private void Deselection() {
             if(!EventSystem.current.IsPointerOverGameObject()) {
                 if(this.currentSelected != null) {
                     this.previousSelected = this.currentSelected;
                     this.currentSelected.uiComponent.HideUI(); // Hide UI;
                     this.currentSelected = null;
                 }
+
+                this._controller.selectionState = SelectionState.FREE;
                 this.selected = false;
             }
         }
@@ -226,47 +284,62 @@
 
                 if(this.CastRayToWorld(GlobalSettings.LayerValues.unitLayer)) {
 
-                    if(this.currentSelected is ISelected) {
-                        if(!(this.currentSelected as ISelected).SetPoint(this._hitInfo.point)) {
-                            Debug.LogWarning("The Location Selected Is invalid: " + this._hitInfo.point.ToString());
+                    if(this._controller.castle != null) {
+
+                        if(!this._controller.castle.SetPoint(this._hitInfo.point)) {
+                            Debug.LogWarning("The Location Selected Is Invalud: " + this._hitInfo.point.ToString());
                             return;
                         }
+
                     } else {
-                        Debug.LogWarning(this.currentSelected.name + " Doesn't Inherit from ISelection Interface.");
+                        Debug.LogError("Player_" + this._controller.id.ToString() + "Doesn't Contain A Castle Object");
                     }
                 }
 
             } else if(Input.GetMouseButtonUp(1)) { // Right Click!
 
-                if(this.currentSelected.GetType() == typeof(Castle)) {
-                    Castle castle = this.currentSelected as Castle;
-                    castle.CancelSpawn();
+                if(this._controller.castle != null) {
+
+                    this._controller.castle.CancelSpawn();
+
+                } else {
+                    Debug.LogError("Player_" + this._controller.id.ToString() + "Doesn't Contain A Castle Object");
                 }
 
                 this._controller.selectionState = SelectionState.FREE;
-
-            } else { // Any Other Input (Mouse)
 
             }
         }
 
         // NOTE: instead of using this i've used the unity OnMouseEnter/Exit to simulate hovering over an object.
-        /*private void HoverSelect() {
-            if(this.CastRayToWorld()) {
-                if(this._hitInfo.transform.GetComponent<Selectable>() != null) {
+        private void HoverSelect() {
+            if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
+                if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
                     if(this.currentHover != null) {
+
+                        HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
+
+                        if(this.currentHover == temp)
+                            return;
+
                         this.previousHover = this.currentHover;
-                        this.currentHover = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
+                        this.previousHover.uiComponent.OnExit();
+                        this.currentHover = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
+                        this.currentHover.uiComponent.OnEnter();
                     } else {
-                        this.currentHover = this._hitInfo.transform.GetComponent<Selectable>() as Selectable;
+                        this.currentHover = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
+                        this.currentHover.uiComponent.OnEnter();
                     }
                 }
-            }else {
-                if(this.currentHover != null)
+            } else {
+                if(this.currentHover != null) {
                     this.previousHover = this.currentHover;
+                    this.previousHover.uiComponent.OnExit();
+                }
+
                 this.currentHover = null;
             }
-        }*/
+        }
         #endregion
     }
 }

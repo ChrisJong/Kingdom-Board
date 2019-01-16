@@ -11,6 +11,7 @@
     using Enum;
     using Manager;
     using Player;
+    using System;
 
     public class PlayerUI : ScreenSpace {
 
@@ -27,6 +28,8 @@
         public GameObject bannerGroup = null;
         public GameObject spawnGroup = null;
         public GameObject researchGroup = null;
+        public GameObject unitUIGroup = null;
+        public GameObject structureUIGroup = null;
 
         [SerializeField] protected List<Transform> _uiChildrenList = new List<Transform>();
 
@@ -72,14 +75,22 @@
             } else 
                 this._playerBanner.Init(this);
 
+            if(this.unitUIGroup == null) {
+                this.unitUIGroup = this._uiGroup.transform.Find("Unit_UI").gameObject;
+                this.unitUIGroup.SetActive(false);
+            }
+
+            if(this.structureUIGroup == null) {
+                this.structureUIGroup = this._uiGroup.transform.Find("Structure_UI").gameObject;
+                this.structureUIGroup.SetActive(false);
+            }
+
             foreach(Transform temp in this._uiGroup.GetComponentInChildren<Transform>()) {
                 if(temp.GetHashCode() == this.bannerGroup.transform.GetHashCode())
                     continue;
 
-                if(temp.name == "Spawn") {
+                if(temp.name == "Spawn")
                     this.spawnGroup = temp.gameObject;
-                    this.spawnGroup.SetActive(false);
-                }
 
                 if(temp.name == "Research")
                     this.researchGroup = temp.gameObject;
@@ -96,7 +107,10 @@
                 if(temp.gameObject.activeSelf)
                     continue;
 
-                if(temp.gameObject == this.spawnGroup)
+                if(temp.gameObject == this.unitUIGroup)
+                    continue;
+
+                if(temp.gameObject == this.structureUIGroup)
                     continue;
 
                 temp.gameObject.SetActive(true);
@@ -114,11 +128,16 @@
                 if(!temp.gameObject.activeSelf)
                     continue;
 
-                if(temp.gameObject == this.spawnGroup)
-                    continue;
-
                 temp.gameObject.SetActive(false);
             }
+        }
+
+        public override void OnEnter() {
+            throw new NotImplementedException();
+        }
+
+        public override void OnExit() {
+            throw new NotImplementedException();
         }
 
         public override void ResetUI() {

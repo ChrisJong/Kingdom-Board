@@ -6,10 +6,10 @@
     using UI;
 
     public interface IHasHealth : IEntity {
-        float maxHealth { get; }
-        float currentHealth { get; }
-        float maxEnergy { get; }
-        float currentEnergy { get; }
+        float MaxHealth { get; }
+        float CurrentHealth { get; }
+        float MaxEnergy { get; }
+        float CurrentEnergy { get; }
 
         bool isDead { get; }
         float lastAttacked { get; }

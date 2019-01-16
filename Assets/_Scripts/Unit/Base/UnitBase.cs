@@ -422,7 +422,7 @@
                 break;
 
                 case UnitUpgradeType.HEALTH:
-                this.currentHealth += value;
+                this._currentHealth += value;
                 this._maxHealth += value;
                 break;
 
@@ -608,7 +608,7 @@
             this.RemoveHealth(finalDamage);
             this.uiComponent.UpdateUI();
 
-            if(this.currentHealth <= 0.0f) {
+            if(this.CurrentHealth <= 0.0f) {
                 if(this.controller != null)
                     this.controller.RemoveUnit(this);
 

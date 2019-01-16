@@ -59,7 +59,7 @@
 
         protected override void OnEnable() {
             base.OnEnable();
-            this.currentHealth = this._maxHealth;
+            this._currentHealth = this._maxHealth;
         }
         #endregion
 
@@ -134,7 +134,7 @@
             this.RemoveHealth(finalDamage);
             Debug.Log(this.name + " Took: " + finalDamage.ToString() + " of Damage From - " + target.gameObject.name);
 
-            if(this.currentHealth <= 0.0f) {
+            if(this.CurrentHealth <= 0.0f) {
 
                 if(this.controller != null && this.controller.structures != null)
                     this.controller.structures.Remove(this);

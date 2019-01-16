@@ -1,6 +1,7 @@
 ﻿namespace UI {
 
     using UnityEngine;
+    using UnityEngine.UI;
     using UnityEngine.EventSystems;
 
     public class TrainBookToggle : MonoBehaviour, IPointerClickHandler, IPointerUpHandler, IPointerDownHandler {
@@ -14,7 +15,9 @@
         public void OnPointerDown(PointerEventData eventData) {}
 
         public void OnPointerUp(PointerEventData eventData) {
-            this._castleUI.ToggleSpawnGroup();
+            if(!this._castleUI.SpawnGroupToggle) {
+                this._castleUI.ToggleSpawnGroup();
+            }
         }
 
         #endregion

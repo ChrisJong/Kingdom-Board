@@ -49,6 +49,14 @@
         public override void HideUI() {
         }
 
+        public override void OnEnter() {
+            //throw new NotImplementedException();
+        }
+
+        public override void OnExit() {
+            //throw new NotImplementedException();
+        }
+
         public override void ResetUI() {
         }
 
@@ -165,7 +173,7 @@
             else
                 state = "IDLE";
 
-            text = "Health: " + this.unit.currentHealth + " / " + this.unit.maxHealth + "\r\n" +
+            text = "Health: " + this.unit.CurrentHealth + " / " + this.unit.MaxHealth + "\r\n" +
                    "Attack: " + this.unit.GetDamage() + "\r\n" +
                    "Resistance: " + this.unit.resistanceType.ToString() + " - " + this.unit.resistancePercentage.ToString() + "%" + "\r\n" +
                    "Weakness: " + this.unit.weaknessType.ToString() + " - " + this.unit.weaknessPercentage.ToString() + "%" + "\r\n" +

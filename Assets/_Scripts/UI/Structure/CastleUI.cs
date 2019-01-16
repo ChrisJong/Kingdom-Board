@@ -5,6 +5,7 @@
 
     using UnityEngine;
     using UnityEngine.UI;
+    using TMPro;
 
     using Enum;
     using Manager;
@@ -14,6 +15,15 @@
     using Structure;
 
     public class CastleUI : ScreenSpace {
+
+        #region INFO_UI
+
+        private GameObject _infomationGroup;
+        [SerializeField] private GameObject _healthGroup;
+        private TextMeshProUGUI _healthText;
+        private RectTransform _healthBarTransform;
+
+        #endregion
 
         #region VARIABLE
         private Castle _castle;
@@ -54,6 +64,8 @@
         private RectTransform _magicPanel = null;
         private RectTransform _magicButtonPanel = null;
 
+        public bool SpawnGroupToggle { get { return this._spawnGroupToggle; } }
+
         #endregion
 
         #region UNITY
@@ -66,6 +78,12 @@
             this.Init(castle.controller);
 
             this._castle = castle;
+
+            // Information Group
+            this._infomationGroup = this._controller.UI.structureUIGroup;
+            this._healthGroup = this._infomationGroup.transform.Find("BG").Find("Health").gameObject;
+            this._healthBarTransform = this._healthGroup.transform.Find("Bar").transform as RectTransform;
+            this._healthText = this._healthGroup.transform.Find("Text").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
 
             this._panelAnimation = this.MoveTrainingPanel();
             this._spawnGroup = this._controller.UI.spawnGroup.transform as RectTransform;
@@ -89,23 +107,46 @@
         }
 
         public override void DisplayUI() {
-            this._spawnGroup.gameObject.SetActive(true);
+            if(!this._spawnGroupToggle)
+                this.ToggleSpawnGroup(true);
+
+            this.UpdateUI();
+            this._infomationGroup.SetActive(true);
         }
 
         public override void HideUI() {
             Debug.Log("Hide UI");
 
-            this.ResetSpawnGroup();
-            this._spawnGroup.gameObject.SetActive(false);
+            if(this._spawnGroupToggle)
+                this.ToggleSpawnGroup(false);
+
+            this._infomationGroup.SetActive(false);
 
             this._castle.radiusDrawer.SetActive(false);
         }
 
+        public override void OnEnter() {
+            this.UpdateUI();
+            this._infomationGroup.SetActive(true);
+        }
+
+        public override void OnExit() {
+            this._infomationGroup.SetActive(false);
+        }
+
         public override void ResetUI() {
+            this._infomationGroup.SetActive(false);
             this.ResetSpawnGroup();
         }
             
         public override void UpdateUI() {
+            // information Group
+            float healthBarWidth = 290.0f; // Stored Width of the health Bar.
+            float newHealth = healthBarWidth * (this._castle.CurrentHealth / this._castle.MaxHealth);
+            Vector2 newRect = new Vector2(newHealth, this._healthBarTransform.rect.height);
+            this._healthBarTransform.sizeDelta = newRect;
+            this._healthText.text = this._castle.CurrentHealth.ToString() + " / " + this._castle.MaxHealth.ToString();
+
             //throw new System.NotImplementedException();
         }
 
@@ -148,7 +189,22 @@
             }
         }
 
+        public void ToggleSpawnGroup(bool active) {
+            if(this._spawnGroupToggle == active)
+                return;
+
+            this._spawnGroupToggle = active;
+
+            if(this._spawnGroupMoving)
+                StopCoroutine(this._panelAnimation);
+
+            this._panelAnimation = null;
+            this._panelAnimation = this.MoveTrainingPanel();
+            StartCoroutine(this._panelAnimation);
+        }
+
         public void ToggleSpawnGroup() {
+
             this._spawnGroupToggle = !this._spawnGroupToggle;
 
             if(this._spawnGroupMoving)

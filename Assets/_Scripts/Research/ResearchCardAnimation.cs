@@ -97,7 +97,7 @@
             this._card.Ready = false;
 
             this.StopCoroutineAnimation();
-            this._currentPlayingAnim = this.RotateAndMove();
+            this._currentPlayingAnim = this.MoveAndRotate();
             StartCoroutine(this._currentPlayingAnim);
         }
 
@@ -231,7 +231,31 @@
             }
         }
 
-        public IEnumerator RotateAndMove() {
+        public IEnumerator MoveAndRotate() {
+
+            if(this._card.GetType() == typeof(ResearchUpgradeCard))
+                ((ResearchUpgradeCard)this._card).ActivateText(true);
+
+            while(this._yCoord < 90.0f) {
+
+                this.RotateCard();
+                yield return new WaitForEndOfFrame();
+            }
+
+            this._card.ChangeFace();
+            this.FlipXScale();
+
+            if(this._card.GetType() == typeof(ResearchUpgradeCard))
+                ((ResearchUpgradeCard)this._card).ActivateText(false);
+
+            while(this._yCoord < 180.0f) {
+
+                this.RotateCard();
+                yield return new WaitForEndOfFrame();
+            }
+
+            this.RotateCard(0.0f);
+            this.FlipXScale();
 
             if(!this._card.rectTransform.anchoredPosition.Equals(this._moveTo)) {
 
@@ -262,30 +286,6 @@
 
                 }
             }
-
-            if(this._card.GetType() == typeof(ResearchUpgradeCard))
-                ((ResearchUpgradeCard)this._card).ActivateText(true);
-
-            while(this._yCoord < 90.0f) {
-
-                this.RotateCard();
-                yield return new WaitForEndOfFrame();
-            }
-
-            this._card.ChangeFace();
-            this.FlipXScale();
-
-            if(this._card.GetType() == typeof(ResearchUpgradeCard))
-                ((ResearchUpgradeCard)this._card).ActivateText(false);
-
-            while(this._yCoord < 180.0f) {
-
-                this.RotateCard();
-                yield return new WaitForEndOfFrame();
-            }
-
-            this.RotateCard(0.0f);
-            this.FlipXScale();
 
             this._state = CardState.FINISHED;
             this._card.Ready = true;

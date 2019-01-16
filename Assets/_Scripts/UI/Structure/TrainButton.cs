@@ -3,12 +3,13 @@
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
+    using TMPro;
 
     using Enum;
     using Scriptable;
     using Structure;
 
-    public class TrainButton : MonoBehaviour, IPointerUpHandler {
+    public class TrainButton : MonoBehaviour, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler {
 
         #region VARIABLE
 
@@ -18,6 +19,7 @@
         [SerializeField] private UnitType _unitType = UnitType.NONE;
 
         [SerializeField] private bool _isLocked = true;
+        [SerializeField] private bool _isInfoDisplayed = false;
 
         [SerializeField] private Sprite _unitIconSprite;
 
@@ -27,10 +29,13 @@
         private GameObject _gameObject;
         [SerializeField] private GameObject _unitIconObject;
         [SerializeField] private GameObject _lockedObject;
+        [SerializeField] private GameObject _infoObject;
 
         private Image _image;
         [SerializeField] private Image _unitIconImage;
         [SerializeField] private Image _lockedmage;
+
+        [SerializeField] private TextMeshProUGUI _infoText;
 
         public ClassType ClassType { get { return this._classType; } }
 
@@ -47,6 +52,20 @@
                 return;
 
             this.AddToQueue();
+        }
+
+        public void OnPointerEnter(PointerEventData eventData) {
+            if(!this._isLocked && !this._isInfoDisplayed) {
+                this._infoObject.SetActive(true);
+                this._isInfoDisplayed = true;
+            }
+        }
+
+        public void OnPointerExit(PointerEventData eventData) {
+            if(!this.IsLocked && this._isInfoDisplayed) {
+                this._infoObject.SetActive(false);
+                this._isInfoDisplayed = false;
+            }
         }
 
         #endregion
@@ -68,7 +87,12 @@
             this._unitIconSprite = data.TrainIconSprite;
             this._unitIconImage.sprite = this._unitIconSprite;
 
+            this._infoText.text = "G: " + data.goldCost.ToString() + "\r\n" +
+                                  "P: " + data.populationCost.ToString();
+            this._infoObject.SetActive(false);
+
             this._isLocked = locked;
+            this._isInfoDisplayed = false;
 
             if(locked)
                 this._lockedObject.SetActive(true);

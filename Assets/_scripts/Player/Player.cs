@@ -183,6 +183,7 @@
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(false);
+            this._castle.UI.ResetUI();
             this._ui.HideUI();
 
             if(attacking) {

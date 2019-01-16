@@ -47,6 +47,10 @@
 
         public abstract void HideUI();
 
+        public abstract void OnEnter();
+
+        public abstract void OnExit();
+
         public abstract void ResetUI();
 
         public abstract void UpdateUI();
