@@ -16,13 +16,15 @@ MonoBehaviour:
   classType: 1
   unitType: 8
   classTier: 2
-  cardFaceSprite: {fileID: 21300000, guid: 66303042aa483cb4984ad19c741d4043, type: 3}
-  cardBackSprite: {fileID: 21300000, guid: 18de7e74e68496441a1bd0652da96e9e, type: 3}
-  TrainIconSprite: {fileID: 21300000, guid: 160aa89ad9c40e74c8b7c7b567f61f98, type: 3}
-  prefabMain: {fileID: 0}
-  prefabDeath: {fileID: 1903209259689268, guid: 8ec73f3208de6ac49863e29e1731a06e,
+  researchCardFaceSprite: {fileID: 21300000, guid: 66303042aa483cb4984ad19c741d4043,
     type: 3}
-  prefabProjectile: {fileID: 0}
+  researchCardBackSprite: {fileID: 21300000, guid: 18de7e74e68496441a1bd0652da96e9e,
+    type: 3}
+  iconSprite: {fileID: 21300000, guid: 160aa89ad9c40e74c8b7c7b567f61f98, type: 3}
+  mainPrefab: {fileID: 0}
+  deathPrefab: {fileID: 1903209259689268, guid: 8ec73f3208de6ac49863e29e1731a06e,
+    type: 3}
+  projectilePrefab: {fileID: 0}
   movementType: 1
   attackType: 1
   resistanceType: 3

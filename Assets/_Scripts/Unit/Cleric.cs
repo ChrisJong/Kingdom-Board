@@ -133,7 +133,7 @@
         private void InternalHeal() {
             this._currentTarget.AddHealth(this._healingAmount);
 
-            ((UI.ClericUI)this._uiComponent).FinishHeal();
+            ((UI.ClericUI)this.UIComponent).FinishHeal();
             this._unitState = UnitState.IDLE;
             this._canHeal = false;
         }

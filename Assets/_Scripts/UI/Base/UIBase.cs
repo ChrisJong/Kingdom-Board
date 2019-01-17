@@ -17,19 +17,19 @@
 
         [SerializeField] protected Player _controller;
 
-        protected GameObject _uiGroup;
+        [SerializeField] protected GameObject _uiGroup;
         protected Canvas _uiCanvas;
         protected Transform _uiGroupTransform;
         protected RectTransform _uiGroupRectTransform;
 
         public bool IsActive { get { return this._uiGroup.activeSelf; } set { this._uiGroup.SetActive(value); } }
 
-        public Player controller { get { return this._controller; } set { this._controller = value; } }
+        public Player Controller { get { return this._controller; } set { this._controller = value; } }
 
         #endregion
 
         #region CLASS
-        public virtual void Init() {
+        public virtual void Setup() {
             this._uiGroup = this.transform.Find("_UI").gameObject;
             this._uiGroupTransform = this._uiGroup.transform;
             this._uiGroupRectTransform = this._uiGroup.transform as RectTransform;
@@ -39,8 +39,6 @@
 
         public virtual void Init(Player controller) {
             this._controller = controller;
-
-            this.Init();
         }
 
         public abstract void DisplayUI();

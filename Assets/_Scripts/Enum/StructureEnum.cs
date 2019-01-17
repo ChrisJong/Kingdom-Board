@@ -11,7 +11,7 @@
         DEAD,
     }
 
-    public enum StructureGroupType {
+    public enum StructureClassType {
         NONE = 0,
         ANY = ~0,
         MAIN = 1

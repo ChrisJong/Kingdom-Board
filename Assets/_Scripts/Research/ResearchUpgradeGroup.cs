@@ -11,7 +11,7 @@
 
         #region VARIABLE
 
-        private ClassType _classType = ClassType.NONE;
+        private UnitClassType _classType = UnitClassType.NONE;
 
         private List<ResearchUpgradeCard> _cards;
         private List<ResearchUpgradeCard> _previousCards;
@@ -25,7 +25,7 @@
 
         #endregion
 
-        public ResearchUpgradeGroup(ClassType classType, List<ResearchUpgradeCard> cards) {
+        public ResearchUpgradeGroup(UnitClassType classType, List<ResearchUpgradeCard> cards) {
             this._cards = new List<ResearchUpgradeCard>();
             this._previousCards = new List<ResearchUpgradeCard>();
             this._previousSelectedCard = null;

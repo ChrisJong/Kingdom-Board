@@ -6,11 +6,9 @@
 
     public abstract class ObjectPoolBase : MonoBehaviour, IObjectPool {
         #region VARIBALE
-        [SerializeField, ReadOnly]
-        protected uint _poolID;
-        public uint id {
-            get { return this._poolID; }
-        }
+        [SerializeField, ReadOnly] protected uint _poolID;
+
+        public uint PoolID { get { return this._poolID; } }
         #endregion
 
         #region UNITY
@@ -26,7 +24,7 @@
             if(o == null)
                 return false;
 
-            return o.id == this._poolID;
+            return o.PoolID == this._poolID;
         }
 
         public override int GetHashCode() {
@@ -43,7 +41,7 @@
             if(oA == null || oB == null)
                 return false;
 
-            return a.id == b.id; 
+            return a.PoolID == b.PoolID; 
         }
 
         public static bool operator !=(ObjectPoolBase a, ObjectPoolBase b) {

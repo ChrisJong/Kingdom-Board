@@ -1,6 +1,5 @@
 ﻿namespace Unit {
 
-    using System;
     using System.Collections;
     using System.Collections.Generic;
 
@@ -13,18 +12,25 @@
     using Manager;
     using Scriptable;
     using Utility;
+    using Player;
 
     [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
     public abstract class UnitBase : HasHealthBase, IUnit {
+
+        #region VARIABLE_CLEAN
+
+        [Header("UNIT")]
+        [SerializeField] protected UnitScriptable _unitData;
+
+        public UnitScriptable UnitData { get { return this._unitData; } set { this._unitData = value; } }
+        #endregion
 
         #region VARIABLE
         ////////////////
         ///// UNIT /////
         ////////////////
-        [Header("UNIT")]
-        private UnitScriptable _data;
 
-        [SerializeField] protected ClassType _classType = ClassType.NONE;
+        [SerializeField] protected UnitClassType _classType = UnitClassType.NONE;
         [SerializeField] protected UnitType _unitType = UnitType.NONE;
         [SerializeField] protected UnitState _unitState = UnitState.NONE;
         [SerializeField] protected float _unitRadius = 0.0f;
@@ -40,15 +46,15 @@
         public override EntityType entityType { get { return EntityType.UNIT; } }
         public LayerMask areaMask { get { return this._navMeshAgent.areaMask; } }
 
-        public ClassType classType { get { return this._classType; } }
+        public UnitClassType classType { get { return this._classType; } }
         public UnitType unitType { get { return this._unitType; } }
         public UnitState unitState { get { return this._unitState; } set { this._unitState = value; } }
         public float unitRadius { get { return this._unitRadius; } }
 
-        public Vector3 currentPoint { get { return this._currentPoint.Value; } }
-        public Vector3 previousPoint { get { return this._previousPoint.Value; } }
-        public IHasHealth currentTarget { get { return this._currentTarget; } }
-        public IHasHealth previousTarget { get { return this._previousTarget; } }
+        public Vector3 CurrentPoint { get { return this._currentPoint.Value; } }
+        public Vector3 PreviousPoint { get { return this._previousPoint.Value; } }
+        public IHasHealth CurrentTarget { get { return this._currentTarget; } }
+        public IHasHealth PreviousTarget { get { return this._previousTarget; } }
 
         //////////////////
         //// MOVEMENT ////
@@ -135,49 +141,6 @@
         #endregion
 
         #region UNITY
-        protected virtual void Awake() {
-            this.radiusDrawer.TurnOff();
-
-            this._unitAnimator = this.GetComponent<Animator>();
-            if(this._unitAnimator == null)
-                throw new ArgumentNullException("Unit Animator Is Missing");
-
-            //this.SetupAttackEventAnimation();
-
-            if(this._unitType == UnitType.NONE)
-                throw new ArgumentException("Unit Type Needs to be Set To Value Other than NONE or ANY");
-
-            this._navMeshAgent = this.GetComponent<NavMeshAgent>();
-            this._navMeshAgent.avoidancePriority = UnityEngine.Random.Range(0, 99);
-
-            var collider = this.GetComponent<CapsuleCollider>();
-            this._unitRadius = collider != null ? collider.radius : this.GetComponent<SphereCollider>().radius;
-        }
-
-        protected override void OnEnable() {
-            base.OnEnable();
-
-            this._unitState = UnitState.IDLE;
-            this._canAttack = true;
-            this._canMove = true;
-
-            this._currentStamina = this._maxStamina;
-
-            this._lastPosition = this.transform.position;
-            this._resetPosition = this.position;
-            this._navMeshAgent.speed = this._moveSpeed;
-        }
-
-        protected override void OnDisable() {
-            base.OnDisable();
-
-            this._unitState = UnitState.NONE;
-            this._canAttack = false;
-            this._canMove = false;
-
-            this._lastPosition = Vector3.zero;
-            this._navMeshAgent.speed = 0;
-        }
 
         protected virtual void Update() {
             if(!this.isDead && this._unitState != UnitState.DEAD && this._unitState != UnitState.NONE && this._unitState != UnitState.ANY)
@@ -194,7 +157,72 @@
 
         #endregion
 
+        #region CLASS_CLEAN
+
+        public override void Setup() {
+            this._unitAnimator = this.GetComponent<Animator>();
+            if(this._unitAnimator == null) {
+                Debug.LogError("The Unit (" + this.gameObject.name + ") Doesn't Have An Animator Component");
+                throw new System.ArgumentNullException("Unit Animator Is Missing");
+            }
+
+            this._navMeshAgent = this.GetComponent<NavMeshAgent>();
+            if(this._navMeshAgent == null) {
+                Debug.LogWarning("Unit Doesn't Contain A NavMeshAgent Component, Add One Now!");
+                this._navMeshAgent = this.gameObject.AddComponent<NavMeshAgent>();
+            }
+            this._navMeshAgent.avoidancePriority = UnityEngine.Random.Range(0, 99);
+
+            CapsuleCollider collider = this.GetComponent<CapsuleCollider>() as CapsuleCollider;
+            this._unitRadius = collider != null ? collider.radius : this.GetComponent<SphereCollider>().radius;
+
+            if(this._unitType == UnitType.NONE) {
+                Debug.Log("Unit Type Can Not be Type of NONE");
+                throw new System.ArgumentException("Unit Type Needs to be Set To Value Other than NONE or ANY");
+            }
+
+            this.radiusDrawer.TurnOff();
+
+            base.Setup();
+        }
+
+        public override void Init(Player contoller) {
+            base.Init(contoller);
+
+            this._unitState = UnitState.IDLE;
+            this._canAttack = true;
+            this._canMove = true;
+
+            this._currentHealth = this._maxHealth;
+            this._currentEnergy = this._maxEnergy;
+
+            this._lastPosition = this.transform.position;
+            this._resetPosition = this.transform.position;
+            this._navMeshAgent.speed = this._moveSpeed;
+        }
+
+        public override void Return() {
+            this._unitState = UnitState.NONE;
+            this._canAttack = false;
+            this._canMove = false;
+
+            this._currentHealth = 0.0f;
+            this._currentEnergy = 0.0f;
+
+            this._currentPoint = null;
+            this._currentTarget = null;
+
+            this._lastPosition = Vector3.zero;
+            this._navMeshAgent.speed = 0;
+
+            base.Return();
+        }
+
+        #endregion
+
         #region CLASS
+
+
         ///////////////////
         //// UNITSTATE ////
         ///////////////////
@@ -408,7 +436,7 @@
 
         public virtual void UnitDeath() {
 
-            ResourceManager.instance.RemoveResource(this.controller, PlayerResource.POPULATION, this._data.populationCost);
+            ResourceManager.instance.RemoveResource(this.Controller, PlayerResource.POPULATION, this._unitData.populationCost);
 
             if(this._deathPrefab != null)
                 this.PlayDeathAnimation();
@@ -524,7 +552,7 @@
             if(this.currentStamina <= 0.0f) {
                 this._canMove = false;
                 this._unitState = UnitState.IDLE;
-                ((UI.UnitUI)this._uiComponent).FinishMove();
+                ((UI.UnitUI)this.UIComponent).FinishMove();
                 this.StopMoving();
             }
 
@@ -606,11 +634,11 @@
 
             Debug.Log("Current Target " + this.name + ": Took " + finalDamage.ToString() + " of Damage from - " + incoming.gameObject.name);
             this.RemoveHealth(finalDamage);
-            this.uiComponent.UpdateUI();
+            this.UIComponent.UpdateUI();
 
             if(this.CurrentHealth <= 0.0f) {
-                if(this.controller != null)
-                    this.controller.RemoveUnit(this);
+                if(this.Controller != null)
+                    this.Controller.RemoveUnit(this);
 
                 // NOTE: play any death animations, or add in any death effects onto the scene. 
                 this.UnitDeath();
@@ -639,7 +667,7 @@
             this._currentTarget.lastAttacker = this;
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.transform.position);
 
-            ((UI.UnitUI)this._uiComponent).FinishAttack();
+            ((UI.UnitUI)this.UIComponent).FinishAttack();
             this._unitState = UnitState.IDLE;
             this._canAttack = false;
         }
@@ -663,7 +691,7 @@
         public virtual void SetupAnimation() {
             this._unitAnimator = this.GetComponent<Animator>();
             if(this._unitAnimator == null)
-                throw new ArgumentNullException("Unit Animator Is Missing");
+                throw new System.ArgumentNullException("Unit Animator Is Missing");
 
             this.SetupEventAnimation();
         }
@@ -727,7 +755,7 @@
 
             // Create the death prefab and grab its rigidbody
             GameObject deathGO = Instantiate(this._deathPrefab, uPoseition, uRotation);
-            deathGO.ColorRenderers(this.controller.color);
+            deathGO.ColorRenderers(this.Controller.color);
             Rigidbody[] deathRB = deathGO.GetComponentsInChildren<Rigidbody>() as Rigidbody[];
 
             foreach(Rigidbody rb in deathRB) {

@@ -12,20 +12,20 @@
 
         [Header("TYPES")]
         public ClassScriptable ClassData = null;
-        public ClassType classType = ClassType.NONE;
+        public UnitClassType classType = UnitClassType.NONE;
         public UnitType unitType = UnitType.NONE;
 
         public int classTier = 0; // NOte: 0 is nothing. Start(base) is tier 1.
 
         [Header("UI")]
-        public Sprite cardFaceSprite = null;
-        public Sprite cardBackSprite = null;
-        public Sprite TrainIconSprite = null;
+        public Sprite researchCardFaceSprite = null;
+        public Sprite researchCardBackSprite = null;
+        public Sprite iconSprite = null;
 
         [Header("PREFAB")]
-        public GameObject prefabMain;
-        public GameObject prefabDeath;
-        public GameObject prefabProjectile;
+        public GameObject mainPrefab;
+        public GameObject deathPrefab;
+        public GameObject projectilePrefab;
 
         [Header("DATA - ATTRIBUTE TYPES")]
         public MovementType movementType = MovementType.NONE;

@@ -12,6 +12,7 @@
     using Scriptable;
     using UI;
     using Utility;
+    using Player;
 
     [RequireComponent(typeof(CastleUI))]
     public sealed class Castle : SpawnStructureBase {
@@ -27,21 +28,26 @@
 
         public CastleUI UI { get { return this._ui; } }
 
-        public List<SpawnQueueType> spawnQueue { get { return this._spawnQueue; } }
+        public List<SpawnQueueType> SpawnQueue { get { return this._spawnQueue; } }
         public override StructureType structureType { get { return StructureType.CASTLE; } }
 
         public SpawnQueueType toSpawn { get { return this._toSpawn; } set { this._toSpawn = value; } }
         #endregion
 
         #region CLASS
-        public override void Init() {
-            base.Init();
+        public override void Setup() {
+            this._ui = this.transform.GetComponent<CastleUI>() as CastleUI;
+
+            base.Setup();
+        }
+
+        public override void Init(Player contoller) {
+            base.Init(contoller);
+
+            this._ui.Init(this);
 
             this._spawnQueue = new List<SpawnQueueType>(this._queueLimit);
             this._unitQueueCount = 0;
-
-            this._ui = this.transform.GetComponent<CastleUI>() as CastleUI;
-            this._ui.Init(this);
 
             this.radiusDrawer.Draw(this._colliderBounds, this._spawnDistance);
             this.radiusDrawer.SetActive(false);
@@ -77,7 +83,7 @@
         public override bool ReceiveDamage(float damage, IHasHealth target) {
             bool isDead = base.ReceiveDamage(damage, target);
             if(isDead)
-                this.controller.OnDeath();
+                this.Controller.OnDeath();
             return isDead;
         }
 
@@ -95,15 +101,15 @@
             }
         }
 
-        public bool AddUnitToQueue(ClassType classType, UnitType unitType) {
+        public bool AddUnitToQueue(UnitClassType classType, UnitType unitType) {
 
             UnitScriptable unitData = UnitPoolManager.instance.FetchUnitData(classType, unitType);
 
             if(this._spawnQueue.Count >= this.queueLImit)
                 return false;
 
-            if(ResourceManager.instance.SpendResource(this.controller, PlayerResource.GOLD, unitData.goldCost) &&
-               ResourceManager.instance.SpendResource(this.controller, PlayerResource.POPULATION, unitData.populationCost)) {
+            if(ResourceManager.instance.SpendResource(this.Controller, PlayerResource.GOLD, unitData.goldCost) &&
+               ResourceManager.instance.SpendResource(this.Controller, PlayerResource.POPULATION, unitData.populationCost)) {
 
                 // Queue Unit.
                 SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, unitType, unitData.turnCost, unitData.goldCost, unitData.populationCost);
@@ -119,10 +125,8 @@
         }
 
         public bool RemoveUnitFromQueue(SpawnQueueType queue) {
-            if(!this._spawnQueue.Contains(queue)) {
-                Debug.LogError("Spawn Queue Doesn't Contain Unit of Type: " + queue.type.ToString());
+            if(!this._spawnQueue.Contains(queue))
                 return false;
-            }
 
             // NOte: return resources back to the player since the unit wasn't ready to spawn (probably a change in preference)
             //this.controller.AddResource(this.GetUnitResourceCost(toRemove.type));
@@ -158,11 +162,11 @@
             if(this.HandleSpawnUnit(this._toSpawn.type, position)) {
 
                 this._ui.RemoveFromQueue(this._toSpawn);
-                this.spawnQueue.Remove(this._toSpawn);
+                this.SpawnQueue.Remove(this._toSpawn);
 
                 this._toSpawn.FinishedSpawn();
 
-                this.controller.selectionState = SelectionState.FREE;
+                this.Controller.selectionState = SelectionState.FREE;
                 this.structureState = StructureState.IDLE;
                 this.radiusDrawer.SetActive(false);
 
@@ -184,7 +188,7 @@
             if(this._toSpawn != null)
                 this._toSpawn.CancelSpawn();
 
-            this.controller.selectionState = SelectionState.SELECT_SPAWNPOINT;
+            this.Controller.selectionState = SelectionState.SELECT_SPAWNPOINT;
             this.structureState = StructureState.SPAWN;
             this.radiusDrawer.SetActive(true);
             this._toSpawn = queue;
@@ -194,7 +198,7 @@
 
         // NOTE: REMOVE
         public bool SetSpawn(uint id) {
-            this.controller.selectionState = SelectionState.SELECT_POINT;
+            this.Controller.selectionState = SelectionState.SELECT_POINT;
             this.structureState = StructureState.SPAWN;
             this.radiusDrawer.SetActive(true);
 
@@ -223,7 +227,7 @@
             return true;
         }
 
-        public void UnlockUnitToSpawn(ClassType classType, UnitType unitType) {
+        public void UnlockUnitToSpawn(UnitClassType classType, UnitType unitType) {
             this._ui.UnlockSpawnButton(classType, unitType);
         }
         #endregion

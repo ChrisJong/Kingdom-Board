@@ -1520,7 +1520,7 @@ NavMeshObstacle:
   m_Shape: 1
   m_Extents: {x: 3.625, y: 0.5, z: 3.3}
   m_MoveThreshold: 0.1
-  m_Carve: 0
+  m_Carve: 1
   m_CarveOnlyStationary: 1
   m_Center: {x: -0.08, y: 0.5, z: -0.15}
   m_TimeToStationary: 0.5
@@ -1537,10 +1537,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 0}
+  _uiGroup: {fileID: 0}
+  _healthGroup: {fileID: 0}
   _queueList: []
   _trainListButtons: []
-  _lastQueueButton: {fileID: 0}
-  _toSpawn: {fileID: 0}
   _spawnGroupToggle: 0
   _spawnGroupMoving: 0
   _showPanelPosX: 420
@@ -1568,13 +1568,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _poolID: 0
   _controller: {fileID: 0}
-  _maxHealth: 100
-  _debugCurrentHealth: 0
-  _maxEnergy: 0
-  _debugCurrentEnergy: 0
+  _uiComponent: {fileID: 114451835067987194}
+  _currentHealth: 0
+  _currentEnergy: 0
   debugCurrentPoint: {x: 0, y: 0, z: 0}
   debugPreviousPoint: {x: 0, y: 0, z: 0}
-  _spawnDistance: 3
+  _structureData: {fileID: 11400000, guid: f9323450a239cd942a0468429bb61c43, type: 2}
   _queueLimit: 10
   radiusDrawer: {fileID: 114911108593028924}
   _spawnQueue: []

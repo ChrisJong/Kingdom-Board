@@ -15,6 +15,7 @@
             else
                 this._ui = this.gameObject.AddComponent<PlayerUI>();
 
+            this._ui.Setup();
             this._ui.Init(this);
 
             base.Create(spawnLocation, id);

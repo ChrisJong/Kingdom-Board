@@ -3,7 +3,7 @@
     using UnityEngine;
 
     public interface IObjectPool {
-        uint id { get; }
+        uint PoolID { get; }
         GameObject gameObject { get; }
         Transform transform { get; }
     }

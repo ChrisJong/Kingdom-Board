@@ -14,8 +14,10 @@
         bool isDead { get; }
         float lastAttacked { get; }
         IHasHealth lastAttacker { get; set; }
-        Player controller { get; set; }
-        UIBase uiComponent { get; set; }
+        Player Controller { get; }
+        UIBase UIComponent { get; }
+
+        void Init(Player contoller);
 
         bool AddHealth(float amount);
         bool RemoveHealth(float amount);

@@ -1164,7 +1164,7 @@ NavMeshAgent:
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 50
+  avoidancePriority: 45
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -1187,13 +1187,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 0}
+  _uiGroup: {fileID: 0}
   unit: {fileID: 0}
-  _textInfo: {fileID: 0}
-  _btnEnd: {fileID: 0}
-  _btnCancel: {fileID: 0}
-  _btnAttack: {fileID: 0}
-  _btnMove: {fileID: 0}
-  _btnFinishMove: {fileID: 0}
   _unitMaterials: []
 --- !u!114 &114587621768599048
 MonoBehaviour:
@@ -1209,15 +1204,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _poolID: 0
   _controller: {fileID: 0}
-  _uiComponent: {fileID: 0}
-  _maxHealth: 100
-  _debugCurrentHealth: 0
-  _maxEnergy: 0
-  _debugCurrentEnergy: 0
+  _uiComponent: {fileID: 114006277575020596}
+  _currentHealth: 0
+  _currentEnergy: 0
+  _unitData: {fileID: 11400000, guid: bea586d28a7d1a3449cdf8e0670e5031, type: 2}
   _classType: 1
   _unitType: 8
   _unitState: 0
-  _unitRadius: 0
+  _unitRadius: 0.7
   _movementType: 1
   _maxStamina: 10
   _currentStamina: 0
@@ -1829,7 +1823,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4506053475361094
 Transform:
   m_ObjectHideFlags: 0

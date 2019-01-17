@@ -26,10 +26,9 @@
         public LineRenderDrawCircle splashRadiusDrawer { get { return this._splashRadiusDrawer; } }
         #endregion
 
-        #region UNITY
-        protected override void Awake() {
-            base.Awake();
+        #region CLASS_CLEAN
 
+        public override void Setup() {
             if(this._splashRadiusDrawer == null) {
                 GameObject tempRadiusDrawer = new GameObject("SpashRadiusDrawer");
                 tempRadiusDrawer.transform.position = this.position;
@@ -43,7 +42,10 @@
                 this._splashRadiusDrawer = tempRadiusComp;
                 this._splashRadiusTransform = tempRadiusDrawer.transform;
             }
+
+            base.Setup();
         }
+
         #endregion
 
         #region CLASS
@@ -60,7 +62,7 @@
                 // Debugging for changing the size of the splash radius at runtime/gametime.
                 this._splashRadiusDrawer.UpdateRadius(this.splashRadius);
 
-                this._splashRadiusTransform.position = this.controller.playerSelection.GetCurrentPointOnGround();
+                this._splashRadiusTransform.position = this.Controller.playerSelection.GetCurrentPointOnGround();
             }
 
             //Debug.Log("Current Aoe Coord: " + this.controller.playerSelection.GetCurrentPointOnGround().ToString());
@@ -74,7 +76,7 @@
 
             // NOTE: Find units within the splashRadius and calculate damage on the distance from the main attack source.
             var hits = Utils.hitsBuffers;
-            int numberofhits = Physics.SphereCastNonAlloc(this.currentTarget.position, this._splashRadius + this._unitRadius, Vector3.forward, hits, 0.0f, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
+            int numberofhits = Physics.SphereCastNonAlloc(this.CurrentTarget.position, this._splashRadius + this._unitRadius, Vector3.forward, hits, 0.0f, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
             this._hitComparer.position = this._currentTarget.position;
             Array.Sort(hits, this._hitComparer);
 
@@ -112,7 +114,7 @@
                 //Debug.Log("Current Target (" + hitHasHealth.gameObject.name + "): Took " + finalDamage.ToString() + " of Damage");
             }
 
-            ((UI.UnitUI)this._uiComponent).FinishAttack();
+            ((UI.UnitUI)this.UIComponent).FinishAttack();
             this._unitState = UnitState.IDLE;
             this._canAttack = false;
         }

@@ -39,7 +39,7 @@
 
         public void Update() {
 
-            if(this.controller.state == PlayerState.ATTACKING || this.controller.state == PlayerState.DEFENDING) {
+            if(this.Controller.state == PlayerState.ATTACKING || this.Controller.state == PlayerState.DEFENDING) {
                 this._endTurnButton.UpdateButton();
                 this.UpdateInfo();
             }
@@ -145,7 +145,7 @@
         }
 
         public override void UpdateUI() {
-            if(this.controller.turnEnded) {
+            if(this.Controller.turnEnded) {
                 this.HideUI();
             } else {
                 this.UpdateInfo();
@@ -156,30 +156,30 @@
             if(!this.bannerGroup.activeSelf)
                 this.bannerGroup.SetActive(true);
 
-            this._playerBanner.SwapBanner(this.controller.isAttacking);
+            this._playerBanner.SwapBanner(this.Controller.isAttacking);
 
             this._playerBanner.StartBannerAnimation();
         }
 
         public void FinishedBannerAnim() {
-            this.controller.StartTurn();
+            this.Controller.StartTurn();
         }
 
         public void EndTurn() {
             this.HideUI();
-            this.controller.EndTurn();
+            this.Controller.EndTurn();
         }
 
         private void UpdateInfo() {
             string text = string.Empty;
 
-            int gold = ResourceManager.instance.GetPlayerResource(this.controller, PlayerResource.GOLD);
-            int population = ResourceManager.instance.GetPlayerResource(this.controller, PlayerResource.POPULATION);
+            int gold = ResourceManager.instance.GetPlayerResource(this.Controller, PlayerResource.GOLD);
+            int population = ResourceManager.instance.GetPlayerResource(this.Controller, PlayerResource.POPULATION);
             int populationCap = ResourceManager.instance.PopulationCap;
 
             text = "GOLD: " + gold.ToString() + "\r\n" +
                    "UNIT CAP: " + population.ToString() + " / " + populationCap.ToString() + "\r\n" + 
-                   "PHASE: " + this.controller.state.ToString();
+                   "PHASE: " + this.Controller.state.ToString();
 
             this._infoText.text = text;
         }

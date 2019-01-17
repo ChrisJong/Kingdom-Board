@@ -18,7 +18,7 @@
         [SerializeField] protected Research _research;
         [SerializeField] protected ResearchCardAnimation _cardAnimation;
 
-        [SerializeField] protected ClassType _classType = ClassType.NONE;
+        [SerializeField] protected UnitClassType _classType = UnitClassType.NONE;
         [SerializeField] protected UnitType _unitType = UnitType.NONE;
         [SerializeField] protected UnitUpgradeType _upgradeType = UnitUpgradeType.NONE;
 
@@ -49,7 +49,7 @@
         public bool IsFrontFace { get { return this._isFrontFace; } }
         public bool Ready { get { return this._ready; } set { this._ready = value; if(value) this._research.CardsReady++; } }
 
-        public ClassType ClassType { get { return this._classType; } }
+        public UnitClassType ClassType { get { return this._classType; } }
         public UnitType UnitType { get { return this._unitType; } }
         public UnitUpgradeType UpgradeType { get { return this._upgradeType; } }
 
@@ -67,7 +67,7 @@
 
         #region CLASS
 
-        public virtual void Init(Research parent, Sprite FaceSprite, Sprite backSprite, Vector3 pos, ClassType classType = ClassType.NONE, UnitType unitType = UnitType.NONE, int keyID = -1) {
+        public virtual void Init(Research parent, Sprite FaceSprite, Sprite backSprite, Vector3 pos, UnitClassType classType = UnitClassType.NONE, UnitType unitType = UnitType.NONE, int keyID = -1) {
 
             this._rectTransform = this.transform as RectTransform;
             this._gameObject = this.gameObject as GameObject;

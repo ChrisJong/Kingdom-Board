@@ -20,7 +20,7 @@
         #region CLASS
 
         public void Init(Research parent, UpgradeScriptable data, ResearchUpgradeData upgradeData, Vector3 pos, int keyID = -1) {
-            this.Init(parent, data.cardFaceSprite, data.cardBackSprite, pos, data.classType, UnitType.NONE, keyID);
+            this.Init(parent, data.researchCardFaceSprite, data.researchCardBackSprite, pos, data.classType, UnitType.NONE, keyID);
 
             /*if(this._image != null)
                 this._image.sprite = this._faceSprite;*/

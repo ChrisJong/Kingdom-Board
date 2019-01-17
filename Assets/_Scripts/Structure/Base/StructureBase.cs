@@ -1,16 +1,16 @@
 ﻿namespace Structure {
 
-    using System;
-
     using UnityEngine;
     using UnityEngine.AI;
 
     using Enum;
     using Helpers;
     using Manager;
+    using Player;
+    using Scriptable;
     using Utility;
 
-    [RequireComponent(typeof(UnityEngine.AI.NavMeshObstacle))]
+    [RequireComponent(typeof(NavMeshObstacle))]
     public abstract class StructureBase : HasHealthBase, IStructure {
         #region VARIABLE
         [Header("STRUCTURE - DEBUGGING")]
@@ -18,6 +18,7 @@
         [ReadOnly] public Vector3 debugPreviousPoint = Vector3.zero;
 
         [Header("STRUCTURE")]
+        [SerializeField] protected StructureScriptable _structureData;
         protected StructureState _structureState = StructureState.NONE;
 
         protected Vector3? _currentPoint = null;
@@ -29,41 +30,39 @@
         protected Bounds _colliderBounds;
         protected NavMeshObstacle _navMeshObstacle = null;
 
+        public StructureScriptable StructureData { get { return this._structureData; } set { this._structureData = value; } }
         public override EntityType entityType { get { return EntityType.STRUCTURE; } }
         public abstract StructureType structureType { get; }
         public StructureState structureState { get { return this._structureState; } set { this._structureState = value; } }
-        public bool isReady { get; set; }
 
-        public Vector3 currentPoint { get { return this._currentPoint.Value; } }
-        public Vector3 previousPoint { get { return this._previousPoint.Value; } }
-        public IHasHealth currentTarget { get { return this._currentTarget; } }
-        public IHasHealth previousTarget { get { return this._previousTarget; } }
+        public Vector3 CurrentPoint { get { return this._currentPoint.Value; } }
+        public Vector3 PreviousPoint { get { return this._previousPoint.Value; } }
+        public IHasHealth CurrentTarget { get { return this._currentTarget; } }
+        public IHasHealth PreviousTarget { get { return this._previousTarget; } }
         #endregion
 
-        #region UNITY
-        protected virtual void Awake() {
+        #region CLASS
+        public override void Setup() {
+
             this._collider = this.GetComponent<BoxCollider>() as BoxCollider;
+
             this._navMeshObstacle = this.GetComponent<NavMeshObstacle>() as NavMeshObstacle;
 
             if(this._collider == null)
-                Debug.LogWarning("Structure Needs a Collider to Carve a path around the navmesh");
+                Debug.LogError("Structure Needs a Primative Collider to Carve a path around the navmesh");
+            else
+                this._navMeshObstacle.carving = true;
 
-            
-            this._navMeshObstacle.carving = true;
+            base.Setup();
         }
 
-        public virtual void Init() {
+        public override void Init(Player contoller) {
+            base.Init(contoller);
+
             this._colliderBounds = this._collider.bounds;
             this._collider.enabled = false;
         }
 
-        protected override void OnEnable() {
-            base.OnEnable();
-            this._currentHealth = this._maxHealth;
-        }
-        #endregion
-
-        #region CLASS
         public virtual bool SetPoint(Vector3 point) {
             Vector3 position = Vector3.zero;
 
@@ -136,8 +135,8 @@
 
             if(this.CurrentHealth <= 0.0f) {
 
-                if(this.controller != null && this.controller.structures != null)
-                    this.controller.structures.Remove(this);
+                if(this.Controller != null && this.Controller.structures != null)
+                    this.Controller.structures.Remove(this);
 
                 // NOTE: spawn in particle effects.
                 this.ReturnStructure();

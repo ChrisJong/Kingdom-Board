@@ -39,7 +39,7 @@
         //////////////////
         private Castle _castle;
         private IList<IUnit> _units;
-        private Dictionary<ClassType, List<IUnit>> _classUnits;
+        private Dictionary<UnitClassType, List<IUnit>> _classUnits;
         private IList<IStructure> _structures;
         private GameObject _unitGroup = null;
         public GameObject unitGroup { get { return this._unitGroup; } }
@@ -78,7 +78,7 @@
 
         public Castle castle { get { return this._castle; } }
         public IList<IUnit> units { get { return this._units; } }
-        public Dictionary<ClassType, List<IUnit>> ClassUnits { get { return this._classUnits; } }
+        public Dictionary<UnitClassType, List<IUnit>> ClassUnits { get { return this._classUnits; } }
         public IList<IStructure> structures { get { return this._structures; } }
 
         public PlayerCamera playerCamera { get { return this._playerCamera; } }
@@ -141,9 +141,9 @@
             this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation);
             this._playerSelection = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
 
-            this._classUnits = new Dictionary<ClassType, List<IUnit>>();
-            for(int i = 0; i < System.Enum.GetNames(typeof(ClassType)).Length - 2; i++) {
-                ClassType classType = ((ClassType)i + 1);
+            this._classUnits = new Dictionary<UnitClassType, List<IUnit>>();
+            for(int i = 0; i < System.Enum.GetNames(typeof(UnitClassType)).Length - 2; i++) {
+                UnitClassType classType = ((UnitClassType)i + 1);
                 this._classUnits.Add(classType, new List<IUnit>());
             }
         }
@@ -164,9 +164,12 @@
 
             if(this._isAttacking) {
                 this._state = PlayerState.ATTACKING;
+                this._selectionState = SelectionState.FREE;
                 GameManager.instance.StartPlayTimer();
-            } else
+            } else {
                 this._state = PlayerState.DEFENDING;
+                this._selectionState = SelectionState.FREE;
+            }
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(true);
@@ -207,6 +210,9 @@
 
             this._playerSelection.EndTurn();
             this._turnEnded = true;
+            this._selectionState = SelectionState.END;
+            this._state = PlayerState.END;
+
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(false);
@@ -230,7 +236,7 @@
         }
 
         public bool IsAlly(IHasHealth other) {
-            return ReferenceEquals(other.controller, this);
+            return ReferenceEquals(other.Controller, this);
         }
 
         public bool IsEnemy(IHasHealth other) {

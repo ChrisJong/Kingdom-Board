@@ -32,7 +32,7 @@
 
         #region CLASS
         public void Init(Research parent, UnitScriptable data, Vector3 pos, int keyID = -1) {
-            this.Init(parent, data.cardFaceSprite, data.cardBackSprite, pos, data.classType, data.unitType, keyID);
+            this.Init(parent, data.researchCardFaceSprite, data.researchCardBackSprite, pos, data.classType, data.unitType, keyID);
 
             this._classTier = data.classTier;
 

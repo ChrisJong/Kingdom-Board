@@ -11,7 +11,7 @@
     public class UpgradeScriptable : ScriptableObject {
 
         [Header("TYPE")]
-        public ClassType classType = ClassType.NONE;
+        public UnitClassType classType = UnitClassType.NONE;
         public List<UnitType> unitTypes = new List<UnitType>();
 
         [Header("UPGRADE TYPE")]
@@ -19,7 +19,7 @@
         public float value = 1.0f;
 
         [Header("UI")]
-        public Sprite cardFaceSprite = null;
-        public Sprite cardBackSprite = null;
+        public Sprite researchCardFaceSprite = null;
+        public Sprite researchCardBackSprite = null;
     }
 }

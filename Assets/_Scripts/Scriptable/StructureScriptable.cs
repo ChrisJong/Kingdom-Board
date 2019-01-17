@@ -11,20 +11,21 @@
     public class StructureScriptable : ScriptableObject {
 
         [Header("TYPES")]
-        public StructureGroupType groupType = StructureGroupType.NONE;
+        public StructureClassType groupType = StructureClassType.NONE;
+        public StructureClassType classType = StructureClassType.NONE;
         public StructureType structureType = StructureType.NONE;
 
         [Header("PREFAB")]
-        public GameObject prefabMain;
-        public GameObject prefabHealth;
-        public GameObject prefabProjectile;
+        public GameObject mainPrefab;
 
-        [Header("UI")]
-        public GameObject prefabSpawnButton;
-        public GameObject prefabQueueButton;
+        [Header("PREFAB - SPAWN STRUCTURE")]
+        public GameObject trainingButtonPrefab;
+        public GameObject QueueButtonPrefab;
 
-        [Header("DATA - MAIN")]
+        [Header("DATA - ATTRIBUTE VALUES")]
         public float health = 0.0f;
         public float spawnRange = 0.0f;
+
+        public int queueLimit = 0;
     }
 }

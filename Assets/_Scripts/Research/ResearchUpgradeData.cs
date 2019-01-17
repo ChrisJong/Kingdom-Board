@@ -40,7 +40,7 @@
 
         public float UpgradeValue { get { return this._data.value; } }
 
-        public ClassType ClassType { get { return this._data.classType; } }
+        public UnitClassType ClassType { get { return this._data.classType; } }
 
         public List<UnitType> UnitTypes { get { return this._data.unitTypes; } }
 
@@ -59,7 +59,7 @@
             this._previousValue = data.value;
         }
 
-        public bool CheckUpgradeType(ClassType classType, UnitType unitType, UnitUpgradeType upgradeType) {
+        public bool CheckUpgradeType(UnitClassType classType, UnitType unitType, UnitUpgradeType upgradeType) {
 
             if(this._data.classType == classType) {
                 if(this._data.unitTypes.Contains(unitType))

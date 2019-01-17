@@ -15,7 +15,7 @@
 
         [SerializeField] private Castle _castle;
 
-        [SerializeField] private ClassType _classType = ClassType.NONE;
+        [SerializeField] private UnitClassType _classType = UnitClassType.NONE;
         [SerializeField] private UnitType _unitType = UnitType.NONE;
 
         [SerializeField] private bool _isLocked = true;
@@ -37,7 +37,7 @@
 
         [SerializeField] private TextMeshProUGUI _infoText;
 
-        public ClassType ClassType { get { return this._classType; } }
+        public UnitClassType ClassType { get { return this._classType; } }
 
         public UnitType UnitType { get { return this._unitType; } }
 
@@ -84,7 +84,7 @@
             this._classType = data.classType;
             this._unitType = data.unitType;
 
-            this._unitIconSprite = data.TrainIconSprite;
+            this._unitIconSprite = data.iconSprite;
             this._unitIconImage.sprite = this._unitIconSprite;
 
             this._infoText.text = "G: " + data.goldCost.ToString() + "\r\n" +

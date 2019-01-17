@@ -20,7 +20,7 @@
         DEAD
     }
 
-    public enum ClassType {
+    public enum UnitClassType {
         NONE = 0,
         ANY = ~0,
         MELEE = 1,

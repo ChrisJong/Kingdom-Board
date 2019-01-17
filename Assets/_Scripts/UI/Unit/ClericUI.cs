@@ -23,7 +23,7 @@
             Debug.Log("Finish Healing");
             var unitScript = (Cleric)this.unit;
 
-            this.controller.selectionState = SelectionState.FREE;
+            this.Controller.selectionState = SelectionState.FREE;
 
             unitScript.FinishHealing();
             unitScript.radiusDrawer.TurnOff();
@@ -43,33 +43,12 @@
             if(this._healing) {
                 this.ResetUI();
                 this._healing = false;
-                this.controller.selectionState = SelectionState.FREE;
+                this.Controller.selectionState = SelectionState.FREE;
                 this.unit.radiusDrawer.TurnOff();
             }
         }
 
         private void InitiateHeal() {
-            Cleric unitScript = this.unit as Cleric;
-
-            if(!unitScript.canHeal) {
-                Debug.Log(unit.name + "Can Not Heal Anymore.");
-                return;
-            }
-
-            Debug.Log("BEGIN HEALING");
-            this._healing = true;
-            this.controller.playerSelection.lockSelection = true;
-            this.controller.selectionState = SelectionState.SELECT_ALLYTARGET;
-
-            this.unit.radiusDrawer.TurnOn();
-            this.unit.unitState = UnitState.HEAL_STANDBY;
-            this.unit.radiusDrawer.DrawSpecialRadius(unitScript.healingRadius);
-
-            this._btnCancel.gameObject.SetActive(true);
-            this._btnAttack.gameObject.SetActive(false);
-            this._btnHeal.gameObject.SetActive(false);
-            this._btnMove.gameObject.SetActive(false);
-            this._btnEnd.gameObject.SetActive(false);
         }
         #endregion
     }

@@ -1,5 +1,6 @@
 ﻿namespace Manager {
 
+    using System.Collections;
     using System.Collections.Generic;
 
     using UnityEngine;
@@ -15,6 +16,8 @@
 
     public sealed class UnitPoolManager : SingletonMono<UnitPoolManager> {
 
+        #region VARIABLE
+
         private static readonly int unitTypeLength = System.Enum.GetNames(typeof(UnitType)).Length - 2;
 
         [SerializeField] private UnitPoolSetup[] _poolSetup = new UnitPoolSetup[unitTypeLength];
@@ -23,39 +26,43 @@
         [SerializeField] private List<UnitDeath> _poolDeath = new List<UnitDeath>();
 
         private List<UnitScriptable> _unitDataList = new List<UnitScriptable>();
-        private Dictionary<ClassType, List<UnitScriptable>> _sortedUnitList = new Dictionary<ClassType, List<UnitScriptable>>();
+        private Dictionary<UnitClassType, List<UnitScriptable>> _sortedUnitClass = new Dictionary<UnitClassType, List<UnitScriptable>>();
+        private Dictionary<UnitType, UnitScriptable> _sortedUnitData = new Dictionary<UnitType, UnitScriptable>();
 
         public List<UnitScriptable> UnitDataList { get { return this._unitDataList; } }
+        public Dictionary<UnitClassType, List<UnitScriptable>> SortedUnitClass { get { return this._sortedUnitClass; } }
+        public Dictionary<UnitType, UnitScriptable> SortedUnitData { get { return this._sortedUnitData; } }
 
-        public Dictionary<ClassType, List<UnitScriptable>> SortedUnitList { get { return this._sortedUnitList; } }
+        #endregion
 
         #region UNITY
         protected override void Awake() {
             base.Awake();
 
-            if(this.LoadUnitData()) {
-
-            }
-
-            var managerHost = new GameObject("Units");
-            managerHost.transform.SetParent(this.transform);
-
-            for(int i = 0; i < this._poolSetup.Length; i++) {
-                var setup = this._poolSetup[i];
-
-                var host = new GameObject(setup.type.ToString());
-                host.transform.SetParent(managerHost.transform);
-
-                this._pools.Add(setup.type, new UnitPool(setup.prefab, host, setup.initialInstanceCount));
-
-                setup.prefab.GetComponent<UnitBase>().SetupAnimation();
-            }
+            this.Init();
         }
         #endregion
 
         #region CLASS
         public override void Init() {
-            
+            if(this.LoadUnitData()) {
+
+                var managerHost = new GameObject("Units");
+                managerHost.transform.SetParent(this.transform);
+
+                for(int i = 0; i < this._poolSetup.Length; i++) {
+                    UnitPoolSetup setup = this._poolSetup[i];
+
+                    GameObject host = new GameObject(setup.type.ToString());
+                    host.transform.SetParent(managerHost.transform);
+
+                    setup.prefab.GetComponent<UnitBase>().UnitData = this._sortedUnitData[setup.type];
+
+                    this._pools.Add(setup.type, new UnitPool(setup.prefab, host, setup.initialInstanceCount));
+
+                    setup.prefab.GetComponent<UnitBase>().SetupAnimation();
+                }
+            }
         }
 
         public bool SpawnUnit(UnitType type, Player controller, Vector3 position) {
@@ -82,21 +89,25 @@
         
         private bool LoadUnitData() {
 
-            int classCount = System.Enum.GetNames(typeof(ClassType)).Length - 2;
+            int classCount = System.Enum.GetNames(typeof(UnitClassType)).Length - 2;
 
             for(int i = 0; i < classCount; i++) {
                 List<UnitScriptable> tempList = new List<UnitScriptable>();
-                string className = ((ClassType)i + 1).ToString();
-                string path = "Units/" + className;
+                string className = ((UnitClassType)i + 1).ToString();
+                string path = "Scriptable/Units/" + className;
 
-                UnityEngine.Object[] temp = Resources.LoadAll("Scriptable/" + path, typeof(UnitScriptable));
+                UnityEngine.Object[] temp = Resources.LoadAll(path, typeof(UnitScriptable));
 
                 for(int a = 0; a < temp.Length; a++)
                     tempList.Add(temp[a] as UnitScriptable);
 
                 tempList.Sort((x1, x2) => x1.classTier.CompareTo(x2.classTier));
 
-                this._sortedUnitList.Add(((ClassType)i + 1), tempList);
+                this._sortedUnitClass.Add(((UnitClassType)i + 1), tempList);
+
+                foreach(UnitScriptable data in tempList) {
+                    this._sortedUnitData.Add(data.unitType, data);
+                }
 
                 this._unitDataList.AddRange(tempList);
 
@@ -114,11 +125,13 @@
             pos = Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
             IUnit unit = pool.Get(pos, Quaternion.identity);
 
-            unit.controller = controller;
-            unit.uiComponent.controller = controller;
+            if(!unit.IsSetup) {
+                unit.Setup();
+            }
+
+            unit.Init(controller);
             unit.gameObject.ColorRenderers(controller.color);
 
-            ((UnitUI)unit.uiComponent).Init();
             controller.AddUnit(unit);
             unit.transform.SetParent(controller.unitGroup.transform);
 
@@ -126,17 +139,18 @@
         }
 
         private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, uint spawnIndex) {
-            var pool = this._pools[type];
-            var pos = CircleHelpers.GetPointOnCircle(position, spawnDistance, anglePerSpawm, spawnIndex);
-            //Debug.Log("spawn position: " + pos);
+            UnitPool pool = this._pools[type];
+            Vector3 pos = CircleHelpers.GetPointOnCircle(position, spawnDistance, anglePerSpawm, spawnIndex);
             pos = Utility.Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
-            var unit = pool.Get(pos, Quaternion.identity);
+            IUnit unit = pool.Get(pos, Quaternion.identity);
 
-            unit.controller = controller;
-            unit.uiComponent.controller = controller;
+            if(!unit.IsSetup) {
+                unit.Setup();
+            }
+
+            unit.Init(controller);
             unit.gameObject.ColorRenderers(controller.color);
 
-            ((UnitUI)unit.uiComponent).Init();
             controller.AddUnit(unit);
             unit.transform.SetParent(controller.unitGroup.transform);
 
@@ -144,6 +158,7 @@
         }
 
         public void Return(IUnit unit) {
+            unit.Return();
             this._pools[unit.unitType].Return(unit);
         }
 
@@ -196,7 +211,7 @@
             return unitData;
         }
 
-        public UnitScriptable FetchUnitData(ClassType classType, UnitType unitType) {
+        public UnitScriptable FetchUnitData(UnitClassType classType, UnitType unitType) {
             List<UnitScriptable> unitList = this.FetchClassUnitsData(classType);
             UnitScriptable unitData = null;
 
@@ -217,9 +232,9 @@
             return unitData;
         }
 
-        public List<UnitScriptable> FetchClassUnitsData(ClassType classType) {
-            if(this._sortedUnitList.ContainsKey(classType))
-                return this._sortedUnitList[classType];
+        public List<UnitScriptable> FetchClassUnitsData(UnitClassType classType) {
+            if(this._sortedUnitClass.ContainsKey(classType))
+                return this._sortedUnitClass[classType];
             else {
                 Debug.LogError("There Is No Such Class Type Called: " + classType.ToString());
                 return null;

@@ -2,13 +2,16 @@
 
     public enum SelectionState {
         NONE = 0,
+        ANY = ~0,
         FREE = 1,
         STANDBY,
+        WAITING,
         SELECT_TARGET, // ANY
         SELECT_ALLYTARGET,
         SELECT_ENEMYTARGET,
         SELECT_POINT,
-        SELECT_SPAWNPOINT
+        SELECT_SPAWNPOINT,
+        END
     };
 
     public enum PlayerState {

@@ -61,10 +61,15 @@
 
         public void EndTurn() {
             if(this.currentSelected != null)
-                this.currentSelected.uiComponent.HideUI();
+                this.currentSelected.UIComponent.HideUI();
+
+            if(this.currentHover != null)
+                this.currentHover.UIComponent.OnExit();
 
             this.currentSelected = null;
             this.previousSelected = null;
+            this.currentHover = null;
+            this.previousHover = null;
         }
 
         public Vector3 GetCurrentPointOnGround() {
@@ -161,10 +166,10 @@
                     if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
                         var temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
 
-                        if(temp.controller.id == this._controller.id) {
+                        if(temp.Controller.id == this._controller.id) {
                             if(temp.GetType() == typeof(Castle))
                                 if(!this._controller.castle.UI.SpawnGroupToggle)
-                                    ((CastleUI)temp.uiComponent).ToggleSpawnGroup(true);
+                                    ((CastleUI)temp.UIComponent).ToggleSpawnGroup(true);
                         }
                     }
                 }
@@ -196,14 +201,14 @@
                         return;
                 }
 
-                if(temp.controller.id == this._controller.id) {
+                if(temp.Controller.id == this._controller.id) {
                     if(this.currentSelected != null && !temp.Equals(this.currentSelected)) {
                         this.previousSelected = this.currentSelected;
-                        this.previousSelected.uiComponent.HideUI();
+                        this.previousSelected.UIComponent.HideUI();
                     }
 
                     this.currentSelected = temp;
-                    this.currentSelected.uiComponent.DisplayUI();
+                    this.currentSelected.UIComponent.DisplayUI();
 
                     this._controller.selectionState = SelectionState.STANDBY;
                     this.selected = true;
@@ -217,7 +222,7 @@
             if(!EventSystem.current.IsPointerOverGameObject()) {
                 if(this.currentSelected != null) {
                     this.previousSelected = this.currentSelected;
-                    this.currentSelected.uiComponent.HideUI(); // Hide UI;
+                    this.currentSelected.UIComponent.HideUI(); // Hide UI;
                     this.currentSelected = null;
                 }
 
@@ -323,18 +328,18 @@
                             return;
 
                         this.previousHover = this.currentHover;
-                        this.previousHover.uiComponent.OnExit();
+                        this.previousHover.UIComponent.OnExit();
                         this.currentHover = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
-                        this.currentHover.uiComponent.OnEnter();
+                        this.currentHover.UIComponent.OnEnter();
                     } else {
                         this.currentHover = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
-                        this.currentHover.uiComponent.OnEnter();
+                        this.currentHover.UIComponent.OnEnter();
                     }
                 }
             } else {
                 if(this.currentHover != null) {
                     this.previousHover = this.currentHover;
-                    this.previousHover.uiComponent.OnExit();
+                    this.previousHover.UIComponent.OnExit();
                 }
 
                 this.currentHover = null;

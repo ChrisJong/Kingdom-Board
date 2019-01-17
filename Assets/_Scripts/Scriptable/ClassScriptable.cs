@@ -10,12 +10,12 @@
     [CreateAssetMenu(menuName = "Class/Create Class")]
     public class ClassScriptable : ScriptableObject {
         [Header("TYPES")]
-        public ClassType classType = ClassType.NONE;
+        public UnitClassType classType = UnitClassType.NONE;
 
         [Header("UI")]
-        public Sprite cardFaceSprite = null;
-        public Sprite cardBackSprite = null;
-        public Sprite Icon = null;
-        public Color ClassColor = Color.white;
+        public Sprite researchCardFaceSprite = null;
+        public Sprite researchCardBackSprite = null;
+        public Sprite iconSprite = null;
+        public Color classColor = Color.white;
     }
 }

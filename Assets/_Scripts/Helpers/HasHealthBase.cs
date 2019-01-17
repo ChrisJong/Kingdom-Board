@@ -6,50 +6,65 @@
     using Player;
     using UI;
     using Utility;
+    using System;
 
     public abstract class HasHealthBase : EntityBase, IHasHealth {
         #region VARIABLE
 
         [Header("ENTITY ATTRIBUTES")]
         [SerializeField, ReadOnly] private Player _controller;
-        [SerializeField] protected UIBase _uiComponent;
-        public Player controller { get { return this._controller; } set { this._controller = value; } }
-        public UIBase uiComponent { get { return this._uiComponent; } set { this._uiComponent = value; } }
+        [SerializeField, ReadOnly] private UIBase _uiComponent;
+        protected IHasHealth _lastAttacker;
 
-        [Header("HEALTH")]
+        [Header("ENTITY - HEALTH & ENERGY")]
         [SerializeField] protected float _currentHealth = 0.0f; 
-        [SerializeField] protected float _maxHealth = 100.0f;
+        protected float _maxHealth = 100.0f;
         [SerializeField] protected float _currentEnergy = 0.0f;
-        [SerializeField] protected float _maxEnergy = 0.0f;
+        protected float _maxEnergy = 100.0f;
+        private float _lastAttacked = 0.0f;
 
         public float CurrentHealth { get { return this._currentHealth; } }
         public float CurrentEnergy { get { return this._currentEnergy; } }
         public float MaxHealth { get { return this._maxHealth; } }
         public float MaxEnergy { get { return this._maxEnergy; } }
+        public float lastAttacked { get { return this._lastAttacked; } }
+
         public bool isDead { get { return this.CurrentHealth <= 0.0f || (this.gameObject != null && !this.isActive); } }
 
-        protected IHasHealth _lastAttacker;
-        private float _lastAttacked;
-        public float lastAttacked { get { return this._lastAttacked; } }
+        public Player Controller { get { return this._controller; } }
+        public UIBase UIComponent { get { return this._uiComponent; } }
         public IHasHealth lastAttacker { get { return this._lastAttacker; }
             set { this._lastAttacker = value;
-                  this._lastAttacked = Time.timeSinceLevelLoad; } }
-        #endregion
-
-        #region UNITY
-        protected override void OnEnable() {
-            base.OnEnable();
-
-            this._currentHealth = this._maxHealth;
-
-            this._currentEnergy = this._maxEnergy;
-
-            this.uiComponent = this.transform.GetComponent<UIBase>();
-            // NOTE: UI INSTANCES HERE e.g health bar and ui buttons
+                  this._lastAttacked = Time.timeSinceLevelLoad; }
         }
+
         #endregion
 
         #region CLASS
+
+        public override void Setup() {
+            this._uiComponent = this.transform.GetComponent<UIBase>() as UIBase;
+            this.IsSetup = true;
+        }
+
+        public override void Init() {
+            this._currentHealth = this._maxHealth;
+            this._currentEnergy = this._maxEnergy;
+        }
+
+        public virtual void Init(Player contoller) {
+            this.Init();
+
+            this._controller = contoller;
+
+            if(this._uiComponent != null)
+                this._uiComponent.Init(contoller);
+        }
+
+        public override void Return() {
+            this._controller = null;
+        }
+
         public abstract bool ReceiveDamage(float damage, IHasHealth target);
         public abstract bool ReceiveDamage(float damage, IHasHealth target, Vector3 origin);
 
@@ -63,7 +78,7 @@
             else
                 this._currentHealth = this.MaxHealth;
 
-            this.uiComponent.UpdateUI();
+            this.UIComponent.UpdateUI();
             return true;
         }
 
@@ -76,7 +91,7 @@
             if(this.CurrentHealth <= 0.0f)
                 this._currentHealth = 0.0f;
 
-            this.uiComponent.UpdateUI();
+            this.UIComponent.UpdateUI();
             return true;
         }
 
@@ -85,7 +100,7 @@
         }
 
         public virtual bool IsAlly(IHasHealth other) {
-            return ReferenceEquals(this.controller, other.controller);
+            return ReferenceEquals(this.Controller, other.Controller);
         }
 
         public virtual bool IsEnemy(IHasHealth other) {

@@ -4,9 +4,12 @@
 
     using Enum;
     using Helpers;
+    using Scriptable;
     
     public interface IUnit : IHasHealth, ICanMove, ICanAttack, ISelected {
-        ClassType classType { get; }
+
+        UnitScriptable UnitData { get; set; }
+        UnitClassType classType { get; }
         UnitType unitType { get; }
         LayerMask areaMask { get; }
 

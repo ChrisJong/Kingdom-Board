@@ -26,20 +26,20 @@
         [SerializeField] private List<ClassScriptable> _classDataList = new List<ClassScriptable>();
         [SerializeField] private List<UpgradeScriptable> _upgradeDataList = new List<UpgradeScriptable>();
 
-        [SerializeField] private ClassType _classSelected = ClassType.NONE;
-        [SerializeField] private ClassType _previousClassSelected = ClassType.NONE;
+        [SerializeField] private UnitClassType _classSelected = UnitClassType.NONE;
+        [SerializeField] private UnitClassType _previousClassSelected = UnitClassType.NONE;
         private UnitType _unitSelected = UnitType.NONE;
 
         [SerializeField] private ResearchState _currentState = ResearchState.NONE;
         [SerializeField] private ResearchState _previousState = ResearchState.NONE;
 
         [SerializeField] private List<ResearchCard> _classCards = new List<ResearchCard>();
-        private Dictionary<ClassType, ResearchUnitGroup> _unitCards = new Dictionary<ClassType, ResearchUnitGroup>();
-        private Dictionary<ClassType, ResearchUpgradeGroup> _upgradeCards = new Dictionary<ClassType, ResearchUpgradeGroup>();
-        private Dictionary<ClassType, List<ResearchUpgradeData>> _unitUprades = new Dictionary<ClassType, List<ResearchUpgradeData>>();
+        private Dictionary<UnitClassType, ResearchUnitGroup> _unitCards = new Dictionary<UnitClassType, ResearchUnitGroup>();
+        private Dictionary<UnitClassType, ResearchUpgradeGroup> _upgradeCards = new Dictionary<UnitClassType, ResearchUpgradeGroup>();
+        private Dictionary<UnitClassType, List<ResearchUpgradeData>> _unitUprades = new Dictionary<UnitClassType, List<ResearchUpgradeData>>();
         [SerializeField] private List<ResearchCard> _cardsToDisplay = new List<ResearchCard>();
 
-        private Dictionary<ClassType, List<ResearchUpgradeData>> _upgrades = new Dictionary<ClassType, List<ResearchUpgradeData>>();
+        private Dictionary<UnitClassType, List<ResearchUpgradeData>> _upgrades = new Dictionary<UnitClassType, List<ResearchUpgradeData>>();
 
         //[SerializeField] private int[] _researchTurns = { 1, 3, 6, 12, 36 };
         [SerializeField] private int[] _researchTurns = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -137,7 +137,7 @@
             return false;
         }
 
-        public void SelectedCard(int keyID = -1, ClassType classType = ClassType.NONE, UnitType unitType = UnitType.NONE, UnitUpgradeType upgradeType = UnitUpgradeType.NONE) {
+        public void SelectedCard(int keyID = -1, UnitClassType classType = UnitClassType.NONE, UnitType unitType = UnitType.NONE, UnitUpgradeType upgradeType = UnitUpgradeType.NONE) {
             if(this._currentState == ResearchState.CLASS) {
 
                 foreach(ResearchCard classCard in this._classCards) {
@@ -480,10 +480,10 @@
 
         private bool LoadUpgradeData() {
 
-            int classCount = System.Enum.GetNames(typeof(ClassType)).Length - 2;
+            int classCount = System.Enum.GetNames(typeof(UnitClassType)).Length - 2;
 
             for(int i = 0; i < classCount; i++) {
-                string className = ((ClassType)i + 1).ToString();
+                string className = ((UnitClassType)i + 1).ToString();
                 string path = "Upgrades/" + className;
                 Object[] temp = Resources.LoadAll("Scriptable/" + path, typeof(UpgradeScriptable));
 
@@ -499,7 +499,7 @@
 
         private void GenerateClassCards() {
             float startpos = -200.0f; // this value should change with the size of the screen.
-            int classCount = System.Enum.GetNames(typeof(ClassType)).Length - 2;
+            int classCount = System.Enum.GetNames(typeof(UnitClassType)).Length - 2;
             
             for(int i = 0; i < classCount; i++) {
                 ClassScriptable data = this._classDataList[i];
@@ -513,7 +513,7 @@
 
                 // NOTE: Find the face and back sprite here and replace the "Nulls" in the init function below.
 
-                card.Init(this, data.cardFaceSprite, data.cardBackSprite, pos, data.classType, UnitType.NONE, i);
+                card.Init(this, data.researchCardFaceSprite, data.researchCardBackSprite, pos, data.classType, UnitType.NONE, i);
 
                 this._classCards.Add(card as ResearchCard);
 
@@ -522,12 +522,12 @@
         }
 
         private void GenerateUnitCards() {
-            int classCount = System.Enum.GetNames(typeof(ClassType)).Length - 2;
+            int classCount = System.Enum.GetNames(typeof(UnitClassType)).Length - 2;
             int unitCount = System.Enum.GetNames(typeof(UnitType)).Length - 2;
 
             for(int i = 0; i < classCount; i++) {
                 List<ResearchUnitCard> container = new List<ResearchUnitCard>();
-                ClassType type = (ClassType)i + 1;
+                UnitClassType type = (UnitClassType)i + 1;
 
                 for(int j = 0; j < unitCount; j++) {
                     UnitScriptable unitData = UnitPoolManager.instance.UnitDataList[j];
@@ -558,14 +558,14 @@
 
         private void GenerateUpgradeCards() {
 
-            int classCount = System.Enum.GetNames(typeof(ClassType)).Length - 2;
+            int classCount = System.Enum.GetNames(typeof(UnitClassType)).Length - 2;
             int upgradecount = this._upgradeDataList.Count;
 
             for(int i = 0; i < classCount; i++) {
 
                 List<ResearchUpgradeCard> container = new List<ResearchUpgradeCard>();
                 List<ResearchUpgradeData> dataList = new List<ResearchUpgradeData>();
-                ClassType type = (ClassType)i + 1;
+                UnitClassType type = (UnitClassType)i + 1;
 
                 int count = 0;
 

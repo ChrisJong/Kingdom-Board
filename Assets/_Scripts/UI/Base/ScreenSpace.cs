@@ -2,11 +2,7 @@
 
     using UnityEngine;
     using UnityEngine.UI;
-
-    using Helpers;
-    using Player;
-    using Unit;
-    using Structure;
+    using TMPro;
 
     public abstract class ScreenSpace : UIBase {
 

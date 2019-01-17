@@ -4,13 +4,10 @@
     using System.Collections.Generic;
 
     using UnityEngine;
-    using UnityEngine.UI;
     using TMPro;
 
     using Enum;
     using Manager;
-    using Player;
-    using Unit;
     using Scriptable;
     using Structure;
 
@@ -75,7 +72,7 @@
         #region CLASS
         public void Init(Castle castle) {
 
-            this.Init(castle.controller);
+            this.Init(castle.Controller);
 
             this._castle = castle;
 
@@ -115,7 +112,6 @@
         }
 
         public override void HideUI() {
-            Debug.Log("Hide UI");
 
             if(this._spawnGroupToggle)
                 this.ToggleSpawnGroup(false);
@@ -146,8 +142,6 @@
             Vector2 newRect = new Vector2(newHealth, this._healthBarTransform.rect.height);
             this._healthBarTransform.sizeDelta = newRect;
             this._healthText.text = this._castle.CurrentHealth.ToString() + " / " + this._castle.MaxHealth.ToString();
-
-            //throw new System.NotImplementedException();
         }
 
         public void AddToQueue(UnitScriptable unitData, SpawnQueueType queueType) {
@@ -157,7 +151,7 @@
             GameObject go = Instantiate(this._queueRibbonPrefab, this._spawnQueueGroup);
             QueueButton queueButton = go.GetComponent<QueueButton>() as QueueButton;
 
-            queueButton.Init(yPos, this._castle, queueType, unitData.ClassData.ClassColor, unitData.TrainIconSprite);
+            queueButton.Init(yPos, this._castle, queueType, unitData.ClassData.classColor, unitData.iconSprite);
             queueType.SetQueueButton(queueButton);
             this._queueList.Add(queueButton);
         }
@@ -180,7 +174,7 @@
             }
         }
 
-        public void UnlockSpawnButton(ClassType classType, UnitType unitType) {
+        public void UnlockSpawnButton(UnitClassType classType, UnitType unitType) {
             // Search for the button using the class and unit type.
             foreach(TrainButton button in this._trainListButtons) {
                 if(button.UnitType == unitType) {
@@ -232,12 +226,12 @@
 
         private void GenerateSpawnListButtons() {
 
-            int max = System.Enum.GetNames(typeof(ClassType)).Length - 2;
+            int max = System.Enum.GetNames(typeof(UnitClassType)).Length - 2;
 
             for(int i = 0; i < max; i++) {
 
-                ClassType classType = ((ClassType)i + 1);
-                List<UnitScriptable> unitList = UnitPoolManager.instance.SortedUnitList[classType];
+                UnitClassType classType = ((UnitClassType)i + 1);
+                List<UnitScriptable> unitList = UnitPoolManager.instance.SortedUnitClass[classType];
 
                 for(int j = 0; j < unitList.Count; j++) {
 
@@ -250,11 +244,11 @@
                     btn.Init(this._castle, unit, true);
                     this._trainListButtons.Add(btn);
 
-                    if(classType == ClassType.MELEE)
+                    if(classType == UnitClassType.MELEE)
                         rect.SetParent(this._meleeButtonPanel);
-                    else if(classType == ClassType.RANGE)
+                    else if(classType == UnitClassType.RANGE)
                         rect.SetParent(this._rangeButtonPanel);
-                    else if(classType == ClassType.MAGIC)
+                    else if(classType == UnitClassType.MAGIC)
                         rect.SetParent(this._magicButtonPanel);
                     else
                         Debug.LogError("Not Class Type Exists for this unit: " + classType.ToString());
