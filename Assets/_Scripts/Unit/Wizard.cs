@@ -17,61 +17,22 @@
     public sealed class Wizard : UnitBase {
 
         #region VARIABLE
-        [Header("WIZARD - ATTACK")]
+        [Header("WIZARD")]
         [SerializeField, Range(1.0f, 50.0f)] private float _splashRadius = 10.0f;
-        [SerializeField, ReadOnly] private LineRenderDrawCircle _splashRadiusDrawer = null;
-        private Transform _splashRadiusTransform = null;
 
-        public float splashRadius { get { return this._splashRadius; } }
-        public LineRenderDrawCircle splashRadiusDrawer { get { return this._splashRadiusDrawer; } }
+        public float SplashRadius { get { return this._splashRadius; } }
         #endregion
 
         #region CLASS_CLEAN
-
-        public override void Setup() {
-            if(this._splashRadiusDrawer == null) {
-                GameObject tempRadiusDrawer = new GameObject("SpashRadiusDrawer");
-                tempRadiusDrawer.transform.position = this.position;
-
-                LineRenderDrawCircle tempRadiusComp = tempRadiusDrawer.AddComponent<LineRenderDrawCircle>();
-                tempRadiusComp.DrawAttackRadius(this._splashRadius);
-                tempRadiusComp.TurnOff();
-
-                tempRadiusDrawer.transform.SetParent(this.transform);
-
-                this._splashRadiusDrawer = tempRadiusComp;
-                this._splashRadiusTransform = tempRadiusDrawer.transform;
-            }
-
-            base.Setup();
-        }
 
         #endregion
 
         #region CLASS
 
-        protected override void ATTACKSTANDBYSTATE() {
-            base.ATTACKSTANDBYSTATE();
-
-            if(!this._splashRadiusDrawer.gameObject.activeSelf) {
-                this._splashRadiusDrawer.TurnOn();
-
-                // Debugging for changing the size of the splash radius at runtime/gametime.
-                this._splashRadiusDrawer.UpdateRadius(this.splashRadius);
-            } else {
-                // Debugging for changing the size of the splash radius at runtime/gametime.
-                this._splashRadiusDrawer.UpdateRadius(this.splashRadius);
-
-                this._splashRadiusTransform.position = this.Controller.playerSelection.GetCurrentPointOnGround();
-            }
-
-            //Debug.Log("Current Aoe Coord: " + this.controller.playerSelection.GetCurrentPointOnGround().ToString());
-        }
-
         protected override void InternalAttack(float damage) {
             this.SpawnAttackParticle();
 
-            this._currentTarget.lastAttacker = this;
+            this._currentTarget.LastAttacker = this;
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.transform.position);
 
             // NOTE: Find units within the splashRadius and calculate damage on the distance from the main attack source.
@@ -109,24 +70,18 @@
                 float finalDamage = 0.0f;
                 finalDamage = Mathf.Round(damage - ((distance / this._splashRadius) * damage));
 
-                hitHasHealth.lastAttacker = this;
+                hitHasHealth.LastAttacker = this;
                 hitHasHealth.ReceiveDamage(finalDamage, this as IHasHealth, this._currentTarget.position);
                 //Debug.Log("Current Target (" + hitHasHealth.gameObject.name + "): Took " + finalDamage.ToString() + " of Damage");
             }
 
-            ((UI.UnitUI)this.UIComponent).FinishAttack();
+            ((UI.UnitUI)this.uiBase).FinishAttack();
             this._unitState = UnitState.IDLE;
             this._canAttack = false;
         }
 
         protected override void SpawnAttackParticle() {
             ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_WIZARD_ATTACK, this._currentTarget.position);
-        }
-
-        public override void StartStateAnimation() {
-            this._splashRadiusDrawer.TurnOff();
-
-            base.StartStateAnimation();
         }
         #endregion
     }

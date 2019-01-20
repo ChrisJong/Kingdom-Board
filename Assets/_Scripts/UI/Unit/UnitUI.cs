@@ -1,29 +1,31 @@
 ﻿namespace UI {
 
-    using System;
     using System.Collections;
     using System.Collections.Generic;
 
     using UnityEngine;
     using UnityEngine.UI;
 
-    using Constants;
-    using Enum;
     using Unit;
 
     public abstract class UnitUI : ScreenSpace {
 
         #region VARIABLE
-        public UnitBase unit;
+        [SerializeField] protected UnitBase _unitBase;
 
-        [SerializeField]
-        protected List<Material> _unitMaterials;
+        [SerializeField] protected List<Material> _unitMaterials;
         #endregion
         
         #region UNITY
         #endregion
 
         #region CLASS
+        public void Setup(UnitBase unitBase) {
+            this._unitBase = unitBase;
+
+            this.Setup();
+        }
+
         public override void UpdateUI() {
             //this.UpdateInfo();
         }
@@ -35,11 +37,9 @@
         }
 
         public override void OnEnter() {
-            //throw new NotImplementedException();
         }
 
         public override void OnExit() {
-            //throw new NotImplementedException();
         }
 
         public override void ResetUI() {

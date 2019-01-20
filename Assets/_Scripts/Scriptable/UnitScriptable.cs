@@ -28,7 +28,7 @@
         public GameObject projectilePrefab;
 
         [Header("DATA - ATTRIBUTE TYPES")]
-        public MovementType movementType = MovementType.NONE;
+        public MovementType moveType = MovementType.NONE;
         public AttackType attackType = AttackType.NONE;
         public AttackType resistanceType = AttackType.NONE;
         public AttackType weaknessType = AttackType.NONE;
@@ -39,16 +39,18 @@
         public int populationCost = 1;
         [Range(0.0f, 3.0f)] public float resistanceMultiplier = 0.0f;
         [Range(0.0f, 3.0f)] public float weaknessMultiplier = 0.0f;
-        public float heath = 0.0f;
+        public float health = 0.0f;
         public float stamina = 0.0f;
-        public float minAttack = 0.0f;
-        public float maxAttack = 0.0f;
+        public float minDamage = 0.0f;
+        public float maxDamage = 0.0f;
         public float attackRange = 1.5f; // MELEE = 1.5f, RANGE > 2.0f
         public float moveSpeed = 5.0f;
 
         [Header("DATA - ANIMATION")]
         public float projectileSpeed = 0.0f;
         public float endOfAttackClipTime = 0.0f;
+        public float explosionRadius = 10.0f; // For Death Animation
+        public float explosionForce = 300.0f; // for Death Animation
 
         [Header("UNIQUE DATA - WIZARD")]
         public float splashRange = 0.0f;

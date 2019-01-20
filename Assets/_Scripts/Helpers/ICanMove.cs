@@ -3,13 +3,12 @@
     using UnityEngine;
 
     public interface ICanMove : IHasHealth {
-        float moveSpeed { get; }
-        float currentStamina { get; }
-        bool isMoving { get; }
-        bool isIdle { get; }
-        bool canMove { get; }
+        float MoveSpeed { get; }
+        bool IsMoving { get; }
+        bool IsIdle { get; }
+        bool CanMove { get; }
 
-        Enum.MovementType movementType { get; }
+        Enum.MovementType moveType { get; }
 
         void MoveTo(Vector3 dest);
         void StopMoving();

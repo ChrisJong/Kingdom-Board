@@ -22,9 +22,9 @@ public class player_dan : MonoBehaviour {
 
     private void Update()
     {
-        //SeeWhatImHovering();
+        SeeWhatImHovering();
 
-        if (Input.GetMouseButtonDown(0))
+        /*if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
             Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
@@ -37,9 +37,9 @@ public class player_dan : MonoBehaviour {
                     unitToShatter.ShatterUnit(hit.point);
                 }
             }
-        }
+        }*/
 
-        /*if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             DeselectUnit();
             TrySelectUnit();
@@ -48,7 +48,7 @@ public class player_dan : MonoBehaviour {
         if (Input.GetMouseButtonDown(1))
         {
             SeeWhatIClicked();
-        }*/
+        }
     }
 
     private void SeeWhatImHovering()

@@ -586,7 +586,7 @@ NavMeshAgent:
   m_Radius: 0.55
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 13
+  avoidancePriority: 90
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -609,8 +609,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 0}
-  _uiGroup: {fileID: 0}
-  unit: {fileID: 0}
+  _uiGroup: {fileID: 1936507545414802}
+  _uiCanvas: {fileID: 223688168998686892}
+  _uiGroupTransform: {fileID: 224443808917113044}
+  _uiGroupRectTransform: {fileID: 224443808917113044}
+  _unitBase: {fileID: 114461530362679216}
   _unitMaterials: []
   _btnHeal: {fileID: 0}
 --- !u!114 &114461530362679216
@@ -626,47 +629,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _poolID: 0
+  _isSetup: 1
   _controller: {fileID: 0}
-  _uiComponent: {fileID: 114814245191127902}
-  _currentHealth: 0
-  _currentEnergy: 0
-  _unitData: {fileID: 11400000, guid: 2d897e3b8ccf0fa419160c84b5b334fb, type: 2}
+  _uiBase: {fileID: 114814245191127902}
+  _currentHealth: 50
+  _currentEnergy: 10
+  _data: {fileID: 11400000, guid: 2d897e3b8ccf0fa419160c84b5b334fb, type: 2}
   _classType: 3
   _unitType: 5
   _unitState: 0
-  _unitRadius: 0.55
-  _movementType: 1
-  _maxStamina: 10
-  _currentStamina: 0
-  _minMoveThreashold: 0.01
-  _moveSpeed: 5
-  _allowedMovementImprecision: 1
-  _initialMovementDistance: 0
-  _canMove: 1
-  _projectile: {fileID: 1536442397987964, guid: 37d6cc4c6c3283c4586d7389b01fad37,
-    type: 3}
-  _projectileReleasePoint: {fileID: 4654050492524484}
-  _projectileSpeed: 30
-  _minDamage: 20
-  _maxDamage: 20
-  _attackRadius: 8
+  _moveType: 1
   _attackType: 2
   _resistanceType: 1
   _weaknessType: 3
+  _unitRadius: 0.55
+  _navMeshAgent: {fileID: 195631306337634066}
+  _moveSpeed: 5
+  _initialMovementDistance: 0
+  _canMove: 1
+  _projectileSpeed: 30
+  _attackRange: 10
+  _minDamage: 5
+  _maxDamage: 5
   _resistanceMultiplier: 0.5
   _weaknessMultiplier: 2
   _canAttack: 1
-  _endOfAttackClipTime: 0.5
-  _deathPrefab: {fileID: 1888961773439920, guid: 034120f41debbe24f8b7800229b72a88,
+  _projectileReleasePoint: {fileID: 0}
+  _projectilePrefan: {fileID: 1536442397987964, guid: 37d6cc4c6c3283c4586d7389b01fad37,
     type: 3}
+  _endOfAttackClipTime: 0.542
   _explosionRadius: 10
   _explosionForce: 300
+  _unitAnimator: {fileID: 95328427615254790}
+  _deathPrefab: {fileID: 1888961773439920, guid: 034120f41debbe24f8b7800229b72a88,
+    type: 3}
   debugCurrentPoint: {x: 0, y: 0, z: 0}
   debugPreviousPOint: {x: 0, y: 0, z: 0}
   radiusDrawer: {fileID: 114968530766641846}
   _canHeal: 1
-  _healingRadius: 8
-  _healingAmount: 0
+  _healingRadius: 10
+  _healingAmount: 5
   _endOfCastClipTime: 0.542
 --- !u!1 &1086154005513318
 GameObject:

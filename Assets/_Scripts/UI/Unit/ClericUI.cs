@@ -21,9 +21,9 @@
         #region CLASS
         public void FinishHeal() {
             Debug.Log("Finish Healing");
-            var unitScript = (Cleric)this.unit;
+            var unitScript = this._unitBase as Cleric;
 
-            this.Controller.selectionState = SelectionState.FREE;
+            this.Controller.playerSelect.CurrentState = SelectionState.FREE;
 
             unitScript.FinishHealing();
             unitScript.radiusDrawer.TurnOff();
@@ -43,8 +43,8 @@
             if(this._healing) {
                 this.ResetUI();
                 this._healing = false;
-                this.Controller.selectionState = SelectionState.FREE;
-                this.unit.radiusDrawer.TurnOff();
+                this.Controller.playerSelect.CurrentState = SelectionState.FREE;
+                this._unitBase.radiusDrawer.TurnOff();
             }
         }
 

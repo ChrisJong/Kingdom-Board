@@ -10,29 +10,32 @@
     using Scriptable;
     using Utility;
 
-    [RequireComponent(typeof(NavMeshObstacle))]
+    [System.Serializable, RequireComponent(typeof(NavMeshObstacle))]
     public abstract class StructureBase : HasHealthBase, IStructure {
         #region VARIABLE
         [Header("STRUCTURE - DEBUGGING")]
         [ReadOnly] public Vector3 debugCurrentPoint = Vector3.zero;
         [ReadOnly] public Vector3 debugPreviousPoint = Vector3.zero;
 
-        [Header("STRUCTURE")]
-        [SerializeField] protected StructureScriptable _structureData;
-        protected StructureState _structureState = StructureState.NONE;
+        [SerializeField] protected StructureScriptable _data;
+
+        [SerializeField] protected StructureClassType _classType = StructureClassType.NONE;
+        [SerializeField] protected StructureType _structureType = StructureType.NONE;
+        [SerializeField] protected StructureState _structureState = StructureState.NONE;
 
         protected Vector3? _currentPoint = null;
         protected Vector3? _previousPoint = null;
         protected IHasHealth _currentTarget = null;
         protected IHasHealth _previousTarget = null;
 
-        protected Collider _collider = null;
+        [SerializeField] protected Collider _collider = null;
         protected Bounds _colliderBounds;
-        protected NavMeshObstacle _navMeshObstacle = null;
+        [SerializeField] protected NavMeshObstacle _navMeshObstacle = null;
 
-        public StructureScriptable StructureData { get { return this._structureData; } set { this._structureData = value; } }
+        public StructureScriptable Data { get { return this._data; } }
         public override EntityType entityType { get { return EntityType.STRUCTURE; } }
-        public abstract StructureType structureType { get; }
+        public StructureClassType classType { get { return this._classType; } }
+        public StructureType structureType { get { return this._structureType; } }
         public StructureState structureState { get { return this._structureState; } set { this._structureState = value; } }
 
         public Vector3 CurrentPoint { get { return this._currentPoint.Value; } }
@@ -42,10 +45,25 @@
         #endregion
 
         #region CLASS
+
+        public bool SetData(StructureScriptable data) {
+            if(data == null)
+                return false;
+
+            this._data = data;
+
+            return true;
+        }
+
         public override void Setup() {
 
-            this._collider = this.GetComponent<BoxCollider>() as BoxCollider;
+            this._classType = this._data.classType;
+            this._structureType = this._data.structureType;
 
+            this._currentHealth = this._data.health;
+            this._maxHealth = this._data.health;
+
+            this._collider = this.GetComponent<BoxCollider>() as BoxCollider;
             this._navMeshObstacle = this.GetComponent<NavMeshObstacle>() as NavMeshObstacle;
 
             if(this._collider == null)
@@ -58,6 +76,9 @@
 
         public override void Init(Player contoller) {
             base.Init(contoller);
+
+            this._currentHealth = this._data.health;
+            this._maxHealth = this._data.health;
 
             this._colliderBounds = this._collider.bounds;
             this._collider.enabled = false;
@@ -135,8 +156,8 @@
 
             if(this.CurrentHealth <= 0.0f) {
 
-                if(this.Controller != null && this.Controller.structures != null)
-                    this.Controller.structures.Remove(this);
+                if(this.controller != null && this.controller.structures != null)
+                    this.controller.structures.Remove(this);
 
                 // NOTE: spawn in particle effects.
                 this.ReturnStructure();

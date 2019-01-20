@@ -4,7 +4,5 @@
     using UnityEngine.UI;
     using TMPro;
 
-    public abstract class ScreenSpace : UIBase {
-
-    }
+    public abstract class ScreenSpace : UIBase { }
 }

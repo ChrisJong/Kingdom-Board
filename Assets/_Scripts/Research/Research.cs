@@ -82,7 +82,7 @@
             this._castle = controller.castle;
 
             if(this._researchGroup == null)
-                this._researchGroup = this._controller.UI.researchGroup;
+                this._researchGroup = this._controller.playerUI.researchGroup;
 
             if(this._backButton == null) {
                 GameObject temp = null;

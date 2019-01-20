@@ -10,7 +10,6 @@
     using Helpers;
     using Player;
     using Scriptable;
-    using UI;
     using Unit;
     using Utility;
 
@@ -56,7 +55,12 @@
                     GameObject host = new GameObject(setup.type.ToString());
                     host.transform.SetParent(managerHost.transform);
 
-                    setup.prefab.GetComponent<UnitBase>().UnitData = this._sortedUnitData[setup.type];
+                    if(setup.prefab.GetComponent<UnitBase>().SetData(this._sortedUnitData[setup.type])) {
+                        setup.prefab.GetComponent<UnitBase>().Setup();
+                    } else {
+                        Debug.LogError("Data For the Unit Type Doesn't Exist: " + setup.type.ToString());
+                        throw new System.ArgumentNullException("Data For the Unit Type Doesn't Exist: " + setup.type.ToString());
+                    }
 
                     this._pools.Add(setup.type, new UnitPool(setup.prefab, host, setup.initialInstanceCount));
 
@@ -125,15 +129,14 @@
             pos = Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
             IUnit unit = pool.Get(pos, Quaternion.identity);
 
-            if(!unit.IsSetup) {
+            if(!unit.IsSetup)
                 unit.Setup();
-            }
 
             unit.Init(controller);
-            unit.gameObject.ColorRenderers(controller.color);
+            unit.gameObject.ColorRenderers(controller.PlayerColor);
 
             controller.AddUnit(unit);
-            unit.transform.SetParent(controller.unitGroup.transform);
+            unit.transform.SetParent(controller.UnitGroup.transform);
 
             return unit;
         }
@@ -144,15 +147,14 @@
             pos = Utility.Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
             IUnit unit = pool.Get(pos, Quaternion.identity);
 
-            if(!unit.IsSetup) {
+            if(!unit.IsSetup)
                 unit.Setup();
-            }
 
             unit.Init(controller);
-            unit.gameObject.ColorRenderers(controller.color);
+            unit.gameObject.ColorRenderers(controller.PlayerColor);
 
             controller.AddUnit(unit);
-            unit.transform.SetParent(controller.unitGroup.transform);
+            unit.transform.SetParent(controller.UnitGroup.transform);
 
             return unit;
         }

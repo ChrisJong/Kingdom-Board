@@ -1,11 +1,11 @@
 ﻿namespace Helpers {
     public interface ICanAttack : IHasHealth {
-        float minDamage { get; }
-        float maxDamage { get; }
-        float attackRadius { get; }
-        float resistancePercentage { get; }
-        float weaknessPercentage { get; }
-        bool canAttack { get; }
+        float MinDamage { get; }
+        float MaxDamage { get; }
+        float AttackRange { get; }
+        float ResistancePercentage { get; }
+        float WeaknessPercentage { get; }
+        bool CanAttack { get; }
 
         Enum.AttackType resistanceType { get; }
         Enum.AttackType weaknessType { get; }

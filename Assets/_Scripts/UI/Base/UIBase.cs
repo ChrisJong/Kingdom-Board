@@ -11,6 +11,7 @@
     // NOTES: https://answers.unity.com/questions/1077069/implementing-ipointerclickhandler-interface-does-n.html
     // UI needs input needs to changed to use EventSystems For Mouse & Touch Inputs.
 
+    [System.Serializable]
     public abstract class UIBase : MonoBehaviour, IUIComponent {
 
         #region VARIABLE
@@ -18,9 +19,9 @@
         [SerializeField] protected Player _controller;
 
         [SerializeField] protected GameObject _uiGroup;
-        protected Canvas _uiCanvas;
-        protected Transform _uiGroupTransform;
-        protected RectTransform _uiGroupRectTransform;
+        [SerializeField] protected Canvas _uiCanvas;
+        [SerializeField] protected Transform _uiGroupTransform;
+        [SerializeField] protected RectTransform _uiGroupRectTransform;
 
         public bool IsActive { get { return this._uiGroup.activeSelf; } set { this._uiGroup.SetActive(value); } }
 
@@ -30,11 +31,15 @@
 
         #region CLASS
         public virtual void Setup() {
-            this._uiGroup = this.transform.Find("_UI").gameObject;
-            this._uiGroupTransform = this._uiGroup.transform;
-            this._uiGroupRectTransform = this._uiGroup.transform as RectTransform;
+            if(this._uiGroup == null) {
+                this._uiGroup = this.transform.Find("_UI").gameObject;
+                this._uiGroupTransform = this._uiGroup.transform;
+                this._uiGroupRectTransform = this._uiGroup.transform as RectTransform;
 
-            this._uiCanvas = this._uiGroup.GetComponent<Canvas>() as Canvas;
+                this._uiCanvas = this._uiGroup.GetComponent<Canvas>() as Canvas;
+            } else {
+                Debug.Log("Finding UI Again");
+            }
         }
 
         public virtual void Init(Player controller) {

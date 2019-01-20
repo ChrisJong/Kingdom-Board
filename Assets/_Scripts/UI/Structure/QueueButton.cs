@@ -37,8 +37,6 @@
 
         [SerializeField] private TextMeshProUGUI _text;
 
-        #endregion
-
         public RectTransform rectTransfrom { get { return this._rectTransform; } }
 
         public UnitType typeToSpawn { get { return this._queueType.type; } }
@@ -47,17 +45,19 @@
 
         public uint ID { get { return this._queueType.id; } }
 
+        #endregion
+
         #region UNITY
 
         public void OnPointerClick(PointerEventData eventData) {}
 
         public void OnPointerUp(PointerEventData eventData) {
 
-            if(this._castle.Controller.selectionState == SelectionState.SELECT_SPAWNPOINT)
+            if(this._castle.controller.playerSelect.CurrentState == SelectionState.SELECT_SPAWNPOINT)
                 return;
 
             if(this.ready) {
-                if(this._castle.Controller.state == PlayerState.DEFENDING)
+                if(this._castle.controller.CurrentState == PlayerState.DEFENDING)
                     return;
 
                 this.Spawn();
@@ -130,8 +130,8 @@
         public void Delete() {
             if(!this._queueType.ready) {
                 this.PlayCancelAnimation();
-                Manager.ResourceManager.instance.AddResource(this._castle.Controller, PlayerResource.GOLD, this._queueType.goldCost);
-                Manager.ResourceManager.instance.RemoveResource(this._castle.Controller, PlayerResource.POPULATION, this._queueType.populationCost);
+                Manager.ResourceManager.instance.AddResource(this._castle.controller, PlayerResource.GOLD, this._queueType.goldCost);
+                Manager.ResourceManager.instance.RemoveResource(this._castle.controller, PlayerResource.POPULATION, this._queueType.populationCost);
             }
         }
 

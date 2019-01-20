@@ -11,7 +11,6 @@
     public class StructureScriptable : ScriptableObject {
 
         [Header("TYPES")]
-        public StructureClassType groupType = StructureClassType.NONE;
         public StructureClassType classType = StructureClassType.NONE;
         public StructureType structureType = StructureType.NONE;
 

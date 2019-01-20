@@ -8,10 +8,10 @@
     
     public interface IUnit : IHasHealth, ICanMove, ICanAttack, ISelected {
 
-        UnitScriptable UnitData { get; set; }
+        UnitScriptable Data { get; }
         UnitClassType classType { get; }
         UnitType unitType { get; }
-        LayerMask areaMask { get; }
+        LayerMask AreaMask { get; }
 
         void NewTurn();
         void Finished();

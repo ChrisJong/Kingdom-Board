@@ -4,13 +4,13 @@
         NONE = 0,
         ANY = ~0,
         FREE = 1,
-        STANDBY,
-        WAITING,
+        STANDBY, // Entity Selected.
         SELECT_TARGET, // ANY
         SELECT_ALLYTARGET,
         SELECT_ENEMYTARGET,
         SELECT_POINT,
         SELECT_SPAWNPOINT,
+        WAITING,
         END
     };
 

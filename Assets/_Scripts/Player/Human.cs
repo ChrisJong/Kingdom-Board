@@ -4,19 +4,34 @@
 
     using UI;
 
+    [RequireComponent(typeof(PlayerCursor))]
     public class Human : Player {
+
+        #region VARIABLE
+
+        private PlayerCursor _playerCursor;
+
+        public PlayerCursor playerCursor { get { return this._playerCursor; } }
+
+        #endregion
 
         #region CLASS
 
         public override void Create(Transform spawnLocation, uint id = 0) {
 
-            if(this.transform.GetComponent<PlayerUI>() as PlayerUI != null)
-                this._ui = this.transform.GetComponent<PlayerUI>() as PlayerUI;
-            else
-                this._ui = this.gameObject.AddComponent<PlayerUI>();
+            if(this._playerCursor == null)
+                if(this.GetComponent<PlayerCursor>() != null)
+                    this._playerCursor = this.GetComponent<PlayerCursor>() as PlayerCursor;
 
-            this._ui.Setup();
-            this._ui.Init(this);
+            this._playerCursor.SetDefault();
+
+            if(this.transform.GetComponent<PlayerUI>() as PlayerUI != null)
+                this._playerUI = this.transform.GetComponent<PlayerUI>() as PlayerUI;
+            else
+                this._playerUI = this.gameObject.AddComponent<PlayerUI>();
+
+            this._playerUI.Setup();
+            this._playerUI.Init(this);
 
             base.Create(spawnLocation, id);
         }

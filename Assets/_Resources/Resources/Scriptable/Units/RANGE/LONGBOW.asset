@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbc93419e3b21bf4689c8bf42dfd403c, type: 3}
+  m_Name: LONGBOW
+  m_EditorClassIdentifier: 
+  ClassData: {fileID: 11400000, guid: 0623b9ffe7001aa4e9dc2f95d3427132, type: 2}
+  classType: 2
+  unitType: 3
+  classTier: 2
+  researchCardFaceSprite: {fileID: 21300000, guid: cadd69947f0fe5545b0e0c1dd04c0bc7,
+    type: 3}
+  researchCardBackSprite: {fileID: 21300000, guid: 18de7e74e68496441a1bd0652da96e9e,
+    type: 3}
+  iconSprite: {fileID: 21300000, guid: 668587002c7fd4046a3f05070bdd495d, type: 3}
+  mainPrefab: {fileID: 1334265551059076, guid: 98a1a931111a5cf4183d1212cb977987, type: 3}
+  deathPrefab: {fileID: 1259494446502044, guid: a056c49d694f46642ad9c2fd20613803,
+    type: 3}
+  projectilePrefab: {fileID: 1081553990872264, guid: 17c347c561adfa346a1978a3b582ebcf,
+    type: 3}
+  moveType: 1
+  attackType: 3
+  resistanceType: 2
+  weaknessType: 3
+  turnCost: 1
+  goldCost: 1000
+  populationCost: 2
+  resistanceMultiplier: 0.5
+  weaknessMultiplier: 2
+  health: 50
+  stamina: 10
+  minDamage: 5
+  maxDamage: 5
+  attackRange: 10
+  moveSpeed: 5
+  projectileSpeed: 30
+  endOfAttackClipTime: 1.003
+  explosionRadius: 10
+  explosionForce: 300
+  splashRange: 0
+  healingDamage: 0
+  healingRange: 0
+  endOfCastClipTime: 0

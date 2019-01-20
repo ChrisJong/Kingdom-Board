@@ -16,8 +16,7 @@
 
         private static readonly int structureTypeLength = Enum.GetNames(typeof(StructureType)).Length - 2;
 
-        [SerializeField]
-        private StructurePoolSetup[] _poolSetup = new StructurePoolSetup[structureTypeLength];
+        [SerializeField] private StructurePoolSetup[] _poolSetup = new StructurePoolSetup[structureTypeLength];
         private readonly Dictionary<StructureType, StructurePool> _pools = new Dictionary<StructureType, StructurePool>(structureTypeLength, new StructureTypeComparer());
 
         private List<StructureScriptable> _structureDataList = new List<StructureScriptable>();
@@ -41,7 +40,12 @@
                     GameObject host = new GameObject(setup.type.ToString());
                     host.transform.SetParent(this.transform);
 
-                    setup.prefab.GetComponent<StructureBase>().StructureData = this._sortedStructureData[setup.type];
+                    if(setup.prefab.GetComponent<StructureBase>().SetData(this._sortedStructureData[setup.type])) {
+                        setup.prefab.GetComponent<StructureBase>().Setup();
+                    } else {
+                        Debug.LogError("Data For the Structure Type Doesn't Exist: " + setup.type.ToString());
+                        throw new System.ArgumentNullException("Data For the Structure Type Doesn't Exist: " + setup.type.ToString());
+                    }
 
                     this._pools.Add(setup.type, new StructurePool(setup.prefab, host, setup.initialInstanceCount));
                 }
@@ -49,24 +53,23 @@
         }
 
         public Castle GetStartCastle(Player player) {
-            return player.castle ?? (Castle)InternalBuild(StructureType.CASTLE, player, player.spawnLocation.position);
+            return player.castle ?? (Castle)InternalBuild(StructureType.CASTLE, player, player.SpawnLocation.position);
         }
 
         private IStructure InternalBuild(StructureType type, Player controller, Vector3 position) {
             StructurePool pool = this._pools[type];
 
             Vector3 pos = Utils.GetGroundedPosition(position);
-            IStructure structure = pool.Get(pos, controller.spawnLocation.rotation);
+            IStructure structure = pool.Get(pos, controller.SpawnLocation.rotation);
 
-            if(!structure.IsSetup) {
+            if(!structure.IsSetup)
                 structure.Setup();
-            }
 
             structure.Init(controller);
-            structure.gameObject.ColorRenderers(controller.color);
+            structure.gameObject.ColorRenderers(controller.PlayerColor);
 
             controller.structures.Add(structure);
-            structure.transform.SetParent(controller.structureGroup.transform);
+            structure.transform.SetParent(controller.StructureGroup.transform);
             return structure;
         }
 

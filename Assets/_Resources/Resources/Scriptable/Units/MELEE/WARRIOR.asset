@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbc93419e3b21bf4689c8bf42dfd403c, type: 3}
+  m_Name: WARRIOR
+  m_EditorClassIdentifier: 
+  ClassData: {fileID: 11400000, guid: aa945018846e6ff49ad9dcb1adf13157, type: 2}
+  classType: 1
+  unitType: 7
+  classTier: 1
+  researchCardFaceSprite: {fileID: 21300000, guid: 2599c4705d9d83744987b4d733e13a4b,
+    type: 3}
+  researchCardBackSprite: {fileID: 21300000, guid: 18de7e74e68496441a1bd0652da96e9e,
+    type: 3}
+  iconSprite: {fileID: 21300000, guid: eb236840d8569334a890acf3df92bf46, type: 3}
+  mainPrefab: {fileID: 1339325463546540, guid: 1b1c07aad58440e41a543f0912cde74a, type: 3}
+  deathPrefab: {fileID: 1775898866391652, guid: c6f58301e7a4b8546af24b1e33bfcfac,
+    type: 3}
+  projectilePrefab: {fileID: 0}
+  moveType: 1
+  attackType: 1
+  resistanceType: 3
+  weaknessType: 2
+  turnCost: 1
+  goldCost: 500
+  populationCost: 1
+  resistanceMultiplier: 0.5
+  weaknessMultiplier: 2
+  health: 50
+  stamina: 10
+  minDamage: 5
+  maxDamage: 5
+  attackRange: 1.5
+  moveSpeed: 5
+  projectileSpeed: 0
+  endOfAttackClipTime: 0
+  explosionRadius: 10
+  explosionForce: 300
+  splashRange: 0
+  healingDamage: 0
+  healingRange: 0
+  endOfCastClipTime: 0

@@ -1,8 +1,5 @@
 ﻿namespace Unit {
 
-    using System.Collections;
-    using System.Collections.Generic;
-
     using UnityEngine;
     using UnityEngine.AI;
 
@@ -14,152 +11,160 @@
     using Utility;
     using Player;
 
-    [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
+    [System.Serializable, RequireComponent(typeof(NavMeshAgent))]
     public abstract class UnitBase : HasHealthBase, IUnit {
 
-        #region VARIABLE_CLEAN
+        #region VARIABLE
 
         [Header("UNIT")]
-        [SerializeField] protected UnitScriptable _unitData;
-
-        public UnitScriptable UnitData { get { return this._unitData; } set { this._unitData = value; } }
-        #endregion
-
-        #region VARIABLE
-        ////////////////
-        ///// UNIT /////
-        ////////////////
+        [SerializeField] protected UnitScriptable _data;
 
         [SerializeField] protected UnitClassType _classType = UnitClassType.NONE;
         [SerializeField] protected UnitType _unitType = UnitType.NONE;
         [SerializeField] protected UnitState _unitState = UnitState.NONE;
-        [SerializeField] protected float _unitRadius = 0.0f;
+        [SerializeField] protected MovementType _moveType = MovementType.NONE;
+        [SerializeField] protected AttackType _attackType = AttackType.NONE;
+        //[SerializeField] protected ArmorType _armorType = ArmorType.NONE;
+        [SerializeField] protected AttackType _resistanceType = AttackType.NONE;
+        [SerializeField] protected AttackType _weaknessType = AttackType.NONE;
 
+        [SerializeField, HideInInspector] protected float _unitRadius = 0.0f;
+
+        protected RaycastHitDistanceSortComparer _hitComparer = new RaycastHitDistanceSortComparer(true);
+        [SerializeField] protected NavMeshAgent _navMeshAgent = null;
+
+        [Header("UNIT - TARGET")]
         protected Vector3? _currentPoint = null;
         protected Vector3? _previousPoint = null;
         [SerializeField] protected IHasHealth _currentTarget = null;
         [SerializeField] protected IHasHealth _previousTarget = null;
 
-        protected RaycastHitDistanceSortComparer _hitComparer = new RaycastHitDistanceSortComparer(true);
-        protected NavMeshAgent _navMeshAgent = null;
+        [Header("UNIT - MOVENENT")]
+        protected float _minMoveThreashold = 0.01f;
+        [SerializeField] protected float _moveSpeed = 0.0f;
+        private float _allowedMovementImprecision = 1.0f;
+
+        [SerializeField, ReadOnly] protected float _initialMovementDistance = 0.0f;
+        [SerializeField, ReadOnly] protected bool _canMove = true;
+
+        protected Vector3 _velocity = Vector3.zero;
+        protected Vector3 _lastPosition = Vector3.zero;
+        protected Vector3 _resetPosition = Vector3.zero;
+        protected NavMeshPath _unitPathing;
+
+        [Header("UNIT - ATTACK")]
+        [SerializeField] protected float _projectileSpeed = 0.0f;
+        [SerializeField] protected float _attackRange = 0.0f;
+        [SerializeField] protected float _minDamage = 0.0f;
+        [SerializeField] protected float _maxDamage = 0.0f;
+        protected float _lastAttack = 0.0f;
+        [SerializeField] protected float _resistanceMultiplier = 0.0f;
+        [SerializeField] protected float _weaknessMultiplier = 0.0f;
+
+        [SerializeField] protected bool _canAttack = true;
+
+        [SerializeField] protected Transform _projectileReleasePoint = null;
+
+        [SerializeField] protected GameObject _projectilePrefan = null;
+
+        [Header("UNIT - ANIMATION")]
+        [SerializeField] protected float _endOfAttackClipTime = 0.8f;
+        [SerializeField] protected float _explosionRadius = 0.0f;
+        [SerializeField] protected float _explosionForce = 0.0f;
+
+        [SerializeField] protected Animator _unitAnimator = null;
+
+        [SerializeField] protected GameObject _deathPrefab = null;
+
+        [Header("UNIT - DEBUGGING")]
+        public Vector3 debugCurrentPoint = Vector3.zero;
+        public Vector3 debugPreviousPOint = Vector3.zero;
+
+        [Header("UNIT - UI")]
+        public LineRenderDrawCircle radiusDrawer = null;
+
+        public UI.UnitUI unitUI { get { return this.uiBase as UI.UnitUI; } }
+
+        public UnitScriptable Data { get { return this._data; } }
 
         public override EntityType entityType { get { return EntityType.UNIT; } }
-        public LayerMask areaMask { get { return this._navMeshAgent.areaMask; } }
-
         public UnitClassType classType { get { return this._classType; } }
         public UnitType unitType { get { return this._unitType; } }
         public UnitState unitState { get { return this._unitState; } set { this._unitState = value; } }
-        public float unitRadius { get { return this._unitRadius; } }
+        public MovementType moveType { get { return this.moveType; } }
+        public AttackType attackType { get { return this._attackType; } }
+        //public ArmorType armorType { get { return this._armorType; } }
+        public AttackType resistanceType { get { return this._resistanceType; } }
+        public AttackType weaknessType { get { return this._weaknessType; } }
+
+        public float UnitRadius { get { return this._unitRadius; } }
+
+        public LayerMask AreaMask { get { return this._navMeshAgent.areaMask; } }
 
         public Vector3 CurrentPoint { get { return this._currentPoint.Value; } }
         public Vector3 PreviousPoint { get { return this._previousPoint.Value; } }
         public IHasHealth CurrentTarget { get { return this._currentTarget; } }
         public IHasHealth PreviousTarget { get { return this._previousTarget; } }
 
-        //////////////////
-        //// MOVEMENT ////
-        //////////////////
-        [Header("UNIT - MOVENENT")]
-        [SerializeField] protected MovementType _movementType = MovementType.NONE;
-        [SerializeField, Range(1.0f, 50.0f)] protected float _maxStamina = 10.0f;
-        [SerializeField, ReadOnly] protected float _currentStamina = 0.0f;
-        [SerializeField, Range(0.0001f, 1.0f)] protected float _minMoveThreashold = 0.01f;
-        [SerializeField, Range(1.0f, 50.0f)] protected float _moveSpeed = 5.0f;
-        [SerializeField, Range(0.1f, 10.0f)] private float _allowedMovementImprecision = 1.0f;
+        public float MoveSpeed { get { return this._moveSpeed; } }
+        public bool CanMove { get { return this._canMove; } }
+        public bool IsMoving { get { return this._velocity.sqrMagnitude > (this._minMoveThreashold * this._minMoveThreashold); } }
+        public virtual bool IsIdle { get { return !this.IsMoving && !this.isDead; } }
+        public Vector3 LastPosition { get { return this._lastPosition; } set { this._lastPosition = value; } }
 
-        [SerializeField, ReadOnly] protected float _initialMovementDistance = 0.0f;
-        [SerializeField, ReadOnly] protected bool _canMove = true;
+        public float AttackRange { get { return this._attackRange; } }
+        public float MinDamage { get { return this._minDamage; } }
+        public float MaxDamage { get { return this._maxDamage; } }
+        public float ResistancePercentage { get { return this._resistanceMultiplier; } }
+        public float WeaknessPercentage { get { return this._weaknessMultiplier; } }
 
-        private Vector3 _velocity = Vector3.zero;
-        private Vector3 _lastPosition = Vector3.zero;
-        private Vector3 _resetPosition = Vector3.zero;
-        protected NavMeshPath _unitPathing;
-        
-        public MovementType movementType { get { return this.movementType; } }
-        public float currentStamina { get { return this._currentStamina; } }
-        public float moveSpeed { get { return this._moveSpeed; } }
-
-        public bool canMove { get { return this._canMove; } }
-        public bool isMoving { get { return this._velocity.sqrMagnitude > (this._minMoveThreashold * this._minMoveThreashold); } }
-        public virtual bool isIdle { get { return !this.isMoving && !this.isDead; } }
-        public Vector3 lastPosition { get { return this._lastPosition; } set { this._lastPosition = value; } }
-
-        ////////////////
-        //// ATTACK ////
-        ////////////////
-        [Header("UNIT - ATTACK")]
-        [SerializeField] protected GameObject _projectile = null;
-        [SerializeField] protected Transform _projectileReleasePoint = null;
-        [SerializeField] protected float _projectileSpeed = 10.0f;
-
-        [SerializeField, Range(0.0f, 100.0f)] protected float _minDamage = 20.0f;
-        [SerializeField, Range(0.0f, 100.0f)] protected float _maxDamage = 20.0f;
-        [SerializeField, Range(1.0f, 50.0f)] protected float _attackRadius = 7.5f;
-
-        [SerializeField] protected AttackType _attackType = AttackType.NONE;
-        //[SerializeField] protected ArmorType _armorType = ArmorType.NONE;
-        [SerializeField] protected AttackType _resistanceType = AttackType.NONE;
-        [SerializeField] protected AttackType _weaknessType = AttackType.NONE;
-        [SerializeField, Range(0.0f, 3.0f)] protected float _resistanceMultiplier = 0.5f;
-        [SerializeField, Range(0.0f, 3.0f)] protected float _weaknessMultiplier = 0.5f;
-
-        [SerializeField, ReadOnly] protected bool _canAttack = true;
-        protected float _lastAttack = 0.0f;
-
-        public float minDamage { get { return this._minDamage; } }
-        public float maxDamage { get { return this._maxDamage; } }
-        public float attackRadius { get { return this._attackRadius; } }
-
-        public AttackType attackType { get { return this._attackType; } }
-        //public ArmorType armorType { get { return this._armorType; } }
-        public AttackType resistanceType { get { return this._resistanceType; } }
-        public AttackType weaknessType { get { return this._weaknessType; } }
-        public float resistancePercentage { get { return this._resistanceMultiplier; } }
-        public float weaknessPercentage { get { return this._weaknessMultiplier; } }
-
-        public bool canAttack { get { return this._canAttack; } }
-
-        ///////////////////
-        //// ANIMATION ////
-        ///////////////////
-        [Header("UNIT - ANIMATION")]
-        [SerializeField] protected float _endOfAttackClipTime = 0.8f;
-        protected Animator _unitAnimator = null;
-
-        [SerializeField] protected GameObject _deathPrefab = null;
-        [SerializeField, Range(1.0f, 50.0f)] protected float _explosionRadius = 10.0f;
-        [SerializeField, Range(1.0f, 1000.0f)] protected float _explosionForce = 300.0f;
-
-        [Header("UNIT - DEBUGGING")]
-        [ReadOnly]
-        public Vector3 debugCurrentPoint = Vector3.zero;
-        [ReadOnly]
-        public Vector3 debugPreviousPOint = Vector3.zero;
-
-        [Header("UNIT - UI")]
-        public LineRenderDrawCircle radiusDrawer = null;
-        #endregion
-
-        #region UNITY
-
-        protected virtual void Update() {
-            if(!this.isDead && this._unitState != UnitState.DEAD && this._unitState != UnitState.NONE && this._unitState != UnitState.ANY)
-                this.UpdateUnit();
-        }
-
-        // For Debugging Purpose.
-        public void OnDrawGizmos() {
-            if(this._unitState == UnitState.ATTACK_ANIMATION) {
-                //Gizmos.color = Color.red;
-                //Gizmos.DrawSphere(this.transform.position, this._attackRadius);
-            }
-        }
+        public bool CanAttack { get { return this._canAttack; } }
 
         #endregion
 
         #region CLASS_CLEAN
 
+        public bool SetData(UnitScriptable data) {
+            if(data == null)
+                return false;
+
+            this._data = data;
+
+            return true;
+        }
+
         public override void Setup() {
+
+            this._projectilePrefan = this._data.projectilePrefab;
+            this._deathPrefab = this._data.deathPrefab;
+
+            this._unitState = UnitState.NONE;
+
+            this._classType = this._data.classType;
+            this._unitType = this._data.unitType;
+            this._attackType = this._data.attackType;
+            this._resistanceType = this._data.resistanceType;
+            this._weaknessType = this._data.weaknessType;
+            this._moveType = this._data.moveType;
+
+            this._currentHealth = this._data.health;
+            this._maxHealth = this._data.health;
+            this._currentEnergy = this._data.stamina;
+            this._maxEnergy = this._data.stamina;
+
+            this._resistanceMultiplier = this._data.resistanceMultiplier;
+            this._weaknessMultiplier = this._data.weaknessMultiplier;
+            this._minDamage = this._data.minDamage;
+            this._maxDamage = this._data.maxDamage;
+            this._attackRange = this._data.attackRange;
+
+            this._moveSpeed = this._data.moveSpeed;
+
+            this._projectileSpeed = this._data.projectileSpeed;
+            this._endOfAttackClipTime = this._data.endOfAttackClipTime;
+            this._explosionRadius = this._data.explosionRadius;
+            this._explosionForce = this._data.explosionForce;
+
             this._unitAnimator = this.GetComponent<Animator>();
             if(this._unitAnimator == null) {
                 Debug.LogError("The Unit (" + this.gameObject.name + ") Doesn't Have An Animator Component");
@@ -181,9 +186,15 @@
                 throw new System.ArgumentException("Unit Type Needs to be Set To Value Other than NONE or ANY");
             }
 
-            this.radiusDrawer.TurnOff();
+            if(this.radiusDrawer == null) {
+                this.radiusDrawer = this.transform.Find("RadiusDrawer").GetComponent<LineRenderDrawCircle>() as LineRenderDrawCircle;
+                this.radiusDrawer.TurnOff();
+            } else
+                this.radiusDrawer.TurnOff();
 
             base.Setup();
+
+            this.unitUI.Setup(this);
         }
 
         public override void Init(Player contoller) {
@@ -193,8 +204,18 @@
             this._canAttack = true;
             this._canMove = true;
 
-            this._currentHealth = this._maxHealth;
-            this._currentEnergy = this._maxEnergy;
+            this._currentHealth = this._data.health;
+            this._maxHealth = this._data.health;
+            this._currentEnergy = this._data.stamina;
+            this._maxEnergy = this._data.stamina;
+
+            this._resistanceMultiplier = this._data.resistanceMultiplier;
+            this._weaknessMultiplier = this._data.weaknessMultiplier;
+            this._minDamage = this._data.minDamage;
+            this._maxDamage = this._data.maxDamage;
+            this._attackRange = this._data.attackRange;
+
+            this._moveSpeed = this._data.moveSpeed;
 
             this._lastPosition = this.transform.position;
             this._resetPosition = this.transform.position;
@@ -206,8 +227,18 @@
             this._canAttack = false;
             this._canMove = false;
 
-            this._currentHealth = 0.0f;
-            this._currentEnergy = 0.0f;
+            this._currentHealth = this._data.health;
+            this._maxHealth = this._data.health;
+            this._currentEnergy = this._data.stamina;
+            this._maxEnergy = this._data.stamina;
+
+            this._resistanceMultiplier = this._data.resistanceMultiplier;
+            this._weaknessMultiplier = this._data.weaknessMultiplier;
+            this._minDamage = this._data.minDamage;
+            this._maxDamage = this._data.maxDamage;
+            this._attackRange = this._data.attackRange;
+
+            this._moveSpeed = this._data.moveSpeed;
 
             this._currentPoint = null;
             this._currentTarget = null;
@@ -217,6 +248,50 @@
 
             base.Return();
         }
+
+
+        public virtual void ApplyUpgrade(UnitUpgradeType type, float value) {
+            switch(type) {
+                case UnitUpgradeType.ATTACK:
+                this._minDamage += value;
+                this._maxDamage += value;
+                break;
+
+                case UnitUpgradeType.HEALTH:
+                this._currentHealth += value;
+                this._maxHealth += value;
+                break;
+
+                case UnitUpgradeType.STAMINA:
+                this._currentEnergy += value;
+                this._maxEnergy += value;
+                break;
+            }
+        }
+
+        #endregion
+
+        #region UNITY
+
+        protected virtual void Update() {
+            if(!this.isDead && this._unitState != UnitState.DEAD && this._unitState != UnitState.NONE && this._unitState != UnitState.ANY)
+                this.UpdateUnit();
+        }
+
+        // For Debugging Purpose.
+        public void OnDrawGizmos() {
+            if(this._unitState == UnitState.ATTACK_ANIMATION) {
+                //Gizmos.color = Color.red;
+                //Gizmos.DrawSphere(this.transform.position, this._attackRadius);
+            }
+        }
+
+        #endregion
+
+        #region CLASS_CLEAN
+
+
+
 
         #endregion
 
@@ -280,12 +355,12 @@
 
                 // Distance checks to see if the target is within range of the attack radius. Doesn't take into account differernt size bounds of geometry, just the center point position.
                 float distance = Vector3.Distance(this.position, this._currentTarget.position);
-                if(distance + this._unitRadius < this._attackRadius)
+                if(distance + this._unitRadius < this._attackRange)
                     targetInRange = true;
 
                 // Seoncdary check using unity OverlapSphere to hit any unit/structure colliders within the attack radius.
                 if(!targetInRange) {
-                    Collider[] hits = Physics.OverlapSphere(this.position, this._attackRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
+                    Collider[] hits = Physics.OverlapSphere(this.position, this._attackRange, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
                     for(int i = 0; i < hits.Length; i++) {
                         IHasHealth hitHasHealth = hits[i].GetEntity<IHasHealth>();
 
@@ -436,30 +511,13 @@
 
         public virtual void UnitDeath() {
 
-            ResourceManager.instance.RemoveResource(this.Controller, PlayerResource.POPULATION, this._unitData.populationCost);
+            ResourceManager.instance.RemoveResource(this.controller, PlayerResource.POPULATION, this._data.populationCost);
 
             if(this._deathPrefab != null)
                 this.PlayDeathAnimation();
         }
 
-        public virtual void ApplyUpgrade(UnitUpgradeType type, float value) {
-            switch(type) {
-                case UnitUpgradeType.ATTACK:
-                this._minDamage += value;
-                this._maxDamage += value;
-                break;
 
-                case UnitUpgradeType.HEALTH:
-                this._currentHealth += value;
-                this._maxHealth += value;
-                break;
-
-                case UnitUpgradeType.STAMINA:
-                this._currentStamina += value;
-                this._maxStamina += value;
-                break;
-            }
-        }
         #endregion
 
         //////////////////
@@ -491,7 +549,7 @@
                 }
                     
                 this._navMeshAgent.isStopped = false;
-                this.lastPosition = this.position;
+                this.LastPosition = this.position;
             } else {
                 this._navMeshAgent.SetDestination(dest);
                 this._initialMovementDistance = this._navMeshAgent.remainingDistance;
@@ -532,7 +590,7 @@
         private bool SamplePosition(Vector3 dest, out Vector3 position) {
             NavMeshHit hit;
 
-            if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.areaMask)) {
+            if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.AreaMask)) {
                 position = hit.position;
                 return true;
             }else {
@@ -549,10 +607,10 @@
                 distance += Mathf.Abs((corners[c] - corners[c + 1]).magnitude);
 
             }*/
-            if(this.currentStamina <= 0.0f) {
+            if(this._currentEnergy <= 0.0f) {
                 this._canMove = false;
                 this._unitState = UnitState.IDLE;
-                ((UI.UnitUI)this.UIComponent).FinishMove();
+                ((UI.UnitUI)this.uiBase).FinishMove();
                 this.StopMoving();
             }
 
@@ -578,11 +636,11 @@
         public virtual void Attack() {
             Vector3 releasePosition = this._projectileReleasePoint.position;
 
-            if(this._projectile == null) {
+            if(this._projectilePrefan == null) {
                 this._unitState = UnitState.ATTACK;
                 this.InternalAttack(this.GetDamage());
             } else {
-                GameObject temp = Instantiate(this._projectile);
+                GameObject temp = Instantiate(this._projectilePrefan);
                 Projectile tempProjjectile = temp.GetComponent<Projectile>() as Projectile;
 
                 if(tempProjjectile == null)
@@ -606,9 +664,9 @@
 
             // Unit Based Multipliers
             if(attacker.attackType == this.resistanceType)
-                finalDamage = Mathf.Round(damage * this.resistancePercentage);
+                finalDamage = Mathf.Round(damage * this.ResistancePercentage);
             else if(attacker.attackType == this.weaknessType)
-                finalDamage = Mathf.Round(damage * this.weaknessPercentage);
+                finalDamage = Mathf.Round(damage * this.WeaknessPercentage);
             
             Debug.Log("Attack Calculation: " + finalDamage.ToString());
 
@@ -634,11 +692,11 @@
 
             Debug.Log("Current Target " + this.name + ": Took " + finalDamage.ToString() + " of Damage from - " + incoming.gameObject.name);
             this.RemoveHealth(finalDamage);
-            this.UIComponent.UpdateUI();
+            this.uiBase.UpdateUI();
 
             if(this.CurrentHealth <= 0.0f) {
-                if(this.Controller != null)
-                    this.Controller.RemoveUnit(this);
+                if(this.controller != null)
+                    this.controller.RemoveUnit(this);
 
                 // NOTE: play any death animations, or add in any death effects onto the scene. 
                 this.UnitDeath();
@@ -664,16 +722,16 @@
         protected virtual void InternalAttack(float damage) {
             this.SpawnAttackParticle();
 
-            this._currentTarget.lastAttacker = this;
+            this._currentTarget.LastAttacker = this;
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.transform.position);
 
-            ((UI.UnitUI)this.UIComponent).FinishAttack();
+            ((UI.UnitUI)this.uiBase).FinishAttack();
             this._unitState = UnitState.IDLE;
             this._canAttack = false;
         }
 
         protected virtual void SpawnAttackParticle() {
-            if(this._projectile != null) {
+            if(this._projectilePrefan != null) {
                 Vector3 relativePos = this.position - this._currentTarget.position;
                 Quaternion tempRotation = Quaternion.LookRotation(relativePos);
 
@@ -747,7 +805,7 @@
             this.transform.position = new Vector3(uPoseition.x, -100.0f, uPoseition.z);
 
             // Calculate the position and force for the Physics Force.
-            Vector3 explsioonDirection = (this.lastAttacker.position - uPoseition).normalized;
+            Vector3 explsioonDirection = (this.LastAttacker.position - uPoseition).normalized;
             Vector3 explosionPosition = uPoseition + explsioonDirection * this._unitRadius;
 
             // Zero out the directional Normal y to even out the stage.
@@ -755,7 +813,7 @@
 
             // Create the death prefab and grab its rigidbody
             GameObject deathGO = Instantiate(this._deathPrefab, uPoseition, uRotation);
-            deathGO.ColorRenderers(this.Controller.color);
+            deathGO.ColorRenderers(this.controller.PlayerColor);
             Rigidbody[] deathRB = deathGO.GetComponentsInChildren<Rigidbody>() as Rigidbody[];
 
             foreach(Rigidbody rb in deathRB) {

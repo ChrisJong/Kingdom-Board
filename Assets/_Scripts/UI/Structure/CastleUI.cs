@@ -10,7 +10,9 @@
     using Manager;
     using Scriptable;
     using Structure;
+    using Player;
 
+    [System.Serializable]
     public class CastleUI : ScreenSpace {
 
         #region INFO_UI
@@ -23,7 +25,7 @@
         #endregion
 
         #region VARIABLE
-        private Castle _castle;
+        [SerializeField] private Castle _castle;
 
         [SerializeField] private List<QueueButton> _queueList = new List<QueueButton>();
         [SerializeField] private List<TrainButton> _trainListButtons = new List<TrainButton>();
@@ -70,20 +72,23 @@
         #endregion
 
         #region CLASS
-        public void Init(Castle castle) {
-
-            this.Init(castle.Controller);
-
+        public void Setup(Castle castle) {
             this._castle = castle;
 
+            this.Setup();
+        }
+
+        public override void Init(Player controller) {
+            base.Init(controller);
+
             // Information Group
-            this._infomationGroup = this._controller.UI.structureUIGroup;
+            this._infomationGroup = this._controller.playerUI.structureUIGroup;
             this._healthGroup = this._infomationGroup.transform.Find("BG").Find("Health").gameObject;
             this._healthBarTransform = this._healthGroup.transform.Find("Bar").transform as RectTransform;
             this._healthText = this._healthGroup.transform.Find("Text").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
 
             this._panelAnimation = this.MoveTrainingPanel();
-            this._spawnGroup = this._controller.UI.spawnGroup.transform as RectTransform;
+            this._spawnGroup = this._controller.playerUI.spawnGroup.transform as RectTransform;
 
             this._spawnQueueGroup = this._spawnGroup.Find("Queue_Panel") as RectTransform;
             this._spawnListGroup = this._spawnGroup.Find("UnitTrain_Panel") as RectTransform;
@@ -241,7 +246,8 @@
                     RectTransform rect = go.transform as RectTransform;
 
                     go.name = unit.unitType.ToString() + "_BTN";
-                    btn.Init(this._castle, unit, true);
+                    btn.Init(this._castle, unit, false);
+
                     this._trainListButtons.Add(btn);
 
                     if(classType == UnitClassType.MELEE)

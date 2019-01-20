@@ -25,7 +25,7 @@
 
         public void OnPointerUp(PointerEventData eventData) {
 
-            if(this._playerUI.Controller.selectionState == Enum.SelectionState.FREE || this._playerUI.Controller.selectionState == Enum.SelectionState.STANDBY)
+            if(this._playerUI.Controller.playerSelect.CurrentState == Enum.SelectionState.FREE || this._playerUI.Controller.playerSelect.CurrentState == Enum.SelectionState.STANDBY)
                 this._playerUI.EndTurn();
         }
         #endregion

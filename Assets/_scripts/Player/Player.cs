@@ -4,14 +4,11 @@
     using System.Collections.Generic;
 
     using UnityEngine;
-    using UnityEngine.UI;
 
-    using Constants;
     using Enum;
     using Helpers;
     using Manager;
     using Research;
-    using Scriptable;
     using Structure;
     using UI;
     using Unit;
@@ -19,70 +16,48 @@
     public abstract class Player : MonoBehaviour {
 
         #region VARIABLE
-        ////////////////
-        //// PLAYER ////
-        ////////////////
-        [Header("PLAYER")]
+
         public uint id;
         public uint roll;
-        private string _name;
-        private bool _isAttacking;
-        [SerializeField] private bool _turnEnded;
-        private Transform _spawnLocation;
-        private Color _color;
-        [SerializeField] private PlayerState _state = PlayerState.NONE;
+        [SerializeField] protected bool _isAttacking;
+        [SerializeField] protected bool _turnEnded;
 
-        public PlayerState state { get { return this._state; } set { this._state = value; } }
+        private PlayerCamera _playerCamera;
+        private PlayerSelect _playerSelect;
+        private Research _research;
+        protected PlayerUI _playerUI;
 
-        //////////////////
-        //// Entities ////
-        //////////////////
+        [SerializeField] protected PlayerState _currentState = PlayerState.NONE;
+
         private Castle _castle;
+        private IList<IStructure> _structures;
         private IList<IUnit> _units;
         private Dictionary<UnitClassType, List<IUnit>> _classUnits;
-        private IList<IStructure> _structures;
-        private GameObject _unitGroup = null;
-        public GameObject unitGroup { get { return this._unitGroup; } }
+
         private GameObject _structureGroup = null;
-        public GameObject structureGroup { get { return this._structureGroup; } }
+        private GameObject _unitGroup = null;
+        protected Transform _spawnLocation;
+        protected Color _playerColor;
 
-        private Research _research;
-
-        ////////////////
-        //// Camera ////
-        ////////////////
-        [Header("PLAYER - CAMERA")]
-        private PlayerCamera _playerCamera;
-        private PlayerSelect _playerSelection;
-        [SerializeField]
-        private SelectionState _selectionState = SelectionState.NONE;
-
-        public SelectionState selectionState { get { return this._selectionState; } set { this._selectionState = value; } }
-
-        ////////////
-        //// UI ////
-        ////////////
-        protected PlayerUI _ui;
-
-        public PlayerUI UI {
-            get { return this._ui; }
-            set { this._ui = value; } }
-
-        ///////////////////////
-        //// Getter/Setter ////
-        ///////////////////////
-        public bool isAttacking { get { return this._isAttacking; } }
-        public bool turnEnded { get { return this._turnEnded; } }
-        public Transform spawnLocation { get { return this._spawnLocation; } }
-        public Color color { get { return this._color; } set { this._color = value; } }
-
-        public Castle castle { get { return this._castle; } }
-        public IList<IUnit> units { get { return this._units; } }
-        public Dictionary<UnitClassType, List<IUnit>> ClassUnits { get { return this._classUnits; } }
-        public IList<IStructure> structures { get { return this._structures; } }
+        public bool IsAttacking { get { return this._isAttacking; } }
+        public bool TurnEnded { get { return this._turnEnded; } }
 
         public PlayerCamera playerCamera { get { return this._playerCamera; } }
-        public PlayerSelect playerSelection { get { return this._playerSelection; } }
+        public PlayerSelect playerSelect { get { return this._playerSelect; } }
+        public PlayerUI playerUI { get { return this._playerUI; } set { this._playerUI = value; } }
+
+        public PlayerState CurrentState { get { return this._currentState; } set { this._currentState = value; } }
+
+        public Castle castle { get { return this._castle; } }
+        public IList<IStructure> structures { get { return this._structures; } }
+        public IList<IUnit> units { get { return this._units; } }
+        public Dictionary<UnitClassType, List<IUnit>> ClassUnits { get { return this._classUnits; } }
+
+        public GameObject UnitGroup { get { return this._unitGroup; } }
+        public GameObject StructureGroup { get { return this._structureGroup; } }
+        public Transform SpawnLocation { get { return this._spawnLocation; } }
+        public Color PlayerColor { get { return this._playerColor; } set { this._playerColor = value; } }
+
         #endregion
 
         #region UNITY
@@ -105,13 +80,12 @@
 
             this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-            this._unitGroup = new GameObject("_units");
-            this._unitGroup.transform.SetParent(this.transform);
             this._structureGroup = new GameObject("_structures");
             this._structureGroup.transform.SetParent(this.transform);
+            this._unitGroup = new GameObject("_units");
+            this._unitGroup.transform.SetParent(this.transform);
 
             this.id = id;
-            this._name = gameObject.name;
             this._turnEnded = false;
 
             this._spawnLocation = spawnLocation;
@@ -129,17 +103,17 @@
         public virtual void Init(bool attacking) {
             if(attacking) {
                 this._isAttacking = attacking;
-                this._ui.HideUI();
-                this._state = PlayerState.START;
+                this._playerUI.HideUI();
+                this._currentState = PlayerState.START;
             } else {
                 this._isAttacking = false;
-                this._ui.HideUI();
-                this._state = PlayerState.START;
+                this._playerUI.HideUI();
+                this._currentState = PlayerState.START;
             }
 
-            this._selectionState = SelectionState.FREE;
             this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation);
-            this._playerSelection = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
+            this._playerSelect = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
+            this._playerSelect.CurrentState = SelectionState.FREE;
 
             this._classUnits = new Dictionary<UnitClassType, List<IUnit>>();
             for(int i = 0; i < System.Enum.GetNames(typeof(UnitClassType)).Length - 2; i++) {
@@ -152,31 +126,31 @@
 
         public void SetupNewTurn() {
 
-            this._state = PlayerState.START;
+            this._currentState = PlayerState.START;
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(true);
 
-            this._ui.ShowBanner();
+            this._playerUI.ShowBanner();
         } 
 
         public void StartTurn() {
 
             if(this._isAttacking) {
-                this._state = PlayerState.ATTACKING;
-                this._selectionState = SelectionState.FREE;
+                this._currentState = PlayerState.ATTACKING;
+                this._playerSelect.CurrentState = SelectionState.FREE;
                 GameManager.instance.StartPlayTimer();
             } else {
-                this._state = PlayerState.DEFENDING;
-                this._selectionState = SelectionState.FREE;
+                this._currentState = PlayerState.DEFENDING;
+                this._playerSelect.CurrentState = SelectionState.FREE;
             }
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(true);
-            this.UI.DisplayUI();
+            this.playerUI.DisplayUI();
             //this.uiComponent.ShowBanner();
 
-            if(this._state == PlayerState.ATTACKING) {
+            if(this._currentState == PlayerState.ATTACKING) {
                 this._castle.CheckSpawnQueue();
                 this._research.CheckResearchPhase(GameManager.instance.RoundCount);
             }
@@ -186,14 +160,14 @@
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(false);
-            this._castle.UI.ResetUI();
-            this._ui.HideUI();
+            this._castle.castleUI.ResetUI();
+            this._playerUI.HideUI();
 
             if(attacking) {
-                this._state = PlayerState.ATTACKING;
+                this._currentState = PlayerState.ATTACKING;
                 this._isAttacking = attacking;
             } else {
-                this._state = PlayerState.DEFENDING;
+                this._currentState = PlayerState.DEFENDING;
                 this._isAttacking = false;
             }
 
@@ -208,16 +182,16 @@
             if(this._turnEnded)
                 return;
 
-            this._playerSelection.EndTurn();
+            this._playerSelect.EndTurn();
             this._turnEnded = true;
-            this._selectionState = SelectionState.END;
-            this._state = PlayerState.END;
+            this._playerSelect.CurrentState = SelectionState.END;
+            this._currentState = PlayerState.END;
 
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(false);
 
-            this._ui.HideUI();
+            this._playerUI.HideUI();
 
             GameManager.instance.StopPlayTimer();
             GameManager.instance.CheckRound();
@@ -236,7 +210,7 @@
         }
 
         public bool IsAlly(IHasHealth other) {
-            return ReferenceEquals(other.Controller, this);
+            return ReferenceEquals(other.controller, this);
         }
 
         public bool IsEnemy(IHasHealth other) {

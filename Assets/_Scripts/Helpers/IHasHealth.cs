@@ -12,10 +12,10 @@
         float CurrentEnergy { get; }
 
         bool isDead { get; }
-        float lastAttacked { get; }
-        IHasHealth lastAttacker { get; set; }
-        Player Controller { get; }
-        UIBase UIComponent { get; }
+        float LastAttacked { get; }
+        IHasHealth LastAttacker { get; set; }
+        Player controller { get; }
+        UIBase uiBase { get; }
 
         void Init(Player contoller);
 

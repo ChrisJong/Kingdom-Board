@@ -69,7 +69,7 @@
             int playersFinished = 0;
 
             foreach(Player player in this._players) {
-                if(player.turnEnded || player.state == PlayerState.END)
+                if(player.TurnEnded || player.CurrentState == PlayerState.END)
                     playersFinished++;
             }
 
@@ -183,11 +183,11 @@
 
             for(int i = 0; i < this._numberOfPlayers; i++) {
                 if(i == 0) {
-                    this._players[i].color = new Color(0.8823529f, 0.8823529f, 0.8823529f, 1.0f);
+                    this._players[i].PlayerColor = new Color(0.8823529f, 0.8823529f, 0.8823529f, 1.0f);
                     this._players[i].Create(this._spawnPoints[i], (uint)i);
                     this._players[i].Init(true);
                 } else {
-                    this._players[i].color = new Color(0.2352941f, 0.2352941f, 0.2352941f, 1.0f);
+                    this._players[i].PlayerColor = new Color(0.2352941f, 0.2352941f, 0.2352941f, 1.0f);
                     this._players[i].Create(this._spawnPoints[i], (uint)i);
                     this._players[i].Init(false);
                 }
@@ -195,7 +195,7 @@
         }
 
         private IEnumerator StartCountdown() {
-            if(this._countdown <= 0.0f && this._playerInView.turnEnded) {
+            if(this._countdown <= 0.0f && this._playerInView.TurnEnded) {
                 // end the players turns
                 this._playerInView.EndTurn();
                 this._countdown = this._countdownLimit;
@@ -208,12 +208,12 @@
 
                 this._countdown -= Time.deltaTime;
 
-                if(this._playerInView.turnEnded)
+                if(this._playerInView.TurnEnded)
                     break;
 
                 yield return new WaitForEndOfFrame();
 
-            } while(this._countdown > 0.0f && !this._playerInView.turnEnded);
+            } while(this._countdown > 0.0f && !this._playerInView.TurnEnded);
 
             this._countdown = 0.0f;
 

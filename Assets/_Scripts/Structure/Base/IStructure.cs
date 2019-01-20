@@ -6,7 +6,8 @@
 
     public interface IStructure : IHasHealth, ISelected {
 
-        StructureScriptable StructureData { get; set; }
+        StructureScriptable Data { get; }
+        StructureClassType classType { get; }
         StructureType structureType { get; }
     } 
 }

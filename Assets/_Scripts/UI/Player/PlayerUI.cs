@@ -39,7 +39,7 @@
 
         public void Update() {
 
-            if(this.Controller.state == PlayerState.ATTACKING || this.Controller.state == PlayerState.DEFENDING) {
+            if(this.Controller.CurrentState == PlayerState.ATTACKING || this.Controller.CurrentState == PlayerState.DEFENDING) {
                 this._endTurnButton.UpdateButton();
                 this.UpdateInfo();
             }
@@ -145,7 +145,7 @@
         }
 
         public override void UpdateUI() {
-            if(this.Controller.turnEnded) {
+            if(this.Controller.TurnEnded) {
                 this.HideUI();
             } else {
                 this.UpdateInfo();
@@ -156,7 +156,7 @@
             if(!this.bannerGroup.activeSelf)
                 this.bannerGroup.SetActive(true);
 
-            this._playerBanner.SwapBanner(this.Controller.isAttacking);
+            this._playerBanner.SwapBanner(this.Controller.IsAttacking);
 
             this._playerBanner.StartBannerAnimation();
         }
@@ -179,7 +179,7 @@
 
             text = "GOLD: " + gold.ToString() + "\r\n" +
                    "UNIT CAP: " + population.ToString() + " / " + populationCap.ToString() + "\r\n" + 
-                   "PHASE: " + this.Controller.state.ToString();
+                   "PHASE: " + this.Controller.CurrentState.ToString();
 
             this._infoText.text = text;
         }

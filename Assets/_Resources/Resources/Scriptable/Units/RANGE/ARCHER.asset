@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbc93419e3b21bf4689c8bf42dfd403c, type: 3}
+  m_Name: ARCHER
+  m_EditorClassIdentifier: 
+  ClassData: {fileID: 11400000, guid: 0623b9ffe7001aa4e9dc2f95d3427132, type: 2}
+  classType: 2
+  unitType: 1
+  classTier: 1
+  researchCardFaceSprite: {fileID: 21300000, guid: f920fe2d4830dec40bffc789590e3e00,
+    type: 3}
+  researchCardBackSprite: {fileID: 21300000, guid: 18de7e74e68496441a1bd0652da96e9e,
+    type: 3}
+  iconSprite: {fileID: 21300000, guid: 8a214b8a6c8f4974aabe0ca77e940622, type: 3}
+  mainPrefab: {fileID: 1826862740528020, guid: 61c0d8d7a58664244817c48751723743, type: 3}
+  deathPrefab: {fileID: 1640903272305634, guid: 043b090d8b189214398c16f982d3ed8d,
+    type: 3}
+  projectilePrefab: {fileID: 1213313291399790, guid: 5fa941dfb9b864e4d931db273bde05c4,
+    type: 3}
+  moveType: 1
+  attackType: 3
+  resistanceType: 2
+  weaknessType: 3
+  turnCost: 1
+  goldCost: 500
+  populationCost: 1
+  resistanceMultiplier: 0.5
+  weaknessMultiplier: 2
+  health: 50
+  stamina: 10
+  minDamage: 5
+  maxDamage: 5
+  attackRange: 10
+  moveSpeed: 5
+  projectileSpeed: 30
+  endOfAttackClipTime: 0.461
+  explosionRadius: 10
+  explosionForce: 300
+  splashRange: 0
+  healingDamage: 0
+  healingRange: 0
+  endOfCastClipTime: 0

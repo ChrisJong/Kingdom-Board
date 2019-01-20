@@ -114,13 +114,13 @@
         public void Heal() {
             Debug.Log("HEALING UNIT");
             ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_CLERIC_HEAL, this._currentTarget.position);
-            if(this._projectile == null) {
+            if(this._projectilePrefan == null) {
                 this._unitState = UnitState.HEAL;
                 ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_CLERIC_HEAL, this._currentTarget.position);
                 this.InternalHeal();
             } else {
                 // NOTE: need to pass into a ID for the type of particle the end of the projectile should spawn.
-                GameObject temp = Instantiate(this._projectile);
+                GameObject temp = Instantiate(this._projectilePrefan);
                 Projectile tempProjjectile = temp.GetComponent<Projectile>() as Projectile;
 
                 if(tempProjjectile == null)
@@ -133,7 +133,7 @@
         private void InternalHeal() {
             this._currentTarget.AddHealth(this._healingAmount);
 
-            ((UI.ClericUI)this.UIComponent).FinishHeal();
+            ((UI.ClericUI)this.uiBase).FinishHeal();
             this._unitState = UnitState.IDLE;
             this._canHeal = false;
         }
