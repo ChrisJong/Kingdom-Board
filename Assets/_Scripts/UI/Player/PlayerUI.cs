@@ -29,6 +29,7 @@
         public GameObject spawnGroup = null;
         public GameObject researchGroup = null;
         public GameObject unitUIGroup = null;
+        public GameObject unitLocator = null;
         public GameObject structureUIGroup = null;
 
         [SerializeField] protected List<Transform> _uiChildrenList = new List<Transform>();
@@ -100,7 +101,7 @@
 
         }
 
-        public override void DisplayUI() {
+        public override void Display() {
             //this._goUI.SetActive(true);
 
             foreach(Transform temp in this._uiChildrenList) {
@@ -119,7 +120,7 @@
             this.UpdateInfo();
         }
 
-        public override void HideUI() {
+        public override void Hide() {
             //this._goUI.SetActive(false);
 
             this.bannerGroup.gameObject.SetActive(false);
@@ -136,6 +137,10 @@
             throw new NotImplementedException();
         }
 
+        public override void OnEnter(Player controller) {
+            throw new NotImplementedException();
+        }
+
         public override void OnExit() {
             throw new NotImplementedException();
         }
@@ -146,7 +151,7 @@
 
         public override void UpdateUI() {
             if(this.Controller.TurnEnded) {
-                this.HideUI();
+                this.Hide();
             } else {
                 this.UpdateInfo();
             }
@@ -166,7 +171,7 @@
         }
 
         public void EndTurn() {
-            this.HideUI();
+            this.Hide();
             this.Controller.EndTurn();
         }
 

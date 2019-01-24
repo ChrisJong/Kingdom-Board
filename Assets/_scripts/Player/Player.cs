@@ -78,6 +78,12 @@
         #region CLASS
         public virtual void Create(Transform spawnLocation, uint id = 0) {
 
+            this._playerCamera = PlayerCamera.CreateCamera(this, spawnLocation);
+            this._playerSelect = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
+            if(this._playerSelect == null)
+                this._playerSelect = this.gameObject.AddComponent<PlayerSelect>();
+            this._playerSelect.CurrentState = SelectionState.FREE;
+
             this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
             this._structureGroup = new GameObject("_structures");
@@ -103,17 +109,13 @@
         public virtual void Init(bool attacking) {
             if(attacking) {
                 this._isAttacking = attacking;
-                this._playerUI.HideUI();
+                this._playerUI.Hide();
                 this._currentState = PlayerState.START;
             } else {
                 this._isAttacking = false;
-                this._playerUI.HideUI();
+                this._playerUI.Hide();
                 this._currentState = PlayerState.START;
             }
-
-            this._playerCamera = PlayerCamera.CreateCamera(this, this._spawnLocation);
-            this._playerSelect = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
-            this._playerSelect.CurrentState = SelectionState.FREE;
 
             this._classUnits = new Dictionary<UnitClassType, List<IUnit>>();
             for(int i = 0; i < System.Enum.GetNames(typeof(UnitClassType)).Length - 2; i++) {
@@ -147,7 +149,7 @@
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(true);
-            this.playerUI.DisplayUI();
+            this.playerUI.Display();
             //this.uiComponent.ShowBanner();
 
             if(this._currentState == PlayerState.ATTACKING) {
@@ -161,7 +163,7 @@
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(false);
             this._castle.castleUI.ResetUI();
-            this._playerUI.HideUI();
+            this._playerUI.Hide();
 
             if(attacking) {
                 this._currentState = PlayerState.ATTACKING;
@@ -191,7 +193,7 @@
             // (For SinglePlayer) Turn the camera off and hide the ui.
             this._playerCamera.gameObject.SetActive(false);
 
-            this._playerUI.HideUI();
+            this._playerUI.Hide();
 
             GameManager.instance.StopPlayTimer();
             GameManager.instance.CheckRound();

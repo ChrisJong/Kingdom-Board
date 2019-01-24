@@ -11,9 +11,10 @@
     using Scriptable;
     using Structure;
     using Player;
+    using System;
 
     [System.Serializable]
-    public class CastleUI : ScreenSpace {
+    public class CastleUI : UIBase {
 
         #region INFO_UI
 
@@ -21,6 +22,15 @@
         [SerializeField] private GameObject _healthGroup;
         private TextMeshProUGUI _healthText;
         private RectTransform _healthBarTransform;
+
+        [SerializeField] private GameObject _hoverUI = null;
+        [SerializeField] private RectTransform _hoverUITransform = null;
+        [SerializeField] private Canvas _hoverUICanvas = null;
+        [SerializeField] private RectTransform _hoverHealthBarTransform = null;
+
+        [SerializeField] private bool _hoverTrigger = false;
+
+        public bool HoverTrigger { get { return this._hoverTrigger; } }
 
         #endregion
 
@@ -85,7 +95,18 @@
             this._infomationGroup = this._controller.playerUI.structureUIGroup;
             this._healthGroup = this._infomationGroup.transform.Find("BG").Find("Health").gameObject;
             this._healthBarTransform = this._healthGroup.transform.Find("Bar").transform as RectTransform;
+
+            Debug.Log("Health Bar Size Delta: " + this._healthBarTransform.sizeDelta.ToString());
+            Debug.Log("Health Bar Rect: " + this._healthBarTransform.rect.ToString());
+
             this._healthText = this._healthGroup.transform.Find("Text").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
+            if(this._hoverUI == null) {
+                this._hoverUI = this.transform.Find("_UIHover").gameObject;
+                this._hoverUICanvas = this._hoverUI.GetComponent<Canvas>() as Canvas;
+                this._hoverUITransform = this._hoverUI.transform as RectTransform;
+            }
+            this._hoverUICanvas.worldCamera = controller.playerCamera.mainCamera;
+            this._hoverUI.SetActive(false);
 
             this._panelAnimation = this.MoveTrainingPanel();
             this._spawnGroup = this._controller.playerUI.spawnGroup.transform as RectTransform;
@@ -105,10 +126,16 @@
 
             this.GenerateSpawnListButtons();
 
-            this.HideUI();
+            this.Hide();
         }
 
-        public override void DisplayUI() {
+        public override void Return() {
+            this._hoverUICanvas.worldCamera = null;
+
+            base.Return();
+        }
+
+        public override void Display() {
             if(!this._spawnGroupToggle)
                 this.ToggleSpawnGroup(true);
 
@@ -116,7 +143,7 @@
             this._infomationGroup.SetActive(true);
         }
 
-        public override void HideUI() {
+        public override void Hide() {
 
             if(this._spawnGroupToggle)
                 this.ToggleSpawnGroup(false);
@@ -127,12 +154,18 @@
         }
 
         public override void OnEnter() {
-            this.UpdateUI();
-            this._infomationGroup.SetActive(true);
+        }
+
+        public override void OnEnter(Player controller) {
+
+            this.UpdateHoverUI();
+            this._hoverUI.SetActive(true);
         }
 
         public override void OnExit() {
-            this._infomationGroup.SetActive(false);
+
+            this._hoverUI.SetActive(false);
+            //this._infomationGroup.SetActive(false);
         }
 
         public override void ResetUI() {
@@ -144,9 +177,16 @@
             // information Group
             float healthBarWidth = 290.0f; // Stored Width of the health Bar.
             float newHealth = healthBarWidth * (this._castle.CurrentHealth / this._castle.MaxHealth);
-            Vector2 newRect = new Vector2(newHealth, this._healthBarTransform.rect.height);
+            Vector2 newRect = new Vector2(newHealth, this._healthBarTransform.sizeDelta.y);
             this._healthBarTransform.sizeDelta = newRect;
             this._healthText.text = this._castle.CurrentHealth.ToString() + " / " + this._castle.MaxHealth.ToString();
+        }
+
+        public void UpdateHoverUI() {
+            float healthBarWidth = 4.0f;
+            float newHeatlh = healthBarWidth * (this._castle.CurrentHealth / this._castle.MaxHealth);
+            Vector2 newRect = new Vector2(newHeatlh, this._hoverHealthBarTransform.sizeDelta.y);
+            this._hoverHealthBarTransform.sizeDelta = newRect;
         }
 
         public void AddToQueue(UnitScriptable unitData, SpawnQueueType queueType) {
@@ -246,7 +286,7 @@
                     RectTransform rect = go.transform as RectTransform;
 
                     go.name = unit.unitType.ToString() + "_BTN";
-                    btn.Init(this._castle, unit, false);
+                    btn.Init(this._castle, unit, Constants.GlobalSettings.Debugging.lockedTraining);
 
                     this._trainListButtons.Add(btn);
 

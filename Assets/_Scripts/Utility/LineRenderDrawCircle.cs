@@ -14,8 +14,6 @@
         [Range(0, 5)]
         public float width = 0.1f;
         public Color lineColour = new Color(0.0f, 1.0f, 0.0f, 1.0f);
-        
-        public LineRenderer LineRender { get; private set; }
 
         private void Awake() {
             this.Init();
@@ -24,21 +22,20 @@
         }
 
         public override void Init() {
-            this.LineRender = this.gameObject.GetComponent<LineRenderer>() as LineRenderer;
-            this.LineRender.material = new Material(Shader.Find("Particles/Standard Unlit"));
+            base.Init();
 
-            this.LineRender.startColor = this.lineColour;
-            this.LineRender.endColor = this.lineColour;
+            this.lineRenderer.startColor = this.lineColour;
+            this.lineRenderer.endColor = this.lineColour;
 
-            this.LineRender.startWidth = this.width;
-            this.LineRender.endWidth = this.width;
+            this.lineRenderer.startWidth = this.width;
+            this.lineRenderer.endWidth = this.width;
 
-            this.LineRender.positionCount = (this.segments + 1);
-            this.LineRender.useWorldSpace = false;
+            this.lineRenderer.positionCount = (this.segments + 1);
+            this.lineRenderer.useWorldSpace = false;
 
-            this.LineRender.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            this.LineRender.receiveShadows = false;
-            this.LineRender.allowOcclusionWhenDynamic = false;
+            this.lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            this.lineRenderer.receiveShadows = false;
+            this.lineRenderer.allowOcclusionWhenDynamic = false;
         }
 
         public override void Draw() {
@@ -52,7 +49,7 @@
                 x = Mathf.Sin(Mathf.Deg2Rad * angle) * xRadius;
                 z = Mathf.Cos(Mathf.Deg2Rad * angle) * yRadius;
 
-                this.LineRender.SetPosition(i, new Vector3(x, 0, z));
+                this.lineRenderer.SetPosition(i, new Vector3(x, 0, z));
 
                 angle += (360f / segments);
             }
@@ -73,8 +70,8 @@
             this.segments = segments;
 
             this.lineColour = Color.white;
-            this.LineRender.startColor = this.lineColour;
-            this.LineRender.endColor = this.lineColour;
+            this.lineRenderer.startColor = this.lineColour;
+            this.lineRenderer.endColor = this.lineColour;
 
             this.Draw();
         }
@@ -86,14 +83,15 @@
             this.segments = segments;
 
             this.lineColour = color;
-            this.LineRender.startColor = this.lineColour;
-            this.LineRender.endColor = this.lineColour;
+            this.lineRenderer.startColor = this.lineColour;
+            this.lineRenderer.endColor = this.lineColour;
 
             this.Draw();
         }
 
         public void DrawAttackRadius(float radius, float width = 0.1f, int segments = 128) {
             this.DrawRadius(Color.red, radius, width, segments);
+            this.TurnOn();
         }
 
         public void DrawMoveRadius(float radius, float width = 0.1f, int segments = 128) {
@@ -121,9 +119,17 @@
             // Top Left
             positions[3] = new Vector3(min.x - distance, min.y, max.z + distance);
 
-            this.LineRender.SetPositions(positions);
+            this.lineRenderer.SetPositions(positions);
 
         }
+
+        public void Move(Vector3 point) {
+            this._transform.position = point;
+        }
+
+        public void MoveToOrigin() {
+            this._transform.localPosition = Vector3.zero;
+        } 
 
         public void UpdateRadius(float radius = 10.0f) {
             this.xRadius = radius;

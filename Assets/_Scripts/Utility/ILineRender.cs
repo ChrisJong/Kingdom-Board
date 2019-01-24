@@ -4,7 +4,7 @@
 
     public interface ILineRender {
 
-        LineRenderer LineScript { get; set; }
+        LineRenderer lineRenderer { get; }
 
         void Init();
         void Draw();

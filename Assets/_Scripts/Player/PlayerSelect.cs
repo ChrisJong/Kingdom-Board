@@ -20,22 +20,27 @@
 
         private bool _selected = false;
 
-        private SelectionState _currentState = SelectionState.NONE;
-        private SelectionState _previousState = SelectionState.NONE;
+        [SerializeField] private SelectionState _currentState = SelectionState.NONE;
+        [SerializeField] private SelectionState _previousState = SelectionState.NONE;
 
-        private EntityType _selectedEntity = EntityType.NONE;
+        [SerializeField] private EntityType _currentSelectedEntity = EntityType.NONE;
 
+        [Space]
         [SerializeField] private HasHealthBase _currentSelected = null;
         [SerializeField] private HasHealthBase _previousSelected = null;
         [SerializeField] private HasHealthBase _currentHover = null;
         [SerializeField] private HasHealthBase _previousHover = null;
 
-        [SerializeField] private HasHealthBase _targetSelected = null;
+        [SerializeField] private UnitBase _currentUnitSelected = null; // _currentSelectted is type of Unit.
+        [SerializeField] private StructureBase _currentStructureSelected = null; // _currentselected is type of structure.
 
+        [Space]
+        [SerializeField] private HasHealthBase _targetSelected = null;
         [SerializeField] private Vector3 _moveTo = Vector3.zero;
 
-        private Camera _camera;
-        private Player _controller;
+        private Camera _camera = null;
+        private Player _controller = null;
+        private Human _humanController = null;
 
         private Ray _ray;
         private RaycastHit _hitInfo;
@@ -65,12 +70,14 @@
                 }
             }
 
+            if(player.GetType() == typeof(Human))
+                this._humanController = player as Human;
             this._controller = player;
         }
 
         public void EndTurn() {
             if(this._currentSelected != null)
-                this._currentSelected.uiBase.HideUI();
+                this._currentSelected.uiBase.Hide();
 
             if(this._currentHover != null)
                 this._currentHover.uiBase.OnExit();
@@ -81,7 +88,12 @@
             this._previousHover = null;
         }
 
-        public Vector3 GetCurrentPointOnGround() {
+        private void UpdatePlayerSelect() {
+            Debug.DrawRay(this._ray.origin, this._ray.direction * this._rayDistance, Color.yellow);
+            this.MouseSelection();
+        }
+
+        private Vector3 GetCurrentPointOnGround() {
             Vector3 coord = Vector3.zero;
             Ray ray = this._camera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
@@ -93,20 +105,37 @@
             return coord;
         }
 
-        private void UpdatePlayerSelect() {
-            Debug.DrawRay(this._ray.origin, this._ray.direction * this._rayDistance, Color.yellow);
-            this.MouseSelection();
-        }
-
-        private bool CastRayToWorld(LayerMask mask) {
+        private bool CastRayToWorld() {
             this._ray = this._camera.ScreenPointToRay(Input.mousePosition);
 
-            Debug.DrawRay(this._ray.origin, this._ray.direction * this._rayDistance, Color.red);
+            //Debug.DrawRay(this._ray.origin, this._ray.direction * this._rayDistance, Color.blue);
 
             if(EventSystem.current.IsPointerOverGameObject())
                 return false;
 
-            return Physics.Raycast(this._ray, out this._hitInfo, this._rayDistance, ~(mask));
+            return Physics.Raycast(this._ray, out this._hitInfo, this._rayDistance);
+        }
+
+        private bool CastRayToWorldToMask(LayerMask mask) {
+            this._ray = this._camera.ScreenPointToRay(Input.mousePosition);
+
+            //Debug.DrawRay(this._ray.origin, this._ray.direction * this._rayDistance, Color.red);
+
+            if(EventSystem.current.IsPointerOverGameObject())
+                return false;
+
+            return Physics.Raycast(this._ray, out this._hitInfo, this._rayDistance, mask);
+        }
+
+        private bool CastRayToWorldIgnoreMask(LayerMask ignoreMask) {
+            this._ray = this._camera.ScreenPointToRay(Input.mousePosition);
+
+            //Debug.DrawRay(this._ray.origin, this._ray.direction * this._rayDistance, Color.red);
+
+            if(EventSystem.current.IsPointerOverGameObject())
+                return false;
+
+            return Physics.Raycast(this._ray, out this._hitInfo, this._rayDistance, ~(ignoreMask));
         }
 
         private void MouseSelection() {
@@ -148,51 +177,58 @@
                     if(this._controller.castle.castleUI.SpawnGroupToggle)
                         this._controller.castle.castleUI.ToggleSpawnGroup(false);
 
-                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer))
+                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer))
                     this.Selection();
 
-            } else if(Input.GetMouseButtonUp(1)) { // Right M ouse Click
+            } else if(Input.GetMouseButtonUp(1)) { // Right Mouse Click
 
                 if(!EventSystem.current.IsPointerOverGameObject())
                     if(this._controller.castle.castleUI.SpawnGroupToggle)
                         this._controller.castle.castleUI.ToggleSpawnGroup(false);
 
-                this.Deselection();
-            } else {
-                this.HoverSelect();
-            }
+            } else
+                this.FreeHover();
         }
 
         private void StandbyState() {
+
             if(Input.GetMouseButtonUp(1)) { // Right Click.
 
                 if(!EventSystem.current.IsPointerOverGameObject())
                     if(this._controller.castle.castleUI.SpawnGroupToggle)
                         this._controller.castle.castleUI.ToggleSpawnGroup(false);
 
-                // Castle Spawn Checks
-                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
-                    if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
-                        HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
+                // Cast A Ray Ignoring the ground layer.
+                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
 
-                        if(temp.controller.id == this._controller.id) {
-                            if(temp.GetType() == typeof(Castle))
-                                if(!this._controller.castle.castleUI.SpawnGroupToggle)
-                                    ((CastleUI)temp.uiBase).ToggleSpawnGroup(true);
-                        }
+                    HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
+
+                    // Hit Either a unit or structure
+                    if(temp != null) {
+
+                    }
+
+                } else {
+                    // Hit nothing but air, soo check for the ground.
+                    if(this._currentSelectedEntity == EntityType.UNIT) {
+
+                        if(this.CastRayToWorldToMask(GlobalSettings.LayerValues.groundLayer))
+                            this._currentUnitSelected.Move();
+
                     }
                 }
 
-                if(this._selectedEntity == EntityType.UNIT) {
 
-                } else if(this._selectedEntity == EntityType.STRUCTURE) {
+                /*if(this._currentSelectedEntity == EntityType.UNIT) {
+
+
+
+                } else if(this._currentSelectedEntity == EntityType.STRUCTURE) {
 
                 } else {
                     Debug.LogError("No Such Entity Type For the Current Selection Exsists, " + this._currentSelected.entityType.ToString());
                     throw new System.ArgumentNullException("No Such Entity Type For the Current Selection Exsists, " + this._currentSelected.entityType.ToString());
-                }
-
-                Debug.Log("Selecting Point Or Unit");
+                }*/
 
             } else if(Input.GetMouseButtonUp(0)) { // Left Click. (De-Selection)
 
@@ -200,16 +236,19 @@
                     if(this._controller.castle.castleUI.SpawnGroupToggle)
                         this._controller.castle.castleUI.ToggleSpawnGroup(false);
 
-                this.Deselection();
+                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer))
+                    this.Selection();
+                else
+                    this.Deselection();
 
             } else {
-                //this.HoverSelect();
+                this.StandbyHover();
             }
         }
 
         private void SelectPoint() {
             if(Input.GetMouseButtonUp(0)) {
-                if(this.CastRayToWorld(GlobalSettings.LayerValues.unitLayer)) {
+                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.unitLayer)) {
 
                     if(this._currentSelected is ISelected) {
                         if(!(this._currentSelected as ISelected).SetPoint(this._hitInfo.point)) {
@@ -225,7 +264,7 @@
 
         private void SelectTarget() {
             if(Input.GetMouseButtonUp(0)) {
-                if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
+                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
                     if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
                         _targetSelected = this._hitInfo.transform.GetComponent<HasHealthBase>();
 
@@ -263,7 +302,7 @@
         private void SelectSpawnPoint() {
             if(Input.GetMouseButtonUp(0)) { // Left Click!
 
-                if(this.CastRayToWorld(GlobalSettings.LayerValues.unitLayer)) {
+                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.unitLayer)) {
 
                     if(this._controller.castle != null) {
 
@@ -295,9 +334,12 @@
 
         private void Selection() {
             if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
-                var temp = this._hitInfo.transform.GetComponent<HasHealthBase>();
+                 HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>();
 
                 if(this._controller.CurrentState == PlayerState.DEFENDING && temp.entityType == EntityType.UNIT)
+                    return;
+
+                if(temp.IsEnemy(this._controller))
                     return;
 
                 if(temp.entityType == EntityType.UNIT) {
@@ -306,19 +348,29 @@
                 }
 
                 if(temp.controller.id == this._controller.id) {
+
                     if(this._currentSelected != null && !temp.Equals(this._currentSelected)) {
                         this._previousSelected = this._currentSelected;
-                        this._previousSelected.uiBase.HideUI();
+                        this._previousSelected.uiBase.Hide();
                     }
 
                     this._currentSelected = temp;
-                    this._currentSelected.uiBase.DisplayUI();
+                    this._currentSelected.uiBase.Display();
+                    this._currentSelectedEntity = temp.entityType;
+
+                    if(this._currentSelectedEntity == EntityType.UNIT) {
+                        this._currentStructureSelected = null;
+                        this._currentUnitSelected = this._currentSelected as UnitBase;
+                    } else if(this._currentSelectedEntity == EntityType.STRUCTURE) {
+                        this._currentUnitSelected = null;
+                        this._currentStructureSelected = this._currentSelected as StructureBase;
+                    }
 
                     this._previousState = this._currentState;
                     this._currentState = SelectionState.STANDBY;
-                    this._selectedEntity = temp.entityType;
                     this._selected = true;
                 }
+
             } else {
                 Debug.LogWarning(this._hitInfo.transform.name + " Doesn't Derive From HasHealthBase Class.");
             }
@@ -328,36 +380,162 @@
             if(!EventSystem.current.IsPointerOverGameObject()) {
                 if(this._currentSelected != null) {
                     this._previousSelected = this._currentSelected;
-                    this._currentSelected.uiBase.HideUI(); // Hide UI;
+                    this._currentSelected.uiBase.Hide(); // Hide UI;
                     this._currentSelected = null;
                 }
+
+                this._currentUnitSelected = null;
+                this._currentStructureSelected = null;
 
                 this._previousState = this._currentState;
                 this._currentState = SelectionState.FREE;
                 this._selected = false;
+
+                if(this._controller.GetType() == typeof(Human))
+                    ((Human)this._controller).playerCursor.SetDefault();
             }
         }
 
-        private void HoverSelect() {
-            if(this.CastRayToWorld(GlobalSettings.LayerValues.groundLayer)) {
-                if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
-                    if(this._currentHover != null) {
+        private void StandbyHover() {
 
-                        HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
+            if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
+
+                HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
+
+                // Currently hovering over a unit or structure.
+                if(temp != null) {
+
+                    if(this._currentHover != null) {
 
                         if(this._currentHover == temp)
                             return;
 
                         this._previousHover = this._currentHover;
                         this._previousHover.uiBase.OnExit();
-                        this._currentHover = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
-                        this._currentHover.uiBase.OnEnter();
+                        this._currentHover = temp;
+                        this._currentHover.uiBase.OnEnter(this._controller);
                     } else {
-                        this._currentHover = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
-                        this._currentHover.uiBase.OnEnter();
+                        this._currentHover = temp;
+                        this._currentHover.uiBase.OnEnter(this._controller);
+                    }
+
+                    // Current Hover is over Enemy.
+                    if(this._currentHover.IsEnemy(this._controller)) {
+
+                        if(this._currentSelectedEntity == EntityType.UNIT) {
+
+                            if(this._currentUnitSelected.CanAttack) {
+                                if(this._humanController != null)
+                                    this._humanController.playerCursor.SetAttackReady();
+
+                                if(this._currentUnitSelected.CanMove) {
+
+                                    //Debug.Log("Move Point : " + this._currentHover.transform.position.ToString());
+                                    this._currentUnitSelected.SetTarget(this._currentHover);
+
+                                } else if(this._currentUnitSelected.IsMoving) {
+
+                                    if(this._humanController != null)
+                                        this._humanController.playerCursor.SetDefault();
+
+                                    this._currentUnitSelected.unitUI.DisableMovePath();
+
+                                } else {
+                                    this._currentUnitSelected.SetTarget(this._currentHover);
+                                }
+
+                            } else {
+                                if(this._humanController != null)
+                                    this._humanController.playerCursor.SetAttackNotReady();
+                            }
+
+                        }
+
+                    } else { // Current Hover is over Ally.
+
+                        if(this._currentHover.entityType == EntityType.UNIT) {
+
+                            UnitBase tempUnit = this._currentHover as UnitBase;
+
+                            if(this._humanController != null)
+                                this._humanController.playerCursor.SetDefault();
+
+                            // If the CurrentSElected Unit is a Cleric Then change the cursor to healing.
+                            if(tempUnit.unitType == UnitType.CLERIC) {
+
+                            }
+
+                        }
+
                     }
                 }
+
             } else {
+                // If im currently just hitting anything other than units or structures e.g. hitting the ground.
+                if(this._currentSelectedEntity == EntityType.UNIT) {
+
+                    this._currentUnitSelected.unitUI.DisableAttackRadius();
+
+                    if(this._currentUnitSelected.CanMove) {
+
+                        if(this._humanController != null)
+                            this._humanController.playerCursor.SetMoveReady();
+
+                        //Debug.Log("Move Point : " + this.GetCurrentPointOnGround().ToString());
+                        this._currentUnitSelected.SetPoint(this.GetCurrentPointOnGround());
+
+                    } else if(this._currentUnitSelected.IsMoving) {
+                        if(this._humanController != null)
+                            this._humanController.playerCursor.SetDefault();
+
+                        this._currentUnitSelected.unitUI.DisableMovePath();
+
+                    } else {
+                        if(this._humanController != null)
+                            this._humanController.playerCursor.SetMoveNotReady();
+
+                        this._currentUnitSelected.unitUI.DisableMovePath();
+                    }
+
+                } else {
+
+                    if(this._humanController != null)
+                        this._humanController.playerCursor.SetDefault();
+                }
+
+                if(this._currentHover != null) {
+                    this._previousHover = this._currentHover;
+                    this._previousHover.uiBase.OnExit();
+                }
+
+                this._currentHover = null;
+            }
+        }
+
+        private void FreeHover() {
+            if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
+
+                if(this._hitInfo.transform.GetComponent<HasHealthBase>() != null) {
+
+                    HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
+
+                    if(this._currentHover != null) {
+
+                        if(this._currentHover == temp)
+                            return;
+
+                        this._previousHover = this._currentHover;
+                        this._previousHover.uiBase.OnExit();
+                        this._currentHover = temp;
+                        this._currentHover.uiBase.OnEnter(this._controller);
+                    } else {
+                        this._currentHover = temp;
+                        this._currentHover.uiBase.OnEnter(this._controller);
+                    }
+                }
+
+            } else {
+
                 if(this._currentHover != null) {
                     this._previousHover = this._currentHover;
                     this._previousHover.uiBase.OnExit();

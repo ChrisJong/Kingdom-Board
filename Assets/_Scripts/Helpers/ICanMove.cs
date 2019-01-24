@@ -10,6 +10,7 @@
 
         Enum.MovementType moveType { get; }
 
+        void Move();
         void MoveTo(Vector3 dest);
         void StopMoving();
         void LookAt(Vector3 pos);

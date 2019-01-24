@@ -8,6 +8,8 @@
     [System.Serializable]
     public class PlayerCursor : MonoBehaviour {
 
+        [SerializeField] private Texture2D _currentCursor = null;
+
         [SerializeField] private Texture2D _default;
         [SerializeField] private Texture2D _selection;
         [SerializeField] private Texture2D _moveReady;
@@ -20,22 +22,56 @@
         [SerializeField] private Vector3 _hotSpot = Vector3.zero;
 
         public void SetDefault() {
+
+            if(this._currentCursor == this._default)
+                return;
+
+            this._currentCursor = this._default;
             Cursor.SetCursor(this._default, this._hotSpot, this._mode);
         }
 
+        public void SetSelection() {
+
+            if(this._currentCursor == this._selection)
+                return;
+
+            this._currentCursor = this._selection;
+            Cursor.SetCursor(this._selection, this._hotSpot, this._mode);
+        }
+
         public void SetMoveReady() {
+
+            if(this._currentCursor == this._moveReady)
+                return;
+
+            this._currentCursor = this._moveReady;
             Cursor.SetCursor(this._moveReady, this._hotSpot, this._mode);
         }
 
         public void SetMoveNotReady() {
+
+            if(this._currentCursor == this._moveNotReady)
+                return;
+
+            this._currentCursor = this._moveNotReady;
             Cursor.SetCursor(this._moveNotReady, this._hotSpot, this._mode);
         }
 
         public void SetAttackReady() {
+
+            if(this._currentCursor == this._attackReady)
+                return;
+
+            this._currentCursor = this._attackReady;
             Cursor.SetCursor(this._attackReady, this._hotSpot, this._mode);
         }
 
         public void SetAttackNotReady() {
+
+            if(this._currentCursor == this._attackNotReady)
+                return;
+
+            this._currentCursor = this._attackNotReady;
             Cursor.SetCursor(this._attackNotReady, this._hotSpot, this._mode);
         }
     }

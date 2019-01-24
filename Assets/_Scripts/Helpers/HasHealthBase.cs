@@ -106,8 +106,19 @@
             return ReferenceEquals(this.controller, other.controller);
         }
 
+        public virtual bool IsAlly(Player controller) {
+            if(this._controller.id == controller.id)
+                return true;
+            else
+                return false;
+        }
+
         public virtual bool IsEnemy(IHasHealth other) {
             return !this.IsAlly(other);
+        }
+
+        public virtual bool IsEnemy(Player controller) {
+            return !this.IsAlly(controller);
         }
         #endregion
     }

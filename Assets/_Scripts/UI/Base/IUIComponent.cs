@@ -9,9 +9,12 @@
 
         void Setup();
         void Init(Player controller);
-        void DisplayUI();
-        void HideUI();
+        void Return();
+
+        void Display();
+        void Hide();
         void OnEnter();
+        void OnEnter(Player controller);
         void OnExit();
         void ResetUI();
         void UpdateUI();

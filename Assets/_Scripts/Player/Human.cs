@@ -17,6 +17,12 @@
 
         #region CLASS
 
+        public override void EndTurn() {
+            this._playerCursor.SetDefault();
+
+            base.EndTurn();
+        }
+
         public override void Create(Transform spawnLocation, uint id = 0) {
 
             if(this._playerCursor == null)
@@ -31,9 +37,10 @@
                 this._playerUI = this.gameObject.AddComponent<PlayerUI>();
 
             this._playerUI.Setup();
-            this._playerUI.Init(this);
 
             base.Create(spawnLocation, id);
+
+            this._playerUI.Init(this);
         }
 
         public override void UpdatePlayer() {

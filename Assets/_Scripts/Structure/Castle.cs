@@ -51,6 +51,12 @@
             this.radiusDrawer.SetActive(false);
         }
 
+        public override void Init() {
+            this.castleUI.Return();
+
+            base.Init();
+        }
+
         public override bool SetPoint(Vector3 point) {
             Vector3 position = Vector3.zero;
 

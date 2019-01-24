@@ -46,11 +46,17 @@
             this._controller = controller;
         }
 
-        public abstract void DisplayUI();
+        public virtual void Return() {
+            this._controller = null;
+        }
 
-        public abstract void HideUI();
+        public abstract void Display();
+
+        public abstract void Hide();
 
         public abstract void OnEnter();
+
+        public abstract void OnEnter(Player controller);
 
         public abstract void OnExit();
 

@@ -54,16 +54,4 @@
         ATTACK,
         STAMINA
     }
-
-    public enum UnitUpgrade { // To Remove
-        NONE = 0,
-        ANY = ~0,
-        HEALTH = 1,
-        ATTACK = 2,
-        STAMINA = 3,
-        ATTACK_AOE,
-        SPLASH_AOE,
-        HEALING_ATTACK,
-        HEALING_AOE
-    }
 }

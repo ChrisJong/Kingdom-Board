@@ -25,9 +25,6 @@
 
             this.Controller.playerSelect.CurrentState = SelectionState.FREE;
 
-            unitScript.FinishHealing();
-            unitScript.radiusDrawer.TurnOff();
-
             this.ResetUI();
         }
 
@@ -44,7 +41,6 @@
                 this.ResetUI();
                 this._healing = false;
                 this.Controller.playerSelect.CurrentState = SelectionState.FREE;
-                this._unitBase.radiusDrawer.TurnOff();
             }
         }
 

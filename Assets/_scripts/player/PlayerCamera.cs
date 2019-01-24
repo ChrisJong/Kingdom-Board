@@ -9,14 +9,13 @@
     public class PlayerCamera : MonoBehaviour {
 
         #region VARIABLE
-        public uint playerID { private set; get; }
-
         private bool _enableFixedUpdate = false;
 
-        private Player _player;
+        private Player _controller;
         private LayerMask _groundMask = 1 << 11;
-        private Transform _transform;
+        [SerializeField] private Transform _transform;
         private Camera _camera;
+        public Camera mainCamera { get { return this._camera; } }
 
         // SPEED
         private float _keyboardSpeed = 25.0f;
@@ -112,9 +111,6 @@
 
         #region UNITY
         private void Start() {
-            this._transform = this.transform;
-            this._camera = this.GetComponent<Camera>() as Camera;
-
             this._transform.rotation = Quaternion.Euler(this._cameraAngle, this._transform.eulerAngles.y, this._transform.eulerAngles.z);
         }
 
@@ -131,6 +127,14 @@
         #endregion
 
         #region CLASS
+        public void Init(Player controller) {
+            this._controller = controller;
+            this._transform = this.transform;
+            this._camera = this.GetComponent<Camera>() as Camera;
+
+            this._transform.rotation = Quaternion.Euler(this._cameraAngle, this._transform.eulerAngles.y, this._transform.eulerAngles.z);
+        }
+
         private void CameraUpdate() {
             this.MoveCamera();
             //this.HeightCalculation();
@@ -230,7 +234,7 @@
             // NOTE: Used for IPointerHandlers for Shape Colliders, Doesn't actually work at the moment cause it collides with the Phyiscs Raycast in the Player Select Script.
             //tempCamera.AddComponent<UnityEngine.EventSystems.PhysicsRaycaster>();
 
-            tempCamera.AddComponent<PlayerCamera>().playerID = p.id;
+            tempCamera.AddComponent<PlayerCamera>().Init(p);
             tempCamera.AddComponent<PlayerSelect>().Init(p);
 
             tempCamera.transform.parent = p.transform;

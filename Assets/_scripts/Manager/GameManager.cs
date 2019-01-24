@@ -42,13 +42,15 @@
         #endregion
 
         #region UNITY
-        protected override void Awake() {
-            base.Awake();
-
-            this.FindSpawnPoints();
-        }
-
         private void Start() {
+            this.Init();
+        }
+        #endregion
+
+        #region CLASS
+        public override void Init() {
+            this.FindSpawnPoints();
+
             this._countdown = this._countdownLimit;
             this._timer = this.StartCountdown();
 
@@ -57,12 +59,6 @@
             this._roundCount++;
             Debug.Log("Round: " + RoundCount.ToString());
             this.NewRound();
-        }
-        #endregion
-
-        #region CLASS
-        public override void Init() {
-            throw new NotImplementedException();
         }
 
         public void CheckRound() {
