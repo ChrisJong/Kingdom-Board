@@ -587,7 +587,7 @@ NavMeshAgent:
   m_Radius: 0.55
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 21
+  avoidancePriority: 3
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -625,6 +625,27 @@ MonoBehaviour:
   _selectedTrigger: 0
   _unitBase: {fileID: 114461530362679216}
   _renderers:
+  - {fileID: 137812264144341652}
+  - {fileID: 137765277862213550}
+  - {fileID: 23793071504501622}
+  - {fileID: 137812264144341652}
+  - {fileID: 137765277862213550}
+  - {fileID: 23793071504501622}
+  - {fileID: 137812264144341652}
+  - {fileID: 137765277862213550}
+  - {fileID: 23793071504501622}
+  - {fileID: 137812264144341652}
+  - {fileID: 137765277862213550}
+  - {fileID: 23793071504501622}
+  - {fileID: 137812264144341652}
+  - {fileID: 137765277862213550}
+  - {fileID: 23793071504501622}
+  - {fileID: 137812264144341652}
+  - {fileID: 137765277862213550}
+  - {fileID: 23793071504501622}
+  - {fileID: 137812264144341652}
+  - {fileID: 137765277862213550}
+  - {fileID: 23793071504501622}
   - {fileID: 137812264144341652}
   - {fileID: 137765277862213550}
   - {fileID: 23793071504501622}
@@ -734,6 +755,27 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 873f693cb66fea449ba336ec8742d9f3, type: 2}
   - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
   - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 873f693cb66fea449ba336ec8742d9f3, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 873f693cb66fea449ba336ec8742d9f3, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 873f693cb66fea449ba336ec8742d9f3, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 873f693cb66fea449ba336ec8742d9f3, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 873f693cb66fea449ba336ec8742d9f3, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 873f693cb66fea449ba336ec8742d9f3, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 873f693cb66fea449ba336ec8742d9f3, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
   _btnHeal: {fileID: 0}
 --- !u!114 &114461530362679216
 MonoBehaviour:
@@ -755,7 +797,9 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 2d897e3b8ccf0fa419160c84b5b334fb, type: 2}
   _classType: 3
   _unitType: 5
-  _unitState: 0
+  _previousState: 0
+  _currentState: 0
+  _nextState: 0
   _moveType: 1
   _attackType: 2
   _resistanceType: 1
@@ -772,8 +816,8 @@ MonoBehaviour:
   _resistanceMultiplier: 0.5
   _weaknessMultiplier: 2
   _canAttack: 1
-  _projectileReleasePoint: {fileID: 0}
-  _projectilePrefan: {fileID: 1536442397987964, guid: 37d6cc4c6c3283c4586d7389b01fad37,
+  _projectileReleasePoint: {fileID: 4654050492524484}
+  _projectilePrefab: {fileID: 1536442397987964, guid: 37d6cc4c6c3283c4586d7389b01fad37,
     type: 3}
   _endOfAttackClipTime: 0.542
   _explosionRadius: 10
@@ -3751,7 +3795,7 @@ GameObject:
   - component: {fileID: 4654050492524484}
   m_Layer: 0
   m_Name: releasePoint
-  m_TagString: Untagged
+  m_TagString: ReleasePoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4686,7 +4730,7 @@ PrefabInstance:
     - target: {fileID: 8314535118023709677, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8314535118023709677, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}

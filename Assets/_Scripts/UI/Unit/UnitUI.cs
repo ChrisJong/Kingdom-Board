@@ -266,20 +266,6 @@
 
 
 
-
-
-        protected void InitiateAttack() {
-        }
-
-        protected void InitiateMove() {
-        }
-
-        public virtual void FinishMove() {
-        }
-
-        public virtual void FinishAttack() {
-        }
-
         protected virtual void Cancel() {
         }
 

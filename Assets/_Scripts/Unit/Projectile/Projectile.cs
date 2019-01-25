@@ -16,6 +16,7 @@
         private IHasHealth _target;
         private Vector3 _targetPosition;
 
+        private Collider _targetCollider;
         private Collider _collider;
         private Rigidbody _rigidbody;
         private Transform _transform;
@@ -48,6 +49,7 @@
             if(otherHasHealth != this._target)
                 return;
             else {
+                Debug.Log("Hit Target");
                 this.FinishCollision();
             }
         }
@@ -61,14 +63,14 @@
         public void SetupTarget(IHasHealth origin, IHasHealth target, Vector3 releasePoint, float speed) {
             //UnityEditor.EditorApplication.isPaused = true;
 
-            Collider targetCollider = target.transform.GetComponent<Collider>();
-            if(targetCollider == null)
+            this._targetCollider = target.transform.GetComponent<Collider>();
+            if(this._targetCollider == null)
                 return;
 
-            if(targetCollider is CapsuleCollider)
-                this._targetPosition = new Vector3(target.position.x, target.position.y + ((CapsuleCollider)targetCollider).center.y, target.position.z);
-            else if(targetCollider is BoxCollider)
-                this._targetPosition = new Vector3(target.position.x, target.position.y + ((BoxCollider)targetCollider).center.y, target.position.z);
+            if(this._targetCollider is CapsuleCollider)
+                this._targetPosition = new Vector3(target.position.x, target.position.y + ((CapsuleCollider)this._targetCollider).center.y, target.position.z);
+            else if(this._targetCollider is BoxCollider)
+                this._targetPosition = new Vector3(target.position.x, target.position.y + ((BoxCollider)this._targetCollider).center.y, target.position.z);
             else
                 this._targetPosition = target.position;
 
@@ -82,6 +84,7 @@
             //this.transform.eulerAngles = new Vector3(0.0f, y);
 
             this._startMoving = true;
+            UnityEditor.EditorApplication.isPaused = true;
         }
 
         protected virtual void UpdateProjectile() {

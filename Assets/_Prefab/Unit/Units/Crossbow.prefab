@@ -939,7 +939,7 @@ NavMeshAgent:
   m_Radius: 0.55
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 38
+  avoidancePriority: 69
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -977,6 +977,27 @@ MonoBehaviour:
   _selectedTrigger: 0
   _unitBase: {fileID: 114329636195953844}
   _renderers:
+  - {fileID: 137779656073146770}
+  - {fileID: 137874493724043822}
+  - {fileID: 23516849948377718}
+  - {fileID: 137779656073146770}
+  - {fileID: 137874493724043822}
+  - {fileID: 23516849948377718}
+  - {fileID: 137779656073146770}
+  - {fileID: 137874493724043822}
+  - {fileID: 23516849948377718}
+  - {fileID: 137779656073146770}
+  - {fileID: 137874493724043822}
+  - {fileID: 23516849948377718}
+  - {fileID: 137779656073146770}
+  - {fileID: 137874493724043822}
+  - {fileID: 23516849948377718}
+  - {fileID: 137779656073146770}
+  - {fileID: 137874493724043822}
+  - {fileID: 23516849948377718}
+  - {fileID: 137779656073146770}
+  - {fileID: 137874493724043822}
+  - {fileID: 23516849948377718}
   - {fileID: 137779656073146770}
   - {fileID: 137874493724043822}
   - {fileID: 23516849948377718}
@@ -1086,6 +1107,27 @@ MonoBehaviour:
   - {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
   - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
   - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: dd6ccbb1165b3154a8667190825897d0, type: 2}
+  - {fileID: 2100000, guid: ff41f6430b29b024d959368d5ce8baa7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
 --- !u!114 &114329636195953844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1106,7 +1148,9 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 0a9e37747ec822044a39af7e784042a1, type: 2}
   _classType: 2
   _unitType: 2
-  _unitState: 0
+  _previousState: 0
+  _currentState: 0
+  _nextState: 0
   _moveType: 1
   _attackType: 3
   _resistanceType: 2
@@ -1123,8 +1167,8 @@ MonoBehaviour:
   _resistanceMultiplier: 0.5
   _weaknessMultiplier: 2
   _canAttack: 1
-  _projectileReleasePoint: {fileID: 0}
-  _projectilePrefan: {fileID: 1897845359850564, guid: c19f75ce600aaa446830a0251f8f8b60,
+  _projectileReleasePoint: {fileID: 4899472032770678}
+  _projectilePrefab: {fileID: 1897845359850564, guid: c19f75ce600aaa446830a0251f8f8b60,
     type: 3}
   _endOfAttackClipTime: 0
   _explosionRadius: 10
@@ -2658,7 +2702,7 @@ GameObject:
   - component: {fileID: 4899472032770678}
   m_Layer: 0
   m_Name: releasePoint
-  m_TagString: Untagged
+  m_TagString: ReleasePoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4417,7 +4461,7 @@ PrefabInstance:
     - target: {fileID: 8314535118023709677, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8314535118023709677, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}

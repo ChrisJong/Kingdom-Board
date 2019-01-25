@@ -24,7 +24,9 @@
 
         [SerializeField] protected UnitClassType _classType = UnitClassType.NONE;
         [SerializeField] protected UnitType _unitType = UnitType.NONE;
-        [SerializeField] protected UnitState _unitState = UnitState.NONE;
+        [SerializeField] protected UnitState _previousState = UnitState.NONE; 
+        [SerializeField] protected UnitState _currentState = UnitState.NONE;
+        [SerializeField] protected UnitState _nextState = UnitState.NONE;
         [SerializeField] protected MovementType _moveType = MovementType.NONE;
         [SerializeField] protected AttackType _attackType = AttackType.NONE;
         //[SerializeField] protected ArmorType _armorType = ArmorType.NONE;
@@ -69,7 +71,7 @@
 
         [SerializeField] protected Transform _projectileReleasePoint = null;
 
-        [SerializeField] protected GameObject _projectilePrefan = null;
+        [SerializeField] protected GameObject _projectilePrefab = null;
 
         [Header("UNIT - ANIMATION")]
         [SerializeField] protected float _endOfAttackClipTime = 0.8f;
@@ -91,7 +93,9 @@
         public override EntityType entityType { get { return EntityType.UNIT; } }
         public UnitClassType classType { get { return this._classType; } }
         public UnitType unitType { get { return this._unitType; } }
-        public UnitState unitState { get { return this._unitState; } set { this._unitState = value; } }
+        public UnitState PreviousState { get { return this._previousState; } }
+        public UnitState CurrentState { get { return this._currentState; } set { this._currentState = value; } }
+        public UnitState NextState { get { return this._nextState; } set { this._nextState = value; } }
         public MovementType moveType { get { return this.moveType; } }
         public AttackType attackType { get { return this._attackType; } }
         //public ArmorType armorType { get { return this._armorType; } }
@@ -136,10 +140,10 @@
 
         public override void Setup() {
 
-            this._projectilePrefan = this._data.projectilePrefab;
+            this._projectilePrefab = this._data.projectilePrefab;
             this._deathPrefab = this._data.deathPrefab;
 
-            this._unitState = UnitState.NONE;
+            this._currentState = UnitState.NONE;
 
             this._classType = this._data.classType;
             this._unitType = this._data.unitType;
@@ -197,7 +201,7 @@
 
             this.uiBase.Init(contoller);
 
-            this._unitState = UnitState.IDLE;
+            this._currentState = UnitState.IDLE;
             this._canAttack = true;
 
             this._currentHealth = this._data.health;
@@ -220,7 +224,7 @@
         public override void Return() {
             this.uiBase.Return();
 
-            this._unitState = UnitState.NONE;
+            this._currentState = UnitState.NONE;
             this._canAttack = false;
 
             this._currentHealth = this._data.health;
@@ -246,7 +250,7 @@
         }
 
         public virtual void NewTurn() {
-            this._unitState = UnitState.IDLE;
+            this._currentState = UnitState.IDLE;
             this._canAttack = true;
             this._lastPosition = this.position;
 
@@ -296,14 +300,14 @@
 
             this._currentTarget = target;
 
-            float distance = Vector3.Distance(this.position, this._currentTarget.position) - this._unitRadius;
+            float distance = Vector3.Distance(this.position, this._currentTarget.position) - (this._unitRadius - ((UnitBase)target).UnitRadius);
+
             this.unitUI.EnableAttackRadius();
 
             Debug.Log("Distance to Enemy: " + distance.ToString());
 
             if(distance > this._attackRange) {
                 this.unitUI.EnableMovePathToTarget(target.position);
-                Debug.Log("Set Move and Attacl");
             } else {
 
                 if(this._currentPoint.HasValue) {
@@ -337,6 +341,94 @@
                 this._maxEnergy += value;
                 break;
             }
+        }
+
+        public virtual void InitiateMove() {
+
+            if(this.IsMoving || this._currentEnergy <= 0.0f)
+                return;
+
+            if(this._unitPathing.status == NavMeshPathStatus.PathInvalid || this._unitPathing.status == NavMeshPathStatus.PathPartial)
+                return;
+
+            if(!this._hasStamina)
+                this._currentEnergy = 0.0f;
+            else
+                this._currentEnergy = this._staminaToUse;
+
+            this.StopMoving();
+
+            NavMeshPath path = new NavMeshPath();
+
+            this._navMeshAgent.CalculatePath(this._currentPoint.Value, path);
+            this._navMeshAgent.SetPath(path);
+            this._unitPathing = path;
+
+            this._navMeshAgent.SetPath(this._unitPathing);
+
+            if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
+                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+
+                if(float.IsInfinity(_initialMovementDistance)) {
+                    Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method: Corners - " + this._navMeshAgent.path.corners.Length.ToString());
+                    float finalDistance = 0;
+                    Vector3[] corners = this._navMeshAgent.path.corners;
+
+                    for(int i = 0; i < corners.Length - 1; ++i)
+                        finalDistance += Mathf.Abs((corners[i] - corners[i + 1]).magnitude);
+
+                    this._initialMovementDistance = finalDistance;
+                }
+
+                this._navMeshAgent.isStopped = false;
+
+            } else {
+                this._navMeshAgent.SetDestination(this._currentPoint.Value);
+                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+            }
+
+            this._isMoving = true;
+            this._currentState = UnitState.MOVING;
+        }
+
+        public virtual void MoveTo(Vector3 dest) {
+            NavMeshPath path = new NavMeshPath();
+
+            this.StopMoving();
+
+            this._navMeshAgent.CalculatePath(dest, path);
+            this._navMeshAgent.SetPath(path);
+            this._unitPathing = path;
+
+            if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
+                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+
+                if(float.IsInfinity(_initialMovementDistance)) {
+                    Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method: Corners - " + this._navMeshAgent.path.corners.Length.ToString());
+                    float finalDistance = 0;
+                    Vector3[] corners = this._navMeshAgent.path.corners;
+
+                    for(int i = 0; i < corners.Length - 1; ++i)
+                        finalDistance += Mathf.Abs((corners[i] - corners[i + 1]).magnitude);
+
+                    this._initialMovementDistance = finalDistance;
+                }
+
+                this._navMeshAgent.isStopped = false;
+                this.LastPosition = this.position;
+            } else {
+                this._navMeshAgent.SetDestination(dest);
+                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+            }
+
+            this._currentState = UnitState.MOVING;
+        }
+
+        public virtual void StopMoving() {
+            this._isMoving = false;
+            this._navMeshAgent.isStopped = true;
+            this._navMeshAgent.ResetPath();
+            this._lastPosition = this.position;
         }
 
         public Vector3[] ReturnPathToPoint(Vector3 point) {
@@ -381,7 +473,7 @@
 
             if(attack) {
                 Vector3 direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - this._unitPathing.corners[this._unitPathing.corners.Length - 1]).normalized;
-                Vector3 attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * this._attackRange);
+                Vector3 attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * (this._attackRange + this._unitRadius));
                 this._unitPathing.corners[this._unitPathing.corners.Length - 1] = attackPoint;
             }
 
@@ -470,6 +562,54 @@
             return temp;
         }
 
+        private void CheckMovement() {
+            // Seocondary Code to calculate the remainging distance. incase the one on the bottom doesnt work.
+            /*float distance = 0.0f;
+            Vector3[] corners = this._navMeshAgent.path.corners;
+            for(int c = 0; c < corners.Length - 1; ++c) {
+                distance += Mathf.Abs((corners[c] - corners[c + 1]).magnitude);
+
+            }*/
+
+            Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
+            Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
+            if(this._navMeshAgent.remainingDistance <= this._navMeshAgent.stoppingDistance) {
+
+                if(!this._navMeshAgent.hasPath || this._navMeshAgent.velocity.sqrMagnitude <= 0.0f) {
+                    this.StopMoving();
+
+
+                    if(this._nextState == UnitState.ATTACK) {
+                        this._previousState = this._currentState;
+                        this._currentState = this._nextState;
+                        this._nextState = UnitState.IDLE;
+                        this.StartStateAnimation();
+                    } else {
+                        this._previousState = this._currentState;
+                        this._currentState = UnitState.IDLE;
+                        this._nextState = UnitState.NONE;
+                    }
+                }
+
+            } else {
+
+                if(this._navMeshAgent.remainingDistance == this._initialMovementDistance)
+                    return;
+
+                // Stamina Calculations go here.
+            }
+        }
+
+        private bool TargetInRange() {
+            float distance = Vector3.Distance(this.position, this._currentTarget.position) - this._unitRadius;
+
+            if(distance > this._attackRange)
+                return false;
+
+            return true;
+
+        }
+
         #endregion
 
         #region UNITY
@@ -487,7 +627,7 @@
         ///////////////////
         #region UNIT_STATE
         protected virtual void CheckStandbyState(out bool value) {
-            if(this._unitState == UnitState.ATTACK_STANDBY) {
+            if(this._currentState == UnitState.ATTACK_STANDBY) {
                 if(this.IsAlly(this._currentTarget)) {
                     this._currentTarget = null;
                     this._previousTarget = null;
@@ -543,19 +683,18 @@
         #region UNIT
 
         public virtual void ProjectileCollisionEvent() {
-            if(this._unitState == UnitState.ATTACK_ANIMATION) {
-                this._unitState = UnitState.ATTACK;
+            if(this._currentState == UnitState.ATTACK) {
                 this.InternalAttack(this.GetDamage());
             }
         }
 
         protected virtual void UpdateUnit() {
-            if(this._unitState == UnitState.MOVING)
+            if(this._currentState == UnitState.MOVING)
                 this.CheckMovement();
         }
 
         public virtual void Finished() {
-            this._unitState = UnitState.FINISH;
+            this._currentState = UnitState.FINISH;
         }
 
 
@@ -565,93 +704,7 @@
         //// MOVEMENT ////
         //////////////////
         #region MOVEMENT
-        public virtual void Move() {
 
-            if(this.IsMoving || this._currentEnergy <= 0.0f)
-                return;
-
-            if(this._unitPathing.status == NavMeshPathStatus.PathInvalid || this._unitPathing.status == NavMeshPathStatus.PathPartial)
-                return;
-
-            if(!this._hasStamina)
-                this._currentEnergy = 0.0f;
-            else
-                this._currentEnergy = this._staminaToUse;
-
-            this.StopMoving();
-
-            NavMeshPath path = new NavMeshPath();
-
-            this._navMeshAgent.CalculatePath(this._currentPoint.Value, path);
-            this._navMeshAgent.SetPath(path);
-            this._unitPathing = path;
-
-            this._navMeshAgent.SetPath(this._unitPathing);
-
-            if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
-                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
-
-                if(float.IsInfinity(_initialMovementDistance)) {
-                    Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method: Corners - " + this._navMeshAgent.path.corners.Length.ToString());
-                    float finalDistance = 0;
-                    Vector3[] corners = this._navMeshAgent.path.corners;
-
-                    for(int i = 0; i < corners.Length - 1; ++i)
-                        finalDistance += Mathf.Abs((corners[i] - corners[i + 1]).magnitude);
-
-                    this._initialMovementDistance = finalDistance;
-                }
-
-                this._navMeshAgent.isStopped = false;
-
-            } else {
-                this._navMeshAgent.SetDestination(this._currentPoint.Value);
-                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
-            }
-
-            this._isMoving = true;
-            this._unitState = UnitState.MOVING;
-        }
-
-        public virtual void MoveTo(Vector3 dest) {
-            NavMeshPath path = new NavMeshPath();
-
-            this.StopMoving();
-
-            this._navMeshAgent.CalculatePath(dest, path);
-            this._navMeshAgent.SetPath(path);
-            this._unitPathing = path;
-
-            if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
-                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
-
-                if(float.IsInfinity(_initialMovementDistance)) {
-                    Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method: Corners - " + this._navMeshAgent.path.corners.Length.ToString());
-                    float finalDistance = 0;
-                    Vector3[] corners = this._navMeshAgent.path.corners;
-
-                    for(int i = 0; i < corners.Length-1; ++i)
-                        finalDistance += Mathf.Abs((corners[i] - corners[i + 1]).magnitude);
-
-                    this._initialMovementDistance = finalDistance;
-                }
-                    
-                this._navMeshAgent.isStopped = false;
-                this.LastPosition = this.position;
-            } else {
-                this._navMeshAgent.SetDestination(dest);
-                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
-            }
-
-            this._unitState = UnitState.MOVING;
-        }
-
-        public virtual void StopMoving() {
-            this._isMoving = false;
-            this._navMeshAgent.isStopped = true;
-            this._navMeshAgent.ResetPath();
-            this._lastPosition = this.position;
-        }
 
         public void LookAt(Vector3 pos) {
             this.transform.LookAt(new Vector3(pos.x, this.transform.position.y, pos.z), Vector3.up);
@@ -669,52 +722,48 @@
             }
         }
 
-        private void CheckMovement() {
-            // Seocondary Code to calculate the remainging distance. incase the one on the bottom doesnt work.
-            /*float distance = 0.0f;
-            Vector3[] corners = this._navMeshAgent.path.corners;
-            for(int c = 0; c < corners.Length - 1; ++c) {
-                distance += Mathf.Abs((corners[c] - corners[c + 1]).magnitude);
 
-            }*/
-
-            Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
-            Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
-            if(this._navMeshAgent.remainingDistance <= this._navMeshAgent.stoppingDistance) {
-
-                if(!this._navMeshAgent.hasPath || this._navMeshAgent.velocity.sqrMagnitude <= 0.0f) {
-                    this.StopMoving();
-                    this._unitState = UnitState.IDLE;
-                }
-
-            } else {
-
-                if(this._navMeshAgent.remainingDistance == this._initialMovementDistance)
-                    return;
-
-                // Stamina Calculations go here.
-            }
-        }
         #endregion
 
         ////////////////
         //// ATTACK ////
         ////////////////
         #region ATTACK
-        public virtual void Attack() {
-            Vector3 releasePosition = this._projectileReleasePoint.position;
+        public virtual void InitiateAttack() {
 
-            if(this._projectilePrefan == null) {
-                this._unitState = UnitState.ATTACK;
+            if(!this._canAttack)
+                return;
+
+            this._nextState = UnitState.ATTACK;
+
+            if(this._currentPoint.HasValue && this.CanMove) { // Move To Point.
+                this.InitiateMove();
+            } else if(this.TargetInRange()) {
+                this._previousState = this._currentState;
+                this._currentState = this._nextState;
+                this._nextState = UnitState.IDLE;
+                this.StartStateAnimation();
+            } else {
+                this._previousState = this._currentState;
+                this._currentState = UnitState.IDLE;
+                this._nextState = UnitState.NONE;
+                Debug.LogWarning("Can't Move To Target & Is Out Of Attack Range");
+            }
+        }
+
+        public virtual void Attack() {
+            if(this._projectilePrefab == null) {
+                this._currentState = UnitState.ATTACK;
                 this.InternalAttack(this.GetDamage());
             } else {
-                GameObject temp = Instantiate(this._projectilePrefan);
+                Vector3 releasePosition = this._projectileReleasePoint.position;
+                GameObject temp = Instantiate(this._projectilePrefab);
                 Projectile tempProjjectile = temp.GetComponent<Projectile>() as Projectile;
 
                 if(tempProjjectile == null)
                     temp.AddComponent<Projectile>();
-                else
-                    tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, releasePosition, this._projectileSpeed);
+
+                tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, releasePosition, this._projectileSpeed);
             }
         }
 
@@ -793,13 +842,15 @@
             this._currentTarget.LastAttacker = this;
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.transform.position);
 
-            ((UI.UnitUI)this.uiBase).FinishAttack();
-            this._unitState = UnitState.IDLE;
+
+            this._previousState = this._currentState;
+            this._currentState = UnitState.IDLE;
+            this._nextState = UnitState.NONE;
             this._canAttack = false;
         }
 
         protected virtual void SpawnAttackParticle() {
-            if(this._projectilePrefan != null) {
+            if(this._projectilePrefab != null) {
                 Vector3 relativePos = this.position - this._currentTarget.position;
                 Quaternion tempRotation = Quaternion.LookRotation(relativePos);
 
@@ -858,10 +909,8 @@
             this.LookAt(this._currentTarget.position);
             this.StopMoving();
 
-            if(this._unitState == UnitState.ATTACK_STANDBY) {
-                this._unitState = UnitState.ATTACK_ANIMATION;
+            if(this._currentState == UnitState.ATTACK)
                 this._unitAnimator.Play("Attack");
-            }
         }
 
         protected virtual void PlayDeathAnimation() {

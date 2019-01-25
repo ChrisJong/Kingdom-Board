@@ -353,7 +353,7 @@ GameObject:
   - component: {fileID: 4820856313529474}
   m_Layer: 0
   m_Name: releasePoint
-  m_TagString: Untagged
+  m_TagString: ReleasePoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -399,7 +399,7 @@ Transform:
   m_GameObject: {fileID: 1099387753632804}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.35, y: 1, z: 1.35}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4676544598577096}
   m_RootOrder: 2
@@ -2404,7 +2404,7 @@ NavMeshAgent:
   m_Radius: 0.6
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 90
+  avoidancePriority: 49
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -2442,6 +2442,27 @@ MonoBehaviour:
   _selectedTrigger: 0
   _unitBase: {fileID: 114897455371702842}
   _renderers:
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 23419131393577456}
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 23419131393577456}
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 23419131393577456}
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 23419131393577456}
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 23419131393577456}
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 23419131393577456}
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 23419131393577456}
   - {fileID: 137022179370300234}
   - {fileID: 137925511714797680}
   - {fileID: 23419131393577456}
@@ -2551,6 +2572,27 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
   - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
   - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
 --- !u!114 &114897455371702842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2571,7 +2613,9 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 2ed28bbc7523f7c4e9b40bc58cf7e6c8, type: 2}
   _classType: 3
   _unitType: 4
-  _unitState: 0
+  _previousState: 0
+  _currentState: 0
+  _nextState: 0
   _moveType: 1
   _attackType: 2
   _resistanceType: 1
@@ -2588,8 +2632,8 @@ MonoBehaviour:
   _resistanceMultiplier: 0.5
   _weaknessMultiplier: 2
   _canAttack: 1
-  _projectileReleasePoint: {fileID: 0}
-  _projectilePrefan: {fileID: 1386172076784694, guid: 74faafd788ac6fe49ac060f027289f9b,
+  _projectileReleasePoint: {fileID: 4820856313529474}
+  _projectilePrefab: {fileID: 1386172076784694, guid: 74faafd788ac6fe49ac060f027289f9b,
     type: 3}
   _endOfAttackClipTime: 0.545
   _explosionRadius: 10
@@ -3295,7 +3339,7 @@ PrefabInstance:
     - target: {fileID: 8314535118023709677, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8314535118023709677, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}

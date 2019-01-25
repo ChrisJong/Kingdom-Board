@@ -45,8 +45,8 @@
         }
 
         public override void ProjectileCollisionEvent() {
-            if(this._unitState == UnitState.HEAL_ANIMATION) {
-                this._unitState = UnitState.HEAL;
+            if(this._currentState == UnitState.HEAL_ANIMATION) {
+                this._currentState = UnitState.HEAL;
                 this.InternalHeal();
             } else {
                 base.ProjectileCollisionEvent();
@@ -56,7 +56,7 @@
         protected override void CheckStandbyState(out bool value) {
             base.CheckStandbyState(out value);
 
-            if(this._unitState == UnitState.HEAL_STANDBY) {
+            if(this._currentState == UnitState.HEAL_STANDBY) {
                 if(this.IsEnemy(this._currentTarget)) {
                     this._currentTarget = null;
                     this._previousTarget = null;
@@ -114,13 +114,13 @@
         public void Heal() {
             Debug.Log("HEALING UNIT");
             ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_CLERIC_HEAL, this._currentTarget.position);
-            if(this._projectilePrefan == null) {
-                this._unitState = UnitState.HEAL;
+            if(this._projectilePrefab == null) {
+                this._currentState = UnitState.HEAL;
                 ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_CLERIC_HEAL, this._currentTarget.position);
                 this.InternalHeal();
             } else {
                 // NOTE: need to pass into a ID for the type of particle the end of the projectile should spawn.
-                GameObject temp = Instantiate(this._projectilePrefan);
+                GameObject temp = Instantiate(this._projectilePrefab);
                 Projectile tempProjjectile = temp.GetComponent<Projectile>() as Projectile;
 
                 if(tempProjjectile == null)
@@ -134,7 +134,7 @@
             this._currentTarget.AddHealth(this._healingAmount);
 
             ((UI.ClericUI)this.uiBase).FinishHeal();
-            this._unitState = UnitState.IDLE;
+            this._currentState = UnitState.IDLE;
             this._canHeal = false;
         }
         #endregion
@@ -146,8 +146,8 @@
         public override void StartStateAnimation() {
             base.StartStateAnimation();
 
-            if(this._unitState == UnitState.HEAL_STANDBY) {
-                this._unitState = UnitState.HEAL_ANIMATION;
+            if(this._currentState == UnitState.HEAL_STANDBY) {
+                this._currentState = UnitState.HEAL_ANIMATION;
                 this._unitAnimator.Play("Cast");
             }
         }

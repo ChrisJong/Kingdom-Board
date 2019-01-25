@@ -93,6 +93,14 @@
             this.MouseSelection();
         }
 
+        public void ChangeState(SelectionState state) {
+            if(this._currentState == state)
+                return;
+
+            this._previousState = this._currentState;
+            this._currentState = state;
+        }
+
         private Vector3 GetCurrentPointOnGround() {
             Vector3 coord = Vector3.zero;
             Ray ray = this._camera.ScreenPointToRay(Input.mousePosition);
@@ -206,6 +214,21 @@
                     // Hit Either a unit or structure
                     if(temp != null) {
 
+                        if(this._currentSelectedEntity == EntityType.UNIT) {
+
+                            if(temp.IsEnemy(this._currentUnitSelected)) { // Enemy Unit
+                                this._currentUnitSelected.InitiateAttack();
+                            } else { // Ally Unit
+
+                            }
+
+                        } else if(this._currentSelectedEntity == EntityType.STRUCTURE) {
+
+                        } else {
+                            Debug.LogError("No Such Entity Type For the Current Selection Exsists, " + this._currentSelected.entityType.ToString());
+                            throw new System.ArgumentNullException("No Such Entity Type For the Current Selection Exsists, " + this._currentSelected.entityType.ToString());
+                        }
+
                     }
 
                 } else {
@@ -213,22 +236,10 @@
                     if(this._currentSelectedEntity == EntityType.UNIT) {
 
                         if(this.CastRayToWorldToMask(GlobalSettings.LayerValues.groundLayer))
-                            this._currentUnitSelected.Move();
+                            this._currentUnitSelected.InitiateMove();
 
                     }
                 }
-
-
-                /*if(this._currentSelectedEntity == EntityType.UNIT) {
-
-
-
-                } else if(this._currentSelectedEntity == EntityType.STRUCTURE) {
-
-                } else {
-                    Debug.LogError("No Such Entity Type For the Current Selection Exsists, " + this._currentSelected.entityType.ToString());
-                    throw new System.ArgumentNullException("No Such Entity Type For the Current Selection Exsists, " + this._currentSelected.entityType.ToString());
-                }*/
 
             } else if(Input.GetMouseButtonUp(0)) { // Left Click. (De-Selection)
 
@@ -309,6 +320,9 @@
                         if(!this._controller.castle.SetPoint(this._hitInfo.point)) {
                             Debug.LogWarning("The Location Selected Is Invalud: " + this._hitInfo.point.ToString());
                             return;
+                        } else {
+                            this._currentState = this._previousState;
+                            this._previousState = SelectionState.NONE;
                         }
 
                     } else {
@@ -326,8 +340,8 @@
                     Debug.LogError("Player_" + this._controller.id.ToString() + "Doesn't Contain A Castle Object");
                 }
 
-                this._previousState = this._currentState;
-                this._currentState = SelectionState.FREE;
+                this._currentState = this._previousState;
+                this._previousState = SelectionState.NONE;
 
             }
         }
@@ -343,7 +357,7 @@
                     return;
 
                 if(temp.entityType == EntityType.UNIT) {
-                    if(((UnitBase)temp).unitState == UnitState.FINISH)
+                    if(((UnitBase)temp).CurrentState == UnitState.FINISH)
                         return;
                 }
 

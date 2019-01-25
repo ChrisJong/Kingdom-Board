@@ -75,8 +75,7 @@
                 //Debug.Log("Current Target (" + hitHasHealth.gameObject.name + "): Took " + finalDamage.ToString() + " of Damage");
             }
 
-            ((UI.UnitUI)this.uiBase).FinishAttack();
-            this._unitState = UnitState.IDLE;
+            this._currentState = UnitState.IDLE;
             this._canAttack = false;
         }
 

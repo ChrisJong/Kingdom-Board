@@ -11,6 +11,9 @@
         UnitScriptable Data { get; }
         UnitClassType classType { get; }
         UnitType unitType { get; }
+        UnitState PreviousState { get; }
+        UnitState CurrentState { get; set; }
+        UnitState NextState { get; set; }
         LayerMask AreaMask { get; }
 
         void NewTurn();

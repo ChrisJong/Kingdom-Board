@@ -6,6 +6,7 @@
 
         public static class Debugging {
             public static bool lockedTraining = false;
+            public static bool spawnAnywhere = true;
         }
 
         public static class LayerValues {

@@ -147,8 +147,10 @@
             float distance = Vector3.Distance(Utils.ClosesPointToBounds(this._colliderBounds, position), position);
             Debug.Log("Distance From CAstle: " + distance.ToString());
 
-            if(distance > this._spawnRange) {
-                return false;
+            if(!Constants.GlobalSettings.Debugging.spawnAnywhere) {
+                if(distance > this._spawnRange) {
+                    return false;
+                }
             }
 
             if(this.HandleSpawnUnit(this._toSpawn.type, position)) {
@@ -158,7 +160,6 @@
 
                 this._toSpawn.FinishedSpawn();
 
-                this.controller.playerSelect.CurrentState = SelectionState.FREE;
                 this.structureState = StructureState.IDLE;
                 this.radiusDrawer.SetActive(false);
 
@@ -180,7 +181,8 @@
             if(this._toSpawn != null)
                 this._toSpawn.CancelSpawn();
 
-            this.controller.playerSelect.CurrentState = SelectionState.SELECT_SPAWNPOINT;
+
+            this.controller.playerSelect.ChangeState(SelectionState.SELECT_SPAWNPOINT);
             this.structureState = StructureState.SPAWN;
             this.radiusDrawer.SetActive(true);
             this._toSpawn = queue;

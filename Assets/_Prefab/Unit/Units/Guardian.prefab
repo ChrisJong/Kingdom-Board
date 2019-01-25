@@ -1575,7 +1575,7 @@ NavMeshAgent:
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 26
+  avoidancePriority: 95
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -1613,6 +1613,27 @@ MonoBehaviour:
   _selectedTrigger: 0
   _unitBase: {fileID: 114184530341196572}
   _renderers:
+  - {fileID: 137641192189040350}
+  - {fileID: 137696076552839888}
+  - {fileID: 23782533478744134}
+  - {fileID: 137641192189040350}
+  - {fileID: 137696076552839888}
+  - {fileID: 23782533478744134}
+  - {fileID: 137641192189040350}
+  - {fileID: 137696076552839888}
+  - {fileID: 23782533478744134}
+  - {fileID: 137641192189040350}
+  - {fileID: 137696076552839888}
+  - {fileID: 23782533478744134}
+  - {fileID: 137641192189040350}
+  - {fileID: 137696076552839888}
+  - {fileID: 23782533478744134}
+  - {fileID: 137641192189040350}
+  - {fileID: 137696076552839888}
+  - {fileID: 23782533478744134}
+  - {fileID: 137641192189040350}
+  - {fileID: 137696076552839888}
+  - {fileID: 23782533478744134}
   - {fileID: 137641192189040350}
   - {fileID: 137696076552839888}
   - {fileID: 23782533478744134}
@@ -1722,6 +1743,27 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 19179c434de6e864296d218b98cdf209, type: 2}
   - {fileID: 2100000, guid: 5ca88d8b8d44bc64f9627fa79334da67, type: 2}
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 19179c434de6e864296d218b98cdf209, type: 2}
+  - {fileID: 2100000, guid: 5ca88d8b8d44bc64f9627fa79334da67, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 19179c434de6e864296d218b98cdf209, type: 2}
+  - {fileID: 2100000, guid: 5ca88d8b8d44bc64f9627fa79334da67, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 19179c434de6e864296d218b98cdf209, type: 2}
+  - {fileID: 2100000, guid: 5ca88d8b8d44bc64f9627fa79334da67, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 19179c434de6e864296d218b98cdf209, type: 2}
+  - {fileID: 2100000, guid: 5ca88d8b8d44bc64f9627fa79334da67, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 19179c434de6e864296d218b98cdf209, type: 2}
+  - {fileID: 2100000, guid: 5ca88d8b8d44bc64f9627fa79334da67, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 19179c434de6e864296d218b98cdf209, type: 2}
+  - {fileID: 2100000, guid: 5ca88d8b8d44bc64f9627fa79334da67, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 19179c434de6e864296d218b98cdf209, type: 2}
+  - {fileID: 2100000, guid: 5ca88d8b8d44bc64f9627fa79334da67, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &114184530341196572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1742,7 +1784,9 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 7cbd228d5e90b624eba2ccaf585e9727, type: 2}
   _classType: 1
   _unitType: 9
-  _unitState: 0
+  _previousState: 0
+  _currentState: 0
+  _nextState: 0
   _moveType: 1
   _attackType: 1
   _resistanceType: 3
@@ -1760,7 +1804,7 @@ MonoBehaviour:
   _weaknessMultiplier: 2
   _canAttack: 1
   _projectileReleasePoint: {fileID: 0}
-  _projectilePrefan: {fileID: 0}
+  _projectilePrefab: {fileID: 0}
   _endOfAttackClipTime: 0
   _explosionRadius: 10
   _explosionForce: 300
@@ -3091,7 +3135,7 @@ Transform:
   m_GameObject: {fileID: 1659223045475590}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1, z: 1.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4597809151228012}
   m_RootOrder: 2
@@ -4613,7 +4657,7 @@ PrefabInstance:
     - target: {fileID: 8314535118023709677, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8314535118023709677, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}
