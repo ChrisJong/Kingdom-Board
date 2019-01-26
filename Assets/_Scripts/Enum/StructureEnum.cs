@@ -14,7 +14,8 @@
     public enum StructureClassType {
         NONE = 0,
         ANY = ~0,
-        MAIN = 1
+        MAIN = 1,
+        NEUTRAL,
     }
 
     /// <summary>
@@ -24,6 +25,7 @@
     public enum StructureType {
         NONE = 0,
         ANY = ~0,
-        CASTLE = 1
+        CASTLE = 1,
+        GOLDMINE,
     }
 }

@@ -38,7 +38,7 @@
 
                 this._uiCanvas = this._uiGroup.GetComponent<Canvas>() as Canvas;
             } else {
-                Debug.Log("Finding UI Again");
+                //Debug.Log("Finding UI Again");
             }
         }
 

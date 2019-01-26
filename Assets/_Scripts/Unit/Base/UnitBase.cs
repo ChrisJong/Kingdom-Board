@@ -261,6 +261,7 @@
         public virtual void Death() {
 
             ResourceManager.instance.RemoveResource(this.controller, PlayerResource.POPULATION, this._data.populationCost);
+            GoldMineManager.instance.RemoveEntity(this);
 
             if(this._deathPrefab != null)
                 this.PlayDeathAnimation();
@@ -571,8 +572,8 @@
 
             }*/
 
-            Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
-            Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
+            //Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
+            //Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
             if(this._navMeshAgent.remainingDistance <= this._navMeshAgent.stoppingDistance) {
 
                 if(!this._navMeshAgent.hasPath || this._navMeshAgent.velocity.sqrMagnitude <= 0.0f) {

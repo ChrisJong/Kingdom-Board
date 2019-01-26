@@ -33,6 +33,7 @@
         public GameObject aiPrefab = null;
         public GameObject humanPrefab = null;
 
+        public int PlayerCount { get { return this._players.Count; } }
         public int RoundCount { get { return this._roundCount; } }
 
         public float Countdown { get { return this._countdown; } }
@@ -55,6 +56,8 @@
             this._timer = this.StartCountdown();
 
             this.CreatePlayers();
+
+            GoldMineManager.instance.Init();
 
             this._roundCount++;
             Debug.Log("Round: " + RoundCount.ToString());

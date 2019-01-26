@@ -51,6 +51,7 @@
 
                 if(this._playerResources.ContainsKey(p)) {
                     this._playerResources[p].AddResource(PlayerResource.GOLD, this._goldPerTurn);
+                    this._playerResources[p].AddResource(PlayerResource.GOLD, GoldMineManager.instance.CheckRound(p));
                 }
             }
 

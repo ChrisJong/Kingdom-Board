@@ -106,9 +106,11 @@
             Ray ray = this._camera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
 
-            Physics.Raycast(ray, out hitInfo, this._rayDistance, GlobalSettings.LayerValues.groundLayer);
+            Physics.Raycast(ray, out hitInfo, Mathf.Infinity, GlobalSettings.LayerValues.groundLayer, QueryTriggerInteraction.Ignore);
 
             coord = hitInfo.point;
+
+            //Debug.Log(coord.ToString());
 
             return coord;
         }
@@ -132,7 +134,7 @@
             if(EventSystem.current.IsPointerOverGameObject())
                 return false;
 
-            return Physics.Raycast(this._ray, out this._hitInfo, this._rayDistance, mask);
+            return Physics.Raycast(this._ray, out this._hitInfo, this._rayDistance, mask, QueryTriggerInteraction.Ignore);
         }
 
         private bool CastRayToWorldIgnoreMask(LayerMask ignoreMask) {
@@ -143,7 +145,7 @@
             if(EventSystem.current.IsPointerOverGameObject())
                 return false;
 
-            return Physics.Raycast(this._ray, out this._hitInfo, this._rayDistance, ~(ignoreMask));
+            return Physics.Raycast(this._ray, out this._hitInfo, this._rayDistance, ~(ignoreMask), QueryTriggerInteraction.Ignore);
         }
 
         private void MouseSelection() {
