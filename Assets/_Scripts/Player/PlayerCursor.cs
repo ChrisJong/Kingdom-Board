@@ -16,6 +16,8 @@
         [SerializeField] private Texture2D _moveNotReady;
         [SerializeField] private Texture2D _attackReady;
         [SerializeField] private Texture2D _attackNotReady;
+        [SerializeField] private Texture2D _healReady;
+        [SerializeField] private Texture2D _healNotReady;
 
         [SerializeField] private CursorMode _mode = CursorMode.Auto;
 
@@ -73,6 +75,22 @@
 
             this._currentCursor = this._attackNotReady;
             Cursor.SetCursor(this._attackNotReady, this._hotSpot, this._mode);
+        }
+
+        public void SetHealReady() {
+            if(this._currentCursor == this._healReady)
+                return;
+
+            this._currentCursor = this._healReady;
+            Cursor.SetCursor(this._healReady, this._hotSpot, this._mode);
+        }
+
+        public void SetHealNotReady() {
+            if(this._currentCursor == this._healNotReady)
+                return;
+
+            this._currentCursor = this._healNotReady;
+            Cursor.SetCursor(this._healNotReady, this._hotSpot, this._mode);
         }
     }
 

@@ -296,12 +296,19 @@
 
         public virtual bool SetTarget(IHasHealth target) {
 
+            if(!this.IsEnemy(target) || !this._canAttack)
+                return false;
+
             if(this._currentTarget != null)
                 this._previousTarget = this._currentTarget;
 
             this._currentTarget = target;
 
-            float distance = Vector3.Distance(this.position, this._currentTarget.position) - (this._unitRadius - ((UnitBase)target).UnitRadius);
+            float distance = 0.0f;
+            if(target.entityType == EntityType.UNIT)
+                distance = Vector3.Distance(this.position, this._currentTarget.position) - (this._unitRadius - ((UnitBase)target).UnitRadius);
+            else
+                distance = Vector3.Distance(this.position, Utils.ClosesPointToBounds(((Structure.StructureBase)this._currentTarget).ColliderBounds, this.position));
 
             this.unitUI.EnableAttackRadius();
 
@@ -447,14 +454,14 @@
             }
         }
 
-        public Vector3[] ReturnPathToTarget(Vector3 point) {
+        public Vector3[] ReturnPathToTarget(Vector3 point, float range = 0.0f) {
 
             Vector3[] temp;
             NavMeshPath path = new NavMeshPath();
 
             if(this._navMeshAgent.CalculatePath(point, path)) {
                 this._unitPathing = path;
-                temp = FinalizePath(true);
+                temp = FinalizePath(true, range);
                 return temp;
             } else {
                 this._unitPathing.ClearCorners();
@@ -463,7 +470,7 @@
 
         }
 
-        private Vector3[] FinalizePath(bool attack) {
+        private Vector3[] FinalizePath(bool target, float range = 0.0f) {
             Stack<Vector3> linePoints = new Stack<Vector3>();
             float castLerpSize = 0.5f;
 
@@ -472,9 +479,9 @@
 
             linePoints.Push(this._unitPathing.corners[0]);
 
-            if(attack) {
+            if(target) {
                 Vector3 direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - this._unitPathing.corners[this._unitPathing.corners.Length - 1]).normalized;
-                Vector3 attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * (this._attackRange + this._unitRadius));
+                Vector3 attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * (range + this._unitRadius));
                 this._unitPathing.corners[this._unitPathing.corners.Length - 1] = attackPoint;
             }
 
@@ -493,19 +500,19 @@
                         this._hasStamina = false;
                     }
                 } else {
-                    Vector3 target = this._unitPathing.corners[i];
-                    Vector3 direction = (target - this._unitPathing.corners[i - 1]).normalized;
+                    Vector3 targetPPoint = this._unitPathing.corners[i];
+                    Vector3 direction = (targetPPoint - this._unitPathing.corners[i - 1]).normalized;
 
                     bool reachedNextPoint = false;
 
                     while(true) {
                         Vector3 previousPoint = linePoints.Peek();
-                        float remainingCastDistance = Vector3.Distance(previousPoint, target);
+                        float remainingCastDistance = Vector3.Distance(previousPoint, targetPPoint);
                         Vector3 nextCastPoint = previousPoint + (direction * castLerpSize);
 
                         if(remainingCastDistance < castLerpSize) {
                             reachedNextPoint = true;
-                            nextCastPoint = target;
+                            nextCastPoint = targetPPoint;
                         }
 
                         Vector3 foundPoint = GetPointOnGround(nextCastPoint);
@@ -580,7 +587,7 @@
                     this.StopMoving();
 
 
-                    if(this._nextState == UnitState.ATTACK) {
+                    if(this._nextState == UnitState.ATTACK || this._nextState == UnitState.SPECIAL) {
                         this._previousState = this._currentState;
                         this._currentState = this._nextState;
                         this._nextState = UnitState.IDLE;
@@ -601,7 +608,7 @@
             }
         }
 
-        private bool TargetInRange() {
+        protected virtual bool TargetInRange() {
             float distance = Vector3.Distance(this.position, this._currentTarget.position) - this._unitRadius;
 
             if(distance > this._attackRange)
@@ -730,7 +737,7 @@
         //// ATTACK ////
         ////////////////
         #region ATTACK
-        public virtual void InitiateAttack() {
+        public virtual void InitiateTarget() {
 
             if(!this._canAttack)
                 return;
@@ -762,7 +769,7 @@
                 Projectile tempProjjectile = temp.GetComponent<Projectile>() as Projectile;
 
                 if(tempProjjectile == null)
-                    temp.AddComponent<Projectile>();
+                    tempProjjectile = temp.AddComponent<Projectile>();
 
                 tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, releasePosition, this._projectileSpeed);
             }
@@ -842,7 +849,6 @@
 
             this._currentTarget.LastAttacker = this;
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.transform.position);
-
 
             this._previousState = this._currentState;
             this._currentState = UnitState.IDLE;

@@ -6,7 +6,6 @@
         SPAWN = 1,
         IDLE,
         ATTACK_STANDBY,
-        ATTACK_ANIMATION,
         ATTACK,
         HEAL_STANDBY,
         HEAL_ANIMATION,
@@ -14,10 +13,8 @@
         SPECIAL_STANDBY,
         SPECIAL_ANIMATION,
         SPECIAL, // Anything to do with casting spells or a secondary attack.
-        MOVING_STANDBY,
         MOVING,
         FINISH,
-        DEAD
     }
 
     public enum UnitClassType {

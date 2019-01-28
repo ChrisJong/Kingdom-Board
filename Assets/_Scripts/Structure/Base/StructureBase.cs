@@ -42,6 +42,8 @@
         public Vector3 PreviousPoint { get { return this._previousPoint.Value; } }
         public IHasHealth CurrentTarget { get { return this._currentTarget; } }
         public IHasHealth PreviousTarget { get { return this._previousTarget; } }
+
+        public Bounds ColliderBounds { get { return this._colliderBounds; } }
         #endregion
 
         #region CLASS

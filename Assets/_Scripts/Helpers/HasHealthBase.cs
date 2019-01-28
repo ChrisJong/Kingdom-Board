@@ -76,10 +76,10 @@
                 return false;
 
             // Make sure that the amount doesn't exceed the totally maxhealth of the unit.
-            if(amount > this.MaxHealth)
+            if(amount < this._maxHealth)
                 this._currentHealth += amount;
             else
-                this._currentHealth = this.MaxHealth;
+                this._currentHealth = this._maxHealth;
 
             this.uiBase.UpdateUI();
             return true;

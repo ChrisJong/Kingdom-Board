@@ -10,5 +10,8 @@
 
         bool SetPoint(Vector3 point);
         bool SetTarget(IHasHealth target);
+
+        //bool HoverPoint(Vector3 point);
+        //bool HoverTarget(IHasHealth target);
     }
 }

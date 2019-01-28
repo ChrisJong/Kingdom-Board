@@ -25,6 +25,10 @@
         protected override void Awake() {
             base.Awake();
 
+            this.Init();
+        }
+
+        public override void Init() {
             GameObject managerHost = new GameObject("Particles");
             managerHost.transform.SetParent(this.transform);
 
@@ -39,10 +43,6 @@
 
                 this._pools.Add(setup.type, new ParticlePool(setup.prefab, host, setup.initialInstanceCount));
             }
-        }
-
-        public override void Init() {
-            throw new NotImplementedException();
         }
 
         /// <summary>

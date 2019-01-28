@@ -9,44 +9,166 @@
     using Helpers;
     using Manager;
     using UI;
+    using Utility;
 
     [RequireComponent(typeof(ClericUI))]
     public sealed class Cleric : UnitBase {
 
-        #region 
+        #region VARIABLE
+        private ClericUI _clericUI = null;
+
         [Header("CLERIC - HEALING")]
         [SerializeField] private bool _canHeal = true;
-        [SerializeField, Range(1.0f, 50.0f)] private float _healingRadius = 10.0f;
-        [SerializeField, Range(1.0f, 100.0f)] private float _healingAmount = 5.0f;
 
-        public bool canHeal { get { return this._canHeal; } }
-        public float healingRadius { get { return this._healingRadius; } }
-        public float healingAmoumt { get { return this._healingAmount; } }
+        [SerializeField] private float _healingRange = 0.0f;
+        [SerializeField] private float _healingAmount = 0.0f;
 
-        ///////////////////
-        //// ANIMATION ////
-        ///////////////////
         [Header("CLERIC - ANIMATION")]
         [SerializeField] private float _endOfCastClipTime = 0.542f;
-        #endregion
 
-        #region UNITY
-        protected override void OnEnable() {
-            this._canHeal = true;
+        public bool CanHeal { get { return this._canHeal; } }
 
-            base.OnEnable();
-        }
+        public float HealingRange { get { return this._healingRange; } }
+        public float HealingAmoumt { get { return this._healingAmount; } }
         #endregion
 
         #region CLASS
-        public override void NewTurn() {
-            base.NewTurn();
+        public override void Setup() {
+
             this._canHeal = true;
+
+            this._endOfCastClipTime = this._data.endOfCastClipTime;
+
+            base.Setup();
+
+            this._clericUI = this.uiBase as ClericUI;
+        }
+
+        public override void Init() {
+
+            this._canHeal = true;
+
+            this._healingAmount = this._data.healingDamage;
+            this._healingRange = this._data.healingRange;
+
+            base.Init();
+        }
+
+        public override void Return() {
+
+            this._canHeal = false;
+
+            base.Return();
+        }
+
+        public override void NewTurn() {
+
+            this._canHeal = true;
+
+            base.NewTurn();
+        }
+
+        public override bool SetTarget(IHasHealth target) {
+
+            if(!this._canAttack && !this._canHeal)
+                return false;
+
+            if(this._currentTarget != null)
+                this._previousTarget = this. _currentTarget;
+
+            this._currentTarget = target;
+
+            float distance = 0.0f;
+            if(target.entityType == EntityType.UNIT)
+                distance = Vector3.Distance(this.position, this._currentTarget.position) - (this._unitRadius - ((UnitBase)target).UnitRadius);
+            else
+                distance = Vector3.Distance(this.position, Utils.ClosesPointToBounds(((Structure.StructureBase)this._currentTarget).ColliderBounds, this.position));
+
+            if(this.IsAlly(target)) { // Heal the target.
+                distance = Vector3.Distance(this.position, target.position);
+                this.unitUI.DrawRadius(Color.green, this._healingRange);
+
+                if(distance > (this._healingRange + this._unitRadius)) { // Can Move To the Target.
+                    this.unitUI.EnableMovePathToTarget(target.position, this._healingRange);
+                } else {
+
+                    if(this._currentPoint.HasValue) {
+                        this._previousPoint = this._currentPoint;
+                        this.debugPreviousPOint = this._previousPoint.Value;
+                    }
+
+                    this._currentPoint = null;
+                    this.debugCurrentPoint = Vector3.zero;
+
+                    this.unitUI.DisableMovePath();
+                }
+
+            } else { // Attack the target.
+                this.unitUI.EnableAttackRadius();
+
+                if(distance > (this._attackRange + this._unitRadius)) {
+                    this.unitUI.EnableMovePathToTarget(target.position);
+                } else {
+
+                    if(this._currentPoint.HasValue) {
+                        this._previousPoint = this._currentPoint;
+                        this.debugPreviousPOint = this._currentPoint.Value;
+                    }
+
+                    this._currentPoint = null;
+                    this.debugCurrentPoint = Vector2.zero;
+
+                    this.unitUI.DisableMovePath();
+                }
+            }
+
+            return true;
+        }
+
+        public override void InitiateTarget() {
+            
+            if(this.IsAlly(this._currentTarget)) {
+
+                if(!this.CanHeal)
+                    return;
+
+                this._nextState = UnitState.SPECIAL;
+
+                if(this._currentPoint.HasValue && this.CanMove) {
+                    this.InitiateMove();
+                } else if(this.TargetInRange()) {
+                    this._previousState = this._currentState;
+                    this._currentState = this._nextState;
+                    this._nextState = UnitState.IDLE;
+                    this.StartStateAnimation();
+                } else {
+                    this._previousState = this._currentState;
+                    this._currentState = UnitState.IDLE;
+                    this._nextState = UnitState.NONE;
+                }
+
+            } else {
+                base.InitiateTarget();
+            }
+        }
+
+        protected override bool TargetInRange() {
+
+            if(this._nextState == UnitState.SPECIAL) {
+                float distance = Vector3.Distance(this.position, this._currentTarget.position);
+
+                if(distance > (this._healingRange + this._unitRadius))
+                    return false;
+                else
+                    return true;
+
+            } else {
+                return base.TargetInRange();
+            }
         }
 
         public override void ProjectileCollisionEvent() {
-            if(this._currentState == UnitState.HEAL_ANIMATION) {
-                this._currentState = UnitState.HEAL;
+            if(this._currentState == UnitState.SPECIAL) {
                 this.InternalHeal();
             } else {
                 base.ProjectileCollisionEvent();
@@ -68,11 +190,11 @@
                 bool targetInRange = false;
 
                 float distance = Vector3.Distance(this.position, this._currentTarget.position);
-                if(distance + this._unitRadius < this._healingRadius)
+                if(distance + this._unitRadius < this._healingRange)
                     targetInRange = true;
 
                 if(!targetInRange) {
-                    Collider[] hits = Physics.OverlapSphere(this.position, this._healingRadius, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
+                    Collider[] hits = Physics.OverlapSphere(this.position, this._healingRange, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
                     for(int i = 0; i < hits.Length; i++) {
                         IHasHealth hitHasHealth = hits[i].GetEntity<IHasHealth>();
 
@@ -107,16 +229,15 @@
         //// HEALING ////
         /////////////////
         #region HEALING
-        public void FinishHealing() {
-            this._canHeal = false;
-        }
-
         public void Heal() {
             Debug.Log("HEALING UNIT");
+
+            Debug.Log("Current Target: " + this._currentTarget.gameObject.name);
+            Debug.Log("Current Target Position: " + this._currentTarget.position.ToString());
+
             ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_CLERIC_HEAL, this._currentTarget.position);
             if(this._projectilePrefab == null) {
-                this._currentState = UnitState.HEAL;
-                ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_CLERIC_HEAL, this._currentTarget.position);
+                this._currentState = UnitState.SPECIAL;
                 this.InternalHeal();
             } else {
                 // NOTE: need to pass into a ID for the type of particle the end of the projectile should spawn.
@@ -124,17 +245,19 @@
                 Projectile tempProjjectile = temp.GetComponent<Projectile>() as Projectile;
 
                 if(tempProjjectile == null)
-                    temp.AddComponent<Projectile>();
-                else
-                    tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, this._projectileReleasePoint.position, this._projectileSpeed);
+                    tempProjjectile = temp.AddComponent<Projectile>();
+
+                tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, this._projectileReleasePoint.position, this._projectileSpeed);
             }
         }
 
         private void InternalHeal() {
+
             this._currentTarget.AddHealth(this._healingAmount);
 
-            ((UI.ClericUI)this.uiBase).FinishHeal();
-            this._currentState = UnitState.IDLE;
+            this._previousState = this._currentState;
+            this._currentState = this._nextState;
+            this._nextState = UnitState.NONE;
             this._canHeal = false;
         }
         #endregion
@@ -144,11 +267,12 @@
         ///////////////////
         #region ANIMATION
         public override void StartStateAnimation() {
-            base.StartStateAnimation();
-
-            if(this._currentState == UnitState.HEAL_STANDBY) {
-                this._currentState = UnitState.HEAL_ANIMATION;
+            if(this._currentState == UnitState.SPECIAL) {
+                this.LookAt(this._currentTarget.position);
+                this.StopMoving();
                 this._unitAnimator.Play("Cast");
+            } else {
+                base.StartStateAnimation();
             }
         }
 

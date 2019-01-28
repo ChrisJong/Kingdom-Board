@@ -84,7 +84,7 @@
             //this.transform.eulerAngles = new Vector3(0.0f, y);
 
             this._startMoving = true;
-            UnityEditor.EditorApplication.isPaused = true;
+            //UnityEditor.EditorApplication.isPaused = true;
         }
 
         protected virtual void UpdateProjectile() {

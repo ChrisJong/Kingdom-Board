@@ -219,9 +219,11 @@
                         if(this._currentSelectedEntity == EntityType.UNIT) {
 
                             if(temp.IsEnemy(this._currentUnitSelected)) { // Enemy Unit
-                                this._currentUnitSelected.InitiateAttack();
+                                this._currentUnitSelected.InitiateTarget();
                             } else { // Ally Unit
 
+                                if(this._currentUnitSelected.unitType == UnitType.CLERIC)
+                                    this._currentUnitSelected.InitiateTarget();
                             }
 
                         } else if(this._currentSelectedEntity == EntityType.STRUCTURE) {
@@ -414,6 +416,17 @@
 
         private void StandbyHover() {
 
+            if(this._currentSelectedEntity == EntityType.UNIT) {
+                if(this._currentUnitSelected.CurrentState != UnitState.IDLE && this._currentUnitSelected.CurrentState != UnitState.NONE) {
+
+                    if(this._humanController != null)
+                        this._humanController.playerCursor.SetDefault();
+
+                    this._currentUnitSelected.unitUI.DisableMovePath();
+                    return;
+                }
+            }
+
             if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
 
                 HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
@@ -436,7 +449,9 @@
                     }
 
                     // Current Hover is over Enemy.
-                    if(this._currentHover.IsEnemy(this._controller)) {
+                    if(this._currentSelected.IsEnemy(this._currentHover)) {
+
+                        Debug.Log("Current Hover : " + this._currentHover.gameObject.name);
 
                         if(this._currentSelectedEntity == EntityType.UNIT) {
 
@@ -471,15 +486,56 @@
 
                         if(this._currentHover.entityType == EntityType.UNIT) {
 
-                            UnitBase tempUnit = this._currentHover as UnitBase;
+                            if(this._currentSelectedEntity == EntityType.UNIT) {
+
+                                if(this._currentUnitSelected.unitType == UnitType.CLERIC) {
+
+                                    Cleric cleric = this._currentUnitSelected as Cleric;
+
+                                    if(cleric.CanHeal) { // Can Heal
+                                        if(this._humanController != null)
+                                            this._humanController.playerCursor.SetHealReady();
+
+                                        if(cleric.CanMove) {
+
+                                            cleric.SetTarget(this._currentHover);
+
+                                        } else if(cleric.IsMoving) {
+
+                                            if(this._humanController != null)
+                                                this._humanController.playerCursor.SetDefault();
+
+                                            cleric.unitUI.DisableMovePath();
+
+                                        } else {
+                                            cleric.SetTarget(this._currentHover);
+                                        }
+
+                                    } else { // Can't Heal
+
+                                        if(this._humanController != null)
+                                            this._humanController.playerCursor.SetHealNotReady();
+
+                                    }
+
+                                } else {
+
+                                    if(this._humanController != null)
+                                        this._humanController.playerCursor.SetDefault();
+
+                                }
+
+                            } else {
+
+                                if(this._humanController != null)
+                                    this._humanController.playerCursor.SetDefault();
+
+                            }
+
+                        } else {
 
                             if(this._humanController != null)
                                 this._humanController.playerCursor.SetDefault();
-
-                            // If the CurrentSElected Unit is a Cleric Then change the cursor to healing.
-                            if(tempUnit.unitType == UnitType.CLERIC) {
-
-                            }
 
                         }
 
@@ -490,7 +546,7 @@
                 // If im currently just hitting anything other than units or structures e.g. hitting the ground.
                 if(this._currentSelectedEntity == EntityType.UNIT) {
 
-                    this._currentUnitSelected.unitUI.DisableAttackRadius();
+                    this._currentUnitSelected.unitUI.DisableRadius();
 
                     if(this._currentUnitSelected.CanMove) {
 

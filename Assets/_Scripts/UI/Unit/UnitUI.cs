@@ -153,7 +153,7 @@
         public override void Hide() {
             this._selectedTrigger = false;
 
-            this.DisableAttackRadius();
+            this.DisableRadius();
             this.DisableMovePath();
             this.DeactivateOutline();
             this._infomationGroup.SetActive(false);
@@ -210,17 +210,17 @@
             }
         }
 
-        public virtual void EnableMovePathToTarget(Vector3 point) {
+        public virtual void EnableMovePathToTarget(Vector3 point, float range = 0.0f) {
             if(!this._LocatorGroup.activeSelf)
                 this._LocatorGroup.SetActive(true);
 
-            Vector3[] path = this._unitBase.ReturnPathToTarget(point);
+            Vector3[] path = this._unitBase.ReturnPathToTarget(point, range);
             if(path != null) {
                 this._LocatorLine.enabled = true;
                 this._LocatorLine.positionCount = path.Length;
                 this._LocatorLine.SetPositions(path);
                 this._LocatorMarker.position = path[0];
-                this.MoveAttackRadius(path[0]);
+                this.MoveRadius(path[0]);
             }
         }
 
@@ -238,11 +238,17 @@
             this._radiusDrawer.TurnOn();
         }
 
-        public virtual void MoveAttackRadius(Vector3 point) {
+        public virtual void DrawRadius(Color color, float radius) {
+            this._radiusDrawer.DrawRadius(color, radius);
+            this._radiusDrawer.MoveToOrigin();
+            this._radiusDrawer.TurnOn();
+        }
+
+        public virtual void MoveRadius(Vector3 point) {
             this._radiusDrawer.Move(point);
         }
 
-        public virtual void DisableAttackRadius() {
+        public virtual void DisableRadius() {
             this._radiusDrawer.MoveToOrigin();
             this._radiusDrawer.TurnOff();
         }
