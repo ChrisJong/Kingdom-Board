@@ -946,7 +946,7 @@ NavMeshAgent:
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 97
+  avoidancePriority: 18
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -1287,7 +1287,37 @@ MonoBehaviour:
   - {fileID: 137726211705897000}
   - {fileID: 137866386804061472}
   - {fileID: 23530849523166878}
+  - {fileID: 137726211705897000}
+  - {fileID: 137866386804061472}
+  - {fileID: 23530849523166878}
+  - {fileID: 137726211705897000}
+  - {fileID: 137866386804061472}
+  - {fileID: 23530849523166878}
+  - {fileID: 137726211705897000}
+  - {fileID: 137866386804061472}
+  - {fileID: 23530849523166878}
+  - {fileID: 137726211705897000}
+  - {fileID: 137866386804061472}
+  - {fileID: 23530849523166878}
+  - {fileID: 137726211705897000}
+  - {fileID: 137866386804061472}
+  - {fileID: 23530849523166878}
   _unitMaterials:
+  - {fileID: 2100000, guid: f22ccfd404b0b8b4b9e39e870662efef, type: 2}
+  - {fileID: 2100000, guid: db5fb399e803ac94b9bb204d9f850f84, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: f22ccfd404b0b8b4b9e39e870662efef, type: 2}
+  - {fileID: 2100000, guid: db5fb399e803ac94b9bb204d9f850f84, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: f22ccfd404b0b8b4b9e39e870662efef, type: 2}
+  - {fileID: 2100000, guid: db5fb399e803ac94b9bb204d9f850f84, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: f22ccfd404b0b8b4b9e39e870662efef, type: 2}
+  - {fileID: 2100000, guid: db5fb399e803ac94b9bb204d9f850f84, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: f22ccfd404b0b8b4b9e39e870662efef, type: 2}
+  - {fileID: 2100000, guid: db5fb399e803ac94b9bb204d9f850f84, type: 2}
+  - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
   - {fileID: 2100000, guid: f22ccfd404b0b8b4b9e39e870662efef, type: 2}
   - {fileID: 2100000, guid: db5fb399e803ac94b9bb204d9f850f84, type: 2}
   - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
