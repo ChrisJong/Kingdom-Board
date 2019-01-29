@@ -22,7 +22,7 @@ public class coinTest : MonoBehaviour
         mat = GetComponent<Renderer>().material;
     }
 
-    private void Update()
+    /*private void Update()
     {
         //press space to begin fading in the coin
 
@@ -35,69 +35,72 @@ public class coinTest : MonoBehaviour
         {
             ResetCoin();
         }
+    }*/
+
+    public void BeginFlipSequence(bool _isAtk)
+    {
+        StartCoroutine(FadeInCoin(_isAtk));
     }
 
-    IEnumerator FadeCoin(bool _in)
+    IEnumerator FadeInCoin(bool _isAtk)
     {
-        //Get color of the material on coin
         Color newColor = mat.color;
 
-        //Wait a bit before fading out, if we're fading out
-        if (!_in)
-            yield return new WaitForSeconds(fadeDelay);
-
-        //Loop to progressively fade in or out
-        if (_in)
+        while (newColor.a < 1)
         {
-            while (newColor.a < 1)
-            {
-                newColor.a += (fadeSpeed * Time.fixedDeltaTime);
-                if (newColor.a > 1)
-                    newColor.a = 1;
+            newColor.a += (fadeSpeed * Time.fixedDeltaTime);
+            if (newColor.a > 1)
+                newColor.a = 1;
 
-                mat.color = newColor;
+            mat.color = newColor;
 
-                yield return new WaitForFixedUpdate();
-            }
-        }
-        else
-        {
-            while (newColor.a > 0)
-            {
-                newColor.a -= (fadeSpeed * Time.fixedDeltaTime);
-                if (newColor.a < 0)
-                    newColor.a = 0;
-
-                mat.color = newColor;
-
-                yield return new WaitForFixedUpdate();
-            }
+            yield return new WaitForFixedUpdate();
         }
 
-        //If we faded in, then we've finished fading in so flip the coin
-        if (_in)
-            FlipCoin();
+        FlipCoin(_isAtk);
+    }
 
-        //If we faded out, reset the coin. currently for testing
-        if (!_in)
-            ResetCoin();
+    IEnumerator FadeOutCoin()
+    {
+        yield return new WaitForSeconds(fadeDelay);
+
+        //Get color of the material on coin
+        Color newColor = mat.color;
+        
+        while (newColor.a > 0)
+        {
+            newColor.a -= (fadeSpeed * Time.fixedDeltaTime);
+            if (newColor.a < 0)
+                newColor.a = 0;
+
+            mat.color = newColor;
+
+            yield return new WaitForFixedUpdate();
+        }
 
         yield return null;
     }
 
-    void FlipCoin()
+    void FlipCoin(bool _isAtk)
     {
         //0 - 1 defend and 1.000001 - 2 is attack or whatever floating point
         //Remove this and use preferred RNG
         string animationName;
 
-        int rng = UnityEngine.Random.Range(1, 100);
+        /*int rng = UnityEngine.Random.Range(1, 100);
         Debug.Log(rng);
 
         if (rng > 51)
             animationName = "CoinAttack";
         else
             animationName = "CoinDefend";
+        */
+
+        if (_isAtk)
+            animationName = "CoinAttack";
+        else
+            animationName = "CoinDefend";
+
         anim.Play(animationName);
     }
 
@@ -116,6 +119,6 @@ public class coinTest : MonoBehaviour
         //for this callback to work
         //insert extra code here for any callback functionalities required
 
-        StartCoroutine(FadeCoin(false));
+        StartCoroutine(FadeOutCoin());
     }
 }

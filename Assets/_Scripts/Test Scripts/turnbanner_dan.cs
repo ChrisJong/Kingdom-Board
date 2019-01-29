@@ -38,7 +38,7 @@ public class turnbanner_dan : MonoBehaviour
         //PlaySpawnAnimation();
     }
 
-    private void Update()
+    /*private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -50,11 +50,27 @@ public class turnbanner_dan : MonoBehaviour
 
             PlaySpawnAnimation();
         }
+    }*/
+
+    public void PlayBannerAnimation(bool isAtk)
+    {
+        if (isAtk)
+        {
+            bannerImageObj.sprite = attackBannerImage;
+            phaseTextObj.sprite = attackPhaseTextImage;
+        }
+        else
+        {
+            bannerImageObj.sprite = defenceBannerImage;
+            phaseTextObj.sprite = defencePhaseTextImage;
+        }
+
+        PlaySpawnAnimation();
     }
 
     private void PlaySpawnAnimation()
     {
-        Debug.Log("Starting Spawn Animation");
+        //Debug.Log("Starting Spawn Animation");
 
         isAnimating = true;
 
@@ -69,7 +85,7 @@ public class turnbanner_dan : MonoBehaviour
 
     private void PlayEndAnimation()
     {
-        Debug.Log("Starting Fade Out Animation");
+        //Debug.Log("Starting Fade Out Animation");
 
         bannerImageAnim.Play("TurnBannerFadeOut");
         frontRibbonAnim.Play("TurnBannerFadeOut");
@@ -82,7 +98,7 @@ public class turnbanner_dan : MonoBehaviour
 
     private void OnEndAnimation()
     {
-        Debug.Log("Animation Has Ended");
+        /*Debug.Log("Animation Has Ended");
 
         if (currentState == PhaseState.attack)
         {
@@ -101,7 +117,7 @@ public class turnbanner_dan : MonoBehaviour
         else
         {
             Debug.Log("Error: Current State out of index");
-        }
+        }*/
 
         isAnimating = false;
     }
