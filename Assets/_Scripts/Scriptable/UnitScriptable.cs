@@ -25,6 +25,7 @@
         [Header("PREFAB")]
         public GameObject mainPrefab;
         public GameObject deathPrefab;
+        public GameObject placementPrefab;
         public GameObject projectilePrefab;
 
         [Header("DATA - ATTRIBUTE TYPES")]

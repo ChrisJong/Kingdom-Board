@@ -10,6 +10,7 @@
     using Manager;
     using Scriptable;
     using UI;
+    using Unit;
     using Utility;
     using Player;
 
@@ -22,9 +23,13 @@
         private List<SpawnQueueType> _spawnQueue;
         private SpawnQueueType _toSpawn = null;
 
+        private UnitPlacement _unitPlacement = null;
+
         public CastleUI castleUI { get { return this.uiBase as CastleUI; } }
         public List<SpawnQueueType> SpawnQueue { get { return this._spawnQueue; } }
         public SpawnQueueType ToSpawn { get { return this._toSpawn; } set { this._toSpawn = value; } }
+
+        public UnitPlacement unitPlavement { get { return this._unitPlacement; } }
         #endregion
 
         #region CLASS
@@ -148,7 +153,7 @@
             Debug.Log("Distance From CAstle: " + distance.ToString());
 
             if(!Constants.GlobalSettings.Debugging.spawnAnywhere) {
-                if(distance > this._spawnRange) {
+                if(distance > this._spawnRange || distance < 0.5f) {
                     return false;
                 }
             }
@@ -164,6 +169,8 @@
                 this.radiusDrawer.SetActive(false);
 
                 this._toSpawn = null;
+                UnitPoolManager.instance.Return(this._unitPlacement);
+                this._unitPlacement = null;
 
                 return true;
 
@@ -181,21 +188,52 @@
             if(this._toSpawn != null)
                 this._toSpawn.CancelSpawn();
 
+            UnitPoolManager.instance.SpawnPlacement(queue.type, Vector3.zero, out this._unitPlacement);
+            this._toSpawn = queue;
 
             this.controller.playerSelect.ChangeState(SelectionState.SELECT_SPAWNPOINT);
             this.structureState = StructureState.SPAWN;
             this.radiusDrawer.SetActive(true);
-            this._toSpawn = queue;
 
             return true;
         }
 
+        public bool CheckSpawnPoint(Vector3 point) {
+
+            Vector3 newPoint = Vector3.zero;
+
+            if(!Utility.Utils.SamplePosition(point, out newPoint)) {
+                this._unitPlacement.ChangeColor(false);
+                return false;
+            }
+
+            float distance = Vector3.Distance(Utils.ClosesPointToBounds(this._colliderBounds, newPoint), newPoint);
+            Debug.Log("Distance From CAstle: " + distance.ToString());
+
+            this._unitPlacement.SetPlacement(point, this.position);
+
+            if(distance > this._spawnRange || distance < 0.5f) {
+                this._unitPlacement.ChangeColor(false);
+                return false;
+            }
+
+            this._unitPlacement.ChangeColor(true);
+            return true;
+        }
+
+        public void HidePlavement() {
+            this._unitPlacement.Hide();
+        }
+
         public bool CancelSpawn() {
             this._toSpawn.CancelSpawn();
-            this._toSpawn = null;
+            UnitPoolManager.instance.Return(this._unitPlacement);
 
             this.radiusDrawer.SetActive(false);
             this._structureState = StructureState.IDLE;
+
+            this._toSpawn = null;
+            this._unitPlacement = null;
 
             return true;
         }

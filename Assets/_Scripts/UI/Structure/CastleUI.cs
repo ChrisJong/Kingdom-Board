@@ -114,7 +114,7 @@
             this._spawnQueueGroup = this._spawnGroup.Find("Queue_Panel") as RectTransform;
             this._spawnListGroup = this._spawnGroup.Find("UnitTrain_Panel") as RectTransform;
             this._spawnBackground = this._spawnGroup.Find("Background") as RectTransform;
-            this._spawnListGroup.gameObject.AddComponent<TrainBookToggle>().Init(this);
+            this._spawnListGroup.gameObject.AddComponent<BookToggle>().Init(this);
             this._spawnBackground.gameObject.AddComponent<TrainBookToggle>().Init(this);
 
             this._meleePanel = this._spawnListGroup.Find("Melee_Panel") as RectTransform;

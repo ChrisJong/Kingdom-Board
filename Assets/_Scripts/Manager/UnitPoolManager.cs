@@ -22,6 +22,9 @@
         [SerializeField] private UnitPoolSetup[] _poolSetup = new UnitPoolSetup[unitTypeLength];
         private readonly Dictionary<UnitType, UnitPool> _pools = new Dictionary<UnitType, UnitPool>(unitTypeLength, new UnitTypeComparer());
 
+        private int _placementInstanceCount = 3;
+        private readonly Dictionary<UnitType, UnitPlacementPool> _placementPools = new Dictionary<UnitType, UnitPlacementPool>(unitTypeLength, new UnitTypeComparer());
+
         [SerializeField] private List<UnitDeath> _poolDeath = new List<UnitDeath>();
 
         private List<UnitScriptable> _unitDataList = new List<UnitScriptable>();
@@ -55,6 +58,17 @@
                     GameObject host = new GameObject(setup.type.ToString());
                     host.transform.SetParent(managerHost.transform);
 
+                    UnitScriptable unitData = this.FetchUnitData(setup.type);
+                    GameObject placementPrefab = unitData.placementPrefab;
+                    UnitPlacement plavement = placementPrefab.GetComponent<UnitPlacement>();
+
+                    if(plavement != null) {
+                        plavement.unitType = setup.type;
+                    } else {
+                        plavement = placementPrefab.AddComponent<UnitPlacement>();
+                        plavement.unitType = setup.type;
+                    }
+
                     if(setup.prefab.GetComponent<UnitBase>().SetData(this._sortedUnitData[setup.type])) {
                         setup.prefab.GetComponent<UnitBase>().Setup();
                     } else {
@@ -63,6 +77,7 @@
                     }
 
                     this._pools.Add(setup.type, new UnitPool(setup.prefab, host, setup.initialInstanceCount));
+                    this._placementPools.Add(setup.type, new UnitPlacementPool(placementPrefab, host, this._placementInstanceCount));
 
                     setup.prefab.GetComponent<UnitBase>().SetupAnimation();
                 }
@@ -76,7 +91,7 @@
                 return false;
             }
 
-            this.InteralSpawnUnit(type, controller, position);
+            this.InternalSpawnUnit(type, controller, position);
 
             return true;
         }
@@ -90,78 +105,26 @@
             spawnIndex++;
             return true;
         }
-        
-        private bool LoadUnitData() {
 
-            int classCount = System.Enum.GetNames(typeof(UnitClassType)).Length - 2;
-
-            for(int i = 0; i < classCount; i++) {
-                List<UnitScriptable> tempList = new List<UnitScriptable>();
-                string className = ((UnitClassType)i + 1).ToString();
-                string path = "Scriptable/Units/" + className;
-
-                UnityEngine.Object[] temp = Resources.LoadAll(path, typeof(UnitScriptable));
-
-                for(int a = 0; a < temp.Length; a++)
-                    tempList.Add(temp[a] as UnitScriptable);
-
-                tempList.Sort((x1, x2) => x1.classTier.CompareTo(x2.classTier));
-
-                this._sortedUnitClass.Add(((UnitClassType)i + 1), tempList);
-
-                foreach(UnitScriptable data in tempList) {
-                    this._sortedUnitData.Add(data.unitType, data);
-                }
-
-                this._unitDataList.AddRange(tempList);
-
+        public bool SpawnPlacement(UnitType type, Vector3 position, out UnitPlacement plavement) {
+            if(type == UnitType.NONE || type == UnitType.ANY || !this._placementPools.ContainsKey(type)) {
+                Debug.LogError(this.ToString() + " cannot spawn unit of type (not supported): " + type);
+                plavement = null;
+                return false;
             }
 
-            if(this._unitDataList.Count > 0)
-                return true;
-            else
-                return false;
-        }
-
-        private IUnit InteralSpawnUnit(UnitType type, Player controller, Vector3 position) {
-            UnitPool pool = this._pools[type];
-            Vector3 pos = position;
-            pos = Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
-            IUnit unit = pool.Get(pos, Quaternion.identity);
-
-            if(!unit.IsSetup)
-                unit.Setup();
-
-            unit.Init(controller);
-            unit.gameObject.ColorRenderers(controller.PlayerColor);
-
-            controller.AddUnit(unit);
-            unit.transform.SetParent(controller.UnitGroup.transform);
-
-            return unit;
-        }
-
-        private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, uint spawnIndex) {
-            UnitPool pool = this._pools[type];
-            Vector3 pos = CircleHelpers.GetPointOnCircle(position, spawnDistance, anglePerSpawm, spawnIndex);
-            pos = Utility.Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
-            IUnit unit = pool.Get(pos, Quaternion.identity);
-
-            if(!unit.IsSetup)
-                unit.Setup();
-
-            unit.Init(controller);
-            unit.gameObject.ColorRenderers(controller.PlayerColor);
-
-            controller.AddUnit(unit);
-            unit.transform.SetParent(controller.UnitGroup.transform);
-
-            return unit;
+            plavement = this.InternalSpawnPlavement(type, position) as UnitPlacement;
+            return true;
         }
 
         public void Return(IUnit unit) {
             unit.Return();
             this._pools[unit.unitType].Return(unit);
+        }
+
+        public void Return(IUnitPlacement placement) {
+            placement.Return();
+            this._placementPools[placement.unitType].Return(placement);
         }
 
         public void AddUnitDeath(GameObject go) {
@@ -241,6 +204,86 @@
                 Debug.LogError("There Is No Such Class Type Called: " + classType.ToString());
                 return null;
             }
+        }
+
+        private bool LoadUnitData() {
+
+            int classCount = System.Enum.GetNames(typeof(UnitClassType)).Length - 2;
+
+            for(int i = 0; i < classCount; i++) {
+                List<UnitScriptable> tempList = new List<UnitScriptable>();
+                string className = ((UnitClassType)i + 1).ToString();
+                string path = "Scriptable/Units/" + className;
+
+                UnityEngine.Object[] temp = Resources.LoadAll(path, typeof(UnitScriptable));
+
+                for(int a = 0; a < temp.Length; a++)
+                    tempList.Add(temp[a] as UnitScriptable);
+
+                tempList.Sort((x1, x2) => x1.classTier.CompareTo(x2.classTier));
+
+                this._sortedUnitClass.Add(((UnitClassType)i + 1), tempList);
+
+                foreach(UnitScriptable data in tempList) {
+                    this._sortedUnitData.Add(data.unitType, data);
+                }
+
+                this._unitDataList.AddRange(tempList);
+
+            }
+
+            if(this._unitDataList.Count > 0)
+                return true;
+            else
+                return false;
+        }
+
+        private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position) {
+            UnitPool pool = this._pools[type];
+            Vector3 pos = position;
+            pos = Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
+            IUnit unit = pool.Get(pos, Quaternion.identity);
+
+            if(!unit.IsSetup)
+                unit.Setup();
+
+            unit.Init(controller);
+            unit.gameObject.ColorRenderers(controller.PlayerColor);
+
+            controller.AddUnit(unit);
+            unit.transform.SetParent(controller.UnitGroup.transform);
+
+            return unit;
+        }
+
+        private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, uint spawnIndex) {
+            UnitPool pool = this._pools[type];
+            Vector3 pos = CircleHelpers.GetPointOnCircle(position, spawnDistance, anglePerSpawm, spawnIndex);
+            pos = Utility.Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
+            IUnit unit = pool.Get(pos, Quaternion.identity);
+
+            if(!unit.IsSetup)
+                unit.Setup();
+
+            unit.Init(controller);
+            unit.gameObject.ColorRenderers(controller.PlayerColor);
+
+            controller.AddUnit(unit);
+            unit.transform.SetParent(controller.UnitGroup.transform);
+
+            return unit;
+        }
+
+        private IUnitPlacement InternalSpawnPlavement(UnitType type, Vector3 position) {
+            UnitPlacementPool pool = this._placementPools[type];
+            Vector3 pos = position;
+            pos = Utils.GetGroundedPosition(pos + new Vector3(0.0f, 0.5f, 0.0f));
+            IUnitPlacement plavement = pool.Get(pos, Quaternion.identity);
+
+            if(!plavement.IsSetup)
+                plavement.Setup();
+
+            return plavement;
         }
 
         #endregion

@@ -893,19 +893,19 @@
             if(angleInDegrees <= UnitValues.FRONT_L || angleInDegrees >= UnitValues.FRONT_R) {
                 // FRONt.
                 this._unitAnimator.Play("HitFromFront");
-                Debug.Log("ATTACKED FRON FRONT");
+                //Debug.Log("ATTACKED FRON FRONT");
             } else if(angleInDegrees >= UnitValues.BEHIND_L && angleInDegrees <= UnitValues.BEHIND_R) {
                 // BEHIND
                 this._unitAnimator.Play("HitFromBehind");
-                Debug.Log("ATTACKED FROM BEHIND");
+                //Debug.Log("ATTACKED FROM BEHIND");
             } else if(angleInDegrees > UnitValues.FRONT_L && angleInDegrees < UnitValues.BEHIND_L) {
                 // LEFT
                 this._unitAnimator.Play("HitFromLeft");
-                Debug.Log("ATTACKED FROM LEFT");
+                //Debug.Log("ATTACKED FROM LEFT");
             } else if(angleInDegrees > UnitValues.BEHIND_R && angleInDegrees < UnitValues.FRONT_R) {
                 // RIGHT
                 this._unitAnimator.Play("HitFromRight");
-                Debug.Log("ATTACKED FROM RIGHT");
+                //Debug.Log("ATTACKED FROM RIGHT");
             } else {
                 Debug.LogError("Angle TO Degree Is Out Of Bounds, Produced Result: " + angleInDegrees.ToString());
             }

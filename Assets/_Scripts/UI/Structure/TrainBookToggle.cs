@@ -22,6 +22,25 @@
 
         #endregion
 
+        #region UNITY
+
+        private void Update() {
+            if(!this.gameObject.activeSelf)
+                return;
+
+            if(!this._castleUI.SpawnGroupToggle)
+                return;
+
+            if(this.gameObject.activeSelf && this._castleUI.SpawnGroupToggle) {
+                if(Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1)) {
+                    if(!EventSystem.current.IsPointerOverGameObject())
+                        this._castleUI.ToggleSpawnGroup(false);
+                }
+            }
+        }
+
+        #endregion
+
         #region CLASS
 
         public void Init(CastleUI parent) {

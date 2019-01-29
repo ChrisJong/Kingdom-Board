@@ -183,19 +183,8 @@
         private void FreeState() {
             if(Input.GetMouseButtonUp(0)) { // Left Mouse Click
 
-                if(!EventSystem.current.IsPointerOverGameObject())
-                    if(this._controller.castle.castleUI.SpawnGroupToggle)
-                        this._controller.castle.castleUI.ToggleSpawnGroup(false);
-
                 if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer))
                     this.Selection();
-
-            } else if(Input.GetMouseButtonUp(1)) { // Right Mouse Click
-
-                if(!EventSystem.current.IsPointerOverGameObject())
-                    if(this._controller.castle.castleUI.SpawnGroupToggle)
-                        this._controller.castle.castleUI.ToggleSpawnGroup(false);
-
             } else
                 this.FreeHover();
         }
@@ -203,10 +192,6 @@
         private void StandbyState() {
 
             if(Input.GetMouseButtonUp(1)) { // Right Click.
-
-                if(!EventSystem.current.IsPointerOverGameObject())
-                    if(this._controller.castle.castleUI.SpawnGroupToggle)
-                        this._controller.castle.castleUI.ToggleSpawnGroup(false);
 
                 // Cast A Ray Ignoring the ground layer.
                 if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
@@ -247,10 +232,6 @@
 
             } else if(Input.GetMouseButtonUp(0)) { // Left Click. (De-Selection)
 
-                if(!EventSystem.current.IsPointerOverGameObject())
-                    if(this._controller.castle.castleUI.SpawnGroupToggle)
-                        this._controller.castle.castleUI.ToggleSpawnGroup(false);
-
                 if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer))
                     this.Selection();
                 else
@@ -261,6 +242,7 @@
             }
         }
 
+        // NOTE: REMOVE
         private void SelectPoint() {
             if(Input.GetMouseButtonUp(0)) {
                 if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.unitLayer)) {
@@ -277,6 +259,7 @@
             }
         }
 
+        // NOTE: REMOVE
         private void SelectTarget() {
             if(Input.GetMouseButtonUp(0)) {
                 if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
@@ -336,16 +319,20 @@
 
             } else if(Input.GetMouseButtonUp(1)) { // Right Click!
 
-                if(this._controller.castle != null) {
-
+                if(this._controller.castle != null)
                     this._controller.castle.CancelSpawn();
-
-                } else {
+                else
                     Debug.LogError("Player_" + this._controller.id.ToString() + "Doesn't Contain A Castle Object");
-                }
 
                 this._currentState = this._previousState;
                 this._previousState = SelectionState.NONE;
+
+            } else {
+
+                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.unitLayer))
+                    this._controller.castle.CheckSpawnPoint(this._hitInfo.point);
+                else
+                    this._controller.castle.HidePlavement();
 
             }
         }

@@ -16,6 +16,8 @@
 
         #region VARIABLE
 
+        [SerializeField] private bool _toggled = false;
+
         [SerializeField] private Castle _castle;
         [SerializeField] private SpawnQueueType _queueType;
 
@@ -56,10 +58,14 @@
             if(this._castle.controller.playerSelect.CurrentState == SelectionState.SELECT_SPAWNPOINT)
                 return;
 
+            if(this._toggled)
+                return;
+
             if(this.ready) {
                 if(this._castle.controller.CurrentState == PlayerState.DEFENDING)
                     return;
 
+                this._toggled = true;
                 this.Spawn();
             } else {
                 this.Delete();
@@ -75,6 +81,8 @@
         public void Init(float yPos, Castle castle, SpawnQueueType type, Color unitColor, Sprite unitIcon) {
 
             Vector3 pos = new Vector3(-390.0f, yPos, 0.0f);
+
+            this._toggled = false;
 
             this._castle = castle;
             this._queueType = type;
@@ -119,6 +127,7 @@
         }
 
         public void CancelSpawn() {
+            this._toggled = false;
             this.PlayCancelSpawnAnimation();
         }
 
@@ -136,7 +145,6 @@
         }
 
         public void Spawn() {
-            Debug.Log("Spawn");
             this.PlaySetSpawnAnimation();
             this._castle.SetSpawn(this._queueType);
         }
