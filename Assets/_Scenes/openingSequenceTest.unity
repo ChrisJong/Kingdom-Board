@@ -632,7 +632,7 @@ MonoBehaviour:
   playerOneCamera: {fileID: 1401745512}
   playerOneTurnBanner: {fileID: 1647074508}
   openBoardDuration: 2
-  coinFlipDuration: 2.5
+  coinFlipDuration: 3
   moveCamerasDuration: 2.2
 --- !u!1001 &656974225
 PrefabInstance:
@@ -2592,6 +2592,56 @@ PrefabInstance:
     - target: {fileID: 3377445873347915815, guid: 4703f185f3860cd45806d3df2ae46d8d,
         type: 3}
       propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377445873350341319, guid: 4703f185f3860cd45806d3df2ae46d8d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
