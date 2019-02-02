@@ -1321,7 +1321,7 @@ NavMeshAgent:
   m_Radius: 0.75
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 94
+  avoidancePriority: 82
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -1686,6 +1686,15 @@ MonoBehaviour:
   - {fileID: 137214726336101770}
   - {fileID: 137236664516821854}
   - {fileID: 0}
+  - {fileID: 137214726336101770}
+  - {fileID: 137236664516821854}
+  - {fileID: 8213655446999905221}
+  - {fileID: 137214726336101770}
+  - {fileID: 137236664516821854}
+  - {fileID: 8213655446999905221}
+  - {fileID: 137214726336101770}
+  - {fileID: 137236664516821854}
+  - {fileID: 8213655446999905221}
   _unitMaterials:
   - {fileID: 2100000, guid: fa81492ab9594454a91326c2df90565b, type: 2}
   - {fileID: 2100000, guid: 4cec76d879359b1469d4b93b0ebf1762, type: 2}
@@ -2014,6 +2023,15 @@ MonoBehaviour:
   - {fileID: 2100000, guid: fa81492ab9594454a91326c2df90565b, type: 2}
   - {fileID: 2100000, guid: 4cec76d879359b1469d4b93b0ebf1762, type: 2}
   - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: fa81492ab9594454a91326c2df90565b, type: 2}
+  - {fileID: 2100000, guid: 4cec76d879359b1469d4b93b0ebf1762, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: fa81492ab9594454a91326c2df90565b, type: 2}
+  - {fileID: 2100000, guid: 4cec76d879359b1469d4b93b0ebf1762, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: fa81492ab9594454a91326c2df90565b, type: 2}
+  - {fileID: 2100000, guid: 4cec76d879359b1469d4b93b0ebf1762, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &114173060600118826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3295,6 +3313,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9ee9c58fafa0c84889fcb2f240c9b06, type: 3}
+--- !u!23 &8213655446999905221 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5590132700614890531, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
+    type: 3}
+  m_PrefabInstance: {fileID: 4352975393583769574}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8213655446998004005 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5590132700613121731, guid: e9ee9c58fafa0c84889fcb2f240c9b06,

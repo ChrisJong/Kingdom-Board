@@ -2327,7 +2327,7 @@ NavMeshAgent:
   m_Radius: 0.6
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 9
+  avoidancePriority: 18
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -2692,6 +2692,15 @@ MonoBehaviour:
   - {fileID: 137022179370300234}
   - {fileID: 137925511714797680}
   - {fileID: 0}
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 2107696946873238864}
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 2107696946873238864}
+  - {fileID: 137022179370300234}
+  - {fileID: 137925511714797680}
+  - {fileID: 2107696946873238864}
   _unitMaterials:
   - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
   - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
@@ -3020,6 +3029,15 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
   - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
   - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 46ff6ccdbc6dff547aa7d7b633e40674, type: 2}
+  - {fileID: 2100000, guid: 1567df6cedf84914198a50cbb7b683a7, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &114897455371702842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3950,6 +3968,12 @@ PrefabInstance:
 --- !u!4 &2107696946875140016 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5590132700613121731, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
+    type: 3}
+  m_PrefabInstance: {fileID: 5824332058620334451}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &2107696946873238864 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5590132700614890531, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
     type: 3}
   m_PrefabInstance: {fileID: 5824332058620334451}
   m_PrefabAsset: {fileID: 0}

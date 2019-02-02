@@ -11,15 +11,18 @@
     using Manager;
 
     [RequireComponent(typeof(NavMeshObstacle))]
-    public class GoldMine : EntityBase {
+    public class GoldMine : EntityBase
+    {
 
-        [SerializeField] private float _radiusCheck = 3.0f;
+        [SerializeField] private float _radiusCheck = 2.3f;
 
         [SerializeField] private int _gold = 1000;
         [SerializeField] private int _entityCount = 0;
         [SerializeField] private int _playerCount = 0;
         [SerializeField] private int _inControl = -1; // -1 No one in control of this mine.
         [SerializeField] private int[] _controlCount;
+
+        [SerializeField] private Flag[] _flags = new Flag[2];
 
         [SerializeField] private List<HasHealthBase> _entitiesNear = new List<HasHealthBase>();
 
@@ -36,22 +39,26 @@
 
         #region UNITY
 
-        private void OnTriggerEnter(Collider other) {
+        private void OnTriggerEnter(Collider other)
+        {
 
             Debug.Log(other.gameObject.name + " Enter Gold Mine");
 
             HasHealthBase temp = other.GetComponent<HasHealthBase>() as HasHealthBase;
-            if(temp != null) {
+            if (temp != null)
+            {
                 this.AddEntity(temp);
-            }              
+            }
         }
 
-        private void OnTriggerExit(Collider other) {
+        private void OnTriggerExit(Collider other)
+        {
 
             Debug.Log(other.gameObject.name + " Exit Gold Mine");
 
             HasHealthBase temp = other.GetComponent<HasHealthBase>() as HasHealthBase;
-            if(temp != null) {
+            if (temp != null)
+            {
                 this.RemoveEntity(temp);
             }
         }
@@ -59,58 +66,72 @@
         #endregion
 
         #region CLASS
-        public override void Setup() {
+        public override void Setup()
+        {
             this._triggerCollider = this.transform.GetComponent<SphereCollider>() as SphereCollider;
             this._navObstacle = this.transform.GetComponent<NavMeshObstacle>() as NavMeshObstacle;
         }
 
-        public override void Init() {
+        public override void Init()
+        {
             this._triggerCollider.radius = this._radiusCheck;
             this._triggerCollider.isTrigger = true;
             this._navObstacle.carving = true;
             this._playerCount = GameManager.instance.PlayerCount;
             this._controlCount = new int[this._playerCount];
 
-            for(int i = 0; i < this._playerCount; i++)
+            for (int i = 0; i < this._playerCount; i++)
                 this._controlCount[i] = 0;
         }
 
-        public override void Return() {
+        public override void Return()
+        {
 
             this._inControl = -1;
 
             this._entitiesNear.Clear();
         }
 
-        public void CheckControl() {
+        public void CheckControl()
+        {
 
-            if(this._entityCount <= 0 || this._entitiesNear.Count <= 0)
+            if (this._entityCount <= 0 || this._entitiesNear.Count <= 0)
                 return;
 
             bool contolStatus = false;
             int controllerID = -1;
 
-            for(int i = 0; i < this._playerCount; i++) {
+            for (int i = 0; i < this._playerCount; i++)
+            {
 
-                if(this._controlCount[i] <= 0)
+                if (this._controlCount[i] <= 0)
                     continue;
 
-                if(contolStatus == true) {
+                if (contolStatus == true)
+                {
                     contolStatus = false;
                     controllerID = -1;
+                    DestroyFlags();
                     break;
-                } else {
-                    contolStatus = true;
-                    controllerID = i;
+                }
+                else
+                {
+                    if (controllerID != i)
+                    {
+                        contolStatus = true;
+                        controllerID = i;
+                        SpawnFlags(controllerID);
+                    }
                 }
             }
 
             this._inControl = controllerID;
         }
 
-        public void AddEntity(HasHealthBase entity) {
+        public void AddEntity(HasHealthBase entity)
+        {
 
-            if(this._entitiesNear.Contains(entity))
+            if (this._entitiesNear.Contains(entity))
                 return;
 
             this._entitiesNear.Add(entity);
@@ -121,21 +142,39 @@
 
         }
 
-        public void RemoveEntity(HasHealthBase entity) {
+        public void RemoveEntity(HasHealthBase entity)
+        {
 
-            if(!this._entitiesNear.Contains(entity))
+            if (!this._entitiesNear.Contains(entity))
                 return;
 
             this._entitiesNear.Remove(entity);
             this._entityCount--;
-            this._controlCount[entity.controller.id] -= 1; 
+            this._controlCount[entity.controller.id] -= 1;
 
-            if(this._entityCount < 0) {
+            if (this._entityCount < 0)
+            {
                 Debug.LogError("Entity Count Near the Mine Exceeds Negative 0: " + this._entitiesNear.Count.ToString());
             }
 
             this.CheckControl();
-        } 
+        }
+
+        private void SpawnFlags(int controllerId)
+        {
+            for (int i = 0; i < _flags.Length; i++)
+            {
+                _flags[i].OnCapture(controllerId);
+            }
+        }
+
+        private void DestroyFlags()
+        {
+            for (int i = 0; i < _flags.Length; i++)
+            {
+                _flags[i].OnContested();
+            }
+        }
         #endregion
 
     }

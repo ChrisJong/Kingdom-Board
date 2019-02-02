@@ -1088,7 +1088,7 @@ NavMeshAgent:
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 14
+  avoidancePriority: 22
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -1453,6 +1453,15 @@ MonoBehaviour:
   - {fileID: 137246543372352716}
   - {fileID: 137130045205891346}
   - {fileID: 0}
+  - {fileID: 137246543372352716}
+  - {fileID: 137130045205891346}
+  - {fileID: 6914815199658867985}
+  - {fileID: 137246543372352716}
+  - {fileID: 137130045205891346}
+  - {fileID: 6914815199658867985}
+  - {fileID: 137246543372352716}
+  - {fileID: 137130045205891346}
+  - {fileID: 6914815199658867985}
   _unitMaterials:
   - {fileID: 2100000, guid: 35740cb39158ce849904b44db3cc233a, type: 2}
   - {fileID: 2100000, guid: 532796fcb76c471479fe741306e7e614, type: 2}
@@ -1781,6 +1790,15 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 35740cb39158ce849904b44db3cc233a, type: 2}
   - {fileID: 2100000, guid: 532796fcb76c471479fe741306e7e614, type: 2}
   - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
+  - {fileID: 2100000, guid: 35740cb39158ce849904b44db3cc233a, type: 2}
+  - {fileID: 2100000, guid: 532796fcb76c471479fe741306e7e614, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 35740cb39158ce849904b44db3cc233a, type: 2}
+  - {fileID: 2100000, guid: 532796fcb76c471479fe741306e7e614, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 35740cb39158ce849904b44db3cc233a, type: 2}
+  - {fileID: 2100000, guid: 532796fcb76c471479fe741306e7e614, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &114587621768599048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3241,6 +3259,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9ee9c58fafa0c84889fcb2f240c9b06, type: 3}
+--- !u!23 &6914815199658867985 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5590132700614890531, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
+    type: 3}
+  m_PrefabInstance: {fileID: 1324761820657969458}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6914815199656968177 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5590132700613121731, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
