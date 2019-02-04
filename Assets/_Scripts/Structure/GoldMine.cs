@@ -9,56 +9,67 @@
     using Enum;
     using Helpers;
     using Manager;
+    using Player;
 
     [RequireComponent(typeof(NavMeshObstacle))]
-    public class GoldMine : EntityBase
-    {
+    public class GoldMine : EntityBase {
 
-        [SerializeField] private float _radiusCheck = 2.3f;
+        #region VARIABLE
+
+        [SerializeField] private bool _inControl = false;
 
         [SerializeField] private int _gold = 1000;
-        [SerializeField] private int _entityCount = 0;
-        [SerializeField] private int _playerCount = 0;
-        [SerializeField] private int _inControl = -1; // -1 No one in control of this mine.
-        [SerializeField] private int[] _controlCount;
 
-        [SerializeField] private Flag[] _flags = new Flag[2];
+        [SerializeField] private float _radiusCheck = 3.0f;
+
+        [SerializeField] private Player _playerInControl = null;
+
+        private Dictionary<Player, int> _playerUnitCount = new Dictionary<Player, int>();
 
         [SerializeField] private List<HasHealthBase> _entitiesNear = new List<HasHealthBase>();
 
-        [SerializeField] private SphereCollider _triggerCollider = null;
+        private SphereCollider _triggerCollider = null;
 
-        [SerializeField] private NavMeshObstacle _navObstacle = null;
+        private NavMeshObstacle _navObstacle = null;
 
         public StructureClassType classType { get { return StructureClassType.NEUTRAL; } }
         public StructureType structureType { get { return StructureType.GOLDMINE; } }
         public override EntityType entityType { get { return EntityType.STRUCTURE; } }
 
         public int Gold { get { return this._gold; } }
-        public int InContol { get { return this._inControl; } }
+        public bool InControl { get { return this._inControl; } }
+        public Player PlayerInControl { get { return this._playerInControl; } }
+        #endregion
+
+        [SerializeField] private Flag[] _flags = new Flag[2];
+
+
+
+
+
+
+
+
+
 
         #region UNITY
 
-        private void OnTriggerEnter(Collider other)
-        {
+        private void OnTriggerEnter(Collider other) {
 
             Debug.Log(other.gameObject.name + " Enter Gold Mine");
 
             HasHealthBase temp = other.GetComponent<HasHealthBase>() as HasHealthBase;
-            if (temp != null)
-            {
+            if(temp != null) {
                 this.AddEntity(temp);
             }
         }
 
-        private void OnTriggerExit(Collider other)
-        {
+        private void OnTriggerExit(Collider other) {
 
             Debug.Log(other.gameObject.name + " Exit Gold Mine");
 
             HasHealthBase temp = other.GetComponent<HasHealthBase>() as HasHealthBase;
-            if (temp != null)
-            {
+            if(temp != null) {
                 this.RemoveEntity(temp);
             }
         }
@@ -66,112 +77,127 @@
         #endregion
 
         #region CLASS
-        public override void Setup()
-        {
+        public override void Setup() {
             this._triggerCollider = this.transform.GetComponent<SphereCollider>() as SphereCollider;
             this._navObstacle = this.transform.GetComponent<NavMeshObstacle>() as NavMeshObstacle;
         }
 
-        public override void Init()
-        {
+        public override void Init() {
             this._triggerCollider.radius = this._radiusCheck;
             this._triggerCollider.isTrigger = true;
             this._navObstacle.carving = true;
-            this._playerCount = GameManager.instance.PlayerCount;
-            this._controlCount = new int[this._playerCount];
 
-            for (int i = 0; i < this._playerCount; i++)
-                this._controlCount[i] = 0;
+            this._inControl = false;
+            this._playerInControl = null;
         }
 
-        public override void Return()
-        {
+        public void Init(List<Player> players) {
 
-            this._inControl = -1;
+            foreach(Player p in players)
+                this._playerUnitCount.Add(p, 0);
+
+            this.Init();
+        }
+
+        public override void Return() {
+
+            this._playerInControl = null;
 
             this._entitiesNear.Clear();
+            this._playerUnitCount.Clear();
         }
 
-        public void CheckControl()
-        {
+        public void CheckControl() {
 
-            if (this._entityCount <= 0 || this._entitiesNear.Count <= 0)
-                return;
+            bool controlStatus = false;
+            Player control = null;
 
-            bool contolStatus = false;
-            int controllerID = -1;
-
-            for (int i = 0; i < this._playerCount; i++)
-            {
-
-                if (this._controlCount[i] <= 0)
-                    continue;
-
-                if (contolStatus == true)
-                {
-                    contolStatus = false;
-                    controllerID = -1;
+            if(this._entitiesNear.Count <= 0) {
+                if(this._inControl)
                     DestroyFlags();
-                    break;
-                }
-                else
-                {
-                    if (controllerID != i)
-                    {
-                        contolStatus = true;
-                        controllerID = i;
-                        SpawnFlags(controllerID);
-                    }
-                }
+
+                this._inControl = controlStatus;
+                this._playerInControl = control;
+                return;
             }
 
-            this._inControl = controllerID;
+            foreach(Player p in this._playerUnitCount.Keys) {
+
+                if(this._playerUnitCount[p] <= 0) // If there are no units for the specific player then continue to the next player.
+                    continue;
+
+                if(controlStatus) { // Gold Mine is being contested.
+                    controlStatus = false;
+                    control = null;
+                    if(this._playerInControl != null)
+                        DestroyFlags();
+                    break;
+                }
+
+                // A Player is in control of the gold mine
+                controlStatus = true;
+                control = p;
+            }
+
+            if(control != null && this._playerInControl != null) {
+                if(control != this._playerInControl)
+                    SpawnFlags((int)control.id);
+            } else if(control != null && this._playerInControl == null) {
+                SpawnFlags((int)control.id);
+            }
+
+            this._inControl = controlStatus;
+            this._playerInControl = control;
         }
 
-        public void AddEntity(HasHealthBase entity)
-        {
+        public void AddEntity(HasHealthBase entity) {
 
-            if (this._entitiesNear.Contains(entity))
+            if(this._entitiesNear.Contains(entity))
                 return;
 
             this._entitiesNear.Add(entity);
-            this._entityCount++;
-            this._controlCount[entity.controller.id] += 1;
+
+            this._playerUnitCount[entity.controller] += 1;
+
+            /*if(entity.controller == this._playerInControl)
+                return;*/
 
             this.CheckControl();
-
         }
 
-        public void RemoveEntity(HasHealthBase entity)
-        {
+        public void RemoveEntity(HasHealthBase entity) {
 
-            if (!this._entitiesNear.Contains(entity))
+            if(!this._entitiesNear.Contains(entity))
                 return;
 
-            this._entitiesNear.Remove(entity);
-            this._entityCount--;
-            this._controlCount[entity.controller.id] -= 1;
-
-            if (this._entityCount < 0)
-            {
+            if(this._entitiesNear.Count < 0) {
                 Debug.LogError("Entity Count Near the Mine Exceeds Negative 0: " + this._entitiesNear.Count.ToString());
+                return;
             }
+
+            this._entitiesNear.Remove(entity);
+
+            if(this._playerUnitCount[entity.controller] < 0) {
+                Debug.LogError(entity.controller.name + " Entity Count Near the Mine Exceeds Negative 0: " + this._playerUnitCount[entity.controller].ToString());
+                return;
+            }
+            this._playerUnitCount[entity.controller] -= 1;
 
             this.CheckControl();
         }
 
-        private void SpawnFlags(int controllerId)
-        {
-            for (int i = 0; i < _flags.Length; i++)
-            {
+        private void SpawnFlags(int controllerId) {
+            Debug.Log("Spawn Mine");
+
+            for(int i = 0; i < _flags.Length; i++) {
                 _flags[i].OnCapture(controllerId);
             }
         }
 
-        private void DestroyFlags()
-        {
-            for (int i = 0; i < _flags.Length; i++)
-            {
+        private void DestroyFlags() {
+            Debug.Log("Destory Mine");
+
+            for(int i = 0; i < _flags.Length; i++) {
                 _flags[i].OnContested();
             }
         }

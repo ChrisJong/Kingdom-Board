@@ -10,7 +10,7 @@
     public abstract class EntityBase : ObjectPoolBase, IEntity {
 
         #region VARIABLE
-        private bool _isSetup = false;
+        [SerializeField] private bool _isSetup = false;
 
         public abstract EntityType entityType { get; }
 

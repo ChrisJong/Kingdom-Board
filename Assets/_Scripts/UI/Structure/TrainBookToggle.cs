@@ -31,10 +31,11 @@
             if(!this._castleUI.SpawnGroupToggle)
                 return;
 
-            if(this.gameObject.activeSelf && this._castleUI.SpawnGroupToggle) {
+            if(this._castleUI.SpawnGroupToggle && !this._castleUI.SpawnGroupMoving) {
                 if(Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1)) {
-                    if(!EventSystem.current.IsPointerOverGameObject())
+                    if(!EventSystem.current.IsPointerOverGameObject()) {
                         this._castleUI.ToggleSpawnGroup(false);
+                    }
                 }
             }
         }

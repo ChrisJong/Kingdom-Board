@@ -73,6 +73,7 @@
         private RectTransform _magicPanel = null;
         private RectTransform _magicButtonPanel = null;
 
+        public bool SpawnGroupMoving { get { return this._spawnGroupMoving; } }
         public bool SpawnGroupToggle { get { return this._spawnGroupToggle; } }
 
         #endregion
@@ -96,8 +97,8 @@
             this._healthGroup = this._infomationGroup.transform.Find("BG").Find("Health").gameObject;
             this._healthBarTransform = this._healthGroup.transform.Find("Bar").transform as RectTransform;
 
-            Debug.Log("Health Bar Size Delta: " + this._healthBarTransform.sizeDelta.ToString());
-            Debug.Log("Health Bar Rect: " + this._healthBarTransform.rect.ToString());
+            //Debug.Log("Health Bar Size Delta: " + this._healthBarTransform.sizeDelta.ToString());
+            //Debug.Log("Health Bar Rect: " + this._healthBarTransform.rect.ToString());
 
             this._healthText = this._healthGroup.transform.Find("Text").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
             if(this._hoverUI == null) {

@@ -28,6 +28,7 @@
         protected PlayerUI _playerUI;
 
         [SerializeField] protected PlayerState _currentState = PlayerState.NONE;
+        [SerializeField] protected PlayerState _nextState = PlayerState.NONE;
 
         private Castle _castle;
         private IList<IStructure> _structures;
@@ -139,7 +140,8 @@
         public void StartTurn() {
 
             if(this._isAttacking) {
-                this._currentState = PlayerState.ATTACKING;
+                this._currentState = PlayerState.WAITING;
+                this._nextState = PlayerState.ATTACKING;
                 this._playerSelect.CurrentState = SelectionState.FREE;
                 GameManager.instance.StartPlayTimer();
             } else {
@@ -152,7 +154,7 @@
             this.playerUI.Display();
             //this.uiComponent.ShowBanner();
 
-            if(this._currentState == PlayerState.ATTACKING) {
+            if(this._isAttacking) {
                 this._castle.CheckSpawnQueue();
                 this._research.CheckResearchPhase(GameManager.instance.RoundCount);
             }
@@ -209,6 +211,15 @@
                 StructurePoolManager.instance.Return(this._structures[i]);
 
             this.gameObject.SetActive(false);
+        }
+
+        public bool ChangeState() {
+            if(this._nextState == PlayerState.NONE)
+                return false;
+
+            this._currentState = this._nextState;
+            this._nextState = PlayerState.NONE;
+            return true;
         }
 
         public bool IsAlly(IHasHealth other) {

@@ -40,7 +40,7 @@
 
         public void Update() {
 
-            if(this.Controller.CurrentState == PlayerState.ATTACKING || this.Controller.CurrentState == PlayerState.DEFENDING) {
+            if(this._controller.CurrentState == PlayerState.ATTACKING || this._controller.CurrentState == PlayerState.DEFENDING || this._controller.CurrentState == PlayerState.WAITING) {
                 this._endTurnButton.UpdateButton();
                 this.UpdateInfo();
             }

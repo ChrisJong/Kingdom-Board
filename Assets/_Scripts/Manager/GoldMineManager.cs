@@ -44,7 +44,7 @@
                 }
 
                 script.Setup();
-                script.Init();
+                script.Init(GameManager.instance.Players);
 
                 this._mineCount++;
             }
@@ -55,7 +55,7 @@
             int gold = 0;
 
             foreach(GoldMine mine in this._goldMineList) {
-                if(mine.InContol == controller.id) {
+                if(mine.PlayerInControl == controller) {
                     gold += mine.Gold;
                 }
             }

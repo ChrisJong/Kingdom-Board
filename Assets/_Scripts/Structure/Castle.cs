@@ -127,6 +127,10 @@
                 this._unitQueueCount++;
                 this._spawnQueue.Add(temp);
 
+                if(!Constants.GlobalSettings.Debugging.lockedTraining) {
+                    temp.Countdown();
+                }
+
                 return true;
             }
 

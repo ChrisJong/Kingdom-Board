@@ -49,7 +49,7 @@
         [SerializeField] protected List<Renderer> _renderers;
         [SerializeField] protected List<Material> _unitMaterials;
 
-        private LineRenderDrawCircle _radiusDrawer = null;
+        [SerializeField] private LineRenderDrawCircle _radiusDrawer = null;
         #endregion
 
         #region UNITY
@@ -58,6 +58,9 @@
         #region CLASS
         public void Setup(UnitBase unitBase) {
             this._unitBase = unitBase;
+
+            this._renderers.Clear();
+            this._unitMaterials.Clear();
 
             foreach(Renderer renderer in this.GetComponentsInChildren<Renderer>()) {
                 this._renderers.Add(renderer);
@@ -74,6 +77,12 @@
             } else {
                 this._radiusDrawer.Init();
                 this._radiusDrawer.TurnOff();
+            }
+
+            if(this._hoverUI == null) {
+                this._hoverUI = this.transform.Find("_UIHover").gameObject;
+                this._hoverUICanvas = this._hoverUI.GetComponent<Canvas>() as Canvas;
+                this._hoverUITransform = this._hoverUI.transform as RectTransform;
             }
 
             this.Setup();
@@ -95,11 +104,6 @@
             this._LocatorLine = this._LocatorGroup.GetComponent<LineRenderer>() as LineRenderer;
             this._LocatorMarker = this._LocatorGroup.transform.Find("Marker").gameObject.transform;
 
-            if(this._hoverUI == null) {
-                this._hoverUI = this.transform.Find("_UIHover").gameObject;
-                this._hoverUICanvas = this._hoverUI.GetComponent<Canvas>() as Canvas;
-                this._hoverUITransform = this._hoverUI.transform as RectTransform;
-            }
             this._hoverUICanvas.worldCamera = controller.playerCamera.mainCamera;
             this._hoverUI.SetActive(false);
         }

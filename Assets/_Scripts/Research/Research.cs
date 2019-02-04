@@ -183,6 +183,7 @@
 
                 this._previousState = this._currentState;
                 this._currentState = ResearchState.FINISHED;
+                this._controller.ChangeState();
 
             } else if(this._currentState == ResearchState.UPGRADE) {
                 this._backButton.gameObject.SetActive(false);
@@ -210,6 +211,7 @@
 
                 this._previousState = this._currentState;
                 this._currentState = ResearchState.FINISHED;
+                this._controller.ChangeState();
             }
         }
 

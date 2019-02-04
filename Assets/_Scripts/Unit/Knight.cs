@@ -4,7 +4,7 @@
 
     using UI;
 
-    [RequireComponent(typeof(WarriorUI))]
+    [RequireComponent(typeof(KnightUI))]
     public sealed class Knight : UnitBase {
     }
 }

@@ -79,6 +79,7 @@
         [SerializeField] protected float _explosionForce = 0.0f;
 
         [SerializeField] protected Animator _unitAnimator = null;
+        [SerializeField] protected Animator _pedestalAnimator = null;
 
         [SerializeField] protected GameObject _deathPrefab = null;
 
@@ -140,6 +141,8 @@
 
         public override void Setup() {
 
+            Debug.Log("Unit Setup");
+
             this._projectilePrefab = this._data.projectilePrefab;
             this._deathPrefab = this._data.deathPrefab;
 
@@ -174,6 +177,17 @@
             if(this._unitAnimator == null) {
                 Debug.LogError("The Unit (" + this.gameObject.name + ") Doesn't Have An Animator Component");
                 throw new System.ArgumentNullException("Unit Animator Is Missing");
+            }
+
+            GameObject pedestal = this.transform.Find("pedestal").gameObject;
+            if(pedestal == null)
+                Debug.LogError("No Pedestal Attached To " + this.gameObject.name + " - Please Add One!");
+            else {
+                this._pedestalAnimator = pedestal.GetComponent<Animator>();
+                if(this._pedestalAnimator == null) {
+                    Debug.LogError("The Unit (" + this.gameObject.name + ") Doesn't Have An Animator Component On the Pedestal");
+                    throw new System.ArgumentNullException("Unit Pedestal Animator Is Missing");
+                }
             }
 
             this._navMeshAgent = this.GetComponent<NavMeshAgent>();
@@ -893,18 +907,22 @@
             if(angleInDegrees <= UnitValues.FRONT_L || angleInDegrees >= UnitValues.FRONT_R) {
                 // FRONt.
                 this._unitAnimator.Play("HitFromFront");
+                this._pedestalAnimator.Play("HitFromFront");
                 //Debug.Log("ATTACKED FRON FRONT");
             } else if(angleInDegrees >= UnitValues.BEHIND_L && angleInDegrees <= UnitValues.BEHIND_R) {
                 // BEHIND
                 this._unitAnimator.Play("HitFromBehind");
+                this._pedestalAnimator.Play("HitFromBehind");
                 //Debug.Log("ATTACKED FROM BEHIND");
             } else if(angleInDegrees > UnitValues.FRONT_L && angleInDegrees < UnitValues.BEHIND_L) {
                 // LEFT
                 this._unitAnimator.Play("HitFromLeft");
+                this._pedestalAnimator.Play("HitFromLeft");
                 //Debug.Log("ATTACKED FROM LEFT");
             } else if(angleInDegrees > UnitValues.BEHIND_R && angleInDegrees < UnitValues.FRONT_R) {
                 // RIGHT
                 this._unitAnimator.Play("HitFromRight");
+                this._pedestalAnimator.Play("HitFromLeft");
                 //Debug.Log("ATTACKED FROM RIGHT");
             } else {
                 Debug.LogError("Angle TO Degree Is Out Of Bounds, Produced Result: " + angleInDegrees.ToString());

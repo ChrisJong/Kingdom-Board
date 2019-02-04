@@ -5,13 +5,13 @@
 
     using UnityEngine;
 
-    [RequireComponent(typeof(LineRenderer))]
+    [System.Serializable, RequireComponent(typeof(LineRenderer))]
     public abstract class LineRender : MonoBehaviour, ILineRender {
 
-        protected Transform _transform;
-        protected GameObject _gameobject;
+        [SerializeField] protected Transform _transform;
+        [SerializeField] protected GameObject _gameobject;
 
-        private LineRenderer _lineRenderer = null;
+        [SerializeField] private LineRenderer _lineRenderer = null;
 
         public LineRenderer lineRenderer { get { return this._lineRenderer; } }
 

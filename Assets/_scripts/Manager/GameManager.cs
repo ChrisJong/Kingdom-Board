@@ -20,7 +20,7 @@
         [SerializeField] private int _indexInView = 0;
 
         [SerializeField] private float _countdown = 0.0f;
-        private float _countdownLimit = 120.0f;
+        private float _countdownLimit = 999.0f;
 
         private List<Player> _players = new List<Player>();
         private List<Transform> _spawnPoints = new List<Transform>();
@@ -38,6 +38,7 @@
 
         public float Countdown { get { return this._countdown; } }
 
+        public List<Player> Players { get { return this._players; } }
         public Player PlayerOnAttack { get { return this._playerOnAttack; } }
         public Player PlayerInView { get { return this._playerInView; } }
         #endregion

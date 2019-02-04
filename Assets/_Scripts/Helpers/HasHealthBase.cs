@@ -15,9 +15,9 @@
 
         [Header("ENTITY - HEALTH & ENERGY")]
         [SerializeField] protected float _currentHealth = 0.0f; 
-        protected float _maxHealth = 0.0f;
+        [SerializeField] protected float _maxHealth = 0.0f;
         [SerializeField] protected float _currentEnergy = 0.0f;
-        protected float _maxEnergy = 0.0f;
+        [SerializeField] protected float _maxEnergy = 0.0f;
         private float _lastAttacked = 0.0f;
 
         public float CurrentHealth { get { return this._currentHealth; } }
