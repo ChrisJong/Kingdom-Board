@@ -41,11 +41,11 @@ Cloth:
   m_GameObject: {fileID: 8569458699232957241}
   m_Enabled: 1
   m_StretchingStiffness: 1
-  m_BendingStiffness: 0
+  m_BendingStiffness: 1
   m_UseTethers: 1
   m_UseGravity: 1
   m_Damping: 0
-  m_ExternalAcceleration: {x: 2, y: 0, z: 1}
+  m_ExternalAcceleration: {x: 0.75, y: 0, z: 1}
   m_RandomAcceleration: {x: 1, y: 1, z: 1}
   m_WorldVelocityScale: 0.5
   m_WorldAccelerationScale: 1
@@ -1431,8 +1431,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: -0.000000002384186, y: 0, z: 0.0000000055879354}
-    m_Extent: {x: 0.07500003, y: 0.2, z: 0.000000017881398}
+    m_Center: {x: -0.00038268216, y: -0.000011771917, z: 0.00011142902}
+    m_Extent: {x: 0.07538272, y: 0.20001173, z: 0.000111441375}
   m_DirtyAABB: 0
 --- !u!1 &8569458699232957247
 GameObject:
