@@ -144,7 +144,7 @@
         }
 
         public override bool ReceiveDamage(float damage, IHasHealth target) {
-            if(this.isDead)
+            if(this.IsDead)
                 return true;
 
             float finalDamage = 0.0f;
@@ -158,8 +158,8 @@
 
             if(this.CurrentHealth <= 0.0f) {
 
-                if(this.controller != null && this.controller.structures != null)
-                    this.controller.structures.Remove(this);
+                if(this.Controller != null && this.Controller.structures != null)
+                    this.Controller.structures.Remove(this);
 
                 // NOTE: spawn in particle effects.
                 this.ReturnStructure();

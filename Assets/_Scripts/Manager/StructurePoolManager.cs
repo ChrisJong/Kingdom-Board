@@ -1,6 +1,5 @@
 ﻿namespace Manager {
 
-    using System;
     using System.Collections;
     using System.Collections.Generic;
 
@@ -14,7 +13,7 @@
 
     public sealed class StructurePoolManager : SingletonMono<StructurePoolManager> {
 
-        private static readonly int structureTypeLength = Enum.GetNames(typeof(StructureType)).Length - 2;
+        private static readonly int structureTypeLength = System.Enum.GetNames(typeof(StructureType)).Length - 2;
 
         [SerializeField] private StructurePoolSetup[] _poolSetup = new StructurePoolSetup[structureTypeLength];
         private readonly Dictionary<StructureType, StructurePool> _pools = new Dictionary<StructureType, StructurePool>(structureTypeLength, new StructureTypeComparer());

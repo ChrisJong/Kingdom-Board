@@ -28,7 +28,6 @@
 
         private Image _bannerImage = null;
         private Image _textBannerImage = null;
-        private Image _ribbonImage = null;
 
         private Animation _bannerAnim = null;
         private Animation _textBannerAnim = null;
@@ -50,7 +49,6 @@
             }
 
             if(this._ribbonBanner != null) {
-                this._ribbonImage = this._ribbonBanner.GetComponent<Image>() as Image;
                 this._ribbonAnim = this._ribbonBanner.GetComponent<Animation>() as Animation;
             }
 

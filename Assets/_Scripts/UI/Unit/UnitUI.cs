@@ -7,61 +7,66 @@
     using UnityEngine.UI;
     using TMPro;
 
+    using Constants;
     using Unit;
     using Player;
     using Utility;
 
     public abstract class UnitUI : UIBase {
 
-        #region INFO_UI
+        #region VARIABLE
+        [Space]
+        [SerializeField] private bool _selectedTrigger = false;
+        [SerializeField] private bool _hoverTrigger = false;
 
-        private GameObject _infomationGroup;
+        [Space]
+        [SerializeField] protected UnitBase _unitBase;
 
-        [SerializeField] private Image _unitIcon;
+        [SerializeField] private LineRenderDrawCircle _radiusDrawer = null;
 
-        [SerializeField] private GameObject _healthGroup;
-        private TextMeshProUGUI _healthText;
-        private RectTransform _healthBarTransform;
-
-        [SerializeField] private GameObject _staminaGroup;
-        private TextMeshProUGUI _staminaText;
-        private RectTransform _staminaBarTransform;
+        [SerializeField, HideInInspector] protected List<Renderer> _renderers;
+        [SerializeField, HideInInspector] protected List<Material> _unitMaterials;
 
         [SerializeField] private GameObject _LocatorGroup;
         private LineRenderer _LocatorLine;
         private Transform _LocatorMarker;
 
-        [SerializeField] protected GameObject _hoverUI = null;
-        [SerializeField] protected RectTransform _hoverUITransform = null;
-        [SerializeField] protected Canvas _hoverUICanvas = null;
+        [Header("UNIT - MAIN UI")]
+        [SerializeField] private Image _unitIcon;
 
-        [SerializeField]
-        private bool _hoverTrigger = false;
-        [SerializeField] private bool _selectedTrigger = false;
+        [Space]
+        [SerializeField] private GameObject _healthGroup;
+
+        private TextMeshProUGUI _healthText;
+
+        private RectTransform _healthBarTransform;
+
+        [SerializeField] private GameObject _staminaGroup;
+
+        private TextMeshProUGUI _staminaText;
+
+        private RectTransform _staminaBarTransform;
+
+        [Header("UNIT - HOVER UI")]
+        [SerializeField] protected GameObject _hoverGroup = null;
+
+        [SerializeField] protected RectTransform _hoverTransform = null;
+
+        [SerializeField] protected Canvas _hoverCanvas = null;
+
+        [Space]
+        [SerializeField] protected Image _healthImage = null;
+        [SerializeField] protected Image _staminaImage = null;
 
         public bool HoverTrigger { get { return this._hoverTrigger; } }
-
-        #endregion
-
-        #region VARIABLE
-        [SerializeField] protected UnitBase _unitBase;
-
-        [SerializeField] protected List<Renderer> _renderers;
-        [SerializeField] protected List<Material> _unitMaterials;
-
-        [SerializeField] private LineRenderDrawCircle _radiusDrawer = null;
-        #endregion
-
-        #region UNITY
         #endregion
 
         #region CLASS
-        public void Setup(UnitBase unitBase) {
+        public virtual void Setup(UnitBase unitBase) {
             this._unitBase = unitBase;
 
             this._renderers.Clear();
             this._unitMaterials.Clear();
-
             foreach(Renderer renderer in this.GetComponentsInChildren<Renderer>()) {
                 this._renderers.Add(renderer);
 
@@ -79,39 +84,48 @@
                 this._radiusDrawer.TurnOff();
             }
 
-            if(this._hoverUI == null) {
-                this._hoverUI = this.transform.Find("_UIHover").gameObject;
-                this._hoverUICanvas = this._hoverUI.GetComponent<Canvas>() as Canvas;
-                this._hoverUITransform = this._hoverUI.transform as RectTransform;
-            }
+            if(this._hoverGroup == null) {
+                this._hoverGroup = this.transform.Find(UIValues.Unit.UNIT_UI_HOVER).gameObject;
+                this._hoverCanvas = this._hoverGroup.GetComponent<Canvas>() as Canvas;
+                this._hoverTransform = this._hoverGroup.transform as RectTransform;
 
-            this.Setup();
+                this._healthImage = this._hoverTransform.Find("Health" + UIValues.IMAGE_SUFFIX).GetComponent<Image>();
+                this._staminaImage = this._hoverTransform.Find("Stamina" + UIValues.IMAGE_SUFFIX).GetComponent<Image>();
+            }
         }
 
         public override void Init(Player controller) {
             base.Init(controller);
 
-            this._infomationGroup = this._controller.playerUI.unitUIGroup;
-            this._unitIcon = this._infomationGroup.transform.Find("UnitIcon").Find("Image").GetComponent<Image>() as Image;
-            this._healthGroup = this._infomationGroup.transform.Find("BG").Find("Health").gameObject;
-            this._healthBarTransform = this._healthGroup.transform.Find("Bar").transform as RectTransform;
-            this._healthText = this._healthGroup.transform.Find("Text").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
-            this._staminaGroup = this._infomationGroup.transform.Find("BG").Find("Stamina").gameObject;
-            this._staminaBarTransform = this._staminaGroup.transform as RectTransform;
-            this._staminaText = this._staminaGroup.transform.Find("Text").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
+            this._mainGroup = this._controller.playerUI.unitUIGroup;
+            if(this._mainGroup != null) {
+                this._mainRectTransform = this._mainGroup.transform as RectTransform;
+                this._mainCanvas = this._mainGroup.GetComponent<Canvas>();
+
+                this._unitIcon = this._mainGroup.transform.Find("Icon_Base").Find("Icon" + UIValues.IMAGE_SUFFIX).GetComponent<Image>() as Image;
+
+                this._healthGroup = this._mainGroup.transform.Find("Base").Find("Health").gameObject;
+                this._healthText = this._healthGroup.transform.Find(UIValues.TEXT_SUFFIX).GetComponent<TextMeshProUGUI>();
+                this._healthBarTransform = this._healthGroup.transform.Find(UIValues.IMAGE_SUFFIX).transform as RectTransform;
+
+                this._staminaGroup = this._mainGroup.transform.Find("Base").Find("Stamina").gameObject;
+                this._staminaText = this._staminaGroup.transform.Find(UIValues.TEXT_SUFFIX).GetComponent<TextMeshProUGUI>();
+                this._staminaBarTransform = this._staminaGroup.transform.Find(UIValues.IMAGE_SUFFIX).transform as RectTransform;
+            }
 
             this._LocatorGroup = this._controller.playerUI.unitLocator;
-            this._LocatorLine = this._LocatorGroup.GetComponent<LineRenderer>() as LineRenderer;
-            this._LocatorMarker = this._LocatorGroup.transform.Find("Marker").gameObject.transform;
+            if(this._LocatorGroup != null) {
+                this._LocatorLine = this._LocatorGroup.GetComponent<LineRenderer>() as LineRenderer;
+                this._LocatorMarker = this._LocatorGroup.transform.Find("Marker").gameObject.transform;
+            }
 
-            this._hoverUICanvas.worldCamera = controller.playerCamera.mainCamera;
-            this._hoverUI.SetActive(false);
+            this._hoverCanvas.worldCamera = controller.playerCamera.mainCamera;
+            this._hoverGroup.SetActive(false);
         }
 
         public override void Return() {
-            this._hoverUICanvas.worldCamera = null;
+            this._hoverCanvas.worldCamera = null;
 
-            this._infomationGroup = null;
             this._unitIcon = null;
             this._healthGroup = null;
             this._healthBarTransform = null;
@@ -127,7 +141,7 @@
         }
 
         public override void UpdateUI() {
-            // information Group
+            // Main Group
             float healthBarWidth = 290.0f; // Stored Width of the health Bar.
             float newHealth = healthBarWidth * (this._unitBase.CurrentHealth / this._unitBase.MaxHealth);
             Vector2 newRect = new Vector2(newHealth, this._healthBarTransform.rect.height);
@@ -143,15 +157,23 @@
             this._unitIcon.sprite = this._unitBase.Data.iconSprite;
         }
 
-        public override void Display() {
-            Debug.Log("Show Unit UI");
+        public void UpdateHoverUI() {
+            // Hover Group
+            float newHealth = UIValues.Unit.FULL_HEALTH * (this._unitBase.CurrentHealth / this._unitBase.MaxHealth);
+            float newStamina = UIValues.Unit.FULL_STAMINA * (this._unitBase.CurrentEnergy / this._unitBase.MaxEnergy);
 
+            this._healthImage.fillAmount = newHealth;
+            this._staminaImage.fillAmount = newStamina;
+        }
+
+        public override void Display() {
             this.UpdateUI();
 
             this._selectedTrigger = true;
 
             this.ActivateOutline(Color.green);
-            this._infomationGroup.SetActive(true);
+
+            this._mainGroup.SetActive(true);
         }
 
         public override void Hide() {
@@ -160,11 +182,11 @@
             this.DisableRadius();
             this.DisableMovePath();
             this.DeactivateOutline();
-            this._infomationGroup.SetActive(false);
+
+            this._mainGroup.SetActive(false);
         }
 
-        public override void OnEnter() {
-        }
+        public override void OnEnter() {}
 
         public override void OnEnter(Player controller) {
 
@@ -172,6 +194,8 @@
                 return;
 
             this._hoverTrigger = true;
+
+            this.UpdateHoverUI();
 
             Debug.Log("Show Unit Hover UI");
 
@@ -182,7 +206,7 @@
                     this.ActivateOutline(Color.red);
             }
 
-            this._hoverUI.SetActive(true);
+            this._hoverGroup.SetActive(true);
         }
 
         public override void OnExit() {
@@ -192,12 +216,13 @@
             this._hoverTrigger = false;
             if(!this._selectedTrigger)
                 this.DeactivateOutline();
-            this._hoverUI.SetActive(false);
+
+            this._hoverGroup.SetActive(false);
         }
 
         public override void ResetUI() {
             this.DeactivateOutline();
-            this._hoverUI.SetActive(false);
+            this._hoverGroup.SetActive(false);
         }
 
         public virtual void EnableMovePath(Vector3 point) {

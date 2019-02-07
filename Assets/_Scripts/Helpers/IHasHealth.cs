@@ -11,10 +11,10 @@
         float MaxEnergy { get; }
         float CurrentEnergy { get; }
 
-        bool isDead { get; }
+        bool IsDead { get; }
         float LastAttacked { get; }
         IHasHealth LastAttacker { get; set; }
-        Player controller { get; }
+        Player Controller { get; }
         UIBase uiBase { get; }
 
         void Init(Player contoller);

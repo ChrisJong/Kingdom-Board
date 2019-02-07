@@ -5,11 +5,7 @@
         ANY = ~0,
         FREE = 1,
         STANDBY, // Entity Selected.
-        SELECT_TARGET, // ANY
-        SELECT_ALLYTARGET,
-        SELECT_ENEMYTARGET,
-        SELECT_POINT,
-        SELECT_SPAWNPOINT,
+        SPAWNPOINT,
         WAITING,
         END
     };
@@ -33,6 +29,19 @@
         UPGRADE,
         BACK,
         FINISHED
+    };
+
+    public enum CursorState {
+        NONE = 0,
+        ANY = ~0,
+        DEFAULT = 1,
+        SELECTED,
+        MOVE,
+        MOVE_NOTREADY,
+        ATTACK,
+        ATTACK_NOTREADY,
+        HEAL,
+        HEAL_NOTREADY,
     };
 
     public enum PlayerResource {

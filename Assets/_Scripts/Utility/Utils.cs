@@ -6,7 +6,7 @@
     using UnityEngine;
     using UnityEngine.AI;
 
-    using Helpers;
+    using Constants;
 
     public static class Utils {
         #region VARIABLE
@@ -23,12 +23,12 @@
 
         #region CLASS
         public static Vector3 GetGroundedPosition(Vector3 position) {
-            var ray = new Ray(position + (Vector3.up * 10f), Vector3.down);
+            Ray ray = new Ray(position + (Vector3.up * 10f), Vector3.down);
 
             //Debug.Log(LayersHelper.instance.groundLayer);
 
             RaycastHit hit;
-            if(!Physics.Raycast(ray, out hit, 20f, 1 << 8)) {
+            if(!Physics.Raycast(ray, out hit, 20f, GlobalSettings.LayerValues.groundLayer)) {
                 return position;
             }
 

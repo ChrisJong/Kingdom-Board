@@ -20,45 +20,49 @@
         #region VARIABLE
 
         [Header("UNIT")]
-        [SerializeField] protected UnitScriptable _data;
+        [SerializeField, HideInInspector] protected UnitScriptable _data;
 
         [SerializeField] protected UnitClassType _classType = UnitClassType.NONE;
         [SerializeField] protected UnitType _unitType = UnitType.NONE;
+
+        [Space]
         [SerializeField] protected UnitState _previousState = UnitState.NONE; 
         [SerializeField] protected UnitState _currentState = UnitState.NONE;
         [SerializeField] protected UnitState _nextState = UnitState.NONE;
+
+        [Space]
         [SerializeField] protected MovementType _moveType = MovementType.NONE;
         [SerializeField] protected AttackType _attackType = AttackType.NONE;
-        //[SerializeField] protected ArmorType _armorType = ArmorType.NONE;
         [SerializeField] protected AttackType _resistanceType = AttackType.NONE;
         [SerializeField] protected AttackType _weaknessType = AttackType.NONE;
 
         [SerializeField, HideInInspector] protected float _unitRadius = 0.0f;
 
         protected RaycastHitDistanceSortComparer _hitComparer = new RaycastHitDistanceSortComparer(true);
-        [SerializeField] protected NavMeshAgent _navMeshAgent = null;
+        [SerializeField, HideInInspector] protected NavMeshAgent _navMeshAgent = null;
 
-        [Header("UNIT - TARGET")]
         protected Vector3? _currentPoint = null;
         protected Vector3? _previousPoint = null;
         [SerializeField] protected IHasHealth _currentTarget = null;
         [SerializeField] protected IHasHealth _previousTarget = null;
 
         [Header("UNIT - MOVENENT")]
-        protected bool _hasStamina = true;
-        protected float _staminaToUse = 0.0f;
+        [SerializeField] protected bool _hasStamina = true;
+        [SerializeField] protected bool _isMoving = false;
+        [SerializeField] protected float _staminaToUse = 0.0f;
         protected float _minMoveThreashold = 0.01f;
         [SerializeField] protected float _moveSpeed = 0.0f;
-        private float _allowedMovementImprecision = 1.0f;
+        private float _allowedMoveImprecision = 1.0f;
 
-        [SerializeField, ReadOnly] protected float _initialMovementDistance = 0.0f;
-        [SerializeField, ReadOnly] protected bool _isMoving = false;
+        [SerializeField, ReadOnly] protected float _initialMoveDist = 0.0f;
 
         protected Vector3 _velocity = Vector3.zero;
         protected Vector3 _lastPosition = Vector3.zero;
         protected NavMeshPath _unitPathing;
 
         [Header("UNIT - ATTACK")]
+        [SerializeField] protected bool _canAttack = true;
+
         [SerializeField] protected float _projectileSpeed = 0.0f;
         [SerializeField] protected float _attackRange = 0.0f;
         [SerializeField] protected float _minDamage = 0.0f;
@@ -67,8 +71,7 @@
         [SerializeField] protected float _resistanceMultiplier = 0.0f;
         [SerializeField] protected float _weaknessMultiplier = 0.0f;
 
-        [SerializeField] protected bool _canAttack = true;
-
+        [Space]
         [SerializeField] protected Transform _projectileReleasePoint = null;
 
         [SerializeField] protected GameObject _projectilePrefab = null;
@@ -78,14 +81,17 @@
         [SerializeField] protected float _explosionRadius = 0.0f;
         [SerializeField] protected float _explosionForce = 0.0f;
 
-        [SerializeField] protected Animator _unitAnimator = null;
-        [SerializeField] protected Animator _pedestalAnimator = null;
+        [Space]
+        [SerializeField, HideInInspector] protected Animator _unitAnimator = null;
+        [SerializeField, HideInInspector] protected Animator _pedestalAnimator = null;
 
         [SerializeField] protected GameObject _deathPrefab = null;
 
         [Header("UNIT - DEBUGGING")]
-        public Vector3 debugCurrentPoint = Vector3.zero;
         public Vector3 debugPreviousPOint = Vector3.zero;
+        public Vector3 debugCurrentPoint = Vector3.zero;
+        public HasHealthBase debugPreviousTarget = null;
+        public HasHealthBase debugCurrentTarget = null;
 
         public UI.UnitUI unitUI { get { return this.uiBase as UI.UnitUI; } }
 
@@ -99,7 +105,6 @@
         public UnitState NextState { get { return this._nextState; } set { this._nextState = value; } }
         public MovementType moveType { get { return this.moveType; } }
         public AttackType attackType { get { return this._attackType; } }
-        //public ArmorType armorType { get { return this._armorType; } }
         public AttackType resistanceType { get { return this._resistanceType; } }
         public AttackType weaknessType { get { return this._weaknessType; } }
 
@@ -115,7 +120,7 @@
         public float MoveSpeed { get { return this._moveSpeed; } }
         public bool CanMove { get { return (this._currentEnergy > 0.0f && !this._isMoving && !this._navMeshAgent.pathPending) ? true : false; } }
         public bool IsMoving { get { return this._isMoving; } }
-        public virtual bool IsIdle { get { return !this.IsMoving && !this.isDead; } }
+        public virtual bool IsIdle { get { return !this.IsMoving && !this.IsDead; } }
         public Vector3 LastPosition { get { return this._lastPosition; } set { this._lastPosition = value; } }
 
         public float AttackRange { get { return this._attackRange; } }
@@ -140,8 +145,6 @@
         }
 
         public override void Setup() {
-
-            Debug.Log("Unit Setup");
 
             this._projectilePrefab = this._data.projectilePrefab;
             this._deathPrefab = this._data.deathPrefab;
@@ -274,7 +277,7 @@
 
         public virtual void Death() {
 
-            ResourceManager.instance.RemoveResource(this.controller, PlayerResource.POPULATION, this._data.populationCost);
+            ResourceManager.instance.RemoveResource(this.Controller, PlayerResource.POPULATION, this._data.populationCost);
             GoldMineManager.instance.RemoveEntity(this);
 
             if(this._deathPrefab != null)
@@ -282,6 +285,10 @@
         }
 
         public virtual bool SetPoint(Vector3 point) {
+
+            if(!this.CanMove)
+                return false;
+
             Vector3 position = Vector3.zero;
 
             if(!Utils.SamplePosition(point, out position)) {
@@ -389,9 +396,9 @@
             this._navMeshAgent.SetPath(this._unitPathing);
 
             if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
-                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+                this._initialMoveDist = this._navMeshAgent.remainingDistance;
 
-                if(float.IsInfinity(_initialMovementDistance)) {
+                if(float.IsInfinity(_initialMoveDist)) {
                     Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method: Corners - " + this._navMeshAgent.path.corners.Length.ToString());
                     float finalDistance = 0;
                     Vector3[] corners = this._navMeshAgent.path.corners;
@@ -399,14 +406,14 @@
                     for(int i = 0; i < corners.Length - 1; ++i)
                         finalDistance += Mathf.Abs((corners[i] - corners[i + 1]).magnitude);
 
-                    this._initialMovementDistance = finalDistance;
+                    this._initialMoveDist = finalDistance;
                 }
 
                 this._navMeshAgent.isStopped = false;
 
             } else {
                 this._navMeshAgent.SetDestination(this._currentPoint.Value);
-                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+                this._initialMoveDist = this._navMeshAgent.remainingDistance;
             }
 
             this._isMoving = true;
@@ -423,9 +430,9 @@
             this._unitPathing = path;
 
             if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
-                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+                this._initialMoveDist = this._navMeshAgent.remainingDistance;
 
-                if(float.IsInfinity(_initialMovementDistance)) {
+                if(float.IsInfinity(_initialMoveDist)) {
                     Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method: Corners - " + this._navMeshAgent.path.corners.Length.ToString());
                     float finalDistance = 0;
                     Vector3[] corners = this._navMeshAgent.path.corners;
@@ -433,14 +440,14 @@
                     for(int i = 0; i < corners.Length - 1; ++i)
                         finalDistance += Mathf.Abs((corners[i] - corners[i + 1]).magnitude);
 
-                    this._initialMovementDistance = finalDistance;
+                    this._initialMoveDist = finalDistance;
                 }
 
                 this._navMeshAgent.isStopped = false;
                 this.LastPosition = this.position;
             } else {
                 this._navMeshAgent.SetDestination(dest);
-                this._initialMovementDistance = this._navMeshAgent.remainingDistance;
+                this._initialMoveDist = this._navMeshAgent.remainingDistance;
             }
 
             this._currentState = UnitState.MOVING;
@@ -600,7 +607,6 @@
                 if(!this._navMeshAgent.hasPath || this._navMeshAgent.velocity.sqrMagnitude <= 0.0f) {
                     this.StopMoving();
 
-
                     if(this._nextState == UnitState.ATTACK || this._nextState == UnitState.SPECIAL) {
                         this._previousState = this._currentState;
                         this._currentState = this._nextState;
@@ -610,12 +616,14 @@
                         this._previousState = this._currentState;
                         this._currentState = UnitState.IDLE;
                         this._nextState = UnitState.NONE;
+
+                        this.Controller.playerSelect.ChangeState(SelectionState.STANDBY);
                     }
                 }
 
             } else {
 
-                if(this._navMeshAgent.remainingDistance == this._initialMovementDistance)
+                if(this._navMeshAgent.remainingDistance == this._initialMoveDist)
                     return;
 
                 // Stamina Calculations go here.
@@ -735,7 +743,7 @@
         private bool SamplePosition(Vector3 dest, out Vector3 position) {
             NavMeshHit hit;
 
-            if(NavMesh.SamplePosition(dest, out hit, this._allowedMovementImprecision, this.AreaMask)) {
+            if(NavMesh.SamplePosition(dest, out hit, this._allowedMoveImprecision, this.AreaMask)) {
                 position = hit.position;
                 return true;
             } else {
@@ -795,7 +803,7 @@
         }
 
         public override bool ReceiveDamage(float damage, IHasHealth incoming) {
-            if(this.isDead)
+            if(this.IsDead)
                 return true;
 
             ICanAttack attacker = incoming as ICanAttack;
@@ -834,8 +842,8 @@
             this.uiBase.UpdateUI();
 
             if(this.CurrentHealth <= 0.0f) {
-                if(this.controller != null)
-                    this.controller.RemoveUnit(this);
+                if(this.Controller != null)
+                    this.Controller.RemoveUnit(this);
 
                 // NOTE: play any death animations, or add in any death effects onto the scene. 
                 this.Death();
@@ -850,7 +858,7 @@
         }
 
         public override bool ReceiveDamage(float damage, IHasHealth target, Vector3 origin) {
-            if(this.isDead)
+            if(this.IsDead)
                 return true;
 
             this.PlayHitAnimations(origin);
@@ -865,9 +873,15 @@
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.transform.position);
 
             this._previousState = this._currentState;
-            this._currentState = UnitState.IDLE;
+            this._currentState = UnitState.FINISH;
             this._nextState = UnitState.NONE;
             this._canAttack = false;
+
+            this._hasStamina = false;
+            this._currentEnergy = 0.0f;
+            this.StopMoving();
+
+            this.Controller.playerSelect.ChangeState(SelectionState.FREE);
         }
 
         protected virtual void SpawnAttackParticle() {
@@ -955,7 +969,7 @@
 
             // Create the death prefab and grab its rigidbody
             GameObject deathGO = Instantiate(this._deathPrefab, uPoseition, uRotation);
-            deathGO.ColorRenderers(this.controller.PlayerColor);
+            deathGO.ColorRenderers(this.Controller.PlayerColor);
             Rigidbody[] deathRB = deathGO.GetComponentsInChildren<Rigidbody>() as Rigidbody[];
 
             foreach(Rigidbody rb in deathRB) {

@@ -18,12 +18,12 @@
 
         [SerializeField] protected Player _controller;
 
-        [SerializeField] protected GameObject _uiGroup;
-        [SerializeField] protected Canvas _uiCanvas;
-        [SerializeField] protected Transform _uiGroupTransform;
-        [SerializeField] protected RectTransform _uiGroupRectTransform;
+        [Space]
+        [SerializeField] protected GameObject _mainGroup;
+        [SerializeField] protected Canvas _mainCanvas;
+        [SerializeField] protected RectTransform _mainRectTransform;
 
-        public bool IsActive { get { return this._uiGroup.activeSelf; } set { this._uiGroup.SetActive(value); } }
+        public bool IsActive { get { return this._mainGroup.activeSelf; } set { this._mainGroup.SetActive(value); } }
 
         public Player Controller { get { return this._controller; } set { this._controller = value; } }
 
@@ -31,14 +31,11 @@
 
         #region CLASS
         public virtual void Setup() {
-            if(this._uiGroup == null) {
-                this._uiGroup = this.transform.Find("_UI").gameObject;
-                this._uiGroupTransform = this._uiGroup.transform;
-                this._uiGroupRectTransform = this._uiGroup.transform as RectTransform;
-
-                this._uiCanvas = this._uiGroup.GetComponent<Canvas>() as Canvas;
-            } else {
-                //Debug.Log("Finding UI Again");
+            this._mainGroup = this.transform.Find(UIValues.MAIN_GROUP).gameObject;
+            if(this._mainGroup != null) {
+                this._mainGroup = this.transform.Find(UIValues.MAIN_GROUP).gameObject;
+                this._mainRectTransform = this._mainGroup.transform as RectTransform;
+                this._mainCanvas = this._mainGroup.GetComponent<Canvas>() as Canvas;
             }
         }
 
@@ -48,7 +45,13 @@
 
         public virtual void Return() {
             this._controller = null;
+
+            this._mainCanvas = null;
+            this._mainRectTransform = null;
+            this._mainGroup = null;
         }
+
+        public abstract void UpdateUI();
 
         public abstract void Display();
 
@@ -61,8 +64,6 @@
         public abstract void OnExit();
 
         public abstract void ResetUI();
-
-        public abstract void UpdateUI();
         #endregion
     }
 }

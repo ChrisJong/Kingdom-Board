@@ -15,10 +15,18 @@
 
         #endregion
 
+        #region UNITY
+
+        private void Update() {
+            this.UpdatePlayer();
+        }
+
+        #endregion
+
         #region CLASS
 
         public override void EndTurn() {
-            this._playerCursor.SetDefault();
+            this._playerCursor.ChangeState(Enum.CursorState.DEFAULT);
 
             base.EndTurn();
         }
@@ -29,7 +37,7 @@
                 if(this.GetComponent<PlayerCursor>() != null)
                     this._playerCursor = this.GetComponent<PlayerCursor>() as PlayerCursor;
 
-            this._playerCursor.SetDefault();
+            this._playerCursor.ChangeState(Enum.CursorState.DEFAULT);
 
             if(this.transform.GetComponent<PlayerUI>() as PlayerUI != null)
                 this._playerUI = this.transform.GetComponent<PlayerUI>() as PlayerUI;
@@ -44,7 +52,9 @@
         }
 
         public override void UpdatePlayer() {
-
+            if(Manager.GameManager.instance.PlayerInView == this) {
+                this._playerCursor.UpdateCursor();
+            }
         }
 
         #endregion

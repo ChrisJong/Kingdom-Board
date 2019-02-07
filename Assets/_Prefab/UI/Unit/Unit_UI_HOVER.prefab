@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8901321893457992345}
   - component: {fileID: 8856249361031894295}
   m_Layer: 5
-  m_Name: UI_Base
+  m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 1568193667091045772}
   - component: {fileID: 2493595930505214326}
   m_Layer: 5
-  m_Name: healthBar
+  m_Name: Health_IMG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 2290106430830519355}
   - component: {fileID: 4123522400165970487}
   m_Layer: 5
-  m_Name: Unit_Hover_UI
+  m_Name: Unit_UI_HOVER
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 7764657586599568357}
   - component: {fileID: 7559833917758034297}
   m_Layer: 5
-  m_Name: unitIcon
+  m_Name: Icon_IMG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -291,13 +291,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 5f37fbd218ae8af42b2ea8e0bc54bc77, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d66baa00a4670b04c80b3d5da06c45cb, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -318,7 +318,7 @@ GameObject:
   - component: {fileID: 4394527323545759440}
   - component: {fileID: 2629581545696114261}
   m_Layer: 5
-  m_Name: staminaBar
+  m_Name: Stamina_IMG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

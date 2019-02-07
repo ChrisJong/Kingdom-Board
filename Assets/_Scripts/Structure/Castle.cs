@@ -47,7 +47,7 @@
 
             base.Init(contoller);
 
-            this.castleUI.Init(this.controller);
+            this.castleUI.Init(this.Controller);
 
             this._spawnQueue = new List<SpawnQueueType>(this._queueLimit);
             this._unitQueueCount = 0;
@@ -92,7 +92,7 @@
         public override bool ReceiveDamage(float damage, IHasHealth target) {
             bool isDead = base.ReceiveDamage(damage, target);
             if(isDead)
-                this.controller.OnDeath();
+                this.Controller.OnDeath();
             return isDead;
         }
 
@@ -117,8 +117,8 @@
             if(this._spawnQueue.Count >= this.QueueLImit)
                 return false;
 
-            if(ResourceManager.instance.SpendResource(this.controller, PlayerResource.GOLD, unitData.goldCost) &&
-               ResourceManager.instance.SpendResource(this.controller, PlayerResource.POPULATION, unitData.populationCost)) {
+            if(ResourceManager.instance.SpendResource(this.Controller, PlayerResource.GOLD, unitData.goldCost) &&
+               ResourceManager.instance.SpendResource(this.Controller, PlayerResource.POPULATION, unitData.populationCost)) {
 
                 // Queue Unit.
                 SpawnQueueType temp = new SpawnQueueType(this._unitQueueCount, unitType, unitData.turnCost, unitData.goldCost, unitData.populationCost);
@@ -195,7 +195,7 @@
             UnitPoolManager.instance.SpawnPlacement(queue.type, Vector3.zero, out this._unitPlacement);
             this._toSpawn = queue;
 
-            this.controller.playerSelect.ChangeState(SelectionState.SELECT_SPAWNPOINT);
+            this.Controller.playerSelect.ChangeState(SelectionState.SPAWNPOINT);
             this.structureState = StructureState.SPAWN;
             this.radiusDrawer.SetActive(true);
 
@@ -211,8 +211,10 @@
                 return false;
             }
 
-            float distance = Vector3.Distance(Utils.ClosesPointToBounds(this._colliderBounds, newPoint), newPoint);
-            Debug.Log("Distance From CAstle: " + distance.ToString());
+            Vector3 castlePoint = Utils.ClosesPointToBounds(this._colliderBounds, newPoint);
+            castlePoint.y = this.transform.position.y;
+
+            float distance = Vector3.Distance(castlePoint, newPoint);
 
             this._unitPlacement.SetPlacement(point, this.position);
 

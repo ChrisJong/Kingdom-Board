@@ -58,7 +58,7 @@
                     continue;
 
                 var hitHasHealth = hit.collider.GetEntity<IHasHealth>();
-                if(hitHasHealth == null || hitHasHealth.isDead)
+                if(hitHasHealth == null || hitHasHealth.IsDead)
                     continue;
 
                 if(this.IsAlly(hitHasHealth))

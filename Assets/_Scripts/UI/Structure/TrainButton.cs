@@ -23,15 +23,10 @@
 
         [SerializeField] private Sprite _unitIconSprite;
 
-        private RectTransform _rectTransform;
-        private Button _button;
-
-        private GameObject _gameObject;
         [SerializeField] private GameObject _unitIconObject;
         [SerializeField] private GameObject _lockedObject;
         [SerializeField] private GameObject _infoObject;
 
-        private Image _image;
         [SerializeField] private Image _unitIconImage;
         [SerializeField] private Image _lockedmage;
 
@@ -75,11 +70,6 @@
         public void Init(Castle castle, UnitScriptable data, bool locked = true) {
 
             this._castle = castle;
-
-            this._rectTransform = this.transform as RectTransform;
-            this._gameObject = this.gameObject as GameObject;
-            this._button = this.transform.GetComponent<Button>() as Button;
-            this._image = this.transform.GetComponent<Image>() as Image;
 
             this._classType = data.classType;
             this._unitType = data.unitType;

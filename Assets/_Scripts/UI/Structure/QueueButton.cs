@@ -55,14 +55,14 @@
 
         public void OnPointerUp(PointerEventData eventData) {
 
-            if(this._castle.controller.playerSelect.CurrentState == SelectionState.SELECT_SPAWNPOINT)
+            if(this._castle.Controller.playerSelect.CurrentState == SelectionState.SPAWNPOINT)
                 return;
 
             if(this._toggled)
                 return;
 
             if(this.ready) {
-                if(this._castle.controller.CurrentState == PlayerState.DEFENDING)
+                if(this._castle.Controller.CurrentState == PlayerState.DEFENDING)
                     return;
 
                 this._toggled = true;
@@ -139,8 +139,8 @@
         public void Delete() {
             if(!this._queueType.ready) {
                 this.PlayCancelAnimation();
-                Manager.ResourceManager.instance.AddResource(this._castle.controller, PlayerResource.GOLD, this._queueType.goldCost);
-                Manager.ResourceManager.instance.RemoveResource(this._castle.controller, PlayerResource.POPULATION, this._queueType.populationCost);
+                Manager.ResourceManager.instance.AddResource(this._castle.Controller, PlayerResource.GOLD, this._queueType.goldCost);
+                Manager.ResourceManager.instance.RemoveResource(this._castle.Controller, PlayerResource.POPULATION, this._queueType.populationCost);
             }
         }
 

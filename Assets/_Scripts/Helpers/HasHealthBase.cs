@@ -5,7 +5,6 @@
     using Player;
     using UI;
 
-    [System.Serializable]
     public abstract class HasHealthBase : EntityBase, IHasHealth {
         #region VARIABLE
 
@@ -14,7 +13,7 @@
         protected IHasHealth _lastAttacker;
 
         [Header("ENTITY - HEALTH & ENERGY")]
-        [SerializeField] protected float _currentHealth = 0.0f; 
+        [SerializeField] protected float _currentHealth = 0.0f;
         [SerializeField] protected float _maxHealth = 0.0f;
         [SerializeField] protected float _currentEnergy = 0.0f;
         [SerializeField] protected float _maxEnergy = 0.0f;
@@ -26,9 +25,9 @@
         public float MaxEnergy { get { return this._maxEnergy; } }
         public float LastAttacked { get { return this._lastAttacked; } }
 
-        public bool isDead { get { return this.CurrentHealth <= 0.0f || (this.gameObject != null && !this.isActive); } }
+        public bool IsDead { get { return this._currentHealth <= 0.0f || (this.gameObject != null && !this.isActive); } }
 
-        public Player controller { get { return this._controller; } }
+        public Player Controller { get { return this._controller; } }
         public UIBase uiBase { get { return this._uiBase; } }
         public IHasHealth LastAttacker { get { return this._lastAttacker; }
             set { this._lastAttacker = value;
@@ -41,8 +40,6 @@
 
         public override void Setup() {
             this._uiBase = this.transform.GetComponent<UIBase>() as UIBase;
-            if(this._uiBase != null)
-                this.uiBase.Setup();
 
             this.IsSetup = true;
 
@@ -72,7 +69,7 @@
         public abstract bool ReceiveDamage(float damage, IHasHealth target, Vector3 origin);
 
         public virtual bool AddHealth(float amount) {
-            if(this.isDead)
+            if(this.IsDead)
                 return false;
 
             // Make sure that the amount doesn't exceed the totally maxhealth of the unit.
@@ -86,7 +83,7 @@
         }
 
         public virtual bool RemoveHealth(float amount) {
-            if(this.isDead)
+            if(this.IsDead)
                 return false;
 
             this._currentHealth -= amount;
@@ -103,7 +100,7 @@
         }
 
         public virtual bool IsAlly(IHasHealth other) {
-            return ReferenceEquals(this.controller, other.controller);
+            return ReferenceEquals(this.Controller, other.Controller);
         }
 
         public virtual bool IsAlly(Player controller) {

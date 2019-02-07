@@ -8,20 +8,20 @@
 
     using TMPro;
 
+    using Constants;
     using Enum;
     using Manager;
     using Player;
-    using System;
 
-    public class PlayerUI : ScreenSpace {
+    public class PlayerUI : UIBase {
 
         #region VARIABLE
 
         [SerializeField] private PlayerEndButton _endTurnButton = null;
         [SerializeField] private PlayerBanner _playerBanner = null;
 
-        [SerializeField] private GameObject _displayGroup = null;
-        private RectTransform _displayGroupTransform = null;
+        [SerializeField] private GameObject _persistantGroup = null;
+        private RectTransform _persistantTransform = null;
 
         [SerializeField] private TextMeshProUGUI _infoText;
 
@@ -49,25 +49,39 @@
         #endregion
 
         #region CLASS
+        public override void Setup() {
+            base.Setup();
+
+            if(this.unitUIGroup == null) {
+                this.unitUIGroup = this._mainGroup.transform.Find(UIValues.Unit.UNIT_UI_MAIN).gameObject;
+                this.unitUIGroup.SetActive(false);
+            }
+
+            if(this.structureUIGroup == null) {
+                this.structureUIGroup = this._mainGroup.transform.Find(UIValues.Structure.STRUCTURE_UI_MAIN).gameObject;
+                this.structureUIGroup.SetActive(false);
+            }
+        }
+
         public override void Init(Player controller) {
             base.Init(controller);
 
-            if(this._displayGroup == null)
-                this._displayGroup = this._uiGroupRectTransform.Find("_Display").gameObject;
+            if(this._persistantGroup == null)
+                this._persistantGroup = this._mainRectTransform.Find(UIValues.PERSISTANT_GROUP).gameObject;
             else
-                this._displayGroupTransform = this._displayGroup.transform as RectTransform;
+                this._persistantTransform = this._persistantGroup.transform as RectTransform;
 
             if(this._infoText == null)
-                this._infoText = this._displayGroupTransform.Find("info_TEXT").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
+                this._infoText = this._persistantTransform.Find("info_TEXT").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
 
             if(this._endTurnButton == null) {
-                this._endTurnButton = this._displayGroupTransform.Find("End_BTN").GetComponent<PlayerEndButton>() as PlayerEndButton;
+                this._endTurnButton = this._persistantTransform.Find("End_BTN").GetComponent<PlayerEndButton>() as PlayerEndButton;
                 this._endTurnButton.Init(this);
             } else
                 this._endTurnButton.Init(this);
 
             if(this.bannerGroup == null) {
-                this.bannerGroup = this._uiGroup.transform.Find("Banner").gameObject;
+                this.bannerGroup = this._mainGroup.transform.Find("Banner").gameObject;
                 this._playerBanner = this.bannerGroup.GetComponent<PlayerBanner>() as PlayerBanner;
                 this._playerBanner.Init(this);
             } else if(this._playerBanner == null) {
@@ -76,17 +90,7 @@
             } else 
                 this._playerBanner.Init(this);
 
-            if(this.unitUIGroup == null) {
-                this.unitUIGroup = this._uiGroup.transform.Find("Unit_UI").gameObject;
-                this.unitUIGroup.SetActive(false);
-            }
-
-            if(this.structureUIGroup == null) {
-                this.structureUIGroup = this._uiGroup.transform.Find("Structure_UI").gameObject;
-                this.structureUIGroup.SetActive(false);
-            }
-
-            foreach(Transform temp in this._uiGroup.GetComponentInChildren<Transform>()) {
+            foreach(Transform temp in this._mainGroup.GetComponentInChildren<Transform>()) {
                 if(temp.GetHashCode() == this.bannerGroup.transform.GetHashCode())
                     continue;
 
@@ -102,8 +106,6 @@
         }
 
         public override void Display() {
-            //this._goUI.SetActive(true);
-
             foreach(Transform temp in this._uiChildrenList) {
                 if(temp.gameObject.activeSelf)
                     continue;
@@ -121,8 +123,6 @@
         }
 
         public override void Hide() {
-            //this._goUI.SetActive(false);
-
             this.bannerGroup.gameObject.SetActive(false);
 
             foreach(Transform temp in this._uiChildrenList) {
@@ -134,15 +134,15 @@
         }
 
         public override void OnEnter() {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public override void OnEnter(Player controller) {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public override void OnExit() {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public override void ResetUI() {

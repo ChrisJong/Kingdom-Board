@@ -5,14 +5,12 @@
     using System;
 
     public class LineRenderDrawCircle : LineRender {
-        [Range(0, 256)]
         public int segments = 128;
-        [Range(0, 10)]
+
         public float xRadius = 10.0f;
-        [Range(0, 10)]
         public float yRadius = 10.0f;
-        [Range(0, 5)]
         public float width = 0.1f;
+
         public Color lineColour = new Color(0.0f, 1.0f, 0.0f, 1.0f);
 
         private void Awake() {

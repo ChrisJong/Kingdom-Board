@@ -15,8 +15,6 @@
     public sealed class Cleric : UnitBase {
 
         #region VARIABLE
-        private ClericUI _clericUI = null;
-
         [Header("CLERIC - HEALING")]
         [SerializeField] private bool _canHeal = true;
 
@@ -40,8 +38,6 @@
             this._endOfCastClipTime = this._data.endOfCastClipTime;
 
             base.Setup();
-
-            this._clericUI = this.uiBase as ClericUI;
         }
 
         public override void Init() {
@@ -69,6 +65,9 @@
         }
 
         public override bool SetTarget(IHasHealth target) {
+
+            if(target.entityType == EntityType.STRUCTURE)
+                return false;
 
             if(!this._canAttack && !this._canHeal)
                 return false;

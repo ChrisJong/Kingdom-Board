@@ -5,6 +5,7 @@
 
     using UnityEngine;
 
+    using Constants;
     using Enum;
     using Helpers;
     using Manager;
@@ -87,9 +88,9 @@
 
             this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-            this._structureGroup = new GameObject("_structures");
+            this._structureGroup = new GameObject(UIValues.Structure.STRUCTURE_SUFFIX);
             this._structureGroup.transform.SetParent(this.transform);
-            this._unitGroup = new GameObject("_units");
+            this._unitGroup = new GameObject(UIValues.Unit.UNIT_SUFFIX);
             this._unitGroup.transform.SetParent(this.transform);
 
             this.id = id;
@@ -223,7 +224,7 @@
         }
 
         public bool IsAlly(IHasHealth other) {
-            return ReferenceEquals(other.controller, this);
+            return ReferenceEquals(other.Controller, this);
         }
 
         public bool IsEnemy(IHasHealth other) {

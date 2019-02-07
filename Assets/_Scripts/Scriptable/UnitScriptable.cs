@@ -15,7 +15,7 @@
         public UnitClassType classType = UnitClassType.NONE;
         public UnitType unitType = UnitType.NONE;
 
-        public int classTier = 0; // NOte: 0 is nothing. Start(base) is tier 1.
+        public int classTier = 0; // NOTE: 0 is nothing. Start(base) is tier 1.
 
         [Header("UI")]
         public Sprite researchCardFaceSprite = null;

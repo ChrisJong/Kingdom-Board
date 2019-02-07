@@ -6,12 +6,12 @@
     using UnityEngine;
     using TMPro;
 
+    using Constants;
     using Enum;
     using Manager;
     using Scriptable;
     using Structure;
     using Player;
-    using System;
 
     [System.Serializable]
     public class CastleUI : UIBase {
@@ -19,18 +19,6 @@
         #region INFO_UI
 
         private GameObject _infomationGroup;
-        [SerializeField] private GameObject _healthGroup;
-        private TextMeshProUGUI _healthText;
-        private RectTransform _healthBarTransform;
-
-        [SerializeField] private GameObject _hoverUI = null;
-        [SerializeField] private RectTransform _hoverUITransform = null;
-        [SerializeField] private Canvas _hoverUICanvas = null;
-        [SerializeField] private RectTransform _hoverHealthBarTransform = null;
-
-        [SerializeField] private bool _hoverTrigger = false;
-
-        public bool HoverTrigger { get { return this._hoverTrigger; } }
 
         #endregion
 
@@ -42,6 +30,7 @@
 
         IEnumerator _panelAnimation;
 
+        [SerializeField] private bool _hoverTrigger = false;
         [SerializeField] private bool _spawnGroupToggle = false;
         [SerializeField] private bool _spawnGroupMoving = false;
 
@@ -73,6 +62,20 @@
         private RectTransform _magicPanel = null;
         private RectTransform _magicButtonPanel = null;
 
+        [Header("STRUCTURE - MAIN UI")]
+        [SerializeField] private GameObject _healthGroup;
+        private TextMeshProUGUI _healthText;
+        private RectTransform _healthBarTransform;
+
+        [Header("STRUCTURE - HOVER UI")]
+        [SerializeField] private GameObject _hoverGroup = null;
+
+        [SerializeField] private RectTransform _hoverTransform = null;
+        [SerializeField] private RectTransform _hoverHealthBarTransform = null;
+
+        [SerializeField] private Canvas _hoverCanvas = null;
+
+        public bool HoverTrigger { get { return this._hoverTrigger; } }
         public bool SpawnGroupMoving { get { return this._spawnGroupMoving; } }
         public bool SpawnGroupToggle { get { return this._spawnGroupToggle; } }
 
@@ -86,28 +89,30 @@
         public void Setup(Castle castle) {
             this._castle = castle;
 
-            this.Setup();
+            if(this._hoverGroup == null) {
+                this._hoverGroup = this.transform.Find(UIValues.Structure.STRUCTURE_UI_HOVER).gameObject;
+                this._hoverCanvas = this._hoverGroup.GetComponent<Canvas>() as Canvas;
+                this._hoverTransform = this._hoverGroup.transform as RectTransform;
+
+                this._hoverHealthBarTransform = this._hoverGroup.transform.Find("Base").Find("Health" + UIValues.IMAGE_SUFFIX).transform as RectTransform;
+            }
         }
 
         public override void Init(Player controller) {
             base.Init(controller);
 
-            // Information Group
-            this._infomationGroup = this._controller.playerUI.structureUIGroup;
-            this._healthGroup = this._infomationGroup.transform.Find("BG").Find("Health").gameObject;
-            this._healthBarTransform = this._healthGroup.transform.Find("Bar").transform as RectTransform;
+            this._mainGroup = this._controller.playerUI.structureUIGroup;
+            if(this._mainGroup != null) {
+                this._mainRectTransform = this._mainGroup.transform as RectTransform;
+                this._mainCanvas = this._mainGroup.GetComponent<Canvas>();
 
-            //Debug.Log("Health Bar Size Delta: " + this._healthBarTransform.sizeDelta.ToString());
-            //Debug.Log("Health Bar Rect: " + this._healthBarTransform.rect.ToString());
-
-            this._healthText = this._healthGroup.transform.Find("Text").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
-            if(this._hoverUI == null) {
-                this._hoverUI = this.transform.Find("_UIHover").gameObject;
-                this._hoverUICanvas = this._hoverUI.GetComponent<Canvas>() as Canvas;
-                this._hoverUITransform = this._hoverUI.transform as RectTransform;
+                this._healthGroup = this._mainGroup.transform.Find("Base").Find("Health").gameObject;
+                this._healthBarTransform = this._healthGroup.transform.Find(UIValues.IMAGE_SUFFIX).transform as RectTransform;
+                this._healthText = this._healthGroup.transform.Find(UIValues.TEXT_SUFFIX).GetComponent<TextMeshProUGUI>();
             }
-            this._hoverUICanvas.worldCamera = controller.playerCamera.mainCamera;
-            this._hoverUI.SetActive(false);
+
+            this._hoverCanvas.worldCamera = controller.playerCamera.mainCamera;
+            this._hoverGroup.SetActive(false);
 
             this._panelAnimation = this.MoveTrainingPanel();
             this._spawnGroup = this._controller.playerUI.spawnGroup.transform as RectTransform;
@@ -131,51 +136,17 @@
         }
 
         public override void Return() {
-            this._hoverUICanvas.worldCamera = null;
+            this._hoverCanvas.worldCamera = null;
+
+            this._healthGroup = null;
+            this._healthBarTransform = null;
+            this._healthText = null;
 
             base.Return();
         }
 
-        public override void Display() {
-            if(!this._spawnGroupToggle)
-                this.ToggleSpawnGroup(true);
-
-            this.UpdateUI();
-            this._infomationGroup.SetActive(true);
-        }
-
-        public override void Hide() {
-
-            if(this._spawnGroupToggle)
-                this.ToggleSpawnGroup(false);
-
-            this._infomationGroup.SetActive(false);
-
-            this._castle.radiusDrawer.SetActive(false);
-        }
-
-        public override void OnEnter() {
-        }
-
-        public override void OnEnter(Player controller) {
-
-            this.UpdateHoverUI();
-            this._hoverUI.SetActive(true);
-        }
-
-        public override void OnExit() {
-
-            this._hoverUI.SetActive(false);
-            //this._infomationGroup.SetActive(false);
-        }
-
-        public override void ResetUI() {
-            this._infomationGroup.SetActive(false);
-            this.ResetSpawnGroup();
-        }
-            
         public override void UpdateUI() {
-            // information Group
+            // Main Group
             float healthBarWidth = 290.0f; // Stored Width of the health Bar.
             float newHealth = healthBarWidth * (this._castle.CurrentHealth / this._castle.MaxHealth);
             Vector2 newRect = new Vector2(newHealth, this._healthBarTransform.sizeDelta.y);
@@ -185,9 +156,47 @@
 
         public void UpdateHoverUI() {
             float healthBarWidth = 4.0f;
-            float newHeatlh = healthBarWidth * (this._castle.CurrentHealth / this._castle.MaxHealth);
-            Vector2 newRect = new Vector2(newHeatlh, this._hoverHealthBarTransform.sizeDelta.y);
+            float newHealth = (this._castle.CurrentHealth / this._castle.MaxHealth) * healthBarWidth;
+            Vector2 newRect = new Vector3(newHealth, this._hoverHealthBarTransform.sizeDelta.y);
             this._hoverHealthBarTransform.sizeDelta = newRect;
+        }
+
+        public override void Display() {
+            if(!this._spawnGroupToggle)
+                this.ToggleSpawnGroup(true);
+
+            this.UpdateUI();
+
+            this._mainGroup.SetActive(true);
+        }
+
+        public override void Hide() {
+
+            if(this._spawnGroupToggle)
+                this.ToggleSpawnGroup(false);
+
+            this._mainGroup.SetActive(false);
+
+            this._castle.radiusDrawer.SetActive(false);
+        }
+
+        public override void OnEnter() {}
+
+        public override void OnEnter(Player controller) {
+
+            this.UpdateHoverUI();
+
+            this._hoverGroup.SetActive(true);
+        }
+
+        public override void OnExit() {
+
+            this._hoverGroup.SetActive(false);
+        }
+
+        public override void ResetUI() {
+            this._mainGroup.SetActive(false);
+            this.ResetSpawnGroup();
         }
 
         public void AddToQueue(UnitScriptable unitData, SpawnQueueType queueType) {

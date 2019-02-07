@@ -183,11 +183,12 @@
 
             for(int i = 0; i < this._numberOfPlayers; i++) {
                 if(i == 0) {
-                    this._players[i].PlayerColor = new Color(0.8823529f, 0.8823529f, 0.8823529f, 1.0f);
+                    this._players[i].PlayerColor = Constants.PlayerValues.WHITE;
                     this._players[i].Create(this._spawnPoints[i], (uint)i);
                     this._players[i].Init(true);
                 } else {
-                    this._players[i].PlayerColor = new Color(0.2352941f, 0.2352941f, 0.2352941f, 1.0f);
+                    this._players[i].PlayerColor = Constants.PlayerValues.BLACK;
+                    Debug.Log("Create Other Player");
                     this._players[i].Create(this._spawnPoints[i], (uint)i);
                     this._players[i].Init(false);
                 }
