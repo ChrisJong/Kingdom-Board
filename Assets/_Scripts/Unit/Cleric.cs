@@ -84,6 +84,7 @@
                 distance = Vector3.Distance(this.position, Utils.ClosesPointToBounds(((Structure.StructureBase)this._currentTarget).ColliderBounds, this.position));
 
             if(this.IsAlly(target)) { // Heal the target.
+
                 distance = Vector3.Distance(this.position, target.position);
                 this.unitUI.DrawRadius(Color.green, this._healingRange);
 
@@ -177,7 +178,7 @@
         protected override void CheckStandbyState(out bool value) {
             base.CheckStandbyState(out value);
 
-            if(this._currentState == UnitState.HEAL_STANDBY) {
+            if(this._currentState == UnitState.SPECIAL) {
                 if(this.IsEnemy(this._currentTarget)) {
                     this._currentTarget = null;
                     this._previousTarget = null;
@@ -189,7 +190,7 @@
                 bool targetInRange = false;
 
                 float distance = Vector3.Distance(this.position, this._currentTarget.position);
-                if(distance + this._unitRadius < this._healingRange)
+                if(distance < (this._healingRange + this._unitRadius))
                     targetInRange = true;
 
                 if(!targetInRange) {
@@ -250,6 +251,13 @@
             }
         }
 
+        protected override void InternalAttack(float damage) {
+
+            this._canHeal = false;
+
+            base.InternalAttack(damage);
+        }
+
         private void InternalHeal() {
 
             this._currentTarget.AddHealth(this._healingAmount);
@@ -258,6 +266,13 @@
             this._currentState = this._nextState;
             this._nextState = UnitState.NONE;
             this._canHeal = false;
+
+            this._canAttack = false;
+            this._hasStamina = false;
+            this._currentEnergy = 0.0f;
+            this.StopMoving();
+
+            this.Controller.playerSelect.ChangeState(SelectionState.FREE);
         }
         #endregion
 

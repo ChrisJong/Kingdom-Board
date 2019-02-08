@@ -73,6 +73,7 @@
             RaycastHit hitInfo;
 
             Physics.Raycast(ray, out hitInfo, this._rayDistance, GlobalSettings.LayerValues.groundLayer, QueryTriggerInteraction.Ignore);
+            HasHealthBase temp = null;
 
             if(Utils.SamplePosition(hitInfo.point, out coord)) {
                 Debug.Log(coord.ToString());
@@ -309,6 +310,18 @@
                 if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
 
                     this._targetSelected = this._hitInfo.transform.GetComponent<HasHealthBase>();
+
+                    if(this._targetSelected != null) {
+
+                        if(this._currentSelectedEntity == EntityType.UNIT) {
+
+                            if(this._currentUnitSelected.SetTarget(this._targetSelected)) {
+                                this._currentUnitSelected.InitiateTarget();
+
+                                this.ChangeState(SelectionState.WAITING);
+                            }
+                        }
+                    }
 
                 } else { // we hit empty space.
 

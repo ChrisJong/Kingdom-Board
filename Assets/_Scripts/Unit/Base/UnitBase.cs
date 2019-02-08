@@ -18,10 +18,9 @@
     public abstract class UnitBase : HasHealthBase, IUnit {
 
         #region VARIABLE
-
-        [Header("UNIT")]
         [SerializeField, HideInInspector] protected UnitScriptable _data;
 
+        [Header("UNIT")]
         [SerializeField] protected UnitClassType _classType = UnitClassType.NONE;
         [SerializeField] protected UnitType _unitType = UnitType.NONE;
 
@@ -43,8 +42,8 @@
 
         protected Vector3? _currentPoint = null;
         protected Vector3? _previousPoint = null;
-        [SerializeField] protected IHasHealth _currentTarget = null;
-        [SerializeField] protected IHasHealth _previousTarget = null;
+        protected IHasHealth _currentTarget = null;
+        protected IHasHealth _previousTarget = null;
 
         [Header("UNIT - MOVENENT")]
         [SerializeField] protected bool _hasStamina = true;
@@ -69,7 +68,7 @@
         [SerializeField] protected float _maxDamage = 0.0f;
         protected float _lastAttack = 0.0f;
         [SerializeField] protected float _resistanceMultiplier = 0.0f;
-        [SerializeField] protected float _weaknessMultiplier = 0.0f;
+        [SerializeField] protected float _weaknessMultiplier = 0.0f; 
 
         [Space]
         [SerializeField] protected Transform _projectileReleasePoint = null;
@@ -273,6 +272,8 @@
 
             this._currentPoint = null;
             this._currentTarget = null;
+
+            this._lastAttackers.Clear();
         }
 
         public virtual void Death() {
@@ -317,7 +318,7 @@
 
         public virtual bool SetTarget(IHasHealth target) {
 
-            if(!this.IsEnemy(target) || !this._canAttack)
+            if(!this.IsEnemy(target) && !this._canAttack)
                 return false;
 
             if(this._currentTarget != null)
@@ -631,9 +632,9 @@
         }
 
         protected virtual bool TargetInRange() {
-            float distance = Vector3.Distance(this.position, this._currentTarget.position) - this._unitRadius;
+            float distance = Vector3.Distance(this.position, this._currentTarget.position);
 
-            if(distance > this._attackRange)
+            if(distance > (this._attackRange + this._unitRadius))
                 return false;
 
             return true;

@@ -1,5 +1,8 @@
 ﻿namespace Helpers {
 
+    using System.Collections;
+    using System.Collections.Generic;
+
     using UnityEngine;
 
     using Player;
@@ -11,6 +14,7 @@
         [SerializeField] private Player _controller;
         [SerializeField] private UIBase _uiBase;
         protected IHasHealth _lastAttacker;
+        [SerializeField] protected List<HasHealthBase> _lastAttackers = new List<HasHealthBase>(); // NOTE Change to IHasHealthBase Later.
 
         [Header("ENTITY - HEALTH & ENERGY")]
         [SerializeField] protected float _currentHealth = 0.0f;
@@ -29,8 +33,10 @@
 
         public Player Controller { get { return this._controller; } }
         public UIBase uiBase { get { return this._uiBase; } }
-        public IHasHealth LastAttacker { get { return this._lastAttacker; }
+        public IHasHealth LastAttacker {
+            get { return this._lastAttacker; }
             set { this._lastAttacker = value;
+                  this._lastAttackers.Add(value as HasHealthBase);
                   this._lastAttacked = Time.timeSinceLevelLoad; }
         }
 
@@ -62,6 +68,9 @@
         }
 
         public override void Return() {
+            this._lastAttacker = null;
+            this._lastAttackers.Clear();
+
             this._controller = null;
         }
 
@@ -72,10 +81,10 @@
             if(this.IsDead)
                 return false;
 
+            this._currentHealth += amount;
+
             // Make sure that the amount doesn't exceed the totally maxhealth of the unit.
-            if(amount < this._maxHealth)
-                this._currentHealth += amount;
-            else
+            if(this._currentHealth > this._maxHealth)
                 this._currentHealth = this._maxHealth;
 
             this.uiBase.UpdateUI();

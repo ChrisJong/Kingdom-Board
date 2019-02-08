@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,15 +97,15 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 0.2
-    agentHeight: 1
-    agentSlope: 21
-    agentClimb: 0.05
+    agentRadius: 0.8
+    agentHeight: 2
+    agentSlope: 30
+    agentClimb: 0.3
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
-    minRegionArea: 2
+    minRegionArea: 10
     manualCellSize: 1
-    cellSize: 0.05
+    cellSize: 0.1
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
@@ -2079,6 +2079,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 409dc48338b21164f855d6cc083e7943, type: 3}
       propertyPath: m_Layer
       value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 409dc48338b21164f855d6cc083e7943, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 409dc48338b21164f855d6cc083e7943, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4358,6 +4362,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1270985570122784, guid: 482fc7c5a7422294ba15392532714b8b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4584446432041564, guid: 482fc7c5a7422294ba15392532714b8b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -8867,6 +8875,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1937708123110590, guid: b5b46b1149b42a944b09330e6a5968c4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4017172825945948, guid: b5b46b1149b42a944b09330e6a5968c4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -9627,6 +9639,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1576322769022534, guid: 6f01c6bc54d45d2488ab784057de7852, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4010003488894052, guid: 6f01c6bc54d45d2488ab784057de7852, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -12441,6 +12457,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1770262931608676, guid: ead018cd0b72edd40a2efa887963d98f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4106337514921438, guid: ead018cd0b72edd40a2efa887963d98f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -12770,6 +12790,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1438843763939694, guid: 067fd3db75d98b747a7131f900cf3d04, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4662770169228228, guid: 067fd3db75d98b747a7131f900cf3d04, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -13247,6 +13271,10 @@ PrefabInstance:
     - target: {fileID: 1470373712052640, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470373712052640, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4667649126367802, guid: cf1c4a420f721604b862e2bc0f1580b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16360,6 +16388,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GoldMineManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8375344732843730094, guid: 6df9d0e237175fa4f8cbfd1f47e55517,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2391066769055084003, guid: 6df9d0e237175fa4f8cbfd1f47e55517,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -16433,6 +16466,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ResourceManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473594910022935504, guid: a61f121c9eb8fb04195c15ce25bc6787,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2473594910022935506, guid: a61f121c9eb8fb04195c15ce25bc6787,
         type: 3}
