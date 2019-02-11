@@ -188,7 +188,6 @@
                     this._players[i].Init(true);
                 } else {
                     this._players[i].PlayerColor = Constants.PlayerValues.BLACK;
-                    Debug.Log("Create Other Player");
                     this._players[i].Create(this._spawnPoints[i], (uint)i);
                     this._players[i].Init(false);
                 }

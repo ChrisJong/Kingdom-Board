@@ -132,8 +132,14 @@
 
         #endregion
 
-        #region CLASS_CLEAN
+        #region UNITY
+        private void Update() {
+            this.UpdateUnit();
+        }
 
+        #endregion
+
+        #region CLASS
         public bool SetData(UnitScriptable data) {
             if(data == null)
                 return false;
@@ -285,16 +291,18 @@
                 this.PlayDeathAnimation();
         }
 
+        public virtual void Finished() {
+            this._currentState = UnitState.FINISH;
+        }
+
         public virtual bool SetPoint(Vector3 point) {
 
             if(!this.CanMove)
                 return false;
 
             Vector3 position = Vector3.zero;
-
-            if(!Utils.SamplePosition(point, out position)) {
+            if(!Utils.SamplePosition(point, out position))
                 return false;
-            }
 
             if(this._currentPoint.HasValue) {
                 this._previousPoint = this._currentPoint;
@@ -305,11 +313,7 @@
             this.debugCurrentPoint = position;
 
             this._currentTarget = null;
-
-            if(this._previousPoint.HasValue && this._currentPoint.HasValue) {
-                if(this._currentPoint.Value.Equals(this._previousPoint.Value))
-                    return false;
-            }
+            this.debugCurrentTarget = null;
 
             this.unitUI.EnableMovePath(this._currentPoint.Value);
 
@@ -318,26 +322,41 @@
 
         public virtual bool SetTarget(IHasHealth target) {
 
-            if(!this.IsEnemy(target) && !this._canAttack)
+            if(this.IsAlly(target))
                 return false;
 
-            if(this._currentTarget != null)
-                this._previousTarget = this._currentTarget;
-
-            this._currentTarget = target;
-
-            float distance = 0.0f;
-            if(target.entityType == EntityType.UNIT)
-                distance = Vector3.Distance(this.position, this._currentTarget.position) - (this._unitRadius - ((UnitBase)target).UnitRadius);
-            else
-                distance = Vector3.Distance(this.position, Utils.ClosesPointToBounds(((Structure.StructureBase)this._currentTarget).ColliderBounds, this.position));
+            if(!this._canAttack)
+                return false;
 
             this.unitUI.EnableAttackRadius();
 
-            Debug.Log("Distance to Enemy: " + distance.ToString());
+            if(this._currentTarget != null) {
+                this._previousTarget = this._currentTarget;
+                this.debugPreviousTarget = this._currentTarget as HasHealthBase;
+            }
+            this._currentTarget = target;
+            this.debugCurrentTarget = target as HasHealthBase;
 
-            if(distance > this._attackRange) {
-                this.unitUI.EnableMovePathToTarget(target.position);
+            if(!this.CanMove && !this.TargetInRange())
+                return false;
+
+            Vector3 point = Vector3.zero;
+            if(this._currentTarget.entityType == EntityType.STRUCTURE) {
+                Structure.StructureBase structure = target as Structure.StructureBase;
+                point = Utils.ClosesPointToBounds(structure.ColliderBounds, this.position);
+
+                //GameObject temp = new GameObject("Close Point");
+                //temp.transform.position = point;
+            } else {
+                point = this._currentTarget.position;
+            }
+
+            if(!this.TargetInRange()) {
+                if(this.CanMove)
+                    this.unitUI.EnableMovePathToTarget(point, this._attackRange);
+                else
+                    return false;
+
             } else {
 
                 if(this._currentPoint.HasValue) {
@@ -354,28 +373,11 @@
             return true;
         }
 
-        public virtual void ApplyUpgrade(UnitUpgradeType type, float value) {
-            switch(type) {
-                case UnitUpgradeType.ATTACK:
-                this._minDamage += value;
-                this._maxDamage += value;
-                break;
-
-                case UnitUpgradeType.HEALTH:
-                this._currentHealth += value;
-                this._maxHealth += value;
-                break;
-
-                case UnitUpgradeType.STAMINA:
-                this._currentEnergy += value;
-                this._maxEnergy += value;
-                break;
-            }
-        }
-
         public virtual void InitiateMove() {
 
-            if(this.IsMoving || this._currentEnergy <= 0.0f)
+            this.unitUI.MoveRadiusToOrigin();
+
+            if(!this.CanMove)
                 return;
 
             if(this._unitPathing.status == NavMeshPathStatus.PathInvalid || this._unitPathing.status == NavMeshPathStatus.PathPartial)
@@ -421,6 +423,57 @@
             this._currentState = UnitState.MOVING;
         }
 
+        public virtual void InitiateTarget() {
+
+            this._nextState = UnitState.ATTACK;
+
+            this.unitUI.MoveRadiusToOrigin();
+
+            if(this._currentPoint.HasValue && this.CanMove) { // Move To Point.
+                this.InitiateMove();
+                return;
+            }
+
+            if(this.TargetInRange()) {
+                this._previousState = this._currentState;
+                this._currentState = this._nextState;
+                this._nextState = UnitState.IDLE;
+                this.StartStateAnimation();
+            } else {
+                this._previousState = this._currentState;
+                this._currentState = UnitState.IDLE;
+                this._nextState = UnitState.NONE;
+                Debug.LogWarning("Can't Move To Target & Is Out Of Attack Range");
+            }
+        }
+
+        public virtual void ApplyUpgrade(UnitUpgradeType type, float value) {
+            switch(type) {
+                case UnitUpgradeType.ATTACK:
+                this._minDamage += value;
+                this._maxDamage += value;
+                break;
+
+                case UnitUpgradeType.HEALTH:
+                this._currentHealth += value;
+                this._maxHealth += value;
+                break;
+
+                case UnitUpgradeType.STAMINA:
+                this._currentEnergy += value;
+                this._maxEnergy += value;
+                break;
+            }
+        }
+
+        protected virtual void UpdateUnit() {
+            if(this._currentState == UnitState.MOVING)
+                this.CheckMovement();
+        }
+        #endregion
+
+        #region MOVE
+        // REMOVE
         public virtual void MoveTo(Vector3 dest) {
             NavMeshPath path = new NavMeshPath();
 
@@ -455,10 +508,16 @@
         }
 
         public virtual void StopMoving() {
+            this.unitUI.DisableMovePath();
+
             this._isMoving = false;
             this._navMeshAgent.isStopped = true;
             this._navMeshAgent.ResetPath();
             this._lastPosition = this.position;
+        }
+
+        public void LookAt(Vector3 pos) {
+            this.transform.LookAt(new Vector3(pos.x, this.transform.position.y, pos.z), Vector3.up);
         }
 
         public Vector3[] ReturnPathToPoint(Vector3 point) {
@@ -476,23 +535,22 @@
             }
         }
 
-        public Vector3[] ReturnPathToTarget(Vector3 point, float range = 0.0f) {
+        public Vector3[] ReturnPathToTarget(Vector3 point, float attackRange = 0.0f) {
 
             Vector3[] temp;
             NavMeshPath path = new NavMeshPath();
-
+                
             if(this._navMeshAgent.CalculatePath(point, path)) {
                 this._unitPathing = path;
-                temp = FinalizePath(true, range);
+                temp = FinalizePath(true, attackRange);
                 return temp;
             } else {
                 this._unitPathing.ClearCorners();
                 return null;
             }
-
         }
 
-        private Vector3[] FinalizePath(bool target, float range = 0.0f) {
+        private Vector3[] FinalizePath(bool target, float attackRange = 0.0f) {
             Stack<Vector3> linePoints = new Stack<Vector3>();
             float castLerpSize = 0.5f;
 
@@ -503,7 +561,13 @@
 
             if(target) {
                 Vector3 direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - this._unitPathing.corners[this._unitPathing.corners.Length - 1]).normalized;
-                Vector3 attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * (range + this._unitRadius));
+                Vector3 attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * (attackRange + this._unitRadius));
+
+                /*GameObject temp2 = new GameObject("Nav Point");
+                temp2.transform.position = this._unitPathing.corners[this._unitPathing.corners.Length - 1];
+                GameObject temp = new GameObject("Attack Point");
+                temp.transform.position = attackPoint;*/
+
                 this._unitPathing.corners[this._unitPathing.corners.Length - 1] = attackPoint;
             }
 
@@ -601,25 +665,29 @@
 
             }*/
 
-            //Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
-            //Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
+            Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
+            Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
             if(this._navMeshAgent.remainingDistance <= this._navMeshAgent.stoppingDistance) {
 
                 if(!this._navMeshAgent.hasPath || this._navMeshAgent.velocity.sqrMagnitude <= 0.0f) {
                     this.StopMoving();
 
                     if(this._nextState == UnitState.ATTACK || this._nextState == UnitState.SPECIAL) {
-                        this._previousState = this._currentState;
-                        this._currentState = this._nextState;
-                        this._nextState = UnitState.IDLE;
-                        this.StartStateAnimation();
-                    } else {
-                        this._previousState = this._currentState;
-                        this._currentState = UnitState.IDLE;
-                        this._nextState = UnitState.NONE;
-
-                        this.Controller.playerSelect.ChangeState(SelectionState.STANDBY);
+                        if(this.TargetInRange()) {
+                            this._previousState = this._currentState;
+                            this._currentState = this._nextState;
+                            this._nextState = UnitState.IDLE;
+                            this.StartStateAnimation();
+                            return;
+                        }
                     }
+
+                    this._previousState = this._currentState;
+                    this._currentState = UnitState.IDLE;
+                    this._nextState = UnitState.NONE;
+
+                    this.uiBase.UpdateUI();
+                    this.Controller.playerSelect.ChangeState(SelectionState.STANDBY);
                 }
 
             } else {
@@ -629,116 +697,6 @@
 
                 // Stamina Calculations go here.
             }
-        }
-
-        protected virtual bool TargetInRange() {
-            float distance = Vector3.Distance(this.position, this._currentTarget.position);
-
-            if(distance > (this._attackRange + this._unitRadius))
-                return false;
-
-            return true;
-
-        }
-
-        #endregion
-
-        #region UNITY
-
-        private void Update() {
-            this.UpdateUnit();
-        }
-
-        #endregion
-
-        #region CLASS
-
-        ///////////////////
-        //// UNITSTATE ////
-        ///////////////////
-        #region UNIT_STATE
-        protected virtual void CheckStandbyState(out bool value) {
-            if(this._currentState == UnitState.ATTACK_STANDBY) {
-                if(this.IsAlly(this._currentTarget)) {
-                    this._currentTarget = null;
-                    this._previousTarget = null;
-                    // NOTE: display ui messsage indicating that the target is an allay.
-                    value = false;
-                    Debug.Log("Ally Selected");
-                    return;
-                }
-
-                Debug.Log("Ally Selected - Cannot Access");
-
-                bool targetInRange = false;
-
-                // Distance checks to see if the target is within range of the attack radius. Doesn't take into account differernt size bounds of geometry, just the center point position.
-                float distance = Vector3.Distance(this.position, this._currentTarget.position);
-                if(distance + this._unitRadius < this._attackRange)
-                    targetInRange = true;
-
-                // Seoncdary check using unity OverlapSphere to hit any unit/structure colliders within the attack radius.
-                if(!targetInRange) {
-                    Collider[] hits = Physics.OverlapSphere(this.position, this._attackRange, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
-                    for(int i = 0; i < hits.Length; i++) {
-                        IHasHealth hitHasHealth = hits[i].GetEntity<IHasHealth>();
-
-                        if(hitHasHealth == null)
-                            continue;
-
-                        if(hitHasHealth != this._currentTarget)
-                            continue;
-                        else {
-                            targetInRange = true;
-                            break;
-                        }
-                    }
-                }
-
-                if(targetInRange) {
-                    this.StartStateAnimation();
-                } else {
-                    // NOTEL display ui message stating the target is out of range.
-                    value = targetInRange;
-                    return;
-                }
-            }
-
-            value = true;
-        }
-        #endregion
-
-        //////////////
-        //// UNIT ////
-        //////////////
-        #region UNIT
-
-        public virtual void ProjectileCollisionEvent() {
-            if(this._currentState == UnitState.ATTACK) {
-                this.InternalAttack(this.GetDamage());
-            }
-        }
-
-        protected virtual void UpdateUnit() {
-            if(this._currentState == UnitState.MOVING)
-                this.CheckMovement();
-        }
-
-        public virtual void Finished() {
-            this._currentState = UnitState.FINISH;
-        }
-
-
-        #endregion
-
-        //////////////////
-        //// MOVEMENT ////
-        //////////////////
-        #region MOVEMENT
-
-
-        public void LookAt(Vector3 pos) {
-            this.transform.LookAt(new Vector3(pos.x, this.transform.position.y, pos.z), Vector3.up);
         }
 
         private bool SamplePosition(Vector3 dest, out Vector3 position) {
@@ -752,62 +710,29 @@
                 return false;
             }
         }
-
-
         #endregion
 
-        ////////////////
-        //// ATTACK ////
-        ////////////////
         #region ATTACK
-        public virtual void InitiateTarget() {
-
-            if(!this._canAttack)
-                return;
-
-            this._nextState = UnitState.ATTACK;
-
-            if(this._currentPoint.HasValue && this.CanMove) { // Move To Point.
-                this.InitiateMove();
-            } else if(this.TargetInRange()) {
-                this._previousState = this._currentState;
-                this._currentState = this._nextState;
-                this._nextState = UnitState.IDLE;
-                this.StartStateAnimation();
-            } else {
-                this._previousState = this._currentState;
-                this._currentState = UnitState.IDLE;
-                this._nextState = UnitState.NONE;
-                Debug.LogWarning("Can't Move To Target & Is Out Of Attack Range");
-            }
-        }
-
         public virtual void Attack() {
             if(this._projectilePrefab == null) {
                 this._currentState = UnitState.ATTACK;
                 this.InternalAttack(this.GetDamage());
             } else {
-                Vector3 releasePosition = this._projectileReleasePoint.position;
                 GameObject temp = Instantiate(this._projectilePrefab);
                 Projectile tempProjjectile = temp.GetComponent<Projectile>() as Projectile;
 
                 if(tempProjjectile == null)
                     tempProjjectile = temp.AddComponent<Projectile>();
 
-                tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, releasePosition, this._projectileSpeed);
+                tempProjjectile.SetupTarget(this as IHasHealth, this._currentTarget, this._projectileReleasePoint.position, this._projectileSpeed);
             }
         }
 
-        public float GetDamage() {
-            float damage = UnityEngine.Random.Range(this._minDamage, this._maxDamage);
-            return Mathf.Round(damage);
-        }
-
-        public override bool ReceiveDamage(float damage, IHasHealth incoming) {
+        public override bool ReceiveDamage(float damage, IHasHealth enemy) {
             if(this.IsDead)
                 return true;
 
-            ICanAttack attacker = incoming as ICanAttack;
+            IUnit attacker = enemy as IUnit;
             float finalDamage = damage;
 
             // Unit Based Multipliers
@@ -815,7 +740,7 @@
                 finalDamage = Mathf.Round(damage * this.ResistancePercentage);
             else if(attacker.attackType == this.weaknessType)
                 finalDamage = Mathf.Round(damage * this.WeaknessPercentage);
-            
+
             Debug.Log("Attack Calculation: " + finalDamage.ToString());
 
             // Height based Multipliers
@@ -838,7 +763,7 @@
             if(finalDamage <= 0.0f)
                 finalDamage = 0.0f;
 
-            Debug.Log("Current Target " + this.name + ": Took " + finalDamage.ToString() + " of Damage from - " + incoming.gameObject.name);
+            Debug.Log("Current Target " + this.name + ": Took " + finalDamage.ToString() + " of Damage from - " + enemy.gameObject.name);
             this.RemoveHealth(finalDamage);
             this.uiBase.UpdateUI();
 
@@ -852,19 +777,19 @@
                 UnitPoolManager.instance.Return(this);
 
                 return true;
-            } else {
-                // NOTE: play hit anbimation.
             }
-            return false;
+
+            return true;
         }
 
-        public override bool ReceiveDamage(float damage, IHasHealth target, Vector3 origin) {
+        public override bool ReceiveDamage(float damage, IHasHealth enemy, Vector3 origin) {
             if(this.IsDead)
                 return true;
 
+            this.ReceiveDamage(damage, enemy);
             this.PlayHitAnimations(origin);
 
-            return this.ReceiveDamage(damage, target);
+            return true;
         }
 
         protected virtual void InternalAttack(float damage) {
@@ -882,7 +807,14 @@
             this._currentEnergy = 0.0f;
             this.StopMoving();
 
+            this.uiBase.UpdateUI();
             this.Controller.playerSelect.ChangeState(SelectionState.FREE);
+        }
+
+        public virtual void ProjectileCollisionEvent() {
+            if(this._currentState == UnitState.ATTACK) {
+                this.InternalAttack(this.GetDamage());
+            }
         }
 
         protected virtual void SpawnAttackParticle() {
@@ -895,11 +827,32 @@
                 ParticlePoolManager.instance.SpawnParticleSystem(ParticleType.IMPACT_MELEE, this._currentTarget.position);
             }
         }
+
+        public float GetDamage() {
+            float damage = UnityEngine.Random.Range(this._minDamage, this._maxDamage);
+            return Mathf.Round(damage);
+        }
+
+        protected virtual bool TargetInRange() {
+            float distance = 0.0f;
+            if(this._currentTarget.entityType == EntityType.UNIT) {
+                distance = Vector3.Distance(this.position, this._currentTarget.position);
+                distance -= ((UnitBase)this._currentTarget).UnitRadius;
+            } else {
+                Structure.StructureBase structure = this._currentTarget as Structure.StructureBase;
+                distance = Vector3.Distance(this.position, Utils.ClosesPointToBounds(structure.ColliderBounds, this.position));
+            }
+
+            //Debug.Log("Distance: " + distance.ToString());
+            //Debug.Log("Unit Attack Range: " + (this._attackRange + this._unitRadius).ToString());
+
+            if(distance > (this._attackRange + this._unitRadius))
+                return false;
+
+            return true;
+        }
         #endregion
 
-        ///////////////////
-        //// ANIMATION ////
-        ///////////////////
         #region ANIMATION
         public virtual void SetupAnimation() {
             this._unitAnimator = this.GetComponent<Animator>();
@@ -907,6 +860,15 @@
                 throw new System.ArgumentNullException("Unit Animator Is Missing");
 
             this.SetupEventAnimation();
+        }
+
+        public virtual void StartStateAnimation() {
+            this._lastAttack = Time.timeSinceLevelLoad;
+            this.LookAt(this._currentTarget.position);
+            this.StopMoving();
+
+            if(this._currentState == UnitState.ATTACK)
+                this._unitAnimator.Play("Attack");
         }
 
         public virtual void PlayHitAnimations(Vector3 origin) {
@@ -942,15 +904,6 @@
             } else {
                 Debug.LogError("Angle TO Degree Is Out Of Bounds, Produced Result: " + angleInDegrees.ToString());
             }
-        }
-
-        public virtual void StartStateAnimation() {
-            this._lastAttack = Time.timeSinceLevelLoad;
-            this.LookAt(this._currentTarget.position);
-            this.StopMoving();
-
-            if(this._currentState == UnitState.ATTACK)
-                this._unitAnimator.Play("Attack");
         }
 
         protected virtual void PlayDeathAnimation() {
@@ -1006,7 +959,6 @@
 
             animcLip.AddEvent(animEvent);
         }
-        #endregion
         #endregion
     }
 }

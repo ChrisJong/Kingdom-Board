@@ -154,7 +154,6 @@
         public bool SpawnUnit(Vector3 position) {
             // Check to see if the position is correct.
             float distance = Vector3.Distance(Utils.ClosesPointToBounds(this._colliderBounds, position), position);
-            Debug.Log("Distance From CAstle: " + distance.ToString());
 
             if(!Constants.GlobalSettings.Debugging.spawnAnywhere) {
                 if(distance > this._spawnRange || distance < 0.5f) {

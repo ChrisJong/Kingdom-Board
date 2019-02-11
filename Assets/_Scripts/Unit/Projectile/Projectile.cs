@@ -63,7 +63,11 @@
         public void SetupTarget(IHasHealth origin, IHasHealth target, Vector3 releasePoint, float speed) {
             //UnityEditor.EditorApplication.isPaused = true;
 
-            this._targetCollider = target.transform.GetComponent<Collider>();
+            if(target.entityType == EntityType.STRUCTURE)
+                this._targetCollider = target.transform.GetComponent<MeshCollider>();
+            else
+                this._targetCollider = target.transform.GetComponent<Collider>();
+
             if(this._targetCollider == null)
                 return;
 

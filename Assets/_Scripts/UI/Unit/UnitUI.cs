@@ -197,8 +197,6 @@
 
             this.UpdateHoverUI();
 
-            Debug.Log("Show Unit Hover UI");
-
             if(!this._selectedTrigger) {
                 if(controller.id == this._controller.id)
                     this.ActivateOutline(Color.blue);
@@ -239,11 +237,11 @@
             }
         }
 
-        public virtual void EnableMovePathToTarget(Vector3 point, float range = 0.0f) {
+        public virtual void EnableMovePathToTarget(Vector3 point, float attackRange = 0.0f) {
             if(!this._LocatorGroup.activeSelf)
                 this._LocatorGroup.SetActive(true);
 
-            Vector3[] path = this._unitBase.ReturnPathToTarget(point, range);
+            Vector3[] path = this._unitBase.ReturnPathToTarget(point, attackRange);
             if(path != null) {
                 this._LocatorLine.enabled = true;
                 this._LocatorLine.positionCount = path.Length;
@@ -262,7 +260,7 @@
         }
 
         public virtual void EnableAttackRadius() {
-            this._radiusDrawer.DrawAttackRadius(this._unitBase.AttackRange + this._unitBase.UnitRadius);
+            this._radiusDrawer.DrawAttackRadius((this._unitBase.AttackRange + this._unitBase.UnitRadius));
             this._radiusDrawer.MoveToOrigin();
             this._radiusDrawer.TurnOn();
         }
@@ -277,13 +275,16 @@
             this._radiusDrawer.Move(point);
         }
 
+        public virtual void MoveRadiusToOrigin() {
+            this._radiusDrawer.MoveToOrigin();
+        }
+
         public virtual void DisableRadius() {
             this._radiusDrawer.MoveToOrigin();
             this._radiusDrawer.TurnOff();
         }
 
         protected virtual void ActivateOutline(Color color, float width = 0.03f) {
-            Debug.Log("Activate outline");
 
             foreach(Renderer ren in this._renderers) {
                 ren.material.SetFloat("_Outline", width);
@@ -292,7 +293,6 @@
         }
 
         protected virtual void DeactivateOutline() {
-            Debug.Log("Deactivate outline");
 
             foreach(Renderer ren in this._renderers) {
                 ren.material.SetFloat("_Outline", 0.0f);

@@ -4,7 +4,6 @@
     using System.Collections.Generic;
 
     using UnityEngine;
-    using UnityEngine.UI;
 
     using TMPro;
 
@@ -12,6 +11,7 @@
     using Enum;
     using Manager;
     using Player;
+    using Utility;
 
     public class PlayerUI : UIBase {
 
@@ -19,6 +19,8 @@
 
         [SerializeField] private PlayerEndButton _endTurnButton = null;
         [SerializeField] private PlayerBanner _playerBanner = null;
+
+        [SerializeField] private LineRenderDrawCircle _radiusDrawer = null; 
 
         [SerializeField] private GameObject _persistantGroup = null;
         private RectTransform _persistantTransform = null;
@@ -33,6 +35,8 @@
         public GameObject structureUIGroup = null;
 
         [SerializeField] protected List<Transform> _uiChildrenList = new List<Transform>();
+
+        public LineRenderDrawCircle RadiusDrawer { get { return this._radiusDrawer; } }
 
         #endregion
 

@@ -1,10 +1,8 @@
 ﻿namespace Unit {
 
-    using System;
     using System.Collections.Generic;
 
     using UnityEngine;
-    using UnityEditor;
 
     using Constants;
     using Enum;
@@ -18,28 +16,48 @@
 
         #region VARIABLE
         [Header("WIZARD")]
-        [SerializeField, Range(1.0f, 50.0f)] private float _splashRadius = 10.0f;
+        [SerializeField] private float _splashRange = 0.0f;
 
-        public float SplashRadius { get { return this._splashRadius; } }
-        #endregion
-
-        #region CLASS_CLEAN
-
+        public float SplashRange { get { return this._splashRange; } }
         #endregion
 
         #region CLASS
+        public override void Setup() {
 
+            this._splashRange = this._data.splashRange;
+
+            base.Setup();
+        }
+
+        public override void Init() {
+
+            this._splashRange = this._data.splashRange;
+
+            base.Init();
+        }
+
+        public override bool SetTarget(IHasHealth target) {
+
+            this.Controller.playerUI.RadiusDrawer.DrawAttackRadius((this._splashRange));
+            this.Controller.playerUI.RadiusDrawer.Move(target.position);
+            this.Controller.playerUI.RadiusDrawer.TurnOn();
+
+            return base.SetTarget(target);
+        }
+        #endregion
+
+        #region ATTACK
         protected override void InternalAttack(float damage) {
             this.SpawnAttackParticle();
 
             this._currentTarget.LastAttacker = this;
-            this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.transform.position);
+            this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.position);
 
             // NOTE: Find units within the splashRadius and calculate damage on the distance from the main attack source.
             var hits = Utils.hitsBuffers;
-            int numberofhits = Physics.SphereCastNonAlloc(this.CurrentTarget.position, this._splashRadius + this._unitRadius, Vector3.forward, hits, 0.0f, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
+            int numberofhits = Physics.SphereCastNonAlloc(this.CurrentTarget.position, this._splashRange + this._unitRadius, Vector3.forward, hits, 0.0f, GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer);
             this._hitComparer.position = this._currentTarget.position;
-            Array.Sort(hits, this._hitComparer);
+            System.Array.Sort(hits, this._hitComparer);
 
             Debug.Log("Start Splash Attack To: " + numberofhits.ToString() + " Enemies");
 
@@ -68,15 +86,24 @@
 
                 float distance = Vector3.Distance(this._currentTarget.position, hitHasHealth.position);
                 float finalDamage = 0.0f;
-                finalDamage = Mathf.Round(damage - ((distance / this._splashRadius) * damage));
+                finalDamage = Mathf.Round(damage - ((distance / this._splashRange) * damage));
 
                 hitHasHealth.LastAttacker = this;
                 hitHasHealth.ReceiveDamage(finalDamage, this as IHasHealth, this._currentTarget.position);
                 //Debug.Log("Current Target (" + hitHasHealth.gameObject.name + "): Took " + finalDamage.ToString() + " of Damage");
             }
 
-            this._currentState = UnitState.IDLE;
+            this._previousState = this._currentState;
+            this._currentState = UnitState.FINISH;
+            this._nextState = UnitState.NONE;
             this._canAttack = false;
+
+            this._hasStamina = false;
+            this._currentEnergy = 0.0f;
+            this.StopMoving();
+
+            this.uiBase.UpdateUI();
+            this.Controller.playerSelect.ChangeState(SelectionState.FREE);
         }
 
         protected override void SpawnAttackParticle() {

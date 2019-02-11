@@ -102,6 +102,8 @@
             r.y = (r.y > max.x) ? max.y : r.y;
             r.z = (r.z > max.z) ? max.z : r.z;
 
+            r.y = min.y;
+
             return r;
         }
 

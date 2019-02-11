@@ -71,8 +71,6 @@
             if(state == this._currentState)
                 return;
 
-            Debug.Log("Cursor State: " + state.ToString());
-
             this._previousState = this._currentState;
             this._currentState = state;
         }

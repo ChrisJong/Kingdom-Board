@@ -18,8 +18,6 @@
 
         private float _rayDistance = 50.0f;
 
-        private bool _selected = false;
-
         private Camera _camera = null;
 
         private Player _controller = null;
@@ -32,14 +30,14 @@
         [SerializeField] private EntityType _currentSelectedEntity = EntityType.NONE;
 
         [Space]
-        [SerializeField] private HasHealthBase _currentSelected = null;
         [SerializeField] private HasHealthBase _previousSelected = null;
+        [SerializeField] private HasHealthBase _currentSelected = null;
         [SerializeField] private UnitBase _currentUnitSelected = null; // _currentSelectted is type of Unit.
         [SerializeField] private StructureBase _currentStructureSelected = null; // _currentselected is type of structure.
 
         [Space]
-        [SerializeField] private HasHealthBase _currentHover = null;
         [SerializeField] private HasHealthBase _previousHover = null;
+        [SerializeField] private HasHealthBase _currentHover = null;
 
         [Space]
         [SerializeField] private HasHealthBase _targetSelected = null;
@@ -73,15 +71,12 @@
             RaycastHit hitInfo;
 
             Physics.Raycast(ray, out hitInfo, this._rayDistance, GlobalSettings.LayerValues.groundLayer, QueryTriggerInteraction.Ignore);
-            HasHealthBase temp = null;
 
             if(Utils.SamplePosition(hitInfo.point, out coord)) {
-                Debug.Log(coord.ToString());
                 point = coord;
                 return true;
             }
 
-            Debug.Log(coord.ToString());
             point = null;
             return false;
         }
@@ -121,7 +116,7 @@
 
         #endregion
 
-        #region CLASS_CLEAN
+        #region CLASS
         public void Init(Player player) {
             if(this._camera == null) {
                 if(this.GetComponent<Camera>() != null) {
@@ -163,6 +158,7 @@
                 }
 
                 this._currentSelected = null;
+                this._controller.playerUI.RadiusDrawer.TurnOff();
             }
 
             this._previousState = this._currentState;
@@ -229,9 +225,7 @@
                         this._currentStructureSelected = this._currentSelected as StructureBase;
                     }
 
-                    this._previousState = this._currentState;
-                    this._currentState = SelectionState.STANDBY;
-                    this._selected = true;
+                    this.ChangeState(SelectionState.STANDBY);
                 }
 
             } else {
@@ -250,9 +244,7 @@
                 this._currentUnitSelected = null;
                 this._currentStructureSelected = null;
 
-                this._previousState = this._currentState;
-                this._currentState = SelectionState.FREE;
-                this._selected = false;
+                this.ChangeState(SelectionState.FREE);
             }
         }
         #endregion
@@ -366,52 +358,40 @@
                     this._currentHover = temp;
                     this._currentHover.uiBase.OnEnter(this._controller);
 
-                    if(this._currentSelected.IsEnemy(temp)) { // Current Hover is an Enemy.
+                    if(this._currentSelectedEntity == EntityType.UNIT) {
 
-                        if(this._currentSelectedEntity == EntityType.UNIT) {
+                        if(this._currentUnitSelected.IsEnemy(temp)) {
 
-                            if(this._currentUnitSelected.CanAttack) {
-
-                                if(this._currentUnitSelected.SetTarget(temp)) {
-                                    if(this._humanController != null)
-                                        this._humanController.playerCursor.ChangeState(CursorState.ATTACK);
-                                } else {
-                                    if(this._humanController != null)
-                                        this._humanController.playerCursor.ChangeState(CursorState.ATTACK_NOTREADY);
-                                }
-
+                            if(this._currentUnitSelected.SetTarget(temp)) {
+                                if(this._humanController != null)
+                                    this._humanController.playerCursor.ChangeState(CursorState.ATTACK);
                             } else {
                                 if(this._humanController != null)
                                     this._humanController.playerCursor.ChangeState(CursorState.ATTACK_NOTREADY);
                             }
-                        }
 
-                    } else { // Current Hover is an Ally.
-
-                        if(this._currentSelectedEntity == EntityType.UNIT) {
+                        } else {
 
                             if(this._currentUnitSelected.unitType == UnitType.CLERIC) {
 
-                                Cleric cleric = this._currentUnitSelected as Cleric;
-
-                                if(cleric.CanHeal) {
-
-                                    if(cleric.SetTarget(temp)) {
-                                        if(this._humanController != null)
-                                            this._humanController.playerCursor.ChangeState(CursorState.HEAL);
-                                    } else {
+                                if(this._currentUnitSelected.SetTarget(temp)) {
+                                    if(this._humanController != null)
+                                        this._humanController.playerCursor.ChangeState(CursorState.HEAL);
+                                } else {
+                                    if(this._currentHover.entityType == EntityType.UNIT) {
                                         if(this._humanController != null)
                                             this._humanController.playerCursor.ChangeState(CursorState.HEAL_NOTREADY);
+                                    } else {
+                                        if(this._humanController != null)
+                                            this._humanController.playerCursor.ChangeState(CursorState.SELECTED);
                                     }
-
-                                } else {
-                                    if(this._humanController != null)
-                                        this._humanController.playerCursor.ChangeState(CursorState.HEAL_NOTREADY);
                                 }
+
                             } else {
-                                if(temp.IsAlly(this._controller))
+                                if(temp.IsAlly(this._controller)) {
                                     if(this._humanController != null)
                                         this._humanController.playerCursor.ChangeState(CursorState.SELECTED);
+                                }
                             }
                         }
                     }
@@ -422,25 +402,26 @@
                 // Set the Move target for the selected unit if possible.
                 if(this._currentSelectedEntity == EntityType.UNIT) {
 
-                    if(this._currentUnitSelected.CanMove) {
+                    if(this.GetPointOnGround(out this._currentHoverPoint)) {
 
-                        if(this.GetPointOnGround(out this._currentHoverPoint)) {
+                        if(this._currentUnitSelected.SetPoint(this._currentHoverPoint.Value)) {
                             if(this._humanController != null)
                                 this._humanController.playerCursor.ChangeState(CursorState.MOVE);
 
                             this._debugCurrentPoint = this._currentHoverPoint.Value;
                             this._currentUnitSelected.SetPoint(this._currentHoverPoint.Value);
-
                         } else {
                             if(this._humanController != null)
                                 this._humanController.playerCursor.ChangeState(CursorState.MOVE_NOTREADY);
 
-                            this._debugCurrentPoint = Vector3.zero;
+                            this._debugCurrentPoint = this._currentHoverPoint.Value;
                         }
 
                     } else {
                         if(this._humanController != null)
                             this._humanController.playerCursor.ChangeState(CursorState.MOVE_NOTREADY);
+
+                        this._debugCurrentPoint = Vector3.zero;
                     }
 
                 } else {
@@ -502,61 +483,6 @@
 
         }
         #endregion
-
-        // REMOVE
-        /*private void StandbyState2() {
-
-            // Right Click.
-            if(Input.GetMouseButtonUp(1)) {
-
-                // Cast A Ray Ignoring the ground layer.
-                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
-
-                    HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>() as HasHealthBase;
-
-                    // Hit Either a unit or structure
-                    if(temp != null) {
-
-                        if(this._currentSelectedEntity == EntityType.UNIT) {
-
-                            if(temp.IsEnemy(this._currentUnitSelected)) { // Enemy Unit
-                                this._currentUnitSelected.InitiateTarget();
-                            } else { // Ally Unit
-
-                                if(this._currentUnitSelected.unitType == UnitType.CLERIC)
-                                    this._currentUnitSelected.InitiateTarget();
-                            }
-
-                        } else if(this._currentSelectedEntity == EntityType.STRUCTURE) {
-
-                        } else {
-                            Debug.LogError("No Such Entity Type For the Current Selection Exsists, " + this._currentSelected.entityType.ToString());
-                            throw new System.ArgumentNullException("No Such Entity Type For the Current Selection Exsists, " + this._currentSelected.entityType.ToString());
-                        }
-
-                    }
-
-                } else {
-                    // Hit nothing but air, soo check for the ground.
-                    if(this._currentSelectedEntity == EntityType.UNIT) {
-
-                        if(this.CastRayToWorldToMask(GlobalSettings.LayerValues.groundLayer))
-                            this._currentUnitSelected.InitiateMove();
-
-                    }
-                }
-
-            } else if(Input.GetMouseButtonUp(0)) { // Left Click. (De-Selection)
-
-                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer))
-                    this.Selection();
-                else
-                    this.Deselection();
-
-            } else {
-                this.StandbyHover();
-            }
-        }*/
 
     }
 }

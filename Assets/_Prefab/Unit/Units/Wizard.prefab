@@ -1222,7 +1222,7 @@ NavMeshAgent:
   m_Radius: 0.8
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 74
+  avoidancePriority: 53
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -1326,7 +1326,7 @@ MonoBehaviour:
   debugCurrentPoint: {x: 0, y: 0, z: 0}
   debugPreviousTarget: {fileID: 0}
   debugCurrentTarget: {fileID: 0}
-  _splashRadius: 10
+  _splashRange: 2
 --- !u!1 &1504650571703658
 GameObject:
   m_ObjectHideFlags: 0
@@ -2356,6 +2356,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4757485930217214}
     m_Modifications:
+    - target: {fileID: 6714449223262425521, guid: 23d0344b80b39ff4b94e86276d106f63,
+        type: 3}
+      propertyPath: m_Name
+      value: Unit_UI_HOVER
+      objectReference: {fileID: 0}
     - target: {fileID: 8314535118023709677, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2461,11 +2466,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 6714449223262425521, guid: 23d0344b80b39ff4b94e86276d106f63,
-        type: 3}
-      propertyPath: m_Name
-      value: Unit_UI_HOVER
-      objectReference: {fileID: 0}
     - target: {fileID: 7559833917758034297, guid: 23d0344b80b39ff4b94e86276d106f63,
         type: 3}
       propertyPath: m_Sprite
@@ -2523,6 +2523,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4757485930217214}
     m_Modifications:
+    - target: {fileID: 5590132700612692707, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
+        type: 3}
+      propertyPath: m_Name
+      value: pedestal
+      objectReference: {fileID: 0}
     - target: {fileID: 5590132700613121731, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2577,11 +2582,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5590132700612692707, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
-        type: 3}
-      propertyPath: m_Name
-      value: pedestal
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9ee9c58fafa0c84889fcb2f240c9b06, type: 3}
