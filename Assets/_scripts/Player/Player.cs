@@ -25,6 +25,7 @@
 
         private PlayerCamera _playerCamera;
         private PlayerSelect _playerSelect;
+        private PlayerSound _playerSound;
         private Research _research;
         protected PlayerUI _playerUI;
 
@@ -46,6 +47,7 @@
 
         public PlayerCamera playerCamera { get { return this._playerCamera; } }
         public PlayerSelect playerSelect { get { return this._playerSelect; } }
+        public PlayerSound playerSound { get { return this._playerSound; } }
         public PlayerUI playerUI { get { return this._playerUI; } set { this._playerUI = value; } }
 
         public PlayerState CurrentState { get { return this._currentState; } set { this._currentState = value; } }
@@ -79,6 +81,10 @@
 
         #region CLASS
         public virtual void Create(Transform spawnLocation, uint id = 0) {
+
+            this._playerSound = this.gameObject.GetComponent<PlayerSound>();
+            if(this._playerSound == null)
+                this._playerSound = this.gameObject.AddComponent<PlayerSound>();
 
             this._playerCamera = PlayerCamera.CreateCamera(this, spawnLocation);
             this._playerSelect = this.playerCamera.gameObject.GetComponent<PlayerSelect>();

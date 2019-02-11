@@ -247,6 +247,9 @@
             if(this._spawnGroupMoving)
                 StopCoroutine(this._panelAnimation);
 
+            if(active)
+                this._controller.playerSound.PlayOpenBook();
+
             this._panelAnimation = null;
             this._panelAnimation = this.MoveTrainingPanel();
             StartCoroutine(this._panelAnimation);
@@ -258,6 +261,9 @@
 
             if(this._spawnGroupMoving)
                 StopCoroutine(this._panelAnimation);
+
+            if(this._spawnGroupToggle)
+                this._controller.playerSound.PlayOpenBook();
 
             this._panelAnimation = null;
             this._panelAnimation = this.MoveTrainingPanel();

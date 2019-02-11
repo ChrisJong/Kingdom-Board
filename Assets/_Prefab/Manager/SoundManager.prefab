@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2535673775408007533
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5858444791892427240}
+  - component: {fileID: 1424585294593567603}
+  - component: {fileID: 3317603831477405747}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5858444791892427240
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2535673775408007533}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1424585294593567603
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2535673775408007533}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 1
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &3317603831477405747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2535673775408007533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6a10016f07569f4db706646297bc5fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSource: {fileID: 0}
+  main: {fileID: 0}
+  attackPhase: {fileID: 8300000, guid: 1ceac373d247d66488abff04e645d4f1, type: 3}
+  defencePhase: {fileID: 8300000, guid: 63a9bd313786ddd4fb1a0f1255a54e15, type: 3}
+  bookOpen:
+  - {fileID: 8300000, guid: 5b84f36477a8f134ca64aa5fcb2fab94, type: 3}
+  - {fileID: 8300000, guid: b36d9cdce63f09148b01d434dd3ff064, type: 3}
+  cardTurn: {fileID: 8300000, guid: eff68762d0d4b094487264bc795e6978, type: 3}
+  victory: {fileID: 8300000, guid: 0baeea69dbeccd94a9a8a2e2b28270da, type: 3}
+  defeat: {fileID: 8300000, guid: 211c418e2b110aa45981010862df0029, type: 3}
+  unitDeath:
+  - {fileID: 8300000, guid: 747dad7c2f880d4468ded7ac5ce5937f, type: 3}
+  - {fileID: 8300000, guid: 3b601e237a498164b8092fd205e24f82, type: 3}
+  rangeRelease: {fileID: 8300000, guid: d7047a202a291fc4591fa8fbd959b630, type: 3}
+  clericHeal: {fileID: 8300000, guid: 83343fcbedb656b45b9bc49f26ba7a50, type: 3}
+  clericAttack: {fileID: 8300000, guid: f609c875579e3ae4cbb24965358ca364, type: 3}
+  mageAttack: {fileID: 8300000, guid: 45e00cb4fab814a4381ca6a1d9de8cad, type: 3}
+  wizardAttack: {fileID: 8300000, guid: eefee2064262fb84daf1b800bb40cca2, type: 3}
+  meleeImpact:
+  - {fileID: 8300000, guid: 3e361570a65bea04c83c3416bb08d645, type: 3}
+  - {fileID: 8300000, guid: 9c370b8692f690d4a88964b39064664d, type: 3}
+  rangeImpact:
+  - {fileID: 8300000, guid: b0d8a74aae070ad4992ee6bdb35a232e, type: 3}
+  - {fileID: 8300000, guid: 97123ddab67868d4b8871632a45c2dd2, type: 3}

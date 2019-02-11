@@ -40,6 +40,8 @@
         protected RaycastHitDistanceSortComparer _hitComparer = new RaycastHitDistanceSortComparer(true);
         [SerializeField, HideInInspector] protected NavMeshAgent _navMeshAgent = null;
 
+        [SerializeField] protected AudioSource _audioSource = null;
+
         protected Vector3? _currentPoint = null;
         protected Vector3? _previousPoint = null;
         protected IHasHealth _currentTarget = null;

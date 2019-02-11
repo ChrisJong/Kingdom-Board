@@ -165,6 +165,11 @@
             if(!this.bannerGroup.activeSelf)
                 this.bannerGroup.SetActive(true);
 
+            if(this.Controller.IsAttacking)
+                this.Controller.playerSound.PlayAttackPhase();
+            else
+                this.Controller.playerSound.PlayDefencePhase();
+
             this._playerBanner.SwapBanner(this.Controller.IsAttacking);
 
             this._playerBanner.StartBannerAnimation();

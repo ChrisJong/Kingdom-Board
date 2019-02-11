@@ -54,6 +54,8 @@
 
         private Button _backButton;
 
+        public Player Controller { get { return this._controller; } }
+
         public int ResearchCount { get { return this._researchCount; } }
         public int CardsReady { get { return this._cardsReady; } set { this._cardsReady = value; } }
 
@@ -76,7 +78,6 @@
         #endregion
 
         #region CLASS
-
         public void Init(Player controller) {
             this._controller = controller;
             this._castle = controller.castle;

@@ -15,9 +15,8 @@
         public void OnPointerDown(PointerEventData eventData) {}
 
         public void OnPointerUp(PointerEventData eventData) {
-            if(!this._castleUI.SpawnGroupToggle) {
+            if(!this._castleUI.SpawnGroupToggle)
                 this._castleUI.ToggleSpawnGroup();
-            }
         }
 
         #endregion

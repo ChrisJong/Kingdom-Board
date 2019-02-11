@@ -101,6 +101,7 @@
         }
 
         public virtual void Clicked() {
+            this._research.Controller.playerSound.PlayResearchCardTurn();
             StartCoroutine(this._cardAnimation.RotateAndFade());
         }
 
