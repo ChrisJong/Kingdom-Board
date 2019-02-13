@@ -190,6 +190,7 @@
 
         private void InternalHeal() {
 
+            this._unitSound.PlaySpecial();
             this._currentTarget.AddHealth(this._healingAmount);
 
             this._previousState = this._currentState;
