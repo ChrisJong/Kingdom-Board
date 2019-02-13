@@ -17,16 +17,20 @@
 
         #region VARIABLE
 
+        [Space]
         [SerializeField] private PlayerEndButton _endTurnButton = null;
         [SerializeField] private PlayerBanner _playerBanner = null;
+        [SerializeField] private PlayerHourglass _playerHourglass = null;
 
         [SerializeField] private LineRenderDrawCircle _radiusDrawer = null; 
 
+        [Space]
         [SerializeField] private GameObject _persistantGroup = null;
         private RectTransform _persistantTransform = null;
 
         [SerializeField] private TextMeshProUGUI _infoText;
 
+        [Space]
         public GameObject bannerGroup = null;
         public GameObject spawnGroup = null;
         public GameObject researchGroup = null;
@@ -34,6 +38,7 @@
         public GameObject unitLocator = null;
         public GameObject structureUIGroup = null;
 
+        [Space]
         [SerializeField] protected List<Transform> _uiChildrenList = new List<Transform>();
 
         public LineRenderDrawCircle RadiusDrawer { get { return this._radiusDrawer; } }
@@ -72,8 +77,7 @@
 
             if(this._persistantGroup == null)
                 this._persistantGroup = this._mainRectTransform.Find(UIValues.PERSISTANT_GROUP).gameObject;
-            else
-                this._persistantTransform = this._persistantGroup.transform as RectTransform;
+            this._persistantTransform = this._persistantGroup.transform as RectTransform;
 
             if(this._infoText == null)
                 this._infoText = this._persistantTransform.Find("info_TEXT").GetComponent<TextMeshProUGUI>() as TextMeshProUGUI;
@@ -93,6 +97,13 @@
                 this._playerBanner.Init(this);
             } else 
                 this._playerBanner.Init(this);
+
+            if(this._playerHourglass == null) {
+                this._playerHourglass = this._controller.playerCamera.MainCamera.GetComponentInChildren<PlayerHourglass>();
+            }
+            this._playerHourglass.Setup(this._controller);
+
+            this._uiChildrenList.Add(this._playerHourglass.transform);
 
             foreach(Transform temp in this._mainGroup.GetComponentInChildren<Transform>()) {
                 if(temp.GetHashCode() == this.bannerGroup.transform.GetHashCode())
@@ -161,6 +172,10 @@
             }
         }
 
+        public void Starthourglass() {
+            this._playerHourglass.StartHourglass();
+        }
+
         public void ShowBanner() {
             if(!this.bannerGroup.activeSelf)
                 this.bannerGroup.SetActive(true);
@@ -177,11 +192,6 @@
 
         public void FinishedBannerAnim() {
             this.Controller.StartTurn();
-        }
-
-        public void EndTurn() {
-            this.Hide();
-            this.Controller.EndTurn();
         }
 
         private void UpdateInfo() {

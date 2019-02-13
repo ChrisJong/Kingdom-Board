@@ -1,21 +1,23 @@
 ﻿namespace Player {
 
-    using System.Collections;
-    using System.Collections.Generic;
-
     using UnityEngine;
 
-    [RequireComponent(typeof(Camera))]
     public class PlayerCamera : MonoBehaviour {
+
+        #region VARIABLE_CLEAN
+        [SerializeField] private Player _controller;
+
+        [SerializeField] private Camera _camera;
+
+        [SerializeField] private Transform _cameraTransform = null;
+
+        public Camera MainCamera { get { return this._camera; } }
+
+        public Transform MainCameraTransform { get { return this._cameraTransform; } }
+        #endregion
 
         #region VARIABLE
         private bool _enableFixedUpdate = false;
-
-        private Player _controller;
-        private LayerMask _groundMask = 1 << 11;
-        [SerializeField] private Transform _transform;
-        private Camera _camera;
-        public Camera mainCamera { get { return this._camera; } }
 
         // SPEED
         private float _keyboardSpeed = 25.0f;
@@ -111,7 +113,7 @@
 
         #region UNITY
         private void Start() {
-            this._transform.rotation = Quaternion.Euler(this._cameraAngle, this._transform.eulerAngles.y, this._transform.eulerAngles.z);
+            this._cameraTransform.rotation = Quaternion.Euler(this._cameraAngle, this._cameraTransform.eulerAngles.y, this._cameraTransform.eulerAngles.z);
         }
 
         private void Update() {
@@ -127,12 +129,29 @@
         #endregion
 
         #region CLASS
-        public void Init(Player controller) {
+        public void Init(Player controller, Transform spawnLocation) {
             this._controller = controller;
-            this._transform = this.transform;
-            this._camera = this.GetComponent<Camera>() as Camera;
 
-            this._transform.rotation = Quaternion.Euler(this._cameraAngle, this._transform.eulerAngles.y, this._transform.eulerAngles.z);
+            this._camera = this.transform.Find("Camera").GetComponent<Camera>();
+            if(this._camera == null) {
+                GameObject tempCamera = new GameObject("Camera");
+                this._camera = tempCamera.AddComponent<Camera>();
+                tempCamera.AddComponent<AudioListener>();
+                tempCamera.AddComponent<AudioSource>();
+                tempCamera.transform.parent = this._controller.transform;
+            }
+            this._cameraTransform = this._camera.transform;
+
+            if(spawnLocation.eulerAngles.y >= 180.0f)
+                this._cameraTransform.transform.position = new Vector3(spawnLocation.position.x, 20.0f, spawnLocation.position.z - 7.5f);
+            else
+                this._cameraTransform.transform.position = new Vector3(spawnLocation.position.x, 20.0f, spawnLocation.position.z + 7.5f);
+
+            this._cameraTransform.localRotation = Quaternion.Euler(this._cameraAngle, spawnLocation.eulerAngles.y + 180.0f, 0.0f);
+
+            this._camera.gameObject.SetActive(false);
+
+            //this._cameraTransform.rotation = Quaternion.Euler(this._cameraAngle, this._cameraTransform.eulerAngles.y, this._cameraTransform.eulerAngles.z);
         }
 
         private void CameraUpdate() {
@@ -149,10 +168,10 @@
 
                 desiredMove *= this._keyboardSpeed;
                 desiredMove *= Time.deltaTime;
-                desiredMove = Quaternion.Euler(new Vector3(0.0f, transform.eulerAngles.y, 0.0f)) * desiredMove;
-                desiredMove = this._transform.InverseTransformDirection(desiredMove);
+                desiredMove = Quaternion.Euler(new Vector3(0.0f, this._cameraTransform.eulerAngles.y, 0.0f)) * desiredMove;
+                desiredMove = this._cameraTransform.InverseTransformDirection(desiredMove);
 
-                this.transform.Translate(desiredMove, Space.Self);
+                this._cameraTransform.Translate(desiredMove, Space.Self);
             }
         }
 
@@ -174,8 +193,8 @@
             float targetHeight = Mathf.Lerp(this._minHeight, this._maxHeight, this._currentHeight);
             float difference = 0.0f;
 
-            this._transform.position = Vector3.Lerp(this._transform.position,
-                                                    new Vector3(this._transform.position.x, targetHeight + difference, this._transform.position.z),
+            this._cameraTransform.position = Vector3.Lerp(this._cameraTransform.position,
+                                                    new Vector3(this._cameraTransform.position.x, targetHeight + difference, this._cameraTransform.position.z),
                                                     Time.deltaTime * this._heightDamp);
         }
 
@@ -186,69 +205,40 @@
                     if(this._zoomDistance > this._maxZoom)
                         this._zoomDistance = this._maxZoom;
                     else
-                        this.transform.Translate(0, 0, this.ScrollWheel * _scrollWheelZoomSens);
+                        this._cameraTransform.Translate(0, 0, this.ScrollWheel * _scrollWheelZoomSens);
                 } else {
                     this._zoomDistance += this.ScrollWheel;
                     if(this._zoomDistance < this._minZoom)
                         this._zoomDistance = this._minZoom;
                     else
-                        this.transform.Translate(0, 0, this.ScrollWheel * _scrollWheelZoomSens);
+                        this._cameraTransform.Translate(0, 0, this.ScrollWheel * _scrollWheelZoomSens);
                 }
             }
         }
 
         private void RotateCamera() {
             if(this._enableKeyRotation)
-                this.transform.Rotate(Vector3.up, this.RotationDirection * Time.deltaTime * this._rotationSpeed, Space.World);
+                this._cameraTransform.Rotate(Vector3.up, this.RotationDirection * Time.deltaTime * this._rotationSpeed, Space.World);
         }
 
         private void LimitPosition() {
             if(!this._enableMapLimit)
                 return;
 
-            this._transform.position = new Vector3(Mathf.Clamp(this._transform.position.x, -this._limitX,
-                                                   this._limitX), this._transform.position.y,
-                                                   Mathf.Clamp(this._transform.position.z, -this._limitY, this._limitY));
+            this._cameraTransform.position = new Vector3(Mathf.Clamp(this._cameraTransform.position.x, -this._limitX,
+                                                   this._limitX), this._cameraTransform.position.y,
+                                                   Mathf.Clamp(this._cameraTransform.position.z, -this._limitY, this._limitY));
         }
 
         private float DistanceGround() {
-            Ray ray = new Ray(this._transform.position, Vector3.down);
+            Ray ray = new Ray(this._cameraTransform.position, Vector3.down);
             RaycastHit hit;
 
-            if(Physics.Raycast(ray, out hit, 20.0f, this._groundMask.value)) {
-                Debug.DrawRay(this._transform.position, Vector3.down * 1000.0f, Color.green);
-                return (hit.point - this._transform.position).magnitude;
+            if(Physics.Raycast(ray, out hit, 20.0f, Constants.GlobalSettings.LayerValues.groundLayer)) {
+                Debug.DrawRay(this._cameraTransform.position, Vector3.down * 1000.0f, Color.green);
+                return (hit.point - this._cameraTransform.position).magnitude;
             }
             return 0.0f;
-        }
-        #endregion
-
-        #region STATIC
-        public static PlayerCamera CreateCamera(Player p, Transform startPoint) {
-            GameObject tempCamera = new GameObject("Player" + (p.id+1).ToString().PadLeft(1) + "_CAMERA");
-
-            tempCamera.AddComponent<Camera>();
-            tempCamera.AddComponent<FlareLayer>();
-            tempCamera.AddComponent<AudioListener>();
-            p.playerSound.Init(tempCamera.AddComponent<AudioSource>());
-
-            // NOTE: Used for IPointerHandlers for Shape Colliders, Doesn't actually work at the moment cause it collides with the Phyiscs Raycast in the Player Select Script.
-            //tempCamera.AddComponent<UnityEngine.EventSystems.PhysicsRaycaster>();
-
-            tempCamera.AddComponent<PlayerCamera>().Init(p);
-            tempCamera.AddComponent<PlayerSelect>().Init(p);
-
-            tempCamera.transform.parent = p.transform;
-
-            if(startPoint.eulerAngles.y >= 180.0f)
-                tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z - 7.5f);
-            else
-                tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z + 7.5f);
-
-            //tempCamera.transform.position = new Vector3(startPoint.position.x, 20.0f, startPoint.position.z + 7.5f);
-            tempCamera.transform.localRotation = Quaternion.Euler(0.0f, startPoint.eulerAngles.y + 180.0f, 0.0f);
-
-            return tempCamera.GetComponent<PlayerCamera>() as PlayerCamera;
         }
         #endregion
     }

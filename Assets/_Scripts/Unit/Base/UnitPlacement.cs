@@ -53,7 +53,6 @@
         } 
 
         public void SetPlacement(Vector3 point, Vector3 castlePosition) {
-            Vector3 newPoint = new Vector3(point.x, castlePosition.y, point.z);
             Vector3 direction = point - castlePosition;
 
             this._transfrom.position = point;

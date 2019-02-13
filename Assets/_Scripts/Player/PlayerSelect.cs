@@ -52,6 +52,8 @@
         private Ray _ray;
         private RaycastHit _hitInfo;
 
+        public bool CanSelect { get { return (this._currentState == SelectionState.FREE || this._currentState == SelectionState.STANDBY ? true : false); } }
+
         public SelectionState CurrentState { get { return this._currentState; } set { this._previousState = this._currentState; this._currentState = value; } }
         public SelectionState PreviousState { get { return this._previousState; } }
 
@@ -118,20 +120,19 @@
 
         #region CLASS
         public void Init(Player player) {
-            if(this._camera == null) {
-                if(this.GetComponent<Camera>() != null) {
-
-                    this._camera = this.GetComponent<Camera>() as Camera;
-
-                } else {
-                    Debug.LogError("Player Needs A Camera");
-                    throw new System.NullReferenceException("There is no Camera Attached To the Player");
-                }
-            }
 
             if(player.GetType() == typeof(Human))
                 this._humanController = player as Human;
             this._controller = player;
+
+            if(this._camera == null || (this._camera = this._controller.playerCamera.MainCamera) == null) {
+                if(this._controller.playerCamera.MainCamera != null)
+                    this._camera = this._controller.playerCamera.MainCamera;
+                else {
+                    Debug.LogError("Player Needs A Camera");
+                    throw new System.NullReferenceException("There is no Camera Attached To the Player");
+                }
+            }
         }
 
         public void EndTurn() {
@@ -191,7 +192,12 @@
         }
 
         private void Selection() {
+            this.CheckHourglassHit();
+
             HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>();
+
+            if(temp == null)
+                return;
 
             if(temp != null) {
 
@@ -227,9 +233,6 @@
 
                     this.ChangeState(SelectionState.STANDBY);
                 }
-
-            } else {
-                Debug.LogWarning(this._hitInfo.transform.name + " Doesn't Derive From HasHealthBase Class.");
             }
         }
 
@@ -245,6 +248,17 @@
                 this._currentStructureSelected = null;
 
                 this.ChangeState(SelectionState.FREE);
+            }
+        }
+
+        private void CheckHourglassHit() {
+            PlayerHourglass temp = this._hitInfo.transform.GetComponent<PlayerHourglass>();
+
+            if(temp == null)
+                return;
+
+            if(temp != null) {
+                temp.OnClick();
             }
         }
         #endregion

@@ -29,7 +29,7 @@
                 return;
 
             if(this._playerUI.Controller.playerSelect.CurrentState == Enum.SelectionState.FREE || this._playerUI.Controller.playerSelect.CurrentState == Enum.SelectionState.STANDBY)
-                this._playerUI.EndTurn();
+                this._playerUI.Controller.EndTurn();
         }
         #endregion
 

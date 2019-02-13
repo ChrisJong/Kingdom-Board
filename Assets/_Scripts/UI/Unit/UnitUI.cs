@@ -119,7 +119,7 @@
                 this._LocatorMarker = this._LocatorGroup.transform.Find("Marker").gameObject.transform;
             }
 
-            this._hoverCanvas.worldCamera = controller.playerCamera.mainCamera;
+            this._hoverCanvas.worldCamera = controller.playerCamera.MainCamera;
             this._hoverGroup.SetActive(false);
         }
 

@@ -51,8 +51,10 @@
         {
             InitializeVariables();
 
-            countDownCoroutine = StartCoroutine(CountdownHourglass());
-            sandParticles.Play();
+            this.countDownCoroutine = StartCoroutine(HourglassResetAnimation());
+
+            /*countDownCoroutine = StartCoroutine(CountdownHourglass());
+            sandParticles.Play();*/
         }
 
         public void StopHourglass()
@@ -99,7 +101,7 @@
             SetResetVariableValues();
 
             float resetTimer = timeToReset;
-            Vector3 currentRotation = transform.rotation.eulerAngles;
+            Vector3 currentRotation = transform.localRotation.eulerAngles;
 
             while (resetTimer > 0)
             {
@@ -110,7 +112,7 @@
                 sandBot.localScale = Vector3.one * sandBotCurve.Evaluate(invertedElapsedTime);
 
                 currentRotation.z = resetRotationCurve.Evaluate(invertedElapsedTime);
-                transform.rotation = Quaternion.Euler(currentRotation);
+                transform.localRotation = Quaternion.Euler(currentRotation);
 
                 yield return new WaitForEndOfFrame();
             }

@@ -19,17 +19,20 @@
         [SerializeField] private int _indexOnAttack = 0;
         [SerializeField] private int _indexInView = 0;
 
+        [Space]
         [SerializeField] private float _countdown = 0.0f;
         private float _countdownLimit = 999.0f;
+
+        private IEnumerator _countdownTimer;
 
         private List<Player> _players = new List<Player>();
         private List<Transform> _spawnPoints = new List<Transform>();
 
+        [Space]
         [SerializeField] private Player _playerOnAttack = null;
         [SerializeField] private Player _playerInView = null;
 
-        private IEnumerator _timer;
-
+        [Space]
         public GameObject aiPrefab = null;
         public GameObject humanPrefab = null;
 
@@ -37,6 +40,7 @@
         public int RoundCount { get { return this._roundCount; } }
 
         public float Countdown { get { return this._countdown; } }
+        public float ElapsedTime { get { return this._countdownLimit / this._countdown; } }
 
         public List<Player> Players { get { return this._players; } }
         public Player PlayerOnAttack { get { return this._playerOnAttack; } }
@@ -54,7 +58,7 @@
             this.FindSpawnPoints();
 
             this._countdown = this._countdownLimit;
-            this._timer = this.StartCountdown();
+            this._countdownTimer = this.StartCountdown();
 
             this.CreatePlayers();
 
@@ -81,12 +85,12 @@
         }
 
         public void StartPlayTimer() {
-            StopCoroutine(this._timer);
-            StartCoroutine(this._timer);
+            StopCoroutine(this._countdownTimer);
+            StartCoroutine(this._countdownTimer);
         }
 
         public void StopPlayTimer() {
-            StopCoroutine(this._timer);
+            StopCoroutine(this._countdownTimer);
         }
 
         /// <summary>
@@ -184,11 +188,11 @@
             for(int i = 0; i < this._numberOfPlayers; i++) {
                 if(i == 0) {
                     this._players[i].PlayerColor = Constants.PlayerValues.WHITE;
-                    this._players[i].Create(this._spawnPoints[i], (uint)i);
+                    this._players[i].Setup(this._spawnPoints[i], (uint)i);
                     this._players[i].Init(true);
                 } else {
                     this._players[i].PlayerColor = Constants.PlayerValues.BLACK;
-                    this._players[i].Create(this._spawnPoints[i], (uint)i);
+                    this._players[i].Setup(this._spawnPoints[i], (uint)i);
                     this._players[i].Init(false);
                 }
             }
@@ -217,9 +221,12 @@
 
             this._countdown = 0.0f;
 
-            // End players turn.
+            // End players turn. (Debugging)
             if(this._countdown <= 0.0f)
                 this._playerInView.EndTurn();
+
+            /*if(this._countdown <= 0.0f)
+                this._playerOnAttack.EndTurn();*/
 
             this._countdown = this._countdownLimit;
 

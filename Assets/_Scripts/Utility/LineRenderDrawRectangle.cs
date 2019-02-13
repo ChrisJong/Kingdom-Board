@@ -49,8 +49,6 @@
             Vector3 min = bound.min;
             Vector3 max = bound.max;
 
-            Vector3[] pos = new Vector3[this._segments];
-
             this._setPositions[0] = new Vector3(min.x - distance, min.y + 0.2f, min.z - distance); // Bottom Left
             this._setPositions[1] = new Vector3(max.x + distance, min.y + 0.2f, min.z - distance); // Bottom Right
             this._setPositions[2] = new Vector3(max.x + distance, min.y + 0.2f, max.z + distance); // Top Right

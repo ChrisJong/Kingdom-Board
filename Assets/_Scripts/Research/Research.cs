@@ -85,6 +85,11 @@
             if(this._researchGroup == null)
                 this._researchGroup = this._controller.playerUI.researchGroup;
 
+            if(this.researchCardPrefab == null || this.backButtonPrefab == null) {
+                Debug.LogError("Back button And/Or Card Prefab Varables Are Null, Please Attach A Prefab To The Variables");
+                throw new System.NullReferenceException("Back button And/Or Card Prefab Varables Are Null, Please Attach A Prefab To The Variables");
+            }
+
             if(this._backButton == null) {
                 GameObject temp = null;
                 RectTransform rectTransform = null;

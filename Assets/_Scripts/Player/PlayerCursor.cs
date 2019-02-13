@@ -4,7 +4,6 @@
 
     using Enum;
 
-    [System.Serializable]
     public class PlayerCursor : MonoBehaviour {
 
         #region VARIABLE

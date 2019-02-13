@@ -17,18 +17,19 @@
     public abstract class Player : MonoBehaviour {
 
         #region VARIABLE
-
         public uint id;
         public uint roll;
+        [Space]
         [SerializeField] protected bool _isAttacking;
         [SerializeField] protected bool _turnEnded;
 
-        private PlayerCamera _playerCamera;
-        private PlayerSelect _playerSelect;
-        private PlayerSound _playerSound;
+        protected PlayerCamera _playerCamera;
+        protected PlayerSelect _playerSelect;
+        protected PlayerSound _playerSound;
         private Research _research;
         protected PlayerUI _playerUI;
 
+        [Space]
         [SerializeField] protected PlayerState _currentState = PlayerState.NONE;
         [SerializeField] protected PlayerState _nextState = PlayerState.NONE;
 
@@ -51,6 +52,7 @@
         public PlayerUI playerUI { get { return this._playerUI; } set { this._playerUI = value; } }
 
         public PlayerState CurrentState { get { return this._currentState; } set { this._currentState = value; } }
+        public PlayerState NextState { get { return this._nextState; } }
 
         public Castle castle { get { return this._castle; } }
         public IList<IStructure> structures { get { return this._structures; } }
@@ -61,7 +63,6 @@
         public GameObject StructureGroup { get { return this._structureGroup; } }
         public Transform SpawnLocation { get { return this._spawnLocation; } }
         public Color PlayerColor { get { return this._playerColor; } set { this._playerColor = value; } }
-
         #endregion
 
         #region UNITY
@@ -80,17 +81,11 @@
         #endregion
 
         #region CLASS
-        public virtual void Create(Transform spawnLocation, uint id = 0) {
+        public virtual void Setup(Transform spawnLocation, uint id = 0) {
 
-            this._playerSound = this.gameObject.GetComponent<PlayerSound>();
-            if(this._playerSound == null)
-                this._playerSound = this.gameObject.AddComponent<PlayerSound>();
-
-            this._playerCamera = PlayerCamera.CreateCamera(this, spawnLocation);
-            this._playerSelect = this.playerCamera.gameObject.GetComponent<PlayerSelect>();
-            if(this._playerSelect == null)
-                this._playerSelect = this.gameObject.AddComponent<PlayerSelect>();
-            this._playerSelect.CurrentState = SelectionState.FREE;
+            this.id = id;
+            this._turnEnded = false;
+            this._spawnLocation = spawnLocation;
 
             this.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
@@ -99,18 +94,16 @@
             this._unitGroup = new GameObject(UIValues.Unit.UNIT_SUFFIX);
             this._unitGroup.transform.SetParent(this.transform);
 
-            this.id = id;
-            this._turnEnded = false;
-
-            this._spawnLocation = spawnLocation;
-
             ResourceManager.instance.SetupPlayerResources(this);
 
             this._castle = StructurePoolManager.instance.GetStartCastle(this);
 
-            this._research = this.transform.GetComponent<Research>() as Research;
-            if(this._research == null)
-                this._research = this.gameObject.AddComponent<Research>() as Research;
+            if(this._research == null) {
+                if(this.GetComponent<Research>() == null)
+                    this._research = this.gameObject.AddComponent<Research>();
+                else
+                    this._research = this.GetComponent<Research>();
+            }
             this._research.Init(this);
         }
 
@@ -139,7 +132,7 @@
             this._currentState = PlayerState.START;
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
-            this._playerCamera.gameObject.SetActive(true);
+            this._playerCamera.MainCamera.gameObject.SetActive(true);
 
             this._playerUI.ShowBanner();
         } 
@@ -157,20 +150,21 @@
             }
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
-            this._playerCamera.gameObject.SetActive(true);
+            this._playerCamera.MainCamera.gameObject.SetActive(true);
             this.playerUI.Display();
             //this.uiComponent.ShowBanner();
 
             if(this._isAttacking) {
                 this._castle.CheckSpawnQueue();
                 this._research.CheckResearchPhase(GameManager.instance.RoundCount);
+                this._playerUI.Starthourglass();
             }
         }
 
         public virtual void NewTurn(bool attacking) {
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
-            this._playerCamera.gameObject.SetActive(false);
+            this._playerCamera.MainCamera.gameObject.SetActive(false);
             this._castle.castleUI.ResetUI();
             this._playerUI.Hide();
 
@@ -194,13 +188,14 @@
                 return;
 
             this._playerSelect.EndTurn();
+            this._playerUI.Hide();
             this._turnEnded = true;
             this._playerSelect.CurrentState = SelectionState.END;
             this._currentState = PlayerState.END;
 
 
             // (For SinglePlayer) Turn the camera off and hide the ui.
-            this._playerCamera.gameObject.SetActive(false);
+            this._playerCamera.MainCamera.gameObject.SetActive(false);
 
             this._playerUI.Hide();
 

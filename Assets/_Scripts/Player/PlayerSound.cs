@@ -16,7 +16,6 @@
         [SerializeField] private AudioClip _previousClip = null;
         [SerializeField] private AudioClip _currentClip = null;
         [SerializeField] private AudioClip _nextClips = null;
-
         #endregion
 
         #region CLASS

@@ -111,7 +111,7 @@
                 this._healthText = this._healthGroup.transform.Find(UIValues.TEXT_SUFFIX).GetComponent<TextMeshProUGUI>();
             }
 
-            this._hoverCanvas.worldCamera = controller.playerCamera.mainCamera;
+            this._hoverCanvas.worldCamera = controller.playerCamera.MainCamera;
             this._hoverGroup.SetActive(false);
 
             this._panelAnimation = this.MoveTrainingPanel();
