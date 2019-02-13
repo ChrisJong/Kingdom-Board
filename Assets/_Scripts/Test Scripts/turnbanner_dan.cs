@@ -1,124 +1,128 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-
-public class turnbanner_dan : MonoBehaviour
+﻿namespace Testing
 {
-    [Header("Turn Banner Panel Objects")]
-    [SerializeField] private Image bannerImageObj;
-    [SerializeField] private Image frontRibbonObj;
-    [SerializeField] private Image phaseTextObj;
-    
-    [Space]
-    [Header("Turn Banner Panel Objects")]
-    [SerializeField] private Sprite attackBannerImage;
-    [SerializeField] private Sprite defenceBannerImage;
-    [SerializeField] private Sprite attackPhaseTextImage;
-    [SerializeField] private Sprite defencePhaseTextImage;
 
-    private Animation bannerImageAnim;
-    private Animation frontRibbonAnim;
-    private Animation phaseTextAnim;
 
-    private enum PhaseState { attack, defence };
-    private PhaseState currentState = PhaseState.attack;
+    using UnityEngine;
+    using UnityEngine.UI;
 
-    private bool isAnimating = false;
-
-    public float bannerLingerTimer = 1f;
-
-    private void Start()
+    public class turnbanner_dan : MonoBehaviour
     {
-        bannerImageAnim = bannerImageObj.GetComponent<Animation>();
-        frontRibbonAnim = frontRibbonObj.GetComponent<Animation>();
-        phaseTextAnim = phaseTextObj.GetComponent<Animation>();
+        [Header("Turn Banner Panel Objects")]
+        [SerializeField] private Image bannerImageObj;
+        [SerializeField] private Image frontRibbonObj;
+        [SerializeField] private Image phaseTextObj;
 
-        //PlaySpawnAnimation();
-    }
+        [Space]
+        [Header("Turn Banner Panel Objects")]
+        [SerializeField] private Sprite attackBannerImage;
+        [SerializeField] private Sprite defenceBannerImage;
+        [SerializeField] private Sprite attackPhaseTextImage;
+        [SerializeField] private Sprite defencePhaseTextImage;
 
-    /*private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
+        private Animation bannerImageAnim;
+        private Animation frontRibbonAnim;
+        private Animation phaseTextAnim;
+
+        private enum PhaseState { attack, defence };
+        private PhaseState currentState = PhaseState.attack;
+
+        private bool isAnimating = false;
+
+        public float bannerLingerTimer = 1f;
+
+        private void Start()
         {
-            if (isAnimating)
+            bannerImageAnim = bannerImageObj.GetComponent<Animation>();
+            frontRibbonAnim = frontRibbonObj.GetComponent<Animation>();
+            phaseTextAnim = phaseTextObj.GetComponent<Animation>();
+
+            //PlaySpawnAnimation();
+        }
+
+        /*private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                Debug.Log("Still animating!");
-                return;
+                if (isAnimating)
+                {
+                    Debug.Log("Still animating!");
+                    return;
+                }
+
+                PlaySpawnAnimation();
+            }
+        }*/
+
+        public void PlayBannerAnimation(bool isAtk)
+        {
+            if (isAtk)
+            {
+                bannerImageObj.sprite = attackBannerImage;
+                phaseTextObj.sprite = attackPhaseTextImage;
+            }
+            else
+            {
+                bannerImageObj.sprite = defenceBannerImage;
+                phaseTextObj.sprite = defencePhaseTextImage;
             }
 
             PlaySpawnAnimation();
         }
-    }*/
 
-    public void PlayBannerAnimation(bool isAtk)
-    {
-        if (isAtk)
+        private void PlaySpawnAnimation()
         {
-            bannerImageObj.sprite = attackBannerImage;
-            phaseTextObj.sprite = attackPhaseTextImage;
-        }
-        else
-        {
-            bannerImageObj.sprite = defenceBannerImage;
-            phaseTextObj.sprite = defencePhaseTextImage;
+            //Debug.Log("Starting Spawn Animation");
+
+            isAnimating = true;
+
+            bannerImageAnim.Play("BannerSpawn");
+            frontRibbonAnim.Play("RibbonFadeIn");
+            phaseTextAnim.Play("PhaseTextFadeIn");
+
+            float spawnAnimTimer = phaseTextAnim.GetClip("PhaseTextFadeIn").length;
+
+            Invoke("PlayEndAnimation", spawnAnimTimer + bannerLingerTimer);
         }
 
-        PlaySpawnAnimation();
+        private void PlayEndAnimation()
+        {
+            //Debug.Log("Starting Fade Out Animation");
+
+            bannerImageAnim.Play("TurnBannerFadeOut");
+            frontRibbonAnim.Play("TurnBannerFadeOut");
+            phaseTextAnim.Play("TurnBannerFadeOut");
+
+            float endAnimationTimer = bannerImageAnim.GetClip("TurnBannerFadeOut").length;
+
+            Invoke("OnEndAnimation", endAnimationTimer);
+        }
+
+        private void OnEndAnimation()
+        {
+            /*Debug.Log("Animation Has Ended");
+
+            if (currentState == PhaseState.attack)
+            {
+                currentState = PhaseState.defence;
+
+                bannerImageObj.sprite = defenceBannerImage;
+                phaseTextObj.sprite = defencePhaseTextImage;
+            }
+            else if (currentState == PhaseState.defence)
+            {
+                currentState = PhaseState.attack;
+
+                bannerImageObj.sprite = attackBannerImage;
+                phaseTextObj.sprite = attackPhaseTextImage;
+            }
+            else
+            {
+                Debug.Log("Error: Current State out of index");
+            }*/
+
+            isAnimating = false;
+        }
     }
 
-    private void PlaySpawnAnimation()
-    {
-        //Debug.Log("Starting Spawn Animation");
 
-        isAnimating = true;
-
-        bannerImageAnim.Play("BannerSpawn");
-        frontRibbonAnim.Play("RibbonFadeIn");
-        phaseTextAnim.Play("PhaseTextFadeIn");
-
-        float spawnAnimTimer = phaseTextAnim.GetClip("PhaseTextFadeIn").length;
-
-        Invoke("PlayEndAnimation", spawnAnimTimer + bannerLingerTimer);
-    }
-
-    private void PlayEndAnimation()
-    {
-        //Debug.Log("Starting Fade Out Animation");
-
-        bannerImageAnim.Play("TurnBannerFadeOut");
-        frontRibbonAnim.Play("TurnBannerFadeOut");
-        phaseTextAnim.Play("TurnBannerFadeOut");
-
-        float endAnimationTimer = bannerImageAnim.GetClip("TurnBannerFadeOut").length;
-
-        Invoke("OnEndAnimation", endAnimationTimer);
-    }
-
-    private void OnEndAnimation()
-    {
-        /*Debug.Log("Animation Has Ended");
-
-        if (currentState == PhaseState.attack)
-        {
-            currentState = PhaseState.defence;
-
-            bannerImageObj.sprite = defenceBannerImage;
-            phaseTextObj.sprite = defencePhaseTextImage;
-        }
-        else if (currentState == PhaseState.defence)
-        {
-            currentState = PhaseState.attack;
-
-            bannerImageObj.sprite = attackBannerImage;
-            phaseTextObj.sprite = attackPhaseTextImage;
-        }
-        else
-        {
-            Debug.Log("Error: Current State out of index");
-        }*/
-
-        isAnimating = false;
-    }
 }
