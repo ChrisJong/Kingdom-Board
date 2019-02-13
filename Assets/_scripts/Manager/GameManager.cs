@@ -21,7 +21,7 @@
 
         [Space]
         [SerializeField] private float _countdown = 0.0f;
-        private float _countdownLimit = 999.0f;
+        private float _countdownLimit = 20.0f;
 
         private IEnumerator _countdownTimer;
 
@@ -40,7 +40,7 @@
         public int RoundCount { get { return this._roundCount; } }
 
         public float Countdown { get { return this._countdown; } }
-        public float ElapsedTime { get { return this._countdownLimit / this._countdown; } }
+        public float ElapsedTime { get { return (this._countdownLimit - this._countdown) / this._countdownLimit; } }
 
         public List<Player> Players { get { return this._players; } }
         public Player PlayerOnAttack { get { return this._playerOnAttack; } }
