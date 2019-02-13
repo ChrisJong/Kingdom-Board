@@ -21,6 +21,7 @@
         #region CLASS
         public void Init(AudioSource source) {
             this._audioSource = source;
+            this._audioSource.playOnAwake = false;
         }
 
         public void PlayClip() {
@@ -30,7 +31,9 @@
                 if(this._audioSource.isPlaying)
                     this._audioSource.Stop();
 
-                this._audioSource.clip = this._currentClip;
+                if(this._audioSource.clip != this._currentClip)
+                    this._audioSource.clip = this._currentClip;
+
                 this._audioSource.Play();
             }
         }

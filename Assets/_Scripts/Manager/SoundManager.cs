@@ -34,7 +34,7 @@
         public AudioClip clericHeal = null;
         public AudioClip clericAttack = null;
         public AudioClip mageAttack = null;
-        public AudioClip wizardAttack = null;
+        public AudioClip wizardExplosion = null;
         public List<AudioClip> meleeImpact = new List<AudioClip>();
         public List<AudioClip> rangeImpact = new List<AudioClip>();
 
@@ -49,7 +49,14 @@
 
         #region CLASS
         public override void Init() {
-            this._audioSource = this.GetComponent<AudioSource>();
+
+            if(this._audioSource == null) {
+                if(this.GetComponent<AudioSource>() == null)
+                    this._audioSource = this.gameObject.AddComponent<AudioSource>();
+                else
+                    this._audioSource = this.GetComponent<AudioSource>();
+            }
+            this._audioSource.playOnAwake = false;
         }
 
         public AudioClip GetUnitClassImpact(UnitClassType classType) {
@@ -110,7 +117,7 @@
                 break;
 
                 case UnitType.WIZARD:
-                temp = this.wizardAttack;
+                temp = this.wizardExplosion;
                 break;
             }
 

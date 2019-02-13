@@ -50,6 +50,7 @@
         protected override void InternalAttack(float damage) {
             this.SpawnAttackParticle();
 
+            this._unitSound.PlaySpecial();
             this._currentTarget.LastAttacker = this;
             this._currentTarget.ReceiveDamage(damage, this as IHasHealth, this.position);
 

@@ -14,7 +14,7 @@
     using Utility;
     using Player;
 
-    [System.Serializable, RequireComponent(typeof(CastleUI))]
+    [RequireComponent(typeof(CastleUI))]
     public sealed class Castle : SpawnStructureBase {
 
         #region VARIABLE

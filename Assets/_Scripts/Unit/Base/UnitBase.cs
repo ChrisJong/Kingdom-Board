@@ -14,11 +14,13 @@
     using Utility;
     using Player;
 
-    [System.Serializable, RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(UnitSound))]
+    [RequireComponent(typeof(NavMeshAgent))]
     public abstract class UnitBase : HasHealthBase, IUnit {
 
         #region VARIABLE
         [SerializeField, HideInInspector] protected UnitScriptable _data;
+        [SerializeField] protected UnitSound _unitSound = null;
 
         [Header("UNIT")]
         [SerializeField] protected UnitClassType _classType = UnitClassType.NONE;
@@ -39,8 +41,6 @@
 
         protected RaycastHitDistanceSortComparer _hitComparer = new RaycastHitDistanceSortComparer(true);
         [SerializeField, HideInInspector] protected NavMeshAgent _navMeshAgent = null;
-
-        [SerializeField] protected AudioSource _audioSource = null;
 
         protected Vector3? _currentPoint = null;
         protected Vector3? _previousPoint = null;
@@ -182,6 +182,14 @@
             this._endOfAttackClipTime = this._data.endOfAttackClipTime;
             this._explosionRadius = this._data.explosionRadius;
             this._explosionForce = this._data.explosionForce;
+
+            if(this._unitSound == null) {
+                if(this.GetComponent<UnitSound>() == null)
+                    this.gameObject.AddComponent<UnitSound>();
+                else
+                    this._unitSound = this.GetComponent<UnitSound>();
+            }
+            this._unitSound.Setup(this);
 
             this._unitAnimator = this.GetComponent<Animator>();
             if(this._unitAnimator == null) {
@@ -788,6 +796,7 @@
             if(this.IsDead)
                 return true;
 
+            this._unitSound.PlayImpact();
             this.ReceiveDamage(damage, enemy);
             this.PlayHitAnimations(origin);
 
@@ -869,11 +878,16 @@
             this.LookAt(this._currentTarget.position);
             this.StopMoving();
 
-            if(this._currentState == UnitState.ATTACK)
+            if(this._currentState == UnitState.ATTACK) {
                 this._unitAnimator.Play("Attack");
+                this._unitSound.PlayAttack();
+            }
         }
 
         public virtual void PlayHitAnimations(Vector3 origin) {
+            if(this.IsDead)
+                return;
+
             Vector3 newOrigin = new Vector3(origin.x, 0.0f, origin.z);
             Vector3 newPos = new Vector3(this.transform.position.x, 0.0f, this.transform.position.z);
 
@@ -931,6 +945,9 @@
             foreach(Rigidbody rb in deathRB) {
                 rb.AddForceAtPosition(explsioonDirection * this._explosionForce, explosionPosition);
             }
+
+            AudioSource audioSource = deathGO.AddComponent<AudioSource>();
+            audioSource.PlayOneShot(this._unitSound.GetDeathSoundclip());
 
             UnitPoolManager.instance.AddUnitDeath(deathGO, UnitValues.DEATHCOUNTER);
 

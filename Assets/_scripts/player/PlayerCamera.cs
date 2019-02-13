@@ -143,9 +143,9 @@
             this._cameraTransform = this._camera.transform;
 
             if(spawnLocation.eulerAngles.y >= 180.0f)
-                this._cameraTransform.transform.position = new Vector3(spawnLocation.position.x, 20.0f, spawnLocation.position.z - 7.5f);
+                this._cameraTransform.transform.localPosition = new Vector3(spawnLocation.position.x, 20.0f, spawnLocation.position.z - 7.5f);
             else
-                this._cameraTransform.transform.position = new Vector3(spawnLocation.position.x, 20.0f, spawnLocation.position.z + 7.5f);
+                this._cameraTransform.transform.localPosition = new Vector3(spawnLocation.position.x, 20.0f, spawnLocation.position.z + 7.5f);
 
             this._cameraTransform.localRotation = Quaternion.Euler(this._cameraAngle, spawnLocation.eulerAngles.y + 180.0f, 0.0f);
 

@@ -4,11 +4,10 @@
     using System.Collections.Generic;
 
     using UnityEngine;
-    using UnityEngine.EventSystems;
 
     using Manager;
 
-    public class PlayerHourglass : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler {
+    public class PlayerHourglass : MonoBehaviour {
 
         #region VARIABLE
         [SerializeField] Player _controller;
@@ -28,29 +27,6 @@
         [SerializeField] private Coroutine _currentAnimnation = null;
         #endregion
 
-        #region UNITY
-        public void OnPointerClick(PointerEventData eventData) {
-            Debug.Log("Hourglass Clicked!");
-        }
-
-        public void OnPointerDown(PointerEventData eventData) {
-            Debug.Log("Hourglass Down!");
-        }
-
-        public void OnPointerUp(PointerEventData eventData) {
-            Debug.Log("Hourglass Up!");
-            this.OnClick();
-        }
-
-        public void OnPointerEnter(PointerEventData eventData) {
-            Debug.Log("Hourglass Enter!");
-        }
-
-        public void OnPointerExit(PointerEventData eventData) {
-            Debug.Log("Hourglass Exit");
-        }
-        #endregion
-
         #region CLASS
         public void Setup(Player controller) {
             this._controller = controller;
@@ -60,17 +36,6 @@
 
             this._sandTopCurve.keys[1].value = 0;
             this._sandBottomCurve.keys[1].value = 1;
-        }
-
-        public void Init() {
-
-            this.ResetHourglass();
-
-            if(this._currentAnimnation != null)
-                StopCoroutine(this._currentAnimnation);
-            this._currentAnimnation = null;
-            //this._currentAnimnation = StartCoroutine();
-            this._sandParticles.Play();
         }
 
         public void OnClick() {
@@ -142,7 +107,6 @@
 
             while(resetTimer > 0.0f) {
 
-                Debug.Log("Reset Hourglass");
                 resetTimer -= Time.deltaTime;
                 float invertedTimer = resetTimer / this._resetTime;
 

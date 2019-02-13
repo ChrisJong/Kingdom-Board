@@ -70,10 +70,6 @@
                 this.structureUIGroup = this._mainGroup.transform.Find(UIValues.Structure.STRUCTURE_UI_MAIN).gameObject;
                 this.structureUIGroup.SetActive(false);
             }
-        }
-
-        public override void Init(Player controller) {
-            base.Init(controller);
 
             if(this._persistantGroup == null)
                 this._persistantGroup = this._mainRectTransform.Find(UIValues.PERSISTANT_GROUP).gameObject;
@@ -84,19 +80,21 @@
 
             if(this._endTurnButton == null) {
                 this._endTurnButton = this._persistantTransform.Find("End_BTN").GetComponent<PlayerEndButton>() as PlayerEndButton;
-                this._endTurnButton.Init(this);
-            } else
-                this._endTurnButton.Init(this);
+            }
 
             if(this.bannerGroup == null) {
                 this.bannerGroup = this._mainGroup.transform.Find("Banner").gameObject;
                 this._playerBanner = this.bannerGroup.GetComponent<PlayerBanner>() as PlayerBanner;
-                this._playerBanner.Init(this);
             } else if(this._playerBanner == null) {
                 this._playerBanner = this.bannerGroup.GetComponent<PlayerBanner>() as PlayerBanner;
-                this._playerBanner.Init(this);
-            } else 
-                this._playerBanner.Init(this);
+            }
+        }
+
+        public override void Init(Player controller) {
+            base.Init(controller);
+
+            this._endTurnButton.Init(this);
+            this._playerBanner.Init(this);
 
             if(this._playerHourglass == null) {
                 this._playerHourglass = this._controller.playerCamera.MainCamera.GetComponentInChildren<PlayerHourglass>();
