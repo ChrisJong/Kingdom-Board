@@ -13,11 +13,9 @@
         [SerializeField] private float _timer = 0.0f;
 
         [Space]
-        [SerializeField] private CursorState _previousState;
         [SerializeField] private CursorState _currentState;
 
         [Space]
-        [SerializeField] private Texture2D _previousCursor = null;
         [SerializeField] private Texture2D _currentCursor = null;
 
         [Space]
@@ -70,7 +68,6 @@
             if(state == this._currentState)
                 return;
 
-            this._previousState = this._currentState;
             this._currentState = state;
         }
 
@@ -115,10 +112,8 @@
             if(clicked) {
                 this._clicked = true;
                 this._timer = 0.0f;
-                this._previousCursor = this._currentCursor;
                 this._currentCursor = this._defaultOnclick;
             } else {
-                this._previousCursor = this._currentCursor;
                 this._currentCursor = this._default;
             }
 
@@ -130,10 +125,8 @@
             if(clicked) {
                 this._clicked = true;
                 this._timer = 0.0f;
-                this._previousCursor = this._currentCursor;
                 this._currentCursor = this._selectionOnClick;
             } else {
-                this._previousCursor = this._currentCursor;
                 this._currentCursor = this._selection;
             }
 

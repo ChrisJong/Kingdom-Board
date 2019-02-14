@@ -52,7 +52,7 @@
         private Ray _ray;
         private RaycastHit _hitInfo;
 
-        public bool CanSelect { get { return (this._currentState == SelectionState.FREE || this._currentState == SelectionState.STANDBY ? true : false); } }
+        public bool CanSelect { get { return (this._currentState == SelectionState.FREE || this._currentState == SelectionState.ATTACK_STANDBY ? true : false); } }
 
         public SelectionState CurrentState { get { return this._currentState; } set { this._previousState = this._currentState; this._currentState = value; } }
         public SelectionState PreviousState { get { return this._previousState; } }
@@ -177,8 +177,12 @@
                 this.FreeState();
                 break;
 
-                case SelectionState.STANDBY:
-                this.StandbyState();
+                case SelectionState.ATTACK_STANDBY:
+                this.AttackStandbyState();
+                break;
+
+                case SelectionState.DEFEND_STANDBY:
+                this.DefendStandbyState();
                 break;
 
                 case SelectionState.SPAWNPOINT:
@@ -200,9 +204,6 @@
                 return;
 
             if(temp != null) {
-
-                if(this._controller.CurrentState == PlayerState.DEFENDING && temp.entityType == EntityType.UNIT)
-                    return;
 
                 if(temp.IsEnemy(this._controller))
                     return;
@@ -231,7 +232,12 @@
                         this._currentStructureSelected = this._currentSelected as StructureBase;
                     }
 
-                    this.ChangeState(SelectionState.STANDBY);
+                    if(this._controller.CurrentState == PlayerState.ATTACKING)
+                        this.ChangeState(SelectionState.ATTACK_STANDBY);
+                    else if(this._controller.CurrentState == PlayerState.DEFENDING)
+                        this.ChangeState(SelectionState.DEFEND_STANDBY);
+                    else
+                        Debug.LogError("Player Isn't In the Main 2 States Of Attack/Defend!");
                 }
             }
         }
@@ -307,7 +313,7 @@
             }
         }
 
-        private void StandbyState() {
+        private void AttackStandbyState() {
 
             // Right Click!
             if(Input.GetMouseButtonUp(1)) {
@@ -352,10 +358,10 @@
                     this.Deselection();
 
             } else
-                this.StandbyStateHover(); // Hovering over stuff.
+                this.AttackStandbyStateHover(); // Hovering over stuff.
         }
 
-        private void StandbyStateHover() {
+        private void AttackStandbyStateHover() {
             // Selected anything other than the ground e.g. units/structures.
             if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
 
@@ -442,6 +448,91 @@
                     if(this._humanController != null)
                         this._humanController.playerCursor.ChangeState(CursorState.DEFAULT);
                 }
+
+                if(this._currentHover != null) {
+                    this._currentHover.uiBase.OnExit();
+                    this._previousHover = this._currentHover;
+                }
+
+                this._currentHover = null;
+            }
+        }
+
+        private void DefendStandbyState() {
+            // Right Click!
+            if(Input.GetMouseButtonUp(1)) {
+
+                // Hit Unit/Structure.
+                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
+
+                    this._targetSelected = this._hitInfo.transform.GetComponent<HasHealthBase>();
+
+                    if(this._targetSelected != null) {
+
+                        if(this._currentSelectedEntity == EntityType.UNIT) {
+
+                            if(this._currentUnitSelected.SetTarget(this._targetSelected)) {
+                                this._currentUnitSelected.InitiateTarget();
+
+                                this.ChangeState(SelectionState.WAITING);
+                            }
+                        }
+                    }
+                }
+
+            } else if(Input.GetMouseButtonUp(0)) { // Left Click!
+
+                if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer))
+                    this.Selection();
+                else
+                    this.Deselection();
+
+            } else
+                this.DefendStandbyStateHover(); // Hovering over stuff.
+        }
+
+        private void DefendStandbyStateHover() {
+            // Selected anything other than the ground e.g. units/structures.
+            if(this.CastRayToWorldIgnoreMask(GlobalSettings.LayerValues.groundLayer)) {
+
+                HasHealthBase temp = this._hitInfo.transform.GetComponent<HasHealthBase>();
+
+                // Hovering Over a Unit/STructure.
+                if(temp != null) {
+
+                    if(this._currentHover != null && this._currentHover != temp) {
+                        this._currentHover.uiBase.OnExit();
+                        this._previousHover = this._currentHover;
+                    }
+
+                    this._currentHover = temp;
+                    this._currentHover.uiBase.OnEnter(this._controller);
+
+                    if(this._currentSelectedEntity == EntityType.UNIT) {
+
+                        if(this._currentUnitSelected.IsEnemy(temp)) {
+
+                            if(this._currentUnitSelected.SetTarget(temp)) {
+                                if(this._humanController != null)
+                                    this._humanController.playerCursor.ChangeState(CursorState.ATTACK);
+                            } else {
+                                if(this._humanController != null)
+                                    this._humanController.playerCursor.ChangeState(CursorState.ATTACK_NOTREADY);
+                            }
+
+                        } else {
+                            if(temp.IsAlly(this._controller)) {
+                                if(this._humanController != null)
+                                    this._humanController.playerCursor.ChangeState(CursorState.SELECTED);
+                            }
+                        }
+                    }
+                }
+
+            } else { // Hit Empty Space (Eg. the ground)
+
+                if(this._humanController != null)
+                    this._humanController.playerCursor.ChangeState(CursorState.DEFAULT);
 
                 if(this._currentHover != null) {
                     this._currentHover.uiBase.OnExit();

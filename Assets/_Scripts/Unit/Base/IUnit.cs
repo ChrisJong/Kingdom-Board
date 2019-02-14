@@ -16,6 +16,8 @@
         UnitState NextState { get; set; }
         LayerMask AreaMask { get; }
 
+        UI.UnitUI unitUI { get; }
+
         void NewTurn();
         void Finished();
     }

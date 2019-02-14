@@ -173,6 +173,12 @@
 
             this.ActivateOutline(Color.green);
 
+            if(this._unitBase.RetaliationTargets.Count > 0) {
+                foreach(UnitBase unit in this._unitBase.RetaliationTargets) {
+                    unit.unitUI.ActivateOutline(Color.red);
+                }
+            }
+
             this._mainGroup.SetActive(true);
         }
 
@@ -182,6 +188,12 @@
             this.DisableRadius();
             this.DisableMovePath();
             this.DeactivateOutline();
+
+            if(this._unitBase.RetaliationTargets.Count > 0) {
+                foreach(UnitBase unit in this._unitBase.RetaliationTargets) {
+                    unit.unitUI.DeactivateOutline();
+                }
+            }
 
             this._mainGroup.SetActive(false);
         }

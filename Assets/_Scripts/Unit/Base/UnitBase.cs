@@ -63,6 +63,7 @@
 
         [Header("UNIT - ATTACK")]
         [SerializeField] protected bool _canAttack = true;
+        [SerializeField] protected bool _canRetaliate = true;
 
         [SerializeField] protected float _projectileSpeed = 0.0f;
         [SerializeField] protected float _attackRange = 0.0f;
@@ -70,7 +71,10 @@
         [SerializeField] protected float _maxDamage = 0.0f;
         protected float _lastAttack = 0.0f;
         [SerializeField] protected float _resistanceMultiplier = 0.0f;
-        [SerializeField] protected float _weaknessMultiplier = 0.0f; 
+        [SerializeField] protected float _weaknessMultiplier = 0.0f;
+
+        [Space]
+        [SerializeField] protected List<UnitBase> _retaliationTargets = new List<UnitBase>();
 
         [Space]
         [SerializeField] protected Transform _projectileReleasePoint = null;
@@ -124,14 +128,17 @@
         public virtual bool IsIdle { get { return !this.IsMoving && !this.IsDead; } }
         public Vector3 LastPosition { get { return this._lastPosition; } set { this._lastPosition = value; } }
 
+
+        public bool CanAttack { get { return this._canAttack; } }
+        public bool CanRetaliate { get { return this._canRetaliate; } }
+
         public float AttackRange { get { return this._attackRange; } }
         public float MinDamage { get { return this._minDamage; } }
         public float MaxDamage { get { return this._maxDamage; } }
         public float ResistancePercentage { get { return this._resistanceMultiplier; } }
         public float WeaknessPercentage { get { return this._weaknessMultiplier; } }
 
-        public bool CanAttack { get { return this._canAttack; } }
-
+        public List<UnitBase> RetaliationTargets { get { return this._retaliationTargets; } }
         #endregion
 
         #region UNITY
@@ -182,6 +189,9 @@
             this._endOfAttackClipTime = this._data.endOfAttackClipTime;
             this._explosionRadius = this._data.explosionRadius;
             this._explosionForce = this._data.explosionForce;
+
+            if(this._retaliationTargets.Count > 0)
+                this._retaliationTargets.Clear();
 
             if(this._unitSound == null) {
                 if(this.GetComponent<UnitSound>() == null)
@@ -251,6 +261,9 @@
 
             this._lastPosition = this.transform.position;
             this._navMeshAgent.speed = this._moveSpeed;
+
+            if(this._retaliationTargets.Count > 0)
+                this._retaliationTargets.Clear();
         }
 
         public override void Return() {
@@ -278,6 +291,9 @@
             this._lastPosition = Vector3.zero;
             this._navMeshAgent.speed = 0;
 
+            if(this._retaliationTargets.Count > 0)
+                this._retaliationTargets.Clear();
+
             base.Return();
         }
 
@@ -289,7 +305,8 @@
             this._currentPoint = null;
             this._currentTarget = null;
 
-            this._lastAttackers.Clear();
+            if(this._retaliationTargets.Count > 0)
+                this._retaliationTargets.Clear();
         }
 
         public virtual void Death() {
@@ -331,6 +348,32 @@
         }
 
         public virtual bool SetTarget(IHasHealth target) {
+
+            if(this.Controller.CurrentState == PlayerState.DEFENDING) {
+
+                if(!this.CanRetaliate)
+                    return false;
+
+                this.unitUI.EnableAttackRadius();
+
+                if(target.entityType == EntityType.UNIT) {
+
+                    UnitBase temp = target as UnitBase;
+
+                    if(!this._retaliationTargets.Contains(temp))
+                        return false;
+
+                    if(this._currentTarget != null) {
+                        this._previousTarget = this._currentTarget;
+                        this.debugPreviousTarget = this._currentTarget as HasHealthBase;
+                    }
+
+                    this._currentTarget = target;
+                    this.debugCurrentTarget = target as HasHealthBase;
+                }
+
+                return true;
+            }
 
             if(this.IsAlly(target))
                 return false;
@@ -697,7 +740,7 @@
                     this._nextState = UnitState.NONE;
 
                     this.uiBase.UpdateUI();
-                    this.Controller.playerSelect.ChangeState(SelectionState.STANDBY);
+                    this.Controller.playerSelect.ChangeState(SelectionState.ATTACK_STANDBY);
                 }
 
             } else {
@@ -789,6 +832,15 @@
                 return true;
             }
 
+            float distance = 0.0f;
+            if(enemy.entityType == EntityType.UNIT) {
+                distance = Vector3.Distance(this.position, enemy.position);
+                distance -= ((UnitBase)enemy).UnitRadius;
+            }
+
+            if(distance <= (this._attackRange + this._unitRadius))
+                this._retaliationTargets.Add(enemy as UnitBase);
+
             return true;
         }
 
@@ -813,6 +865,9 @@
             this._currentState = UnitState.FINISH;
             this._nextState = UnitState.NONE;
             this._canAttack = false;
+
+            if(this.Controller.CurrentState == PlayerState.DEFENDING)
+                this._canRetaliate = false;
 
             this._hasStamina = false;
             this._currentEnergy = 0.0f;

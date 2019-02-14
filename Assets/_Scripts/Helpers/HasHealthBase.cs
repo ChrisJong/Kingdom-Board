@@ -14,7 +14,6 @@
         [SerializeField] private Player _controller;
         [SerializeField] private UIBase _uiBase;
         protected IHasHealth _lastAttacker;
-        [SerializeField] protected List<HasHealthBase> _lastAttackers = new List<HasHealthBase>(); // NOTE Change to IHasHealthBase Later.
 
         [Header("ENTITY - HEALTH & ENERGY")]
         [SerializeField] protected float _currentHealth = 0.0f;
@@ -36,7 +35,6 @@
         public IHasHealth LastAttacker {
             get { return this._lastAttacker; }
             set { this._lastAttacker = value;
-                  this._lastAttackers.Add(value as HasHealthBase);
                   this._lastAttacked = Time.timeSinceLevelLoad; }
         }
 
@@ -69,7 +67,6 @@
 
         public override void Return() {
             this._lastAttacker = null;
-            this._lastAttackers.Clear();
 
             this._controller = null;
         }

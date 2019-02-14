@@ -28,7 +28,7 @@
             if(this._playerUI.Controller.CurrentState == Enum.PlayerState.WAITING)
                 return;
 
-            if(this._playerUI.Controller.playerSelect.CurrentState == Enum.SelectionState.FREE || this._playerUI.Controller.playerSelect.CurrentState == Enum.SelectionState.STANDBY)
+            if(this._playerUI.Controller.playerSelect.CurrentState == Enum.SelectionState.FREE || this._playerUI.Controller.playerSelect.CurrentState == Enum.SelectionState.ATTACK_STANDBY)
                 this._playerUI.Controller.EndTurn();
         }
         #endregion

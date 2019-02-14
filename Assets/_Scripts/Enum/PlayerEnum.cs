@@ -4,7 +4,8 @@
         NONE = 0,
         ANY = ~0,
         FREE = 1,
-        STANDBY, // Entity Selected.
+        ATTACK_STANDBY, // Entity Selected. (In Attack Phase)
+        DEFEND_STANDBY, // Entity Selected. (In Defend Phase)
         SPAWNPOINT,
         WAITING,
         END

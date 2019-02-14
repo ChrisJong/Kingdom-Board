@@ -2233,7 +2233,7 @@ NavMeshAgent:
   m_Radius: 0.8
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 28
+  avoidancePriority: 61
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -2406,7 +2406,6 @@ MonoBehaviour:
   _poolID: 0
   _controller: {fileID: 0}
   _uiBase: {fileID: 1927344090853034607}
-  _lastAttackers: []
   _currentHealth: 50
   _maxHealth: 50
   _currentEnergy: 10
@@ -2430,12 +2429,14 @@ MonoBehaviour:
   _moveSpeed: 5
   _initialMoveDist: 0
   _canAttack: 1
+  _canRetaliate: 1
   _projectileSpeed: 10
   _attackRange: 10
   _minDamage: 5
   _maxDamage: 5
   _resistanceMultiplier: 0.5
   _weaknessMultiplier: 2
+  _retaliationTargets: []
   _projectileReleasePoint: {fileID: 4820856313529474}
   _projectilePrefab: {fileID: 1386172076784694, guid: 74faafd788ac6fe49ac060f027289f9b,
     type: 3}

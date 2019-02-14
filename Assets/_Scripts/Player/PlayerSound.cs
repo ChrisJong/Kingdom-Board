@@ -13,9 +13,7 @@
         #region VARIABLE
         [SerializeField] private AudioSource _audioSource;
 
-        [SerializeField] private AudioClip _previousClip = null;
         [SerializeField] private AudioClip _currentClip = null;
-        [SerializeField] private AudioClip _nextClips = null;
         #endregion
 
         #region CLASS
@@ -40,9 +38,6 @@
 
         public void PlayAttackPhase() {
 
-            if(this._currentClip != null)
-                this._previousClip = this._currentClip;
-
             this._currentClip = SoundManager.instance.attackPhase;
 
             this.PlayClip();
@@ -50,18 +45,12 @@
 
         public void PlayDefencePhase() {
 
-            if(this._currentClip != null)
-                this._previousClip = this._currentClip;
-
             this._currentClip = SoundManager.instance.defencePhase;
 
             this.PlayClip();
         }
 
         public void PlayOpenBook() {
-
-            if(this._currentClip != null)
-                this._previousClip = this._currentClip;
 
             List<AudioClip> temp = SoundManager.instance.bookOpen;
             int index = Random.Range(0, (temp.Count - 1));
@@ -71,9 +60,6 @@
         }
 
         public void PlayResearchCardTurn() {
-
-            if(this._currentClip != null)
-                this._previousClip = this._currentClip;
 
             this._currentClip = SoundManager.instance.cardTurn;
 
