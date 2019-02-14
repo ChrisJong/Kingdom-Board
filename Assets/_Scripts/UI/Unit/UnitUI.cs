@@ -310,14 +310,6 @@
                 ren.material.SetFloat("_Outline", 0.0f);
             }
         }
-
-
-
-        protected virtual void Cancel() {
-        }
-
-        protected void End() {
-        }
         #endregion
     }
 }

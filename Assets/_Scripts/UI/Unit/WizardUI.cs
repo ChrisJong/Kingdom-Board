@@ -6,10 +6,5 @@
 
     using Unit;
 
-    public class WizardUI : UnitUI {
-        protected override void Cancel() {
-
-            base.Cancel();
-        }
-    }
+    public class WizardUI : UnitUI {}
 }

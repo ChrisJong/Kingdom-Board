@@ -150,8 +150,6 @@
             this._cameraTransform.localRotation = Quaternion.Euler(this._cameraAngle, spawnLocation.eulerAngles.y + 180.0f, 0.0f);
 
             this._camera.gameObject.SetActive(false);
-
-            //this._cameraTransform.rotation = Quaternion.Euler(this._cameraAngle, this._cameraTransform.eulerAngles.y, this._cameraTransform.eulerAngles.z);
         }
 
         private void CameraUpdate() {

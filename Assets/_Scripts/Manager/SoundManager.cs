@@ -141,6 +141,18 @@
 
             return temp;
         }
+
+        public AudioClip GetUnitDeath() {
+            AudioClip temp = null;
+
+            int count = this.unitDeath.Count;
+            temp = this.unitDeath[Random.Range(0, count - 1)];
+
+            if(temp == null)
+                throw new System.NullReferenceException("Couldn't Find Unit Death Sounds");
+
+            return temp;
+        }
         #endregion
     }
 }

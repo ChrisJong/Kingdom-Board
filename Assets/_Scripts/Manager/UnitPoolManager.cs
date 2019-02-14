@@ -25,7 +25,10 @@
         private int _placementInstanceCount = 3;
         private readonly Dictionary<UnitType, UnitPlacementPool> _placementPools = new Dictionary<UnitType, UnitPlacementPool>(unitTypeLength, new UnitTypeComparer());
 
-        [SerializeField] private List<UnitDeath> _poolDeath = new List<UnitDeath>();
+        public int _deathInstanceCount = 5;
+        private readonly Dictionary<UnitType, UnitDeathPool> _deathPools = new Dictionary<UnitType, UnitDeathPool>(unitTypeLength, new UnitTypeComparer());
+
+        [SerializeField] private List<IUnitDeath> _poolDeath = new List<IUnitDeath>();
 
         private List<UnitScriptable> _unitDataList = new List<UnitScriptable>();
         private Dictionary<UnitClassType, List<UnitScriptable>> _sortedUnitClass = new Dictionary<UnitClassType, List<UnitScriptable>>();
@@ -56,18 +59,25 @@
                     UnitPoolSetup setup = this._poolSetup[i];
 
                     GameObject host = new GameObject(setup.type.ToString());
+                    GameObject placementHost = new GameObject("Placement_" + setup.type.ToString());
+                    GameObject deathHost = new GameObject("Death_" + setup.type.ToString());
                     host.transform.SetParent(managerHost.transform);
+                    placementHost.transform.SetParent(managerHost.transform);
+                    deathHost.transform.SetParent(managerHost.transform);
 
                     UnitScriptable unitData = this.FetchUnitData(setup.type);
-                    GameObject placementPrefab = unitData.placementPrefab;
-                    UnitPlacement plavement = placementPrefab.GetComponent<UnitPlacement>();
 
-                    if(plavement != null) {
-                        plavement.unitType = setup.type;
-                    } else {
-                        plavement = placementPrefab.AddComponent<UnitPlacement>();
-                        plavement.unitType = setup.type;
-                    }
+                    GameObject placementPrefab = unitData.placementPrefab;
+                    UnitPlacement placement = placementPrefab.GetComponent<UnitPlacement>();
+                    if(placement == null)
+                        placement = placementPrefab.AddComponent<UnitPlacement>();
+                    placement.unitType = setup.type;
+
+                    GameObject deathPrefab = unitData.deathPrefab;
+                    UnitDeath death = deathPrefab.GetComponent<UnitDeath>();
+                    if(death == null)
+                        death = deathPrefab.AddComponent<UnitDeath>();
+                    death.unitType = setup.type;
 
                     if(setup.prefab.GetComponent<UnitBase>().SetData(this._sortedUnitData[setup.type])) {
                         setup.prefab.GetComponent<UnitBase>().Setup();
@@ -77,7 +87,8 @@
                     }
 
                     this._pools.Add(setup.type, new UnitPool(setup.prefab, host, setup.initialInstanceCount));
-                    this._placementPools.Add(setup.type, new UnitPlacementPool(placementPrefab, host, this._placementInstanceCount));
+                    this._placementPools.Add(setup.type, new UnitPlacementPool(placementPrefab, placementHost, this._placementInstanceCount));
+                    this._deathPools.Add(setup.type, new UnitDeathPool(deathPrefab, deathHost, this._deathInstanceCount));
 
                     setup.prefab.GetComponent<UnitBase>().SetupAnimation();
                 }
@@ -117,6 +128,25 @@
             return true;
         }
 
+        public bool SpawnDeath(Player controller, UnitType type, Vector3 position, Quaternion rotation, Vector3 eDirection, Vector3 ePosition, float eForce, int counter) {
+
+            if(type == UnitType.NONE || type == UnitType.ANY || !this._placementPools.ContainsKey(type)) {
+                Debug.LogError(this.ToString() + " cannot spawn unit of type (not supported): " + type);
+                return false;
+            }
+            
+            IUnitDeath temp = this.InternalSpawnDeath(type, position, rotation);
+
+            if(temp == null)
+                return false;
+
+            temp.Init(controller, eDirection, ePosition, eForce, counter);
+
+            this._poolDeath.Add(temp);
+
+            return true;
+        }
+
         public void Return(IUnit unit) {
             unit.Return();
             this._pools[unit.unitType].Return(unit);
@@ -127,37 +157,35 @@
             this._placementPools[placement.unitType].Return(placement);
         }
 
-        public void AddUnitDeath(GameObject go) {
-            this._poolDeath.Add(new UnitDeath(go));
+        public void Return(IUnitDeath death) {
+            death.Return();
+            this._deathPools[death.unitType].Return(death);
         }
 
-        public void AddUnitDeath(GameObject go, int counter) {
-            this._poolDeath.Add(new UnitDeath(go, counter));
-        }
-
-        public void Countdown() {
-            if(this._poolDeath.Count == 0)
+        public void CountdownDeath() {
+            if(this._poolDeath.Count <= 0)
                 return;
-            else {
-                List<UnitDeath> toRemove = new List<UnitDeath>();
 
-                foreach(UnitDeath death in this._poolDeath) {
-                    // count down the counter and remove when it reaches 0.
-                    death.Countdown();
+            List<IUnitDeath> toRemove = new List<IUnitDeath>();
 
-                    if(death.TurnCounter == 0)
-                        toRemove.Add(death);
-                }
+            foreach(IUnitDeath death in this._poolDeath) {
+                // count down the counter and remove when it reaches 0.
+                death.Countdown();
 
-                if(toRemove.Count != 0) {
-                    foreach(UnitDeath remove in toRemove) {
-                        if(this._poolDeath.Contains(remove))
-                            this._poolDeath.Remove(remove);
+                if(death.TurnCounter == 0)
+                    toRemove.Add(death);
+            }
+
+            if(toRemove.Count != 0) {
+                foreach(IUnitDeath remove in toRemove) {
+                    if(this._poolDeath.Contains(remove)) {
+                        this.Return(remove);
+                        this._poolDeath.Remove(remove);
                     }
                 }
-
-                toRemove.Clear();
             }
+
+            toRemove.Clear();
         }
 
         public UnitScriptable FetchUnitData(UnitType unitType) {
@@ -284,6 +312,18 @@
                 plavement.Setup();
 
             return plavement;
+        }
+
+        private IUnitDeath InternalSpawnDeath(UnitType type, Vector3 position, Quaternion rotation) {
+            UnitDeathPool pool = this._deathPools[type];
+            Vector3 pos = position;
+            pos = Utils.GetGroundedPosition(pos + new Vector3(0.0f, 0.5f, 0.0f));
+            IUnitDeath death = pool.Get(pos, rotation);
+
+            if(!death.IsSetup)
+                death.Setup();
+
+            return death;
         }
 
         #endregion

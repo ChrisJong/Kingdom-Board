@@ -986,26 +986,14 @@
             this.transform.position = new Vector3(uPoseition.x, -100.0f, uPoseition.z);
 
             // Calculate the position and force for the Physics Force.
-            Vector3 explsioonDirection = (this.LastAttacker.position - uPoseition).normalized;
-            Vector3 explosionPosition = uPoseition + explsioonDirection * this._unitRadius;
+            Vector3 explosionDirection = (this.LastAttacker.position - uPoseition).normalized;
+            Vector3 explosionPosition = uPoseition + explosionDirection * this._unitRadius;
 
             // Zero out the directional Normal y to even out the stage.
-            explsioonDirection.y = 0.0f;
+            explosionDirection.y = 0.0f;
 
-            // Create the death prefab and grab its rigidbody
-            GameObject deathGO = Instantiate(this._deathPrefab, uPoseition, uRotation);
-            deathGO.ColorRenderers(this.Controller.PlayerColor);
-            Rigidbody[] deathRB = deathGO.GetComponentsInChildren<Rigidbody>() as Rigidbody[];
-
-            foreach(Rigidbody rb in deathRB) {
-                rb.AddForceAtPosition(explsioonDirection * this._explosionForce, explosionPosition);
-            }
-
-            AudioSource audioSource = deathGO.AddComponent<AudioSource>();
-            audioSource.PlayOneShot(this._unitSound.GetDeathSoundclip());
-
-            UnitPoolManager.instance.AddUnitDeath(deathGO, UnitValues.DEATHCOUNTER);
-
+            if(UnitPoolManager.instance.SpawnDeath(this.Controller, this._unitType, uPoseition, uRotation, explosionDirection, explosionPosition, this._explosionForce, UnitValues.DEATHCOUNTER))
+                Debug.Log("Spawn Death Prefab!");
         }
 
         protected virtual void SetupEventAnimation() {

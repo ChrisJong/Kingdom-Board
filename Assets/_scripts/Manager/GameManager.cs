@@ -21,7 +21,7 @@
 
         [Space]
         [SerializeField] private float _countdown = 0.0f;
-        private float _countdownLimit = 20.0f;
+        private float _countdownLimit = 999.0f;
 
         private IEnumerator _countdownTimer;
 
@@ -128,7 +128,7 @@
             }
 
             if(Constants.UnitValues.DEATHCOUNTER != 0)
-                UnitPoolManager.instance.Countdown();
+                UnitPoolManager.instance.CountdownDeath();
         }
 
         private void EndRound() {
