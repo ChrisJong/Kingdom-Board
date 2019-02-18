@@ -63,12 +63,25 @@
             }
         }
 
-        public void ChangeState(CursorState state) {
+        public bool ChangeState(CursorState state) {
 
-            if(state == this._currentState)
-                return;
+            if(this._currentState == state)
+                return false;
 
             this._currentState = state;
+
+            return true;
+        }
+
+        private bool ChangeCursor(Texture2D image) {
+
+            if(this._currentCursor == image)
+                return false;
+
+            this._currentCursor = image;
+            Cursor.SetCursor(this._currentCursor, this._hotSpot, this._mode);
+
+            return true;
         }
 
         private void SetCursor(bool clicked = false) {
@@ -112,12 +125,10 @@
             if(clicked) {
                 this._clicked = true;
                 this._timer = 0.0f;
-                this._currentCursor = this._defaultOnclick;
-            } else {
-                this._currentCursor = this._default;
-            }
+                this.ChangeCursor(this._defaultOnclick);
+            } else
+                this.ChangeCursor(this._default);
 
-            Cursor.SetCursor(this._currentCursor, this._hotSpot, this._mode);
         }
 
         private void SetSelection(bool clicked = false) {
@@ -125,12 +136,9 @@
             if(clicked) {
                 this._clicked = true;
                 this._timer = 0.0f;
-                this._currentCursor = this._selectionOnClick;
-            } else {
-                this._currentCursor = this._selection;
-            }
-
-            Cursor.SetCursor(this._currentCursor, this._hotSpot, this._mode);
+                this.ChangeCursor(this._selectionOnClick);
+            } else
+                this.ChangeCursor(this._selection);
         }
 
         private void SetMoveReady(bool clicked = false) {
@@ -138,11 +146,9 @@
             if(clicked) {
                 this._clicked = true;
                 this._timer = 0.0f;
-                this._currentCursor = this._moveReadyOnClicked;
+                this.ChangeCursor(this._moveReadyOnClicked);
             } else
-                this._currentCursor = this._moveReady;
-
-            Cursor.SetCursor(this._currentCursor, this._hotSpot, this._mode);
+                this.ChangeCursor(this._moveReady);
         }
 
         private void SetMoveNotReady() {
@@ -150,9 +156,7 @@
             if(this._currentCursor == this._moveNotReady)
                 return;
 
-            this._currentCursor = this._moveNotReady;
-
-            Cursor.SetCursor(this._currentCursor, this._hotSpot, this._mode);
+            this.ChangeCursor(this._moveNotReady);
         }
 
         private void SetAttackReady(bool clicked = false) {
@@ -160,11 +164,9 @@
             if(clicked) {
                 this._clicked = true;
                 this._timer = 0.0f;
-                this._currentCursor = this._attackReadyOnClick;
+                this.ChangeCursor(this._attackReadyOnClick);
             } else
-                this._currentCursor = this._attackReady;
-
-            Cursor.SetCursor(this._currentCursor, this._hotSpot, this._mode);
+                this.ChangeCursor(this._attackReady);
         }
 
         private void SetAttackNotReady() {
@@ -172,9 +174,7 @@
             if(this._currentCursor == this._attackNotReady)
                 return;
 
-            this._currentCursor = this._attackNotReady;
-
-            Cursor.SetCursor(this._currentCursor, this._hotSpot, this._mode);
+            this.ChangeCursor(this._attackNotReady);
         }
 
         private void SetHealReady(bool clicked = false) {
@@ -182,11 +182,9 @@
             if(clicked) {
                 this._clicked = true;
                 this._timer = 0.0f;
-                this._currentCursor = this._healReadyOnClick;
+                this.ChangeCursor(this._healReadyOnClick);
             } else
-                this._currentCursor = this._healReady;
-
-            Cursor.SetCursor(this._currentCursor, this._hotSpot, this._mode);
+                this.ChangeCursor(this._healReady);
         }
 
         private void SetHealNotReady() {
@@ -194,9 +192,7 @@
             if(this._currentCursor == this._healNotReady)
                 return;
 
-            this._currentCursor = this._healNotReady;
-
-            Cursor.SetCursor(this._currentCursor, this._hotSpot, this._mode);
+            this.ChangeCursor(this._healNotReady);
         }
     }
 }

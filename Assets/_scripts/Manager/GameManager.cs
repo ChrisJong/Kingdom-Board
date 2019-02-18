@@ -49,6 +49,7 @@
 
         #region UNITY
         private void Start() {
+            // NOTE: this function call needs to be reworked it is tanking the frame rate down to 15fps for a couple of seconds.
             this.Init();
         }
         #endregion

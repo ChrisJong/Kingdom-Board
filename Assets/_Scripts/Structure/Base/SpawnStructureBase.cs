@@ -41,7 +41,7 @@
 
             this._lastQueueID = this._unitQueueCount;
 
-            return UnitPoolManager.instance.SpawnUnit(type, this.Controller, position);
+            return UnitPoolManager.instance.SpawnUnit(type, this.Controller, position, this.position);
         }
         #endregion
     }

@@ -191,14 +191,17 @@
             if(this._toSpawn != null)
                 this._toSpawn.CancelSpawn();
 
-            UnitPoolManager.instance.SpawnPlacement(queue.type, Vector3.zero, out this._unitPlacement);
-            this._toSpawn = queue;
+            if(UnitPoolManager.instance.SpawnPlacement(queue.type, Vector3.zero, out this._unitPlacement)){
+                this._toSpawn = queue;
 
-            this.Controller.playerSelect.ChangeState(SelectionState.SPAWNPOINT);
-            this.structureState = StructureState.SPAWN;
-            this.radiusDrawer.SetActive(true);
-
-            return true;
+                this.Controller.playerSelect.ChangeState(SelectionState.SPAWNPOINT);
+                this.structureState = StructureState.SPAWN;
+                this.radiusDrawer.SetActive(true);
+                return true;
+            } else {
+                Debug.LogError("Error tring to spawn a plavement unit of type: " + queue.type.ToString());
+                return false;
+            }
         }
 
         public bool CheckSpawnPoint(Vector3 point) {

@@ -95,7 +95,7 @@
 
                     if(this._currentPoint.HasValue) {
                         this._previousPoint = this._currentPoint;
-                        this.debugPreviousPOint = this._currentPoint.Value;
+                        this.debugPreviousPoint = this._currentPoint.Value;
                     }
                     this._currentPoint = null;
                     this.debugCurrentPoint = Vector3.zero;

@@ -93,6 +93,22 @@
             Invoke("FinishBannerAnimation", spawnAnimTimer + this._bannerLinger);
         }
 
+        public bool TurnOff() {
+            if(!this.gameObject.activeSelf)
+                return false;
+
+            this.gameObject.SetActive(false);
+            return true;
+        }
+
+        public bool TurnOn() {
+            if(this.gameObject.activeSelf)
+                return false;
+
+            this.gameObject.SetActive(false);
+            return true;
+        }
+
         private void FinishBannerAnimation() {
 
             this._bannerAnim.Play("TurnBannerFadeOut");

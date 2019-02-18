@@ -189,6 +189,7 @@
         }
 
         public void FinishedBannerAnim() {
+            this._playerBanner.TurnOff();
             this.Controller.StartTurn();
         }
 

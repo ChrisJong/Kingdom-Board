@@ -38,7 +38,7 @@
 
         // MAP LIMITS
         private bool _enableMapLimit = true;
-        private float _limitX = 14.0f;
+        private float _limitX = 20.0f;
         private float _limitY = 20.0f;
 
         // INPUT CONTROLS
@@ -155,6 +155,11 @@
         private void CameraUpdate() {
 
             if(this._controller.CurrentState == Enum.PlayerState.ATTACKING || this._controller.CurrentState == Enum.PlayerState.DEFENDING) {
+
+                // For Debugging.
+                if(Manager.GameManager.instance.PlayerInView != this._controller)
+                    return;
+
                 this.MoveCamera();
                 //this.HeightCalculation();
                 this.ZoomCamera();

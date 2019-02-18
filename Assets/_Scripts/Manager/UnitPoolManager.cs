@@ -18,14 +18,12 @@
         #region VARIABLE
 
         private static readonly int unitTypeLength = System.Enum.GetNames(typeof(UnitType)).Length - 2;
+        private readonly int _unitInstanceCount = 5;
+        private readonly int _placementInstanceCount = 1;
+        private readonly int _deathInstanceCount = 1;
 
-        [SerializeField] private UnitPoolSetup[] _poolSetup = new UnitPoolSetup[unitTypeLength];
-        private readonly Dictionary<UnitType, UnitPool> _pools = new Dictionary<UnitType, UnitPool>(unitTypeLength, new UnitTypeComparer());
-
-        private int _placementInstanceCount = 3;
+        private readonly Dictionary<UnitType, UnitPool> _unitPools = new Dictionary<UnitType, UnitPool>(unitTypeLength, new UnitTypeComparer());
         private readonly Dictionary<UnitType, UnitPlacementPool> _placementPools = new Dictionary<UnitType, UnitPlacementPool>(unitTypeLength, new UnitTypeComparer());
-
-        public int _deathInstanceCount = 5;
         private readonly Dictionary<UnitType, UnitDeathPool> _deathPools = new Dictionary<UnitType, UnitDeathPool>(unitTypeLength, new UnitTypeComparer());
 
         [SerializeField] private List<IUnitDeath> _poolDeath = new List<IUnitDeath>();
@@ -55,49 +53,63 @@
                 var managerHost = new GameObject("Units");
                 managerHost.transform.SetParent(this.transform);
 
-                for(int i = 0; i < this._poolSetup.Length; i++) {
-                    UnitPoolSetup setup = this._poolSetup[i];
+                foreach(UnitScriptable data in this._unitDataList) {
 
-                    GameObject host = new GameObject(setup.type.ToString());
-                    GameObject placementHost = new GameObject("Placement_" + setup.type.ToString());
-                    GameObject deathHost = new GameObject("Death_" + setup.type.ToString());
+                    GameObject host = new GameObject(data.unitType.ToString());
+                    GameObject placementHost = new GameObject(data.unitType.ToString() + "_Placement");
+                    GameObject deathHost = new GameObject(data.unitType.ToString() + "_Death");
                     host.transform.SetParent(managerHost.transform);
                     placementHost.transform.SetParent(managerHost.transform);
                     deathHost.transform.SetParent(managerHost.transform);
 
-                    UnitScriptable unitData = this.FetchUnitData(setup.type);
-
-                    GameObject placementPrefab = unitData.placementPrefab;
-                    UnitPlacement placement = placementPrefab.GetComponent<UnitPlacement>();
-                    if(placement == null)
-                        placement = placementPrefab.AddComponent<UnitPlacement>();
-                    placement.unitType = setup.type;
-
-                    GameObject deathPrefab = unitData.deathPrefab;
-                    UnitDeath death = deathPrefab.GetComponent<UnitDeath>();
-                    if(death == null)
-                        death = deathPrefab.AddComponent<UnitDeath>();
-                    death.unitType = setup.type;
-
-                    if(setup.prefab.GetComponent<UnitBase>().SetData(this._sortedUnitData[setup.type])) {
-                        setup.prefab.GetComponent<UnitBase>().Setup();
+                    if(data.mainPrefab == null) {
+                        Debug.LogError("Unit Scriptable(Data) of type (" + data.unitType.ToString() + ") doesn't contain a main prefab, please attach one!");
+                        throw new System.NullReferenceException("Unit Scriptable(Data) of type (" + data.unitType.ToString() + ") doesn't contain a main prefab, please attach one!");
+                    }
+                    GameObject unitPrefab = data.mainPrefab;
+                    UnitBase unitBase = unitPrefab.GetComponent<UnitBase>();
+                    if(unitBase != null) {
+                        if(unitBase.SetData(data)){
+                            unitBase.Setup();
+                            unitBase.SetupAnimation();
+                            this._unitPools.Add(data.unitType, new UnitPool(unitPrefab, host, this._unitInstanceCount));
+                        } else {
+                            Debug.LogError("Data for the unit type doesn't exists! " + data.unitType.ToString());
+                            throw new System.ArgumentNullException("Data for the unit type doesn't exists! " + data.unitType.ToString());
+                        }
                     } else {
-                        Debug.LogError("Data For the Unit Type Doesn't Exist: " + setup.type.ToString());
-                        throw new System.ArgumentNullException("Data For the Unit Type Doesn't Exist: " + setup.type.ToString());
+                        Debug.LogError("Unit prefab doesn't contain the unitbase/unittype script! " + data.unitType.ToString());
+                        throw new System.ArgumentException("Unit prefab doesn't contain the unitbase/unittype script! " + data.unitType.ToString());
                     }
 
-                    this._pools.Add(setup.type, new UnitPool(setup.prefab, host, setup.initialInstanceCount));
-                    this._placementPools.Add(setup.type, new UnitPlacementPool(placementPrefab, placementHost, this._placementInstanceCount));
-                    this._deathPools.Add(setup.type, new UnitDeathPool(deathPrefab, deathHost, this._deathInstanceCount));
+                    if(data.placementPrefab == null) {
+                        Debug.LogError("Unit Scriptable(Data) of type (" + data.unitType.ToString() + ") doesn't contain a placement prefab, please attach one!");
+                        throw new System.NullReferenceException("Unit Scriptable(Data) of type (" + data.unitType.ToString() + ") doesn't contain a placement prefab, please attach one!");
+                    }
+                    GameObject placementPrefab = data.placementPrefab;
+                    UnitPlacement placementBase = placementPrefab.GetComponent<UnitPlacement>();
+                    if(placementBase == null)
+                        placementBase = placementPrefab.AddComponent<UnitPlacement>();
+                    placementBase.unitType = data.unitType;
+                    this._placementPools.Add(data.unitType, new UnitPlacementPool(placementPrefab, placementHost, this._placementInstanceCount));
 
-                    setup.prefab.GetComponent<UnitBase>().SetupAnimation();
+                    if(data.deathPrefab == null) {
+                        Debug.LogError("Unit Scriptable(Data) of type (" + data.unitType.ToString() + ") doesn't contain a death prefab, please attach one!");
+                        throw new System.NullReferenceException("Unit Scriptable(Data) of type (" + data.unitType.ToString() + ") doesn't contain a death prefab, please attach one!");
+                    }
+                    GameObject deathPrefab = data.deathPrefab;
+                    UnitDeath deathBase = deathPrefab.GetComponent<UnitDeath>();
+                    if(deathBase == null)
+                        deathBase = deathPrefab.AddComponent<UnitDeath>();
+                    deathBase.unitType = data.unitType;
+                    this._deathPools.Add(data.unitType, new UnitDeathPool(deathPrefab, deathHost, this._deathInstanceCount));
                 }
             }
         }
 
         public bool SpawnUnit(UnitType type, Player controller, Vector3 position) {
 
-            if(type == UnitType.NONE || type == UnitType.ANY || !this._pools.ContainsKey(type)) {
+            if(type == UnitType.NONE || type == UnitType.ANY || !this._unitPools.ContainsKey(type)) {
                 Debug.LogError(this.ToString() + " cannot spawn unit of type (not suypported)" + type);
                 return false;
             }
@@ -107,8 +119,22 @@
             return true;
         }
 
+        public bool SpawnUnit(UnitType type, Player controller, Vector3 position, Vector3 structurePosition) {
+
+            if(type == UnitType.NONE || type == UnitType.ANY || !this._unitPools.ContainsKey(type)) {
+                Debug.LogError(this.ToString() + " cannot spawn unit of type (not suypported)" + type);
+                return false;
+            }
+
+            IUnit temp = this.InternalSpawnUnit(type, controller, position);
+            Vector3 direction = position - structurePosition;
+            temp.rotation = Quaternion.LookRotation(direction, Vector3.up);
+
+            return true;
+        }
+
         public bool SpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, ref uint spawnIndex) {
-            if(type == UnitType.NONE || type == UnitType.ANY || !this._pools.ContainsKey(type)) {
+            if(type == UnitType.NONE || type == UnitType.ANY || !this._unitPools.ContainsKey(type)) {
                 Debug.LogError(this.ToString() + " cannot spawn unit of type (not supported): " + type);
                 return false;
             }
@@ -128,7 +154,7 @@
             return true;
         }
 
-        public bool SpawnDeath(Player controller, UnitType type, Vector3 position, Quaternion rotation, Vector3 eDirection, Vector3 ePosition, float eForce, int counter) {
+        public bool SpawnDeath(Color color, UnitType type, Vector3 position, Quaternion rotation, Vector3 eDirection, Vector3 ePosition, float eForce, int counter) {
 
             if(type == UnitType.NONE || type == UnitType.ANY || !this._placementPools.ContainsKey(type)) {
                 Debug.LogError(this.ToString() + " cannot spawn unit of type (not supported): " + type);
@@ -140,7 +166,7 @@
             if(temp == null)
                 return false;
 
-            temp.Init(controller, eDirection, ePosition, eForce, counter);
+            temp.Init(color, eDirection, ePosition, eForce, counter);
 
             this._poolDeath.Add(temp);
 
@@ -149,7 +175,7 @@
 
         public void Return(IUnit unit) {
             unit.Return();
-            this._pools[unit.unitType].Return(unit);
+            this._unitPools[unit.unitType].Return(unit);
         }
 
         public void Return(IUnitPlacement placement) {
@@ -267,7 +293,7 @@
         }
 
         private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position) {
-            UnitPool pool = this._pools[type];
+            UnitPool pool = this._unitPools[type];
             Vector3 pos = position;
             pos = Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
             IUnit unit = pool.Get(pos, Quaternion.identity);
@@ -285,7 +311,7 @@
         }
 
         private IUnit InternalSpawnUnit(UnitType type, Player controller, Vector3 position, float spawnDistance, float anglePerSpawm, uint spawnIndex) {
-            UnitPool pool = this._pools[type];
+            UnitPool pool = this._unitPools[type];
             Vector3 pos = CircleHelpers.GetPointOnCircle(position, spawnDistance, anglePerSpawm, spawnIndex);
             pos = Utility.Utils.GetGroundedPosition((pos) + new Vector3(0.0f, 0.5f, 0.0f));
             IUnit unit = pool.Get(pos, Quaternion.identity);

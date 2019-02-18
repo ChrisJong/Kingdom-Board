@@ -12,7 +12,7 @@
 
         void Setup();
         void Return();
-        void Init(Player.Player controller, UnityEngine.Vector3 eDirection, UnityEngine.Vector3 ePoseition, float eForce, int counter);
+        void Init(UnityEngine.Color color, UnityEngine.Vector3 eDirection, UnityEngine.Vector3 ePoseition, float eForce, int counter);
 
         void Countdown();
     }

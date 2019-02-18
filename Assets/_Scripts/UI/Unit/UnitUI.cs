@@ -255,6 +255,7 @@
 
             Vector3[] path = this._unitBase.ReturnPathToTarget(point, attackRange);
             if(path != null) {
+                Debug.Log("Path Is Empty");
                 this._LocatorLine.enabled = true;
                 this._LocatorLine.positionCount = path.Length;
                 this._LocatorLine.SetPositions(path);

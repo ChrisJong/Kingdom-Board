@@ -90,10 +90,8 @@
         [SerializeField, HideInInspector] protected Animator _unitAnimator = null;
         [SerializeField, HideInInspector] protected Animator _pedestalAnimator = null;
 
-        [SerializeField] protected GameObject _deathPrefab = null;
-
         [Header("UNIT - DEBUGGING")]
-        public Vector3 debugPreviousPOint = Vector3.zero;
+        public Vector3 debugPreviousPoint = Vector3.zero;
         public Vector3 debugCurrentPoint = Vector3.zero;
         public HasHealthBase debugPreviousTarget = null;
         public HasHealthBase debugCurrentTarget = null;
@@ -154,14 +152,14 @@
                 return false;
 
             this._data = data;
-
             return true;
         }
 
         public override void Setup() {
 
+            Debug.Log("Unit Setup");
+
             this._projectilePrefab = this._data.projectilePrefab;
-            this._deathPrefab = this._data.deathPrefab;
 
             this._currentState = UnitState.NONE;
 
@@ -314,8 +312,7 @@
             ResourceManager.instance.RemoveResource(this.Controller, PlayerResource.POPULATION, this._data.populationCost);
             GoldMineManager.instance.RemoveEntity(this);
 
-            if(this._deathPrefab != null)
-                this.PlayDeathAnimation();
+            this.PlayDeathAnimation();
         }
 
         public virtual void Finished() {
@@ -333,7 +330,7 @@
 
             if(this._currentPoint.HasValue) {
                 this._previousPoint = this._currentPoint;
-                this.debugPreviousPOint = this._previousPoint.Value;
+                this.debugPreviousPoint = this._previousPoint.Value;
             }
 
             this._currentPoint = position;
@@ -397,9 +394,6 @@
             if(this._currentTarget.entityType == EntityType.STRUCTURE) {
                 Structure.StructureBase structure = target as Structure.StructureBase;
                 point = Utils.ClosesPointToBounds(structure.ColliderBounds, this.position);
-
-                //GameObject temp = new GameObject("Close Point");
-                //temp.transform.position = point;
             } else {
                 point = this._currentTarget.position;
             }
@@ -407,14 +401,14 @@
             if(!this.TargetInRange()) {
                 if(this.CanMove)
                     this.unitUI.EnableMovePathToTarget(point, this._attackRange);
-                else
+                else {
                     return false;
-
+                }
             } else {
 
                 if(this._currentPoint.HasValue) {
                     this._previousPoint = this._currentPoint;
-                    this.debugPreviousPOint = this._previousPoint.Value;
+                    this.debugPreviousPoint = this._previousPoint.Value;
                 }
 
                 this._currentPoint = null;
@@ -580,7 +574,7 @@
 
             if(this._navMeshAgent.CalculatePath(point, path)) {
                 this._unitPathing = path;
-                temp = FinalizePath(false);
+                temp = FinalizePath(false, point);
                 return temp;
             } else {
                 this._unitPathing.ClearCorners();
@@ -592,18 +586,24 @@
 
             Vector3[] temp;
             NavMeshPath path = new NavMeshPath();
-                
-            if(this._navMeshAgent.CalculatePath(point, path)) {
+            Vector3 newPoint = Vector3.zero;
+            Utils.SamplePosition(point, out newPoint);
+
+            Debug.Log("New Point: " + newPoint.ToString());
+            Debug.Log("Old Point: " + point.ToString());
+
+            if(this._navMeshAgent.CalculatePath(newPoint, path)) {
                 this._unitPathing = path;
-                temp = FinalizePath(true, attackRange);
+                temp = FinalizePath(true, point, attackRange);
                 return temp;
             } else {
+                Debug.Log("No Calculated Path");
                 this._unitPathing.ClearCorners();
                 return null;
             }
         }
 
-        private Vector3[] FinalizePath(bool target, float attackRange = 0.0f) {
+        private Vector3[] FinalizePath(bool target, Vector3 originalPoint, float attackRange = 0.0f) {
             Stack<Vector3> linePoints = new Stack<Vector3>();
             float castLerpSize = 0.5f;
 
@@ -613,8 +613,22 @@
             linePoints.Push(this._unitPathing.corners[0]);
 
             if(target) {
-                Vector3 direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - this._unitPathing.corners[this._unitPathing.corners.Length - 1]).normalized;
-                Vector3 attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * (attackRange + this._unitRadius));
+
+                Vector3 direction = Vector3.zero;
+                Vector3 attackPoint = Vector3.zero;
+
+                if(this._currentTarget.entityType == EntityType.STRUCTURE) {
+                    Debug.Log("Attacking Structure");
+                    //GameObject temp = new GameObject();
+                    //temp.transform.position = originalPoint;
+
+                    direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - originalPoint).normalized;
+                    attackPoint = originalPoint + (direction * (attackRange - 0.5f));
+                } else if(this._currentTarget.entityType == EntityType.UNIT) {
+                    Debug.Log("Attacking Unit");
+                    direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - this._unitPathing.corners[this._unitPathing.corners.Length - 1]).normalized;
+                    attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * (attackRange + this._unitRadius));
+                }
 
                 /*GameObject temp2 = new GameObject("Nav Point");
                 temp2.transform.position = this._unitPathing.corners[this._unitPathing.corners.Length - 1];
@@ -752,6 +766,7 @@
             }
         }
 
+        // OLD REMOVE.
         private bool SamplePosition(Vector3 dest, out Vector3 position) {
             NavMeshHit hit;
 
@@ -904,16 +919,19 @@
             if(this._currentTarget.entityType == EntityType.UNIT) {
                 distance = Vector3.Distance(this.position, this._currentTarget.position);
                 distance -= ((UnitBase)this._currentTarget).UnitRadius;
+
+                if(distance > (this._attackRange + this._unitRadius))
+                    return false;
             } else {
                 Structure.StructureBase structure = this._currentTarget as Structure.StructureBase;
                 distance = Vector3.Distance(this.position, Utils.ClosesPointToBounds(structure.ColliderBounds, this.position));
+
+                if(distance > this._attackRange)
+                    return false;
             }
 
             //Debug.Log("Distance: " + distance.ToString());
             //Debug.Log("Unit Attack Range: " + (this._attackRange + this._unitRadius).ToString());
-
-            if(distance > (this._attackRange + this._unitRadius))
-                return false;
 
             return true;
         }
@@ -992,16 +1010,13 @@
             // Zero out the directional Normal y to even out the stage.
             explosionDirection.y = 0.0f;
 
-            if(UnitPoolManager.instance.SpawnDeath(this.Controller, this._unitType, uPoseition, uRotation, explosionDirection, explosionPosition, this._explosionForce, UnitValues.DEATHCOUNTER))
-                Debug.Log("Spawn Death Prefab!");
+            if(!UnitPoolManager.instance.SpawnDeath(this.Controller.PlayerColor, this._unitType, uPoseition, uRotation, explosionDirection, explosionPosition, this._explosionForce, UnitValues.DEATHCOUNTER))
+                Debug.LogError("No death prefab for unit of type! " + this._unitType.ToString());
         }
 
         protected virtual void SetupEventAnimation() {
             AnimationEvent animEvent = new AnimationEvent();
             AnimationClip animcLip = new AnimationClip();
-
-            /*if(this._endOfAttackClipTime <= 0.0f)
-                throw new ArgumentException("End of Attack Animation Timer Needs to be Set, Cannot Be Set At 0 Seconds");*/
 
             animEvent.time = this._endOfAttackClipTime;
             animEvent.functionName = "Attack";
@@ -1018,7 +1033,7 @@
                     break;
                 }
             }
-
+            Debug.Log("Unit Animation Setup");
             animcLip.AddEvent(animEvent);
         }
         #endregion

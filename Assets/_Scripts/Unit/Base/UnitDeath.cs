@@ -57,10 +57,10 @@
             }
         }
 
-        public void Init(Player.Player controller,Vector3 eDirection, Vector3 ePoseition, float eForce, int counter) {
+        public void Init(Color color, Vector3 eDirection, Vector3 ePoseition, float eForce, int counter) {
             this._turnCounter = counter;
 
-            this.gameObject.ColorRenderers(controller.PlayerColor);
+            this.gameObject.ColorRenderers(color);
 
             this._audioSource.clip = Manager.SoundManager.instance.GetUnitDeath();
             this._audioSource.Play();

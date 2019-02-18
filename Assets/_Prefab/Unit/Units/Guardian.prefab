@@ -1478,7 +1478,7 @@ NavMeshAgent:
   m_Radius: 0.8
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 72
+  avoidancePriority: 82
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -1649,6 +1649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _poolID: 0
+  _isSetup: 1
   _controller: {fileID: 0}
   _uiBase: {fileID: 7673944012341725849}
   _currentHealth: 50
@@ -1689,9 +1690,7 @@ MonoBehaviour:
   _explosionForce: 300
   _unitAnimator: {fileID: 95898754363097090}
   _pedestalAnimator: {fileID: 5474783192627927257}
-  _deathPrefab: {fileID: 1244811562548892, guid: de604bc86bc7ea24dae04cd7b3e93f8e,
-    type: 3}
-  debugPreviousPOint: {x: 0, y: 0, z: 0}
+  debugPreviousPoint: {x: 0, y: 0, z: 0}
   debugCurrentPoint: {x: 0, y: 0, z: 0}
   debugPreviousTarget: {fileID: 0}
   debugCurrentTarget: {fileID: 0}

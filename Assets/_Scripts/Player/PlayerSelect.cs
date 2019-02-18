@@ -61,8 +61,7 @@
 
         #region UNITY
         private void Update() {
-            if(this._controller.CurrentState != PlayerState.DEAD)
-                this.UpdateClass();
+            this.UpdateClass();
         }
         #endregion
 
@@ -167,8 +166,15 @@
         }
 
         private void UpdateClass() {
-            Debug.DrawRay(this._ray.origin, this._ray.direction * this._rayDistance, Color.yellow);
-            this.MouseSelection();
+            if(this._controller.CurrentState != PlayerState.DEAD) {
+
+                // For Debugging.
+                if(Manager.GameManager.instance.PlayerInView != this._controller)
+                    return;
+
+                Debug.DrawRay(this._ray.origin, this._ray.direction * this._rayDistance, Color.yellow);
+                this.MouseSelection();
+            }
         }
 
         private void MouseSelection() {
