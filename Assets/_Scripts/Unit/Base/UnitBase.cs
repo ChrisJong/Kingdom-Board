@@ -618,14 +618,14 @@
                 Vector3 attackPoint = Vector3.zero;
 
                 if(this._currentTarget.entityType == EntityType.STRUCTURE) {
-                    Debug.Log("Attacking Structure");
+                    //Debug.Log("Attacking Structure");
                     //GameObject temp = new GameObject();
                     //temp.transform.position = originalPoint;
 
                     direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - originalPoint).normalized;
                     attackPoint = originalPoint + (direction * (attackRange - 0.5f));
                 } else if(this._currentTarget.entityType == EntityType.UNIT) {
-                    Debug.Log("Attacking Unit");
+                    //Debug.Log("Attacking Unit");
                     direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - this._unitPathing.corners[this._unitPathing.corners.Length - 1]).normalized;
                     attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * (attackRange + this._unitRadius));
                 }
@@ -732,8 +732,8 @@
 
             }*/
 
-            Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
-            Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
+            //Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
+            //Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
             if(this._navMeshAgent.remainingDistance <= this._navMeshAgent.stoppingDistance) {
 
                 if(!this._navMeshAgent.hasPath || this._navMeshAgent.velocity.sqrMagnitude <= 0.0f) {
