@@ -43,6 +43,21 @@ ModelImporter:
     100074: w_wall_connector
     100076: w_wall_stairs
     100078: walls
+    100080: barracks
+    100082: library
+    100084: s_wall_01
+    100086: s_wall_02
+    100088: s_wall_short
+    100090: sw_wall
+    100092: tower_extras_bottom
+    100094: tower_extras_top
+    100096: tower_round01
+    100098: tower_round02
+    100100: tower_square
+    100102: tower_tall
+    100104: w_wall_cnr
+    100106: w_wall_end
+    100108: w_wall_half
     400000: barracks_main
     400002: //RootNode
     400004: keep_annex
@@ -83,6 +98,21 @@ ModelImporter:
     400074: w_wall_connector
     400076: w_wall_stairs
     400078: walls
+    400080: barracks
+    400082: library
+    400084: s_wall_01
+    400086: s_wall_02
+    400088: s_wall_short
+    400090: sw_wall
+    400092: tower_extras_bottom
+    400094: tower_extras_top
+    400096: tower_round01
+    400098: tower_round02
+    400100: tower_square
+    400102: tower_tall
+    400104: w_wall_cnr
+    400106: w_wall_end
+    400108: w_wall_half
     2100000: lambert1
     2300000: barracks_main
     2300002: keep_annex
@@ -118,6 +148,21 @@ ModelImporter:
     2300062: w_wall_03
     2300064: w_wall_connector
     2300066: w_wall_stairs
+    2300068: barracks
+    2300070: library_main
+    2300072: s_wall_01
+    2300074: s_wall_02
+    2300076: s_wall_short
+    2300078: sw_wall
+    2300080: tower_extras_bottom
+    2300082: tower_extras_top
+    2300084: tower_round01
+    2300086: tower_round02
+    2300088: tower_square
+    2300090: tower_tall
+    2300092: w_wall_cnr
+    2300094: w_wall_end
+    2300096: w_wall_half
     3300000: barracks_main
     3300002: keep_annex
     3300004: keep_balcony
@@ -152,6 +197,21 @@ ModelImporter:
     3300062: w_wall_03
     3300064: w_wall_connector
     3300066: w_wall_stairs
+    3300068: barracks
+    3300070: library_main
+    3300072: s_wall_01
+    3300074: s_wall_02
+    3300076: s_wall_short
+    3300078: sw_wall
+    3300080: tower_extras_bottom
+    3300082: tower_extras_top
+    3300084: tower_round01
+    3300086: tower_round02
+    3300088: tower_square
+    3300090: tower_tall
+    3300092: w_wall_cnr
+    3300094: w_wall_end
+    3300096: w_wall_half
     4300000: keep_body
     4300002: keep_extras
     4300004: keep_balcony
@@ -186,6 +246,21 @@ ModelImporter:
     4300062: s_wall_short_03
     4300064: sw_wall_short
     4300066: sw_wall_end
+    4300068: tower_extras_bottom
+    4300070: tower_extras_top
+    4300072: barracks
+    4300074: library_main
+    4300076: tower_square
+    4300078: tower_tall
+    4300080: tower_round01
+    4300082: tower_round02
+    4300084: w_wall_half
+    4300086: w_wall_cnr
+    4300088: w_wall_end
+    4300090: s_wall_short
+    4300092: s_wall_01
+    4300094: s_wall_02
+    4300096: sw_wall
   externalObjects: {}
   materials:
     importMaterials: 0
@@ -220,6 +295,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
     importVisibility: 1
     importBlendShapes: 0
     importCameras: 0
@@ -244,6 +320,9 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 0
   copyAvatar: 0
   humanDescription:
@@ -258,7 +337,6 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
