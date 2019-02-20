@@ -38,8 +38,8 @@
 
         // MAP LIMITS
         private bool _enableMapLimit = true;
-        private float _limitX = 20.0f;
-        private float _limitY = 20.0f;
+        private float _limitX = 25.0f;
+        private float _limitZ = 25.0f;
 
         // INPUT CONTROLS
         #region INPUT CONTROLS
@@ -233,7 +233,7 @@
 
             this._cameraTransform.position = new Vector3(Mathf.Clamp(this._cameraTransform.position.x, -this._limitX,
                                                    this._limitX), this._cameraTransform.position.y,
-                                                   Mathf.Clamp(this._cameraTransform.position.z, -this._limitY, this._limitY));
+                                                   Mathf.Clamp(this._cameraTransform.position.z, -this._limitZ, this._limitZ));
         }
 
         private float DistanceGround() {
