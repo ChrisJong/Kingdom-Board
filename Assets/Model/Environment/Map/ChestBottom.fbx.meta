@@ -1,14 +1,16 @@
 fileFormatVersion: 2
-guid: e0d3c2999303a4946878d27464f7306d
+guid: a2211ccc39a299b4691fde26dd121284
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: lambert5
+    2100000: lambert3
     2300000: //RootNode
     3300000: //RootNode
-    4300000: hinge_Bot
+    4300000: game_board_outer
+    4300002: boarder_chest_bottom
+    4300004: ChestBottom
   externalObjects: {}
   materials:
     importMaterials: 0
@@ -68,10 +70,10 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
-    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2

@@ -17,7 +17,7 @@
         //Opens the chest tops to reveal the game board
         //should be automatically played after the menu
         //is hidden during the main menu match-making
-        public void PlayOpenAnimation()
+        public void OpenBoard()
         {
             anim.Play("ChestTop_Open");
         }
@@ -26,14 +26,14 @@
         //and return the players to the main menu
         //should automatically trigger show menu
         //once the animation is finished
-        public void PlayCloseAnimation()
+        public void CloseBoard()
         {
             anim.Play("ChestTop_Close");
         }
 
         //slides open the sliders
         //to show the menu buttons
-        public void PlaySliderOpenAnimation()
+        public void ShowMenu()
         {
             anim.Play("ChestTop_ShowMenu");
         }
@@ -46,9 +46,29 @@
         //if the player loses connection to mm servers
         //will need to rework this to not automatically
         //open the chest tops!
-        public void PlaySliderCloseAnimation()
+        public void HideMenu()
         {
             anim.Play("ChestTop_HideMenu");
+        }
+
+        public void RevealFindGameButton()
+        {
+            anim.Play("ChestTop_RevealFindGameButton");
+        }
+
+        public void HideFindGameButton()
+        {
+            anim.Play("ChestTop_HideFindGameButton");
+        }
+
+        public void ShowFindGameButton()
+        {
+            anim.Play("ChestTop_ShowFindGameButton");
+        }
+
+        public void ShowCancelButton()
+        {
+            anim.Play("ChestTop_ShowCancelFindGameButton");
         }
     }
 

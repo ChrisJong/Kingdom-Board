@@ -43,12 +43,49 @@
 
         public ChestTop_dan chestTop;
 
+        //when the game finishes loading
+        //pop out the menu from the chest top
+        public void OnGameLoaded()
+        {
+            chestTop.ShowMenu();
+        }
+
         //should be an override on PUN similar to this
-        //use this to show the menu once the player has
-        //connected to match making servers
+        //use this to show the menu buttons once the player
+        //has connected to match making servers
         public void OnConnectedToMaster()
         {
-            chestTop.PlaySliderOpenAnimation();
+            chestTop.RevealFindGameButton();
+        }
+
+        //should be an override on PUN similar to this
+        //use when disconnected from the server
+        //and hide the find game button
+        public void OnDisconnectedFromMaster()
+        {
+            chestTop.HideFindGameButton();
+        }
+
+        //some function when the find game button is
+        //pressed to show the cancel find game button
+        public void FindGame()
+        {
+            chestTop.ShowCancelButton();
+        }
+
+        //some function when the cancel find game button
+        //is pressed to show the find game button again
+        public void CancelFindGame()
+        {
+            chestTop.ShowFindGameButton();
+        }
+
+        //some function when PUN matches the player with
+        //another player, not sure of the override so
+        //using some random function name here
+        public void OnOpponentFound()
+        {
+            chestTop.HideMenu();
         }
 
         //some overide on PUN similar to this
@@ -59,7 +96,7 @@
         //opening the chest board tops
         public void OnSceneLoaded()
         {
-            chestTop.PlaySliderCloseAnimation();
+            chestTop.OpenBoard();
             Invoke("OnGameStart", 2f); //using invoke here cause i dont have any callbacks or animation events currently
         }
 
@@ -69,7 +106,7 @@
         //once the tops close, the controller auto shows menu
         public void OnMatchEnded()
         {
-            chestTop.PlayCloseAnimation();
+            chestTop.CloseBoard();
         }
 
         #endregion
@@ -123,15 +160,40 @@
         {
             if (Input.GetKeyDown(KeyCode.A))
             {
-                OnConnectedToMaster();
+                OnGameLoaded();
             }
 
             if (Input.GetKeyDown(KeyCode.S))
             {
-                OnSceneLoaded();
+                OnConnectedToMaster();
+            }
+
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                OnDisconnectedFromMaster();
             }
 
             if (Input.GetKeyDown(KeyCode.D))
+            {
+                FindGame();
+            }
+
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                CancelFindGame();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                OnOpponentFound();
+            }
+
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                OnSceneLoaded();
+            }
+
+            if (Input.GetKeyDown(KeyCode.B))
             {
                 OnMatchEnded();
             }
