@@ -12,6 +12,11 @@
             anim = GetComponent<Animation>();
         }
 
+        public void PlayOpenSequenceMoveToTop()
+        {
+            anim.Play("OpeningLerpToTop");
+        }
+
         public void PlayOpenSequenceMoveToCastle(bool _isAtk, openingSequenceGM.GMCallBacks _callBack)
         {
             if (_isAtk)

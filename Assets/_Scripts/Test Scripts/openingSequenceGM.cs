@@ -47,6 +47,12 @@
         //pop out the menu from the chest top
         public void OnGameLoaded()
         {
+            playerCam.PlayOpenSequenceMoveToTop();
+            Invoke("ShowChestTopMenu", 5f);
+        }
+
+        public void ShowChestTopMenu()
+        {
             chestTop.ShowMenu();
         }
 
@@ -118,6 +124,9 @@
         public coinTest coin; //the coin which will be flipped on the player's screens.. can be given different targeted RPC arguments to show different animations
         public openSeqCamera playerCam; //the player camera script, currently using this for opening sequence only
         public turnbanner_dan banner; //the banner which we will control here because not creating player script
+        public SettingsMenuDan settingsMenu; //the settings menu
+
+        private bool settingsMenuShowing = false;
 
         private bool playerOneIsAttacking; //replace this with however which player is first is implemented: maybe something like players[i].IsTurn or something
 
@@ -150,6 +159,16 @@
         private void PlayBannerAnimation()
         {
             banner.PlayBannerAnimation(playerOneIsAttacking);
+        }
+
+        private void ToggleSettingsMenu()
+        {
+            settingsMenuShowing = !settingsMenuShowing;
+
+            if (settingsMenuShowing)
+                settingsMenu.MoveToCamera();
+            else
+                settingsMenu.ReturnToBoard();
         }
 
         #endregion
@@ -196,6 +215,11 @@
             if (Input.GetKeyDown(KeyCode.B))
             {
                 OnMatchEnded();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                ToggleSettingsMenu();
             }
         }
     }
