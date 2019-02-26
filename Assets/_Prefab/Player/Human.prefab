@@ -205,12 +205,12 @@ MonoBehaviour:
   _previousState: 0
   _currentState: 0
   _currentSelectedEntity: 0
+  _previousHover: {fileID: 0}
+  _currentHover: {fileID: 0}
   _previousSelected: {fileID: 0}
   _currentSelected: {fileID: 0}
   _currentUnitSelected: {fileID: 0}
   _currentStructureSelected: {fileID: 0}
-  _previousHover: {fileID: 0}
-  _currentHover: {fileID: 0}
   _targetSelected: {fileID: 0}
   _debugCurrentPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &492444688425118256
@@ -227,9 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _clicked: 0
   _timer: 0
-  _previousState: 0
   _currentState: 0
-  _previousCursor: {fileID: 0}
   _currentCursor: {fileID: 0}
   _default: {fileID: 2800000, guid: d165babda5d70e649ba51cb181164bbc, type: 3}
   _defaultOnclick: {fileID: 2800000, guid: 019a436a54efd74479538fedd813f782, type: 3}
@@ -259,9 +257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 0}
-  _previousClip: {fileID: 0}
   _currentClip: {fileID: 0}
-  _nextClips: {fileID: 0}
 --- !u!114 &7199517229283376737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -852,7 +848,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -1592,7 +1588,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -2280,6 +2276,7 @@ GameObject:
   - component: {fileID: 9030851219851109298}
   - component: {fileID: 5086534415645834508}
   - component: {fileID: 6965038392277966058}
+  - component: {fileID: 4049091900884948585}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -2448,6 +2445,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4049091900884948585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6381009274269093998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -474324423, guid: 691beab1efc6cc749b43774f1b7c22eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayLines: 1
+  zOnShader: {fileID: 4800000, guid: d002ef982c284e44f8ef33d1048d6371, type: 3}
+  zOffShader: {fileID: 4800000, guid: 9a88049561e09f747aa121eaa34c0864, type: 3}
 --- !u!1 &6430983250389271328
 GameObject:
   m_ObjectHideFlags: 0
@@ -2669,7 +2681,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -2830,7 +2842,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -2992,9 +3004,7 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  m_Positions: []
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -3242,7 +3252,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -3747,7 +3757,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -3886,7 +3896,7 @@ PrefabInstance:
     - target: {fileID: 7319751644902717827, guid: 59f15942e43865d45a059d47ca08b275,
         type: 3}
       propertyPath: m_isInputParsingRequired
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59f15942e43865d45a059d47ca08b275, type: 3}
@@ -4095,7 +4105,7 @@ PrefabInstance:
     - target: {fileID: 2972810897690488800, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
         type: 3}
       propertyPath: m_isInputParsingRequired
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2972810896625149254, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
         type: 3}
@@ -4105,16 +4115,30 @@ PrefabInstance:
     - target: {fileID: 2972810896625149254, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
         type: 3}
       propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8357925895601387931, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7713429285742851123, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7713429285742851123, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7713429285742851123, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6137fa09ecbd1ef4aa672ebda36b20bc, type: 3}
---- !u!224 &7183576317927316106 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 224383903632333458, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
-    type: 3}
-  m_PrefabInstance: {fileID: 6965972828732866584}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5327072966803271672 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2972810897690488800, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
@@ -4139,3 +4163,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &7183576317927316106 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 224383903632333458, guid: 6137fa09ecbd1ef4aa672ebda36b20bc,
+    type: 3}
+  m_PrefabInstance: {fileID: 6965972828732866584}
+  m_PrefabAsset: {fileID: 0}

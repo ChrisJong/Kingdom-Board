@@ -1089,7 +1089,7 @@ NavMeshAgent:
   m_Radius: 0.8
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 18
+  avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -1229,7 +1229,6 @@ MonoBehaviour:
   _selectedTrigger: 0
   _hoverTrigger: 0
   _unitBase: {fileID: 6344798856924243038}
-  _radiusDrawer: {fileID: 114505581507329838}
   _renderers:
   - {fileID: 137246543372352716}
   - {fileID: 137130045205891346}
@@ -1239,6 +1238,9 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 532796fcb76c471479fe741306e7e614, type: 2}
   - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
   _LocatorGroup: {fileID: 0}
+  _radiusDrawer: {fileID: 114505581507329838}
+  _radiusGroup: {fileID: 0}
+  _radiusSystem: {fileID: 0}
   _unitIcon: {fileID: 0}
   _healthGroup: {fileID: 0}
   _staminaGroup: {fileID: 0}

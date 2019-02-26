@@ -22,14 +22,19 @@
         [Space]
         [SerializeField] protected UnitBase _unitBase;
 
-        [SerializeField] private LineRenderDrawCircle _radiusDrawer = null;
-
         [SerializeField, HideInInspector] protected List<Renderer> _renderers;
         [SerializeField, HideInInspector] protected List<Material> _unitMaterials;
 
         [SerializeField] private GameObject _LocatorGroup;
         private LineRenderer _LocatorLine;
         private Transform _LocatorMarker;
+
+        [Space]
+        [SerializeField] private LineRenderDrawCircle _radiusDrawer = null;
+        [SerializeField] private GameObject _radiusGroup = null;
+        private Transform _radiusTransform = null;
+        [SerializeField] private ParticleSystem _radiusSystem = null;
+        [SerializeField] private ParticleSystem.MainModule _radiusSystemMain;
 
         [Header("UNIT - MAIN UI")]
         [SerializeField] private Image _unitIcon;
@@ -111,6 +116,11 @@
                 this._staminaGroup = this._mainGroup.transform.Find("Base").Find("Stamina").gameObject;
                 this._staminaText = this._staminaGroup.transform.Find(UIValues.TEXT_SUFFIX).GetComponent<TextMeshProUGUI>();
                 this._staminaBarTransform = this._staminaGroup.transform.Find(UIValues.IMAGE_SUFFIX).transform as RectTransform;
+
+                this._radiusGroup = this._mainGroup.transform.Find("radius_pulse").gameObject;
+                this._radiusTransform = this._radiusGroup.transform;
+                this._radiusSystem = this._radiusGroup.GetComponent<ParticleSystem>();
+                this._radiusSystemMain = this._radiusSystem.main;
             }
 
             this._LocatorGroup = this._controller.playerUI.unitLocator;
@@ -255,12 +265,13 @@
 
             Vector3[] path = this._unitBase.ReturnPathToTarget(point, attackRange);
             if(path != null) {
-                Debug.Log("Path Is Empty");
                 this._LocatorLine.enabled = true;
                 this._LocatorLine.positionCount = path.Length;
                 this._LocatorLine.SetPositions(path);
                 this._LocatorMarker.position = path[0];
                 this.MoveRadius(path[0]);
+            } else {
+                Debug.Log("Unit Path Is Empty!");
             }
         }
 
@@ -276,16 +287,28 @@
             this._radiusDrawer.DrawAttackRadius((this._unitBase.AttackRange + this._unitBase.UnitRadius));
             this._radiusDrawer.MoveToOrigin();
             this._radiusDrawer.TurnOn();
+
+            this._radiusSystemMain.startColor = Color.red;
+            this._radiusSystemMain.startSize = (this._unitBase.AttackRange + this._unitBase.UnitRadius) * 3.0f;
+            this._radiusTransform.position = this._unitBase.position;
+            this._radiusGroup.SetActive(true);
         }
 
         public virtual void DrawRadius(Color color, float radius) {
             this._radiusDrawer.DrawRadius(color, radius);
             this._radiusDrawer.MoveToOrigin();
             this._radiusDrawer.TurnOn();
+
+            this._radiusSystemMain.startColor = color;
+            this._radiusSystemMain.startSize = radius * 3.0f;
+            this._radiusTransform.position = this._unitBase.position;
+            this._radiusGroup.SetActive(true);
         }
 
         public virtual void MoveRadius(Vector3 point) {
             this._radiusDrawer.Move(point);
+
+            this._radiusTransform.position = point;
         }
 
         public virtual void MoveRadiusToOrigin() {
@@ -295,6 +318,9 @@
         public virtual void DisableRadius() {
             this._radiusDrawer.MoveToOrigin();
             this._radiusDrawer.TurnOff();
+
+            this._radiusTransform.position = Vector3.zero;
+            this._radiusGroup.SetActive(false);
         }
 
         protected virtual void ActivateOutline(Color color, float width = 0.03f) {

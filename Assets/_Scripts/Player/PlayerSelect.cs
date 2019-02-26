@@ -30,14 +30,15 @@
         [SerializeField] private EntityType _currentSelectedEntity = EntityType.NONE;
 
         [Space]
-        [SerializeField] private HasHealthBase _previousSelected = null;
-        [SerializeField] private HasHealthBase _currentSelected = null;
-        [SerializeField] private UnitBase _currentUnitSelected = null; // _currentSelectted is type of Unit.
-        [SerializeField] private StructureBase _currentStructureSelected = null; // _currentselected is type of structure.
-
-        [Space]
         [SerializeField] private HasHealthBase _previousHover = null;
         [SerializeField] private HasHealthBase _currentHover = null;
+
+        [Space]
+        [SerializeField] private HasHealthBase _previousSelected = null;
+        [SerializeField] private HasHealthBase _currentSelected = null;
+        [Space]
+        [SerializeField] private UnitBase _currentUnitSelected = null; // _currentSelectted is type of Unit.
+        [SerializeField] private StructureBase _currentStructureSelected = null; // _currentselected is type of structure.
 
         [Space]
         [SerializeField] private HasHealthBase _targetSelected = null;

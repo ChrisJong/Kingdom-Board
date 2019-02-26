@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 
     using UnityEngine;
+    using Physics = RotaryHeart.Lib.PhysicsExtension.Physics;
     using UnityEngine.AI;
 
     using Constants;
@@ -589,9 +590,6 @@
             Vector3 newPoint = Vector3.zero;
             Utils.SamplePosition(point, out newPoint);
 
-            Debug.Log("New Point: " + newPoint.ToString());
-            Debug.Log("Old Point: " + point.ToString());
-
             if(this._navMeshAgent.CalculatePath(newPoint, path)) {
                 this._unitPathing = path;
                 temp = FinalizePath(true, point, attackRange);
@@ -618,22 +616,12 @@
                 Vector3 attackPoint = Vector3.zero;
 
                 if(this._currentTarget.entityType == EntityType.STRUCTURE) {
-                    //Debug.Log("Attacking Structure");
-                    //GameObject temp = new GameObject();
-                    //temp.transform.position = originalPoint;
-
                     direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - originalPoint).normalized;
                     attackPoint = originalPoint + (direction * (attackRange - 0.5f));
                 } else if(this._currentTarget.entityType == EntityType.UNIT) {
-                    //Debug.Log("Attacking Unit");
                     direction = (this._unitPathing.corners[this._unitPathing.corners.Length - 2] - this._unitPathing.corners[this._unitPathing.corners.Length - 1]).normalized;
                     attackPoint = this._unitPathing.corners[this._unitPathing.corners.Length - 1] + (direction * (attackRange + this._unitRadius));
                 }
-
-                /*GameObject temp2 = new GameObject("Nav Point");
-                temp2.transform.position = this._unitPathing.corners[this._unitPathing.corners.Length - 1];
-                GameObject temp = new GameObject("Attack Point");
-                temp.transform.position = attackPoint;*/
 
                 this._unitPathing.corners[this._unitPathing.corners.Length - 1] = attackPoint;
             }
@@ -653,19 +641,19 @@
                         this._hasStamina = false;
                     }
                 } else {
-                    Vector3 targetPPoint = this._unitPathing.corners[i];
-                    Vector3 direction = (targetPPoint - this._unitPathing.corners[i - 1]).normalized;
+                    Vector3 targetPoint = this._unitPathing.corners[i];
+                    Vector3 direction = (targetPoint - this._unitPathing.corners[i - 1]).normalized;
 
                     bool reachedNextPoint = false;
 
                     while(true) {
                         Vector3 previousPoint = linePoints.Peek();
-                        float remainingCastDistance = Vector3.Distance(previousPoint, targetPPoint);
+                        float remainingCastDistance = Vector3.Distance(previousPoint, targetPoint);
                         Vector3 nextCastPoint = previousPoint + (direction * castLerpSize);
 
                         if(remainingCastDistance < castLerpSize) {
                             reachedNextPoint = true;
-                            nextCastPoint = targetPPoint;
+                            nextCastPoint = targetPoint;
                         }
 
                         Vector3 foundPoint = GetPointOnGround(nextCastPoint);
@@ -697,8 +685,33 @@
             }
 
             Vector3[] finalLine = GetFinalPoint(linePoints);
-            this._currentPoint = finalLine[0];
+            Collider[] temp = Physics.OverlapSphere(finalLine[0], 0.8f, ~(GlobalSettings.LayerValues.groundLayer), QueryTriggerInteraction.Ignore, Physics.PreviewCondition.Editor);
 
+            if(temp.Length > 0) {
+
+                if(temp[0].gameObject != this.gameObject) {
+                    this._currentPoint = finalLine[0];
+                    return finalLine;
+                }
+
+                // NOTE: need to do a better calculation incase there are more than one unit blocking the endpoint path.
+
+                Vector3 endPoint = finalLine[0];
+                endPoint.y -= 0.2f;
+
+                Transform collider = temp[0].transform;
+                Vector3 direction = (endPoint - collider.position).normalized;
+
+                float distance = Vector3.Distance(endPoint, collider.position);
+                float newDistance = Mathf.Abs(distance - (0.8f * 2.0f));
+
+                Vector3 finalPoint = endPoint + (direction * (newDistance + 0.2f));
+                finalPoint.y += 0.2f;
+
+                finalLine[0] = finalPoint;
+            }
+
+            this._currentPoint = finalLine[0];
             return finalLine;
         }
 

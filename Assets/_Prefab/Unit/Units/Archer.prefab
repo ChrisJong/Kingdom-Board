@@ -2639,7 +2639,7 @@ NavMeshAgent:
   m_Radius: 0.8
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 12
+  avoidancePriority: 52
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -2779,7 +2779,6 @@ MonoBehaviour:
   _selectedTrigger: 0
   _hoverTrigger: 0
   _unitBase: {fileID: 5371636583463910724}
-  _radiusDrawer: {fileID: 114903890381334432}
   _renderers:
   - {fileID: 137001365023116954}
   - {fileID: 137370515840397654}
@@ -2789,6 +2788,9 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 04ed30458624eef43b7833eb93e8552a, type: 2}
   - {fileID: 2100000, guid: 984dead911c7f3342a0f934fd64e44f5, type: 2}
   _LocatorGroup: {fileID: 0}
+  _radiusDrawer: {fileID: 114903890381334432}
+  _radiusGroup: {fileID: 0}
+  _radiusSystem: {fileID: 0}
   _unitIcon: {fileID: 0}
   _healthGroup: {fileID: 0}
   _staminaGroup: {fileID: 0}
@@ -3430,6 +3432,11 @@ PrefabInstance:
     - target: {fileID: 5590132700613121731, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8135641183722299205, guid: e9ee9c58fafa0c84889fcb2f240c9b06,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
