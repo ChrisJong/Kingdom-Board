@@ -1,4 +1,4 @@
-﻿namespace Player {
+﻿namespace KingdomBoard.Player {
 
     using UnityEngine;
     using UnityEngine.AI;

@@ -1,4 +1,4 @@
-﻿namespace Helpers {
+﻿namespace KingdomBoard.Helpers {
     
     using UnityEngine;
 

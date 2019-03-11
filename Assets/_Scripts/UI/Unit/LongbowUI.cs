@@ -1,4 +1,4 @@
-﻿namespace UI {
+﻿namespace KingdomBoard.UI {
 
     public class LongbowUI : UnitUI { }
 }

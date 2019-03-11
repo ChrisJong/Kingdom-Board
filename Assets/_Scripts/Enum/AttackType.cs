@@ -1,4 +1,4 @@
-﻿namespace Enum {
+﻿namespace KingdomBoard.Enum {
 
     /// <summary>
     /// Enum type for the different kind of damage attrubytes for units in the game.

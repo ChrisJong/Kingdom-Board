@@ -1,4 +1,4 @@
-﻿namespace Manager {
+﻿namespace KingdomBoard.Manager {
 
     using System.Collections.Generic;
 

@@ -1,4 +1,4 @@
-﻿namespace Enum {
+﻿namespace KingdomBoard.Enum {
 
     /// <summary>
     /// Enum typpe for the different kinds of decals. "NONE" & "ANY" values are used for generic elements.

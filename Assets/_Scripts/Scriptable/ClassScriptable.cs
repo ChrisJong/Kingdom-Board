@@ -1,4 +1,4 @@
-﻿namespace Scriptable {
+﻿namespace KingdomBoard.Scriptable {
 
     using System.Collections;
     using System.Collections.Generic;

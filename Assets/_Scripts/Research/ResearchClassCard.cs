@@ -1,4 +1,4 @@
-﻿namespace Research {
+﻿namespace KingdomBoard.Research {
 
     public sealed class ResearchClassCard : ResearchCard {
 

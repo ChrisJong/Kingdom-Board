@@ -1,4 +1,4 @@
-﻿namespace Decal {
+﻿namespace KingdomBoard.Decal {
 
     using System.Collections;
     using System.Collections.Generic;

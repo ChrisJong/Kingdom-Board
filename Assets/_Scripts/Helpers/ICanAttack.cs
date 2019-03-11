@@ -1,4 +1,4 @@
-﻿namespace Helpers {
+﻿namespace KingdomBoard.Helpers {
     public interface ICanAttack : IHasHealth {
         float MinDamage { get; }
         float MaxDamage { get; }

@@ -1,4 +1,4 @@
-﻿namespace Unit {
+﻿namespace KingdomBoard.Unit {
 
     using System.Collections.Generic;
 

@@ -1,4 +1,4 @@
-﻿namespace Utility {
+﻿namespace KingdomBoard.Utility {
 
     using UnityEngine;
     using UnityEditor;
@@ -133,18 +133,20 @@
             this.xRadius = radius;
             this.yRadius = radius;
 
-            EditorUtility.SetDirty(this);
-
-            this.Draw();
+#if UNITY_EDITOR
+			EditorUtility.SetDirty(this);
+#endif
+			this.Draw();
         }
 
         public void UpdateRadius(float xRadius = 10.0f, float yRadius = 10.0f) {
             this.xRadius = xRadius;
             this.yRadius = yRadius;
 
-            EditorUtility.SetDirty(this);
-
-            this.Draw();
+#if UNITY_EDITOR
+			EditorUtility.SetDirty(this);
+#endif
+			this.Draw();
         }
 
         public override void SetActive(bool state) {

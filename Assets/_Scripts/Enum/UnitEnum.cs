@@ -1,4 +1,4 @@
-﻿ namespace Enum {
+﻿namespace KingdomBoard.Enum {
 
     public enum UnitState {
         NONE = 0,

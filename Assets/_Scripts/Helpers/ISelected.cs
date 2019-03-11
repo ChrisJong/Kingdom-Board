@@ -1,4 +1,4 @@
-﻿namespace Helpers {
+﻿namespace KingdomBoard.Helpers {
 
     using UnityEngine;
 
@@ -10,8 +10,5 @@
 
         bool SetPoint(Vector3 point);
         bool SetTarget(IHasHealth target);
-
-        //bool HoverPoint(Vector3 point);
-        //bool HoverTarget(IHasHealth target);
     }
 }

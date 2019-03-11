@@ -1,4 +1,4 @@
-﻿namespace Utility {
+﻿namespace KingdomBoard.Utility {
 
     using UnityEngine;
 

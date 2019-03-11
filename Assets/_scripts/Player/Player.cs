@@ -1,4 +1,4 @@
-﻿namespace Player {
+﻿namespace KingdomBoard.Player {
 
     using System.Collections;
     using System.Collections.Generic;

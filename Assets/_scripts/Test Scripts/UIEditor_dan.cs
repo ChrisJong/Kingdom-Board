@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#if UNITY_EDITOR
+
+using System.Collections;
 using UnityEngine;
 using UnityEditor;
 
@@ -78,3 +80,5 @@ public class UIEditor_dan : Editor {
         EditorGUILayout.EndVertical();
     }
 }
+
+#endif

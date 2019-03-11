@@ -1,4 +1,4 @@
-﻿namespace Extension {
+﻿namespace KingdomBoard.Extension {
 
     using UnityEngine;
 

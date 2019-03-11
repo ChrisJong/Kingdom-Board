@@ -1,4 +1,4 @@
-﻿namespace Constants {
+﻿namespace KingdomBoard.Constants {
 
     using UnityEngine;
 

@@ -1,4 +1,4 @@
-﻿namespace UI {
+﻿namespace KingdomBoard.UI {
 
     using System.Collections;
     using System.Collections.Generic;

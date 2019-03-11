@@ -1,4 +1,4 @@
-﻿namespace Research {
+﻿namespace KingdomBoard.Research {
 
     using System;
     using System.Collections;

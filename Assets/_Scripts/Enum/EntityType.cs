@@ -1,4 +1,4 @@
-﻿namespace Enum {
+﻿namespace KingdomBoard.Enum {
 
     /// <summary>
     /// Enum type for the different kind of entities in the game.

@@ -1,4 +1,4 @@
-﻿namespace Structure {
+﻿namespace KingdomBoard.Structure {
 
     using Enum;
     using Player;

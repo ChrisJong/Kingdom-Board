@@ -1,4 +1,4 @@
-﻿namespace UI {
+﻿namespace KingdomBoard.UI {
 
     using System;
 

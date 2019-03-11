@@ -1,4 +1,4 @@
-﻿namespace Particle {
+﻿namespace KingdomBoard.Particle {
 
     using System;
 
