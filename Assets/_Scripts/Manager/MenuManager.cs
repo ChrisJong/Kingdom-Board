@@ -186,7 +186,7 @@
 		}
 
         public void Search() {
-			if(instance != null && !this._isFindingGame) {
+			if(instance != null) {
 				this._isFindingGame = true;
 				this.ShowCancelButton();
 				NetworkManager.instance.SearchGameRoom();
@@ -194,7 +194,7 @@
 		}
 
         public void CancelSearch() {
-			if(instance != null && this._isFindingGame) {
+			if(instance != null) {
 				this._isFindingGame = false;
 				this.ShowFindGameButtons();
 				NetworkManager.instance.CancelSearchGameRoom();

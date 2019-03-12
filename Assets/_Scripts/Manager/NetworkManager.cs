@@ -103,7 +103,7 @@
 		}
 
 		public override void OnCreatedRoom() {
-			Debug.LogWarning("Created GAme Room, Finding Players!");
+			Debug.LogWarning("Created Game Room, Finding Players!");
 
 			this.ChangeState(NetworkState.WAITING_GAMEROOM);
 			this._currentRoom = PhotonNetwork.CurrentRoom;
@@ -293,7 +293,7 @@
 		}
 
 		public void CancelSearchGameRoom() {
-			if(this._currentState == NetworkState.WAITING_GAMEROOM) {
+			if(this._currentState == NetworkState.WAITING_GAMEROOM || this._currentRoom != null) {
 				if(!PhotonNetwork.LeaveRoom()) {
 					Debug.LogWarning("Unable to leave the current game room: " + this._currentRoom.Name);
 				}
