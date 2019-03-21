@@ -51,6 +51,7 @@
         [Header("UNIT - MOVENENT")]
         [SerializeField] protected bool _hasStamina = true;
         [SerializeField] protected bool _isMoving = false;
+		[SerializeField] protected bool _isJumping = false; 
         [SerializeField] protected float _staminaToUse = 0.0f;
         protected float _minMoveThreashold = 0.01f;
         [SerializeField] protected float _moveSpeed = 0.0f;
@@ -325,6 +326,9 @@
             if(!this.CanMove)
                 return false;
 
+			if(!this._navMeshAgent.enabled)
+				this._navMeshAgent.enabled = true;
+
             Vector3 position = Vector3.zero;
             if(!Utils.SamplePosition(point, out position))
                 return false;
@@ -438,34 +442,48 @@
 
             this.StopMoving();
 
-            NavMeshPath path = new NavMeshPath();
+			NavMeshPath path = new NavMeshPath();
 
-            this._navMeshAgent.CalculatePath(this._currentPoint.Value, path);
-            this._navMeshAgent.SetPath(path);
-            this._unitPathing = path;
+			this._navMeshAgent.CalculatePath(this._currentPoint.Value, path);
+			this._navMeshAgent.SetPath(path);
+			this._unitPathing = path;
 
-            this._navMeshAgent.SetPath(this._unitPathing);
+			this._navMeshAgent.SetPath(this._unitPathing);
 
-            if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
-                this._initialMoveDist = this._navMeshAgent.remainingDistance;
+			if(this.CheckDestination(this._unitPathing.corners)) { // Jump over units in the way or the point,
 
-                if(float.IsInfinity(_initialMoveDist)) {
-                    Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method: Corners - " + this._navMeshAgent.path.corners.Length.ToString());
-                    float finalDistance = 0;
-                    Vector3[] corners = this._navMeshAgent.path.corners;
+				this._navMeshAgent.enabled = false;
+				Debug.LogWarning("Jumping to the destination point");
 
-                    for(int i = 0; i < corners.Length - 1; ++i)
-                        finalDistance += Mathf.Abs((corners[i] - corners[i + 1]).magnitude);
+				this._isMoving = true;
+				this._currentState = UnitState.MOVING;
 
-                    this._initialMoveDist = finalDistance;
-                }
+			} else { // Walk to the point.
 
-                this._navMeshAgent.isStopped = false;
+				this._navMeshAgent.enabled = true;
+				Debug.LogWarning("Walking to the destination point");
 
-            } else {
-                this._navMeshAgent.SetDestination(this._currentPoint.Value);
-                this._initialMoveDist = this._navMeshAgent.remainingDistance;
-            }
+				if(this._unitPathing.status == NavMeshPathStatus.PathComplete) {
+					this._initialMoveDist = this._navMeshAgent.remainingDistance;
+
+					if(float.IsInfinity(_initialMoveDist)) {
+						Debug.LogWarning("Remaining Distance Set To Infinity Using Backup Method: Corners - " + this._navMeshAgent.path.corners.Length.ToString());
+						float finalDistance = 0;
+						Vector3[] corners = this._navMeshAgent.path.corners;
+
+						for(int i = 0; i < corners.Length - 1; ++i)
+							finalDistance += Mathf.Abs((corners[i] - corners[i + 1]).magnitude);
+
+						this._initialMoveDist = finalDistance;
+					}
+
+					this._navMeshAgent.isStopped = false;
+
+				} else {
+					this._navMeshAgent.SetDestination(this._currentPoint.Value);
+					this._initialMoveDist = this._navMeshAgent.remainingDistance;
+				}
+			}
 
             this._isMoving = true;
             this._currentState = UnitState.MOVING;
@@ -557,6 +575,9 @@
 
         public virtual void StopMoving() {
             this.unitUI.DisableMovePath();
+
+			if(!this._navMeshAgent.enabled)
+				this._navMeshAgent.enabled = true;
 
             this._isMoving = false;
             this._navMeshAgent.isStopped = true;
@@ -684,12 +705,12 @@
                 }
             }
 
-            Vector3[] finalLine = GetFinalPoint(linePoints);
+			Vector3[] finalLine = linePoints.ToArray();
             Collider[] temp = Physics.OverlapSphere(finalLine[0], 0.8f, ~(GlobalSettings.LayerValues.groundLayer), QueryTriggerInteraction.Ignore, Physics.PreviewCondition.Editor);
 
             if(temp.Length > 0) {
 
-                if(temp[0].gameObject != this.gameObject) {
+                if(temp[0].gameObject == this.gameObject) {
                     this._currentPoint = finalLine[0];
                     return finalLine;
                 }
@@ -697,7 +718,6 @@
                 // NOTE: need to do a better calculation incase there are more than one unit blocking the endpoint path.
 
                 Vector3 endPoint = finalLine[0];
-                endPoint.y -= 0.2f;
 
                 Transform collider = temp[0].transform;
                 Vector3 direction = (endPoint - collider.position).normalized;
@@ -706,13 +726,12 @@
                 float newDistance = Mathf.Abs(distance - (0.8f * 2.0f));
 
                 Vector3 finalPoint = endPoint + (direction * (newDistance + 0.2f));
-                finalPoint.y += 0.2f;
 
                 finalLine[0] = finalPoint;
             }
 
             this._currentPoint = finalLine[0];
-            return finalLine;
+            return this.GetFinalPoint(finalLine);
         }
 
         private Vector3 GetPointOnGround(Vector3 point) {
@@ -725,71 +744,138 @@
             return hit.point;
         }
 
-        private Vector3[] GetFinalPoint(Stack<Vector3> points) {
+		private Vector3[] GetFinalPoint(Vector3[] points) {
+			Vector3[] temp = points;
 
-            Vector3[] temp = points.ToArray();
+			for(int i = 0; i < temp.Length; i++)
+				temp[i].y += 0.2f;
 
-            for(int i = 0; i < points.Count; i++) {
-                temp[i].y += 0.2f;
-            }
+			return temp;
+		}
 
-            return temp;
-        }
+		/// <summary>
+		/// Check to see if we walk to the destination or jump to the destination if it is being blocked by units/structures.
+		/// </summary>
+		/// <param name="points">unit path points for the destination, calculated by the navmeshagent,</param>
+		/// <returns>True if the we are jumping, false is we are just walking.</returns>
+		private bool CheckDestination(Vector3[] points) {
 
-        private void CheckMovement() {
-            // Seocondary Code to calculate the remainging distance. incase the one on the bottom doesnt work.
-            /*float distance = 0.0f;
-            Vector3[] corners = this._navMeshAgent.path.corners;
-            for(int c = 0; c < corners.Length - 1; ++c) {
-                distance += Mathf.Abs((corners[c] - corners[c + 1]).magnitude);
+			//int hitCount = 0;
+			//int unitCount = 0;
 
-            }*/
+			this._isJumping = false;
 
-            //Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
-            //Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
-            if(this._navMeshAgent.remainingDistance <= this._navMeshAgent.stoppingDistance) {
+			Debug.Log("Length: " + points.Length.ToString());
 
-                if(!this._navMeshAgent.hasPath || this._navMeshAgent.velocity.sqrMagnitude <= 0.0f) {
-                    this.StopMoving();
+			// NOTE: need to fix this function call its messing up at the moment.
+			/*for(int i = 0; i < points.Length; i++) {
+				Debug.Log("Current Index: " + i.ToString());
 
-                    if(this._nextState == UnitState.ATTACK || this._nextState == UnitState.SPECIAL) {
-                        if(this.TargetInRange()) {
-                            this._previousState = this._currentState;
-                            this._currentState = this._nextState;
-                            this._nextState = UnitState.IDLE;
-                            this.StartStateAnimation();
-                            return;
-                        }
-                    }
+				if(i == points.Length)
+					break;
 
-                    this._previousState = this._currentState;
-                    this._currentState = UnitState.IDLE;
-                    this._nextState = UnitState.NONE;
+				RaycastHit[] hits = new RaycastHit[5];
 
-                    this.uiBase.UpdateUI();
-                    this.Controller.playerSelect.ChangeState(SelectionState.ATTACK_STANDBY);
-                }
+				Vector3 originPoint = points[i];
+				Vector3 nextPoint = points[i + 1];
+				Vector3 direction = (originPoint - nextPoint).normalized;
+				float distance = Vector3.Distance(originPoint, nextPoint);
 
-            } else {
+				hitCount = Physics.SphereCastNonAlloc(originPoint, 0.8f, direction, hits, distance, (GlobalSettings.LayerValues.unitLayer | GlobalSettings.LayerValues.structureLayer), QueryTriggerInteraction.Ignore);
 
-                if(this._navMeshAgent.remainingDistance == this._initialMoveDist)
-                    return;
+				foreach(RaycastHit hit in hits) {
+					Debug.Log("Object Hit: " + hit.transform.name);
 
-                // Stamina Calculations go here.
-            }
-        }
+					if(hit.transform.CompareTag("Unit") || hit.transform.CompareTag("Structure"))
+						unitCount++;
 
-        // OLD REMOVE.
-        private bool SamplePosition(Vector3 dest, out Vector3 position) {
-            NavMeshHit hit;
+					if(hitCount >= 2) {
+						this._isJumping = true;
+						//break;
+					}
+				}
+			}*/
 
-            if(NavMesh.SamplePosition(dest, out hit, this._allowedMoveImprecision, this.AreaMask)) {
-                position = hit.position;
-                return true;
-            } else {
-                position = Vector3.zero;
-                return false;
-            }
+			return this._isJumping;
+		}
+
+		/// <summary>
+		/// Check our current mvoement path. to see if we have reached the our destination.
+		/// </summary>
+		private void CheckMovement() {
+
+
+			if(this._isJumping) {
+
+				float distance = Vector3.Distance(this.transform.position,this._currentPoint.Value);
+
+				if(distance <= 0.0f || distance <= 0.5f) {
+					Debug.Log("Stop Movement");
+					this.StopMoving();
+
+					if(this._nextState == UnitState.ATTACK || this._nextState == UnitState.SPECIAL) {
+						if(this.TargetInRange()) {
+							this._previousState = this._currentState;
+							this._currentState = this._nextState;
+							this._nextState = UnitState.IDLE;
+							this.StartStateAnimation();
+							return;
+						}
+					}
+
+					this._previousState = this._currentState;
+					this._currentState = UnitState.IDLE;
+					this._nextState = UnitState.NONE;
+
+					this.uiBase.UpdateUI();
+					this.Controller.playerSelect.ChangeState(SelectionState.ATTACK_STANDBY);
+
+				} else {
+					// NOTE: Need to change this to do a parabola arc to the destination point.
+					this.transform.position = this._currentPoint.Value;
+				}
+
+			} else {
+				// Seocondary Code to calculate the remainging distance. incase the one on the bottom doesnt work.
+				/*float distance = 0.0f;
+				Vector3[] corners = this._navMeshAgent.path.corners;
+				for(int c = 0; c < corners.Length - 1; ++c) {
+					distance += Mathf.Abs((corners[c] - corners[c + 1]).magnitude);
+
+				}*/
+
+				Debug.Log("Remaining Distance: " + this._navMeshAgent.remainingDistance.ToString());
+				Debug.Log("Stopping Distance: " + this._navMeshAgent.stoppingDistance.ToString());
+				Debug.Log("Initial Move Distance: " + this._initialMoveDist.ToString());
+				if(this._navMeshAgent.remainingDistance <= this._navMeshAgent.stoppingDistance) {
+
+					if(!this._navMeshAgent.hasPath || this._navMeshAgent.velocity.sqrMagnitude <= 0.0f) {
+						this.StopMoving();
+
+						if(this._nextState == UnitState.ATTACK || this._nextState == UnitState.SPECIAL) {
+							if(this.TargetInRange()) {
+								this._previousState = this._currentState;
+								this._currentState = this._nextState;
+								this._nextState = UnitState.IDLE;
+								this.StartStateAnimation();
+								return;
+							}
+						}
+
+						this._previousState = this._currentState;
+						this._currentState = UnitState.IDLE;
+						this._nextState = UnitState.NONE;
+
+						this.uiBase.UpdateUI();
+						this.Controller.playerSelect.ChangeState(SelectionState.ATTACK_STANDBY);
+					}
+
+				} else {
+
+					if(this._navMeshAgent.remainingDistance == this._initialMoveDist)
+						return;
+				}
+			}
         }
         #endregion
 
