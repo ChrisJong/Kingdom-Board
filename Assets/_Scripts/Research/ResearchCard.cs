@@ -121,6 +121,10 @@
             this._gameObject.SetActive(false);
         }
 
+		/// <summary>
+		/// Sets the position of the card on the screen using a vector point.
+		/// </summary>
+		/// <param name="pos">The point to place the card at</param>
         public virtual void SetPosition(Vector3 pos) {
             //this._researchAnimation.PlaySpawnAnimation();
 
@@ -145,6 +149,9 @@
             }
         }
 
+		/// <summary>
+		/// Resets the card to its original state.
+		/// </summary>
         public virtual void ResetCard() {
             this._toggled = false;
             this._ready = false;

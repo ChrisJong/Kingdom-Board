@@ -115,6 +115,11 @@
             }
         }
 
+		/// <summary>
+		/// Check if the current turn count is a research phase.
+		/// </summary>
+		/// <param name="currentTurn">The Current turn count in the match</param>
+		/// <returns>Returns true if the current turn count is a research phase. else returns false</returns>
         public bool CheckResearchPhase(int currentTurn) {
 
             this._previousState = ResearchState.NONE;
@@ -143,6 +148,13 @@
             return false;
         }
 
+		/// <summary>
+		/// Method that hides the current class cards that was selected and displays either the unit cards or upgrades cards for that turn.
+		/// </summary>
+		/// <param name="keyID">The ID of the class card that was selected. used to identify the upgrade cards that was chosen to be displayed</param>
+		/// <param name="classType">The class type for the card that has been selseected</param>
+		/// <param name="unitType">The unit type for the type of unit card that has been selected in the unit phase</param>
+		/// <param name="upgradeType">The upgrade type for the type of upgrade card that has been selected in the upgrade phase.</param>
         public void SelectedCard(int keyID = -1, UnitClassType classType = UnitClassType.NONE, UnitType unitType = UnitType.NONE, UnitUpgradeType upgradeType = UnitUpgradeType.NONE) {
             if(this._currentState == ResearchState.CLASS) {
 
@@ -221,19 +233,25 @@
             }
         }
 
+		/// <summary>
+		/// Method for when the back button is pressed in the research phase.
+		/// </summary>
         public void Back() {
-            //this._previousState = this._currentState;
             this._currentState = ResearchState.CLASS;
             this._backButton.gameObject.SetActive(false);
             this._cardsReady = 0;
 
-            foreach(ResearchCard card in this._cardsToDisplay) {
+            foreach(ResearchCard card in this._cardsToDisplay)
                 card.CardAnimation.PlayFadeAnimation();
-            }
 
             this.DisplayResearchCards();
         }
 
+
+		/// <summary>
+		/// Method to apply the cards to the players units/structures.
+		/// </summary>
+		/// <param name="unit"></param>
         public void ApplyUpgrades(IUnit unit) {
 
             foreach(ResearchUpgradeData data in this._upgrades[unit.classType]) {
@@ -434,6 +452,9 @@
             }
         }
 
+		/// <summary>
+		/// Reposition the research cards in the center of the screen.
+		/// </summary>
         private void RepositionCards() {
             float cardWidth = this._cardsToDisplay[0].Width;
             float startPos = -(cardWidth + 50.0f); // For 3 cards.
@@ -466,7 +487,7 @@
                     else // Right
                         this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3((cardWidth * 0.66f), 0.0f, 0.0f));
                 } else if(this._cardsToDisplay.Count > 2) {
-                    Debug.Log("Card: " + this._cardsToDisplay[i].ClassType.ToString());
+                    //Debug.Log("Card: " + this._cardsToDisplay[i].ClassType.ToString());
                     this._cardsToDisplay[i].CardAnimation.SetMoveTo(new Vector3(startPos, 0.0f, 0.0f));
                     startPos += (cardWidth + 50.0f);
                 }
@@ -517,9 +538,7 @@
 
                 startpos += 200.0f;
 
-                go.name = data.classType.ToString() + "_CARD";
-
-                // NOTE: Find the face and back sprite here and replace the "Nulls" in the init function below.
+				go.name = data.classType.ToString() + "_CARD";
 
                 card.Init(this, data.researchCardFaceSprite, data.researchCardBackSprite, pos, data.classType, UnitType.NONE, i);
 

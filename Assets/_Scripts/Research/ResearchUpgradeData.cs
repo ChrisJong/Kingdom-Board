@@ -14,9 +14,6 @@
 
         #region VARIABLE
 
-        private Player _controller = null;
-        private Castle _castle = null;
-
         private UpgradeScriptable _data = null;
 
         public int _keyID = -1;

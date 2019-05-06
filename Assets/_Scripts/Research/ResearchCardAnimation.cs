@@ -74,9 +74,11 @@
             StartCoroutine(this._currentPlayingAnim);
         }
 
+		/// <summary>
+		/// Changes the current state of the card.
+		/// </summary>
         public void ChangeState() {
             if(this._state == CardState.START) {
-
                 this.StopCoroutineAnimation();
                 this._currentPlayingAnim = this.StartRotation();
                 StartCoroutine(this._currentPlayingAnim);
@@ -147,6 +149,7 @@
             this._state = CardState.FINISHED;
 
             // Rotate Cards around.
+			// NOTE: dangerous coroutine call for the rotation need to be a blocked in code.
             StartCoroutine(StartRotation());
 
             yield return null;
